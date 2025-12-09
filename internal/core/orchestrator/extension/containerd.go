@@ -11,11 +11,10 @@ import (
 	"time"
 
 	"golang.org/x/sync/errgroup"
+	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 
 	"github.com/otterscale/otterscale/internal/core/machine"
 )
-
-const gpuPresentLabel = "nvidia.com/gpu.present"
 
 type unitInfo struct {
 	Hostname string
@@ -98,17 +97,16 @@ func (uc *UseCase) patchContainerdTemplates(ctx context.Context, scope string, w
 		return err
 	}
 
+	if wait {
+		if err := uc.waitGPUOperatorReady(ctx, scope); err != nil {
+			return err
+		}
+	}
+
 	eg, egctx := errgroup.WithContext(ctx)
 
 	for ctr, unitInfo := range ctrUnitInfo {
 		eg.Go(func() error {
-			// waiting for node contains label
-			if wait && unitInfo.HasGPU {
-				if err := uc.waitNodeLabel(ctx, scope, unitInfo.Hostname); err != nil {
-					return err
-				}
-			}
-
 			hasGPU, err := uc.isNodeContainsGPU(ctx, scope, unitInfo.Hostname)
 			if err != nil {
 				return err
@@ -131,7 +129,7 @@ func (uc *UseCase) isNodeContainsGPU(ctx context.Context, scope, name string) (b
 		return false, err
 	}
 
-	present, ok := node.GetLabels()[gpuPresentLabel]
+	present, ok := node.GetLabels()["nvidia.com/gpu.deploy.operator-validator"]
 	if ok {
 		return present == "true", nil
 	}
@@ -227,7 +225,7 @@ func (uc *UseCase) containsNvidiaGPU(gpus []machine.GPU) bool {
 	return false
 }
 
-func (uc *UseCase) waitNodeLabel(ctx context.Context, scope, hostname string) error {
+func (uc *UseCase) waitGPUOperatorReady(ctx context.Context, scope string) error {
 	const interval = 5 * time.Second
 
 	ticker := time.NewTicker(interval)
@@ -239,12 +237,18 @@ func (uc *UseCase) waitNodeLabel(ctx context.Context, scope, hostname string) er
 			return ctx.Err()
 
 		case <-ticker.C:
-			hasGPU, err := uc.isNodeContainsGPU(ctx, scope, hostname)
+			daemonSet, err := uc.daemonSet.Get(ctx, scope, "gpu-operator", "nvidia-operator-validator")
+			if k8serrors.IsNotFound(err) {
+				return nil
+			}
 			if err != nil {
 				return err
 			}
 
-			if hasGPU {
+			status := daemonSet.Status
+
+			if status.DesiredNumberScheduled == status.CurrentNumberScheduled &&
+				status.DesiredNumberScheduled == status.NumberReady {
 				return nil
 			}
 		}
