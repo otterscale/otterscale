@@ -39,10 +39,6 @@
 		invalidity.name || invalidity.instanceTypeName || invalidity.bootDataVolumeName
 	);
 
-	// ==================== Local Dropdown Options ====================
-	const bootDataVolumes: Writable<SingleSelect.OptionType[]> = writable([]);
-	const instanceTypes: Writable<SingleSelect.OptionType[]> = writable([]);
-
 	// Instance type with CPU and memory information
 	type InstanceTypeOption = SingleSelect.OptionType & {
 		cpuCores?: number;
@@ -51,7 +47,12 @@
 
 	type BootDataVolumesOption = SingleSelect.OptionType & {
 		sizeBytes?: bigint;
+		phase: string;
 	};
+
+	// ==================== Local Dropdown Options ====================
+	const bootDataVolumes: Writable<BootDataVolumesOption[]> = writable([]);
+	const instanceTypes: Writable<InstanceTypeOption[]> = writable([]);
 
 	// ==================== API Functions ====================
 	async function loadInstanceTypes() {
@@ -96,6 +97,7 @@
 				value: dv.name,
 				label: dv.name,
 				icon: 'ph:hard-drive',
+				phase: dv.phase,
 				sizeBytes: dv.sizeBytes
 			}));
 
@@ -120,13 +122,6 @@
 	// ==================== Form State ====================
 	let request = $state(DEFAULT_REQUEST);
 
-	// Load bootable PVCs when namespace changes
-	$effect(() => {
-		if (request.namespace) {
-			loadBootDataVolumes();
-		}
-	});
-
 	// ==================== Utility Functions ====================
 	function reset() {
 		request = { ...DEFAULT_REQUEST };
@@ -139,7 +134,6 @@
 	// ==================== Lifecycle Hooks ====================
 	onMount(() => {
 		loadInstanceTypes();
-		loadBootDataVolumes();
 	});
 </script>
 
@@ -206,6 +200,9 @@
 						required
 						bind:value={request.bootDataVolumeName}
 						bind:invalid={invalidity.bootDataVolumeName}
+						onOpenChange={(open) => {
+							if (open) loadBootDataVolumes();
+						}}
 					>
 						<SingleSelect.Trigger />
 						<SingleSelect.Content>
@@ -214,12 +211,13 @@
 								<SingleSelect.List>
 									<SingleSelect.Empty>{m.no_result()}</SingleSelect.Empty>
 									<SingleSelect.Group>
-										{#each $bootDataVolumes as dv (dv.value)}
-											<SingleSelect.Item option={dv}>
-												<Icon
-													icon={dv.icon ? dv.icon : 'ph:empty'}
-													class={cn('size-5', dv.icon ? 'visible' : 'invisible')}
-												/>
+										{#each $bootDataVolumes.filter((dv) => dv.phase !== 'Failed') as dv (dv.value)}
+											<SingleSelect.Item option={dv} disabled={dv.phase !== 'Succeeded'}>
+												{#if dv.phase === 'Succeeded'}
+													<Icon icon="ph:hard-drive" class="size-5" />
+												{:else}
+													<Icon icon="ph:spinner-gap" class="size-5 animate-spin" />
+												{/if}
 												{dv.label}
 												<SingleSelect.Check option={dv} />
 											</SingleSelect.Item>
