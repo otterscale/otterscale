@@ -37,7 +37,7 @@
 			availableUnit: string | undefined;
 			totalValue: number | undefined;
 			totalUnit: string | undefined;
-			usage: { value: number }[];
+			availablePercentage: { value: number }[];
 		}
 	);
 	let isLoading = $state(true);
@@ -67,7 +67,7 @@
 			availableUnit: availableCapacity ? availableCapacity.unit : undefined,
 			totalValue: totalCapacity ? Math.round(totalCapacity.value) : undefined,
 			totalUnit: totalCapacity ? totalCapacity.unit : undefined,
-			usage: availablePercentage !== null ? [{ value: availablePercentage }] : [{ value: NaN }]
+			availablePercentage: availablePercentage !== null ? [{ value: availablePercentage }] : [{ value: NaN }]
 		};
 	}
 
@@ -92,13 +92,7 @@
 <Card.Root class="h-full gap-2">
 	<Card.Header class="h-[42px]">
 		<Card.Title>{CHART_TITLE}</Card.Title>
-		<Card.Description>
-			{#if response.totalValue != undefined && response.totalUnit != undefined}
-				{m.remaining_capacity()}
-			{:else}
-				{CHART_DESCRIPTION}
-			{/if}
-		</Card.Description>
+		<Card.Description>{CHART_DESCRIPTION}</Card.Description>
 	</Card.Header>
 	{#if isLoading}
 		<Card.Content>
@@ -117,7 +111,7 @@
 		<Card.Content>
 			<Chart.Container class="h-[200px] w-full px-2 pt-2" config={chartConfig}>
 				<ArcChart
-					data={response.usage}
+					data={response.availablePercentage}
 					outerRadius={88}
 					innerRadius={66}
 					trackOuterRadius={83}
