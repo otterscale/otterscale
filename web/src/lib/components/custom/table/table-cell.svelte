@@ -8,15 +8,10 @@
 		ref = $bindable(null),
 		class: className,
 		children,
-		alignClass,
 		...restProps
-	}: WithElementRef<HTMLTdAttributes> & {
-		alignClass?: string;
-	} = $props();
+	}: WithElementRef<HTMLTdAttributes> & {} = $props();
 </script>
 
 <Table.Cell bind:ref data-slot="table-cell" class={cn('p-2', className)} {...restProps}>
-	<div class={cn('flex flex-col gap-1', alignClass)}>
-		{@render children?.()}
-	</div>
+	{@render children?.()}
 </Table.Cell>

@@ -44,9 +44,7 @@
 			<div class="w-full rounded-lg border shadow-sm">
 				<Table.Root>
 					<Table.Header>
-						<Table.Row
-							class="*:px-4 [&_th]:bg-muted [&_th]:first:rounded-tl-lg [&_th]:last:rounded-tr-lg"
-						>
+						<Table.Row>
 							<Table.Head>{m.name()}</Table.Head>
 							<Table.Head>{m.url()}</Table.Head>
 							<Table.Head>{m.enabled()}</Table.Head>
@@ -55,7 +53,7 @@
 					</Table.Header>
 					<Table.Body>
 						{#each $configuration.packageRepositories as packageRepository}
-							<Table.Row class="*:px-4">
+							<Table.Row>
 								<Table.Cell>{packageRepository.name}</Table.Cell>
 								<Table.Cell>
 									<!-- eslint-disable svelte/no-navigation-without-resolve -->

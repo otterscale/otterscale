@@ -70,9 +70,7 @@
 			<div class="w-full rounded-lg border shadow-sm">
 				<Table.Root>
 					<Table.Header>
-						<Table.Row
-							class="*:px-4 [&_th]:bg-muted [&_th]:first:rounded-tl-lg [&_th]:last:rounded-tr-lg"
-						>
+						<Table.Row>
 							<Table.Head>{m.name()}</Table.Head>
 							<Table.Head>{m.source()}</Table.Head>
 							<Table.Head>{m.distro_series()}</Table.Head>
@@ -84,7 +82,7 @@
 					</Table.Header>
 					<Table.Body>
 						{#each $configuration.bootImages as bootImage (bootImage.id)}
-							<Table.Row class="*:px-4">
+							<Table.Row>
 								<Table.Cell>{bootImage.name}</Table.Cell>
 								<Table.Cell>{bootImage.source}</Table.Cell>
 								<Table.Cell>
@@ -140,7 +138,7 @@
 										<ReadArchitectures {bootImage} />
 									</span>
 								</Table.Cell>
-								<Table.Cell class="p-0">
+								<Table.Cell>
 									<Actions {bootImage} {configuration} {reloadManager} />
 								</Table.Cell>
 							</Table.Row>
