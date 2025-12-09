@@ -60,19 +60,18 @@
 	async function fetchVolumeOptions() {
 		try {
 			const response = await storageClient.listPools({
-				scope: scope
+				scope: scope,
+				application: Pool_Application.BLOCK
 			});
 			poolOptions.set(
-				response.pools
-					.filter((pool) => pool.applications.includes(Pool_Application.BLOCK))
-					.map(
-						(pool) =>
-							({
-								value: pool.name,
-								label: pool.name,
-								icon: 'ph:cube'
-							}) as SingleSelect.OptionType
-					)
+				response.pools.map(
+					(pool) =>
+						({
+							value: pool.name,
+							label: pool.name,
+							icon: 'ph:cube'
+						}) as SingleSelect.OptionType
+				)
 			);
 
 			isPoolsLoading = false;
