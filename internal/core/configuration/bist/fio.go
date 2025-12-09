@@ -207,7 +207,7 @@ func (uc *UseCase) blockJobSpec(configMapName string, input *FIOInput) batchv1.J
 				Containers: []corev1.Container{
 					{
 						Name:    "bist-container",
-						Image:   fmt.Sprintf("ghcr.io/otterscale/bist-block:v%s", versions.Bist),
+						Image:   fmt.Sprintf("ghcr.io/otterscale/built-in-self-test/bist-block:v%s", versions.Bist),
 						Command: []string{"./start.sh"},
 						Env:     env,
 						VolumeMounts: []corev1.VolumeMount{
@@ -257,7 +257,7 @@ func (uc *UseCase) nfsJobSpec(target *FIOTargetNFS, input *FIOInput) batchv1.Job
 				Containers: []corev1.Container{
 					{
 						Name:            "bist-container",
-						Image:           fmt.Sprintf("ghcr.io/otterscale/bist-nfs:v%s", versions.Bist),
+						Image:           fmt.Sprintf("ghcr.io/otterscale/built-in-self-test/bist-nfs:v%s", versions.Bist),
 						Command:         []string{"./start.sh"},
 						Env:             env,
 						ImagePullPolicy: corev1.PullIfNotPresent,

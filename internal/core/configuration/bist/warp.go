@@ -196,7 +196,7 @@ func (uc *UseCase) warpJobSpec(target *WarpTargetExternal, input *WarpInput) bat
 				Containers: []corev1.Container{
 					{
 						Name:            "bist-container",
-						Image:           fmt.Sprintf("ghcr.io/otterscale/bist-s3:v%s", versions.Bist),
+						Image:           fmt.Sprintf("ghcr.io/otterscale/built-in-self-test/bist-s3:v%s", versions.Bist),
 						Command:         []string{"./start.sh"},
 						Env:             env,
 						ImagePullPolicy: corev1.PullIfNotPresent,
