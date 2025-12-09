@@ -247,9 +247,10 @@ func (uc *UseCase) waitGPUOperatorReady(ctx context.Context, scope string) error
 
 			status := daemonSet.Status
 
-			if status.DesiredNumberScheduled == status.CurrentNumberScheduled &&
-				status.DesiredNumberScheduled == status.NumberReady {
-				return nil
+			if status.DesiredNumberScheduled == status.CurrentNumberScheduled {
+				if status.DesiredNumberScheduled == status.NumberReady {
+					return nil
+				}
 			}
 		}
 	}
