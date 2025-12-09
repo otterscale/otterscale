@@ -34,6 +34,7 @@ var metricsComponents = []component{
 				"prometheus.prometheusSpec.storageSpec.volumeClaimTemplate.spec.storageClassName":           "ceph-ext4",
 				"prometheus.prometheusSpec.storageSpec.volumeClaimTemplate.spec.accessModes[0]":             "ReadWriteOnce",
 				"prometheus.prometheusSpec.storageSpec.volumeClaimTemplate.spec.resources.requests.storage": "40Gi",
+				"prometheus.prometheusSpec.podMonitorSelectorNilUsesHelmValues":                             "false",
 				"prometheus.prometheusSpec.serviceMonitorSelectorNilUsesHelmValues":                         "false",
 				"prometheus.service.type":                                                                   "NodePort",
 				"prometheus.service.nodePort":                                                               "0",
