@@ -61,7 +61,7 @@
 			(a, network) => a + Number(network.subnet?.statistics ? network.subnet.statistics.total : 0),
 			0
 		)}
-		{@const percentage = formatPercentage(availableSubnets, totalSubnets)}
+		{@const percentage = formatPercentage(availableSubnets, totalSubnets, 0)}
 		<Card.Root class="relative overflow-hidden">
 			<Card.Header class="gap-3">
 				<Card.Title>

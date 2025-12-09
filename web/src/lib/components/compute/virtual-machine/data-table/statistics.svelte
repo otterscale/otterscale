@@ -64,7 +64,7 @@
 			(virtualMachine) => virtualMachine.status === 'Running'
 		).length}
 		{@const totalVirtualMachines = filteredVirtualMachines.length}
-		{@const percentage = formatPercentage(powerOnVirtualMachines, totalVirtualMachines)}
+		{@const percentage = formatPercentage(powerOnVirtualMachines, totalVirtualMachines, 0)}
 		<Card.Root class="relative overflow-hidden">
 			<Card.Header class="gap-3">
 				<Card.Title>
