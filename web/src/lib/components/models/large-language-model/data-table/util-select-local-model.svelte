@@ -16,11 +16,18 @@
 
 <script lang="ts">
 	let {
-		value = $bindable(),
+		modelName = $bindable(),
+		persistentVolumeClaimName = $bindable(),
+		fromPersistentVolumeClaim = $bindable(),
 		scope,
-		namespace,
-		fromLocal = $bindable()
-	}: { value: string; scope: string; namespace: string; fromLocal: boolean } = $props();
+		namespace
+	}: {
+		modelName: string;
+		persistentVolumeClaimName: string;
+		fromPersistentVolumeClaim: boolean;
+		scope: string;
+		namespace: string;
+	} = $props();
 
 	const transport: Transport = getContext('transport');
 
@@ -36,7 +43,7 @@
 		modelArtifactOptions.set(
 			response.modelArtifacts.map((modelArtifact) => ({
 				value: modelArtifact.name,
-				label: modelArtifact.name,
+				label: modelArtifact.modelName,
 				icon: 'ph:robot'
 			}))
 		);
@@ -53,23 +60,30 @@
 </script>
 
 {#if isModelArtifactOptionsLoaded}
-	<Select.Root type="single" bind:value>
+	<Select.Root type="single">
 		<Select.Trigger>
 			<Icon icon="ph:archive-fill" />
 		</Select.Trigger>
 		<Select.Content>
-			{#each $modelArtifactOptions as option (option.value)}
+			{#each $modelArtifactOptions as option, index (index)}
 				<Select.Item
 					value={option.value}
 					onclick={() => {
-						fromLocal = true;
+						fromPersistentVolumeClaim = true;
+						modelName = option.label;
+						persistentVolumeClaimName = option.value;
 					}}
 				>
-					<Icon
-						icon={option.icon ? option.icon : 'ph:empty'}
-						class={cn('size-5', option.icon ? 'visible' : 'invisible')}
-					/>
-					{option.label}
+					<div class="flex items-center gap-2">
+						<Icon
+							icon={option.icon ? option.icon : 'ph:empty'}
+							class={cn('size-5', option.icon ? 'visible' : 'invisible')}
+						/>
+						<div>
+							<h4>{option.label}</h4>
+							<p class="text-muted-foreground">{option.value}</p>
+						</div>
+					</div>
 				</Select.Item>
 			{:else}
 				<Empty.Root>

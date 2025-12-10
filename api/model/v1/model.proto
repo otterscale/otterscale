@@ -60,6 +60,7 @@ message Model {
   }
   message Prefill {
     uint32 replica = 1;
+    uint32 tensor = 2;
     uint32 vgpumem_percentage = 11;
   }
   message Decode {
