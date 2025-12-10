@@ -90,6 +90,11 @@ func (uc *UseCase) CreateNetwork(ctx context.Context, cidr, gatewayIP string, dn
 	if err != nil {
 		return nil, err
 	}
+	defer func() {
+		if err != nil {
+			_ = uc.fabric.Delete(ctx, fabric.ID)
+		}
+	}()
 
 	vlan := fabric.VLANs[0] // default VLAN
 
@@ -97,14 +102,20 @@ func (uc *UseCase) CreateNetwork(ctx context.Context, cidr, gatewayIP string, dn
 	if err != nil {
 		return nil, err
 	}
+	defer func() {
+		if err != nil {
+			_ = uc.subnet.Delete(ctx, subnet.ID)
+		}
+	}()
 
 	if dhcpOn {
-		if _, err := uc.vlan.Update(ctx, fabric.ID, vlan.VID, vlan.Name, vlan.MTU, vlan.Description, true); err != nil {
+		if _, err = uc.vlan.Update(ctx, fabric.ID, vlan.VID, vlan.Name, vlan.MTU, vlan.Description, true); err != nil {
 			return nil, err
 		}
 	}
 
-	subnetData, err := uc.getSubnetData(ctx, subnet)
+	var subnetData *SubnetData
+	subnetData, err = uc.getSubnetData(ctx, subnet)
 	if err != nil {
 		return nil, err
 	}
