@@ -38,7 +38,7 @@
 			const response = await prometheusDriver.instantQuery(
 				`histogram_quantile(0.95, sum by(le) (vllm:e2e_request_latency_seconds_bucket{juju_model="${scope}"}))`
 			);
-			latestLatency = response.result[0]?.value ? Number(response.result[0]?.value) : undefined;
+			latestLatency = response.result[0]?.value?.value;
 		} catch (error) {
 			console.error(`Fail to fetch latest latency in scope ${scope}:`, error);
 		}
@@ -125,7 +125,7 @@
 		<Card.Content class="flex flex-wrap items-center justify-between gap-6">
 			<div class="flex flex-col gap-0.5">
 				<div class="text-3xl font-bold">{latestLatency.toFixed(2)}</div>
-				<p class="text-sm text-muted-foreground">{m.millisecond()}</p>
+				<p class="text-sm text-muted-foreground">{m.second()}</p>
 			</div>
 			<Chart.Container config={configuration} class="h-full w-20">
 				<LineChart
@@ -161,7 +161,7 @@
 									<div class="grid gap-1.5">
 										<span class="text-muted-foreground">{name}</span>
 									</div>
-									<p class="font-mono">{Number(value).toFixed(2)} {m.millisecond()}</p>
+									<p class="font-mono">{Number(value).toFixed(2)} {m.second()}</p>
 								</div>
 							{/snippet}
 						</Chart.Tooltip>
