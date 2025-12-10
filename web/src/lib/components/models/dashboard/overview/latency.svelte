@@ -38,7 +38,7 @@
 			const response = await prometheusDriver.instantQuery(
 				`histogram_quantile(0.95, sum by(le) (vllm:e2e_request_latency_seconds_bucket{juju_model="${scope}"}))`
 			);
-			latestLatency = response.result[0]?.value?. value;
+			latestLatency = response.result[0]?.value?.value;
 		} catch (error) {
 			console.error(`Fail to fetch latest latency in scope ${scope}:`, error);
 		}
