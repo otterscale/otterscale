@@ -75,9 +75,7 @@
 			<div class="w-full rounded-lg border shadow-sm">
 				<Table.Root>
 					<Table.Header>
-						<Table.Row
-							class="*:px-4 [&_th]:bg-muted [&_th]:first:rounded-tl-lg [&_th]:last:rounded-tr-lg"
-						>
+						<Table.Row>
 							<Table.Head>{m.name()}</Table.Head>
 							<Table.Head>{m.namespace()}</Table.Head>
 							<Table.Head>{m.model_name()}</Table.Head>
@@ -90,7 +88,7 @@
 					</Table.Header>
 					<Table.Body>
 						{#each $modelArtifacts as modelArtifact (modelArtifact.name)}
-							<Table.Row class="*:px-4">
+							<Table.Row>
 								<Table.Cell>{modelArtifact.name}</Table.Cell>
 								<Table.Cell><Badge variant="outline">{modelArtifact.namespace}</Badge></Table.Cell>
 								<Table.Cell>{modelArtifact.modelName}</Table.Cell>

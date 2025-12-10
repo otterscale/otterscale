@@ -10,10 +10,10 @@
 		InstanceService
 	} from '$lib/api/instance/v1/instance_pb';
 	import { Reloader, ReloadManager } from '$lib/components/custom/reloader';
+	import * as Table from '$lib/components/custom/table';
 	import * as Layout from '$lib/components/settings/layout';
 	import { Badge } from '$lib/components/ui/badge';
 	import * as HoverCard from '$lib/components/ui/hover-card';
-	import * as Table from '$lib/components/ui/table';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { formatCapacity } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
@@ -77,9 +77,7 @@
 			<div class="w-full rounded-lg border shadow-sm">
 				<Table.Root>
 					<Table.Header>
-						<Table.Row
-							class="*:px-4 [&_th]:bg-muted [&_th]:first:rounded-tl-lg [&_th]:last:rounded-tr-lg"
-						>
+						<Table.Row>
 							<Table.Head>{m.name()}</Table.Head>
 							<Table.Head>{m.namespace()}</Table.Head>
 							<Table.Head>{m.phase()}</Table.Head>
@@ -91,7 +89,7 @@
 					</Table.Header>
 					<Table.Body>
 						{#each $dataVolumes as dataVolume (`${dataVolume.namespace}/${dataVolume.name}`)}
-							<Table.Row class="*:px-4">
+							<Table.Row>
 								<Table.Cell>{dataVolume.name}</Table.Cell>
 								<Table.Cell><Badge variant="outline">{dataVolume.namespace}</Badge></Table.Cell>
 								<Table.Cell>
@@ -164,7 +162,7 @@
 									{@const { value: capacity, unit } = formatCapacity(dataVolume.sizeBytes)}
 									<span class="flex items-center justify-end gap-1">{capacity} {unit}</span>
 								</Table.Cell>
-								<Table.Cell class="p-0">
+								<Table.Cell>
 									<Actions {dataVolume} {scope} {reloadManager} />
 								</Table.Cell>
 							</Table.Row>
