@@ -286,7 +286,7 @@
 	"osd_type_distribution": "Storage Device Type Distribution",
 	"capacity": "Capacity",
 	"capacity_usage_changes": "Usage Changes",
-	"remaining_capacity": "Remaining Usage Capacity",
+	"remaining_capacity": "Remaining Capacity",
 	"throughput": "Throughput",
 	"container": "Container",
 	"scheduler": "Scheduler",
