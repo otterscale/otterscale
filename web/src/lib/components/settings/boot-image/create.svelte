@@ -9,7 +9,8 @@
 	import {
 		type Configuration,
 		ConfigurationService,
-		type CreateBootImageRequest
+		type CreateBootImageRequest,
+		type UpdateBootImageRequest
 	} from '$lib/api/configuration/v1/configuration_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
@@ -40,9 +41,17 @@
 	}
 
 	const architecturesOptions = $derived(distroSeriesArchitecturesMap[request.distroSeries]);
+	const existingBootImage = $derived(
+		$configuration.bootImages.find((img) => img.distroSeries === request.distroSeries)
+	);
+
 	$effect(() => {
 		if (request.distroSeries) {
-			request.architectures = [];
+			if (existingBootImage) {
+				request.architectures = [...existingBootImage.architectures];
+			} else {
+				request.architectures = [];
+			}
 		}
 	});
 
@@ -50,11 +59,13 @@
 		try {
 			const response = await client.listBootImageSelections({});
 			distroSeriesOptions.set(
-				response.bootImageSelections.map((bootImageSelection) => ({
-					value: bootImageSelection.distroSeries,
-					label: bootImageSelection.name,
-					icon: 'ph:binary'
-				}))
+				response.bootImageSelections
+					.map((bootImageSelection) => ({
+						value: bootImageSelection.distroSeries,
+						label: bootImageSelection.name,
+						icon: 'ph:disc'
+					}))
+					.sort((a, b) => b.label.localeCompare(a.label))
 			);
 			distroSeriesArchitecturesMap = Object.fromEntries(
 				response.bootImageSelections.map((bootImageSelection) => [
@@ -63,7 +74,7 @@
 						bootImageSelection.architectures.map((architecture) => ({
 							value: architecture,
 							label: architecture,
-							icon: 'ph:empty'
+							icon: 'ph:cpu'
 						}))
 					)
 				])
@@ -158,25 +169,51 @@
 			<Modal.ActionsGroup>
 				<Modal.Action
 					onclick={() => {
-						const distroSeries = request.distroSeries;
 						const architectures = `${request.architectures.join(', ')}`;
-						toast.promise(() => client.createBootImage(request), {
-							loading: 'Loading...',
-							success: () => {
-								client.getConfiguration({}).then((response) => {
-									configuration.set(response);
-								});
-								return `Create boot images ${distroSeries}: ${architectures} success`;
-							},
-							error: (error) => {
-								let message = `Fail to create boot images ${distroSeries}: ${architectures}`;
-								toast.error(message, {
-									description: (error as ConnectError).message.toString(),
-									duration: Number.POSITIVE_INFINITY
-								});
-								return message;
-							}
-						});
+
+						if (existingBootImage) {
+							const updateRequest = {
+								id: existingBootImage.id,
+								distroSeries: request.distroSeries,
+								architectures: request.architectures
+							} as UpdateBootImageRequest;
+
+							toast.promise(() => client.updateBootImage(updateRequest), {
+								loading: 'Updating...',
+								success: () => {
+									client.getConfiguration({}).then((response) => {
+										configuration.set(response);
+									});
+									return `Update boot images ${request.distroSeries}: ${architectures} success`;
+								},
+								error: (error) => {
+									let message = `Fail to update boot images ${request.distroSeries}: ${architectures}`;
+									toast.error(message, {
+										description: (error as ConnectError).message.toString(),
+										duration: Number.POSITIVE_INFINITY
+									});
+									return message;
+								}
+							});
+						} else {
+							toast.promise(() => client.createBootImage(request), {
+								loading: 'Loading...',
+								success: () => {
+									client.getConfiguration({}).then((response) => {
+										configuration.set(response);
+									});
+									return `Create boot images ${request.distroSeries}: ${architectures} success`;
+								},
+								error: (error) => {
+									let message = `Fail to create boot images ${request.distroSeries}: ${architectures}`;
+									toast.error(message, {
+										description: (error as ConnectError).message.toString(),
+										duration: Number.POSITIVE_INFINITY
+									});
+									return message;
+								}
+							});
+						}
 						reset();
 						close();
 					}}
