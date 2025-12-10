@@ -27,7 +27,7 @@
 			const getRegistryURLResponse = await registryClient.getRegistryURL({
 				scope: scope
 			});
-			registryClient.syncArtifactHub({
+			await registryClient.syncArtifactHub({
 				registryUrl: getRegistryURLResponse.registryUrl
 			});
 		} catch (error) {

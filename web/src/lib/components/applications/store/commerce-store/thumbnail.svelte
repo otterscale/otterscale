@@ -6,7 +6,7 @@
 	import * as Avatar from '$lib/components/ui/avatar';
 	import { Badge } from '$lib/components/ui/badge';
 	import * as Card from '$lib/components/ui/card';
-	import * as Item from '$lib/components/ui/item/index.js';
+	import * as Item from '$lib/components/ui/item';
 	import { m } from '$lib/paraglide/messages';
 	import { cn } from '$lib/utils';
 
@@ -28,7 +28,7 @@
 			<Avatar.Root class="m-2 size-8">
 				<Avatar.Image src={chart.icon} class="object-contain" />
 				<Avatar.Fallback>
-					<Icon icon={fuzzLogosIcon(chart.name, 'fluent-emoji-flat:otter')} class="size-12" />
+					<Icon icon={fuzzLogosIcon(chart.name, 'fluent-emoji-flat:otter')} class="size-8" />
 				</Avatar.Fallback>
 			</Avatar.Root>
 			<Item.Content class="text-left">
