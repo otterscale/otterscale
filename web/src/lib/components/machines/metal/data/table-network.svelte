@@ -3,7 +3,7 @@
 	import { type Writable } from 'svelte/store';
 
 	import { type Machine } from '$lib/api/machine/v1/machine_pb';
-	import * as Table from '$lib/components/ui/table';
+	import * as Table from '$lib/components/custom/table';
 	import { m } from '$lib/paraglide/messages';
 </script>
 
