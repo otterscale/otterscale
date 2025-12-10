@@ -36,7 +36,7 @@
 	async function fetchLatestLatency() {
 		try {
 			const response = await prometheusDriver.instantQuery(
-				`histogram_quantile(0.95, sum by(le) (vllm:e2e_request_latency_seconds_bucket{juju_model="${scope}"}))`
+				`histogram_quantile(0.95, sum by(le) (vllm:e2e_request_latency_seconds_bucket{juju_model="${scope}"})) * 1000`
 			);
 			latestLatency = response.result[0]?.value ? Number(response.result[0]?.value) : undefined;
 		} catch (error) {
@@ -47,7 +47,7 @@
 	async function fetchLatencies() {
 		try {
 			const response = await prometheusDriver.rangeQuery(
-				`histogram_quantile(0.95, sum by(le) (rate(vllm:e2e_request_latency_seconds_bucket{juju_model="${scope}"}[2m])))`,
+				`histogram_quantile(0.95, sum by(le) (rate(vllm:e2e_request_latency_seconds_bucket{juju_model="${scope}"}[5m]))) * 1000`,
 				Date.now() - 10 * 60 * 1000,
 				Date.now(),
 				2 * 60
