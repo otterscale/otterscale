@@ -10,12 +10,13 @@
 <script lang="ts">
 	let {
 		ref = $bindable(null),
+		checked = $bindable(),
 		class: className,
 		...restProps
 	}: WithoutChildrenOrChild<SwitchPrimitive.RootProps> = $props();
 </script>
 
 <div class={cn('flex items-center justify-start gap-1', className)}>
-	<Switch bind:ref {...restProps} />
+	<Switch bind:ref bind:checked {...restProps} />
 	<span class="text-sm font-medium capitalize">{m.auto_update()}</span>
 </div>
