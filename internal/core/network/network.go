@@ -95,17 +95,22 @@ func (uc *UseCase) CreateNetwork(ctx context.Context, cidr, gatewayIP string, dn
 
 	subnet, err := uc.subnet.Create(ctx, fabric.ID, vlan.ID, cidr, gatewayIP, dnsServers)
 	if err != nil {
+		_ = uc.fabric.Delete(ctx, fabric.ID)
 		return nil, err
 	}
 
 	if dhcpOn {
 		if _, err := uc.vlan.Update(ctx, fabric.ID, vlan.VID, vlan.Name, vlan.MTU, vlan.Description, true); err != nil {
+			_ = uc.subnet.Delete(ctx, subnet.ID)
+			_ = uc.fabric.Delete(ctx, fabric.ID)
 			return nil, err
 		}
 	}
 
 	subnetData, err := uc.getSubnetData(ctx, subnet)
 	if err != nil {
+		_ = uc.subnet.Delete(ctx, subnet.ID)
+		_ = uc.fabric.Delete(ctx, fabric.ID)
 		return nil, err
 	}
 
