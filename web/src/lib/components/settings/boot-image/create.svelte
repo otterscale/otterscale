@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import { getContext, onMount } from 'svelte';
@@ -20,25 +20,16 @@
 	} from '$lib/components/custom/select';
 	import { m } from '$lib/paraglide/messages';
 	import { cn } from '$lib/utils';
-</script>
 
-<script lang="ts">
 	let { configuration }: { configuration: Writable<Configuration> } = $props();
 
 	const transport: Transport = getContext('transport');
 	const distroSeriesOptions = writable<SingleSelect.OptionType[]>([]);
-	let distroSeriesArchitecturesMap: Record<string, Writable<SingleSelect.OptionType[]>> = {};
 	const client = createClient(ConfigurationService, transport);
 	const defaults = {} as CreateBootImageRequest;
 	let request = $state(defaults);
-	function reset() {
-		request = defaults;
-	}
-
+	let distroSeriesArchitecturesMap: Record<string, Writable<SingleSelect.OptionType[]>> = {};
 	let open = $state(false);
-	function close() {
-		open = false;
-	}
 
 	const architecturesOptions = $derived(distroSeriesArchitecturesMap[request.distroSeries]);
 	const existingBootImage = $derived(
@@ -83,6 +74,13 @@
 			console.error('Error during initial data load:', error);
 		}
 	});
+
+	function reset() {
+		request = defaults;
+	}
+	function close() {
+		open = false;
+	}
 </script>
 
 <Modal.Root bind:open>
