@@ -10,8 +10,8 @@
 <script lang="ts">
 	let {
 		ref = $bindable(null),
+		checked = $bindable(),
 		class: className,
-		checked = $bindable(false),
 		...restProps
 	}: WithoutChildrenOrChild<SwitchPrimitive.RootProps> = $props();
 </script>

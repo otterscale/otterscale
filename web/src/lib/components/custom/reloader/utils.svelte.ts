@@ -2,8 +2,8 @@ class ReloadManager {
 	private reloadFunction: () => void;
 	private identifier: number | NodeJS.Timeout | undefined;
 
-	state: boolean = $state(true);
-	interval: number | undefined = $state(5);
+	state: boolean = $state(false);
+	interval: number = $state(10);
 
 	constructor(reloadFunction: () => void, initialState: boolean = false) {
 		this.reloadFunction = reloadFunction;
@@ -19,9 +19,9 @@ class ReloadManager {
 	}
 
 	start() {
-		if (this.state && this.interval && this.interval > 0) {
-			this.identifier = setInterval(() => this.reloadFunction(), this.interval * 1000);
-		}
+		if (this.identifier) return;
+		this.state = true;
+		this.identifier = setInterval(() => this.reloadFunction(), this.interval * 1000);
 	}
 
 	stop() {
@@ -29,6 +29,7 @@ class ReloadManager {
 			clearInterval(this.identifier);
 			this.identifier = undefined;
 		}
+		this.state = false;
 	}
 
 	restart() {
