@@ -252,7 +252,7 @@ func (uc *UseCase) waitGPUOperatorReady(ctx context.Context, scope string) error
 		case <-ticker.C:
 			daemonSet, err := uc.daemonSet.Get(ctx, scope, "gpu-operator", "nvidia-operator-validator")
 			if k8serrors.IsNotFound(err) {
-				continue // waiting until it appears or context is cancelled.
+				continue // waiting until it appears or context is canceled.
 			}
 			if err != nil {
 				return err
