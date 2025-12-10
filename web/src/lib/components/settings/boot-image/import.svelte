@@ -65,11 +65,11 @@
 	}}
 	class="flex items-center gap-2"
 >
-	{#if isImportingBootImages == true}
-		<Icon icon="ph:spinner" class="size-5 animate-spin text-muted-foreground" />
+	{#if isImportingBootImages}
+		<Icon icon="ph:box-arrow-down" class="size-5 animate-pulse text-muted-foreground" />
 		{m.importing()}
 	{:else}
-		<Icon icon="ph:arrows-clockwise" />
+		<Icon icon="ph:box-arrow-down" class="size-5" />
 		{m.import()}
 	{/if}
 </Button>

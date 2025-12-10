@@ -94,23 +94,21 @@
 									<Icon icon={bootImage.default ? 'ph:circle' : 'ph:x'} />
 								</Table.Cell>
 								<Table.Cell>
-									<div class="flex items-center justify-end gap-1">
-										<div class="flex flex-wrap gap-1">
-											{#if !expandedArchitectures.get(bootImage.name)}
-												{#each bootImage.architectures.slice(0, 3) as architecture (architecture)}
-													<Badge variant="outline">{architecture}</Badge>
-												{/each}
-												{#if bootImage.architectures.length > 3}
-													<Badge variant="outline" class="h-fit w-fit">
-														+{bootImage.architectures.length - 3}
-													</Badge>
-												{/if}
-											{:else}
-												{#each bootImage.architectures as architecture (architecture)}
-													<Badge variant="outline">{architecture}</Badge>
-												{/each}
+									<div class="flex flex-wrap items-center justify-end gap-1">
+										{#if !expandedArchitectures.get(bootImage.name)}
+											{#each bootImage.architectures.slice(0, 3) as architecture (architecture)}
+												<Badge variant="outline">{architecture}</Badge>
+											{/each}
+											{#if bootImage.architectures.length > 3}
+												<Badge variant="outline" class="h-fit w-fit">
+													+{bootImage.architectures.length - 3}
+												</Badge>
 											{/if}
-										</div>
+										{:else}
+											{#each bootImage.architectures as architecture (architecture)}
+												<Badge variant="outline">{architecture}</Badge>
+											{/each}
+										{/if}
 										{#if bootImage.architectures.length > 3}
 											<Button
 												variant="outline"
