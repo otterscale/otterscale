@@ -109,7 +109,7 @@ func (uc *UseCase) CreateNetwork(ctx context.Context, cidr, gatewayIP string, dn
 	}()
 
 	if dhcpOn {
-		if _, err := uc.vlan.Update(ctx, fabric.ID, vlan.VID, vlan.Name, vlan.MTU, vlan.Description, true); err != nil {
+		if _, err = uc.vlan.Update(ctx, fabric.ID, vlan.VID, vlan.Name, vlan.MTU, vlan.Description, true); err != nil {
 			return nil, err
 		}
 	}
