@@ -114,7 +114,8 @@ func (uc *UseCase) CreateNetwork(ctx context.Context, cidr, gatewayIP string, dn
 		}
 	}
 
-	subnetData, err := uc.getSubnetData(ctx, subnet)
+	var subnetData *SubnetData
+	subnetData, err = uc.getSubnetData(ctx, subnet)
 	if err != nil {
 		return nil, err
 	}
