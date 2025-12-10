@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import { getContext } from 'svelte';
@@ -14,9 +14,7 @@
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import { m } from '$lib/paraglide/messages';
-</script>
 
-<script lang="ts">
 	let {
 		packageRepository,
 		configuration = $bindable()
