@@ -52,7 +52,6 @@
 						<MultipleInput.Controller>
 							<MultipleInput.Input />
 							<MultipleInput.Add />
-							<MultipleInput.Clear />
 						</MultipleInput.Controller>
 					</MultipleInput.Root>
 				</Form.Field>
