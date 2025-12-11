@@ -233,7 +233,6 @@
 							placeholder="Search"
 							bind:value={search}
 							onkeydown={(e) => {
-								console.log(e.key);
 								if (e.key === 'Enter') {
 									fetch();
 								}

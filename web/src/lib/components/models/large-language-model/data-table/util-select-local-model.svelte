@@ -65,7 +65,7 @@
 			<Icon icon="ph:archive-fill" />
 		</Select.Trigger>
 		<Select.Content>
-			{#each $modelArtifactOptions as option, index (index)}
+			{#each $modelArtifactOptions as option (option.value)}
 				<Select.Item
 					value={option.value}
 					onclick={() => {
