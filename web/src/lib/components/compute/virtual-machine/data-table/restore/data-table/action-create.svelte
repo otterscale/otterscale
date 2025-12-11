@@ -66,7 +66,6 @@
 
 	// ==================== Utility Functions ====================
 	function reset() {
-		console.log('reset');
 		request = {
 			scope: scope,
 			namespace: virtualMachine.namespace,
