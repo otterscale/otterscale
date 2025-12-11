@@ -300,7 +300,12 @@ func (uc *UseCase) ensureConfigMap(ctx context.Context, targetScope, scope, name
 				Namespace: namespace,
 			},
 			Data: map[string]string{
-				"ceph.conf": fmt.Sprintf(`[global]\nmon host = %s\nfsid = %s\nkey = %s`, host, id, key),
+				"ceph.conf": fmt.Sprintf(
+					`[global]
+mon host = %s
+fsid = %s
+key = %s
+`, host, id, key),
 			},
 		}
 

@@ -185,7 +185,7 @@ func (uc *UseCase) warpJobSpec(target *WarpTargetExternal, input *WarpInput) bat
 		{Name: "BENCHMARK_ARGS_WARP_OBJ.SIZE", Value: strconv.FormatInt(input.ObjectSize, 10)},
 	}
 
-	if strings.EqualFold(input.Operation.String(), http.MethodPut) {
+	if !strings.EqualFold(input.Operation.String(), http.MethodPut) {
 		env = append(env, corev1.EnvVar{Name: "BENCHMARK_ARGS_WARP_OBJECTS", Value: strconv.FormatInt(input.ObjectCount, 10)})
 	}
 
