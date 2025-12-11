@@ -91,7 +91,7 @@
 					onclick={() => {
 						const payload = {
 							...request,
-							mtu: BigInt(request.mtu)
+							mtu: BigInt(request.mtu || 0)
 						} as UpdateVLANRequest;
 						toast.promise(() => client.updateVLAN(payload), {
 							loading: 'Loading...',
