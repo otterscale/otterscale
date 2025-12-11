@@ -17,13 +17,6 @@
 			url: resolve('/(auth)/scope/[scope]/applications/workloads', { scope: page.params.scope! })
 		},
 		{
-			title: page.params.namespace!,
-			url: resolve('/(auth)/scope/[scope]/applications/workloads/[namespace]', {
-				scope: page.params.scope!,
-				namespace: page.params.namespace!
-			})
-		},
-		{
 			title: page.params.application_name!,
 			url: resolve('/(auth)/scope/[scope]/applications/workloads/[namespace]/[application_name]', {
 				scope: page.params.scope!,
