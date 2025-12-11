@@ -2,7 +2,6 @@
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import { getContext, onMount } from 'svelte';
-	import { writable } from 'svelte/store';
 
 	import {
 		type Configuration,
@@ -18,12 +17,12 @@
 <script lang="ts">
 	const transport: Transport = getContext('transport');
 	const configurationClient = createClient(ConfigurationService, transport);
-	const configuration = writable<Configuration>();
+	let configuration = $state<Configuration>();
 
 	async function fetch() {
 		try {
 			const response = await configurationClient.getConfiguration({});
-			configuration.set(response);
+			configuration = response;
 		} catch (error) {
 			console.error('Error during initial data load:', error);
 		}
@@ -36,7 +35,7 @@
 	});
 </script>
 
-{#if !isConfigurationLoading}
+{#if !isConfigurationLoading && configuration}
 	<Layout.Root>
 		<Layout.Title>{m.repository()}</Layout.Title>
 		<Layout.Description>{m.setting_package_repository_description()}</Layout.Description>
@@ -52,8 +51,8 @@
 						</Table.Row>
 					</Table.Header>
 					<Table.Body>
-						{#each $configuration.packageRepositories as packageRepository}
-							<Table.Row>
+						{#each configuration.packageRepositories as packageRepository (packageRepository.name)}
+							<Table.Row class="*:px-4">
 								<Table.Cell>{packageRepository.name}</Table.Cell>
 								<Table.Cell>
 									<!-- eslint-disable svelte/no-navigation-without-resolve -->
@@ -70,7 +69,7 @@
 								</Table.Cell>
 								<Table.Cell>
 									<div class="flex items-center justify-end">
-										<Update {configuration} {packageRepository} />
+										<Update bind:configuration {packageRepository} />
 									</div>
 								</Table.Cell>
 							</Table.Row>
