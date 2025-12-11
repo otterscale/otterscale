@@ -139,9 +139,9 @@
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>
 			<Reloader
-				bind:checked={reloadManager.state}
-				onCheckedChange={() => {
-					if (reloadManager.state) {
+				checked={reloadManager.state}
+				onCheckedChange={(isChecked) => {
+					if (isChecked) {
 						reloadManager.restart();
 					} else {
 						reloadManager.stop();

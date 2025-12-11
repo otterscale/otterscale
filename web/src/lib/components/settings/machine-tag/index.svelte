@@ -47,9 +47,7 @@
 			<div class="w-full rounded-lg border shadow-sm">
 				<Table.Root>
 					<Table.Header>
-						<Table.Row
-							class="*:px-4 [&_th]:bg-muted [&_th]:first:rounded-tl-lg [&_th]:last:rounded-tr-lg"
-						>
+						<Table.Row>
 							<Table.Head>{m.tag()}</Table.Head>
 							<Table.Head>{m.comment()}</Table.Head>
 							<Table.Head></Table.Head>
@@ -57,7 +55,7 @@
 					</Table.Header>
 					<Table.Body>
 						{#each $tags as tag}
-							<Table.Row class="*:px-4">
+							<Table.Row>
 								<Table.Cell>{tag.name}</Table.Cell>
 								<Table.Cell>
 									<p class={cn(tag.comment ? 'text-primary' : 'text-muted-foreground')}>

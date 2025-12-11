@@ -35,6 +35,7 @@
 	onMount(async () => {
 		await fetch();
 		isMounted = true;
+		reloadManager.start();
 	});
 	onDestroy(() => {
 		reloadManager.stop();
