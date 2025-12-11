@@ -89,7 +89,11 @@
 				<Modal.Action
 					disabled={invalid}
 					onclick={() => {
-						toast.promise(() => client.updateVLAN(request), {
+						const payload = {
+							...request,
+							mtu: BigInt(request.mtu)
+						} as UpdateVLANRequest;
+						toast.promise(() => client.updateVLAN(payload), {
 							loading: 'Loading...',
 							success: () => {
 								reloadManager.force();
