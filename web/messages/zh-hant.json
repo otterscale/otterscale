@@ -186,6 +186,7 @@
 	"create": "建立",
 	"cancel": "取消",
 	"switch_scope": "已切換至範圍 {name}",
+	"scope_not_found_redirect": "因為 '{invalid_scope}' 範圍不存在，已轉跳到預設的 '{scope}'",
 	"scope_not_configured": "範圍 {name} 尚未設定",
 	"home_integration": "與您喜愛的工具整合",
 	"home_integration_description": "與熱門平台和服務無縫連接，以增強您的工作流程。",
