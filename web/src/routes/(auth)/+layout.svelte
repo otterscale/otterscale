@@ -83,7 +83,14 @@
 
 	async function initialize(scope: string) {
 		try {
-			await Promise.all([fetchScopes(), fetchEdition()]);
+			await fetchScopes();
+			// Validate scope: if not "OtterScale" and not in the scopes list, redirect to "OtterScale"
+			const isValidScope = scope === 'OtterScale' || scopes.some((s) => s.name === scope);
+			if (!isValidScope) {
+				await goto(resolve('/(auth)/scope/[scope]', { scope: 'OtterScale' }));
+				return;
+			}
+			await fetchEdition();
 			toast.success(m.switch_scope({ name: scope }));
 		} catch (error) {
 			console.error('Failed to initialize:', error);
