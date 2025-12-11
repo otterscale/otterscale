@@ -4,11 +4,11 @@
 
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
+	import { Application_Type } from '$lib/api/application/v1/application_pb';
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import * as Progress from '$lib/components/custom/progress/index.js';
 	import { ReloadManager } from '$lib/components/custom/reloader';
-	import { Badge } from '$lib/components/ui/badge';
 	import Button from '$lib/components/ui/button/button.svelte';
 
 	import type { Application } from '../types';
@@ -28,6 +28,19 @@
 		nodeport,
 		actions
 	};
+
+	export function getApplicationType(type: Application_Type): string {
+		switch (type) {
+			case Application_Type.DAEMON_SET:
+				return 'Daemon Set';
+			case Application_Type.DEPLOYMENT:
+				return 'Deployment';
+			case Application_Type.STATEFUL_SET:
+				return 'Stateful Set';
+			case Application_Type.UNKNOWN:
+				return 'Unknown';
+		}
+	}
 </script>
 
 {#snippet row_picker(row: Row<Application>)}
@@ -54,9 +67,7 @@
 
 {#snippet type(row: Row<Application>)}
 	<Layout.Cell class="items-start">
-		<Badge variant="outline">
-			{row.original.type}
-		</Badge>
+		{getApplicationType(row.original.type)}
 	</Layout.Cell>
 {/snippet}
 
