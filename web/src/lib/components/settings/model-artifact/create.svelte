@@ -130,11 +130,8 @@
 						required
 						bind:invalid={invalidity.namespace}
 					>
-						<SingleSelect.Trigger>
-							<Icon icon="ph:cube" />
-							{request.namespace}
-							<Icon icon="ph:caret-down" class="ml-auto size-5" />
-						</SingleSelect.Trigger>
+						<!-- TODO: Enable namespace selection when options other than 'llm-d' are available -->
+						<SingleSelect.Trigger disabled={true} />
 						<SingleSelect.Content>
 							<SingleSelect.Options>
 								<SingleSelect.Input />

@@ -7,14 +7,12 @@
 
 	import { ApplicationService } from '$lib/api/application/v1/application_pb';
 	import {
-		type CreateModelRequest,
-		type Model,
 		type Model_Decode,
 		Model_Mode,
 		type Model_Prefill,
-		ModelService,
-		type UpdateModelRequest
+		ModelService
 	} from '$lib/api/model/v1/model_pb';
+	import { type Model, type UpdateModelRequest } from '$lib/api/model/v1/model_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
@@ -97,10 +95,8 @@
 		isNamespaceOptionsLoaded = true;
 	}
 
-	let invalidity = $state({} as Booleanified<CreateModelRequest>);
-	const invalid = $derived(
-		invalidity.name || invalidity.namespace || invalidity.modelName || invalidity.sizeBytes
-	);
+	let invalidity = $state({} as Booleanified<UpdateModelRequest>);
+	const invalid = $derived(invalidity.name || invalidity.namespace);
 
 	onMount(async () => {
 		try {
@@ -111,7 +107,14 @@
 	});
 </script>
 
-<Modal.Root bind:open>
+<Modal.Root
+	bind:open
+	onOpenChange={(isOpen) => {
+		if (isOpen) {
+			reset();
+		}
+	}}
+>
 	<Modal.Trigger variant="creative">
 		<Icon icon="ph:pencil" />
 		{m.update()}
@@ -127,8 +130,7 @@
 						bind:value={request.name}
 						required
 						bind:invalid={invalidity.name}
-						readonly
-						class="focus-none"
+						disabled
 					/>
 				</Form.Field>
 
@@ -198,7 +200,7 @@
 
 					<Form.Field>
 						<Form.Label>{m.memory()}</Form.Label>
-						<div class="flex items-center gap-4">
+						<div class="flex items-center gap-8">
 							<p class="w-6 whitespace-nowrap">{requestDecodeResource.vgpumemPercentage} %</p>
 							<Slider
 								type="single"
@@ -221,8 +223,13 @@
 						</Form.Field>
 
 						<Form.Field>
+							<Form.Label>{m.tensor()}</Form.Label>
+							<SingleInput.General type="number" bind:value={requestPrefillResource.tensor} />
+						</Form.Field>
+
+						<Form.Field>
 							<Form.Label>{m.memory()}</Form.Label>
-							<div class="flex items-center gap-4">
+							<div class="flex items-center gap-8">
 								<p class="w-6 whitespace-nowrap">{requestPrefillResource.vgpumemPercentage} %</p>
 								<Slider
 									type="single"
@@ -244,24 +251,18 @@
 							<SingleInput.General
 								type="number"
 								bind:value={requestDecodeResource.replica}
-								readonly
-								class="focus-none"
+								disabled
 							/>
 						</Form.Field>
 
 						<Form.Field>
 							<Form.Label>{m.tensor()}</Form.Label>
-							<SingleInput.General
-								type="number"
-								bind:value={requestDecodeResource.tensor}
-								readonly
-								class="focus-none"
-							/>
+							<SingleInput.General type="number" bind:value={requestDecodeResource.tensor} />
 						</Form.Field>
 
 						<Form.Field>
 							<Form.Label>{m.memory()}</Form.Label>
-							<div class="flex items-center gap-4">
+							<div class="flex items-center gap-8">
 								<p class="w-6 whitespace-nowrap">{requestDecodeResource.vgpumemPercentage} %</p>
 								<Slider
 									type="single"
@@ -278,11 +279,7 @@
 			{/if}
 		</Form.Root>
 		<Modal.Footer>
-			<Modal.Cancel
-				onclick={() => {
-					reset();
-				}}
-			>
+			<Modal.Cancel>
 				{m.cancel()}
 			</Modal.Cancel>
 			<Modal.Action
@@ -304,7 +301,6 @@
 							return message;
 						}
 					});
-					reset();
 					close();
 				}}
 			>

@@ -150,6 +150,7 @@ func toModelMode(m pb.Model_Mode) model.Mode {
 func toModelPrefill(r *pb.Model_Prefill) *model.Prefill {
 	return &model.Prefill{
 		Replica:    r.GetReplica(),
+		Tensor:     r.GetTensor(),
 		VGPUMemory: r.GetVgpumemPercentage(),
 	}
 }
@@ -178,6 +179,7 @@ func toProtoModelMode(m model.Mode) pb.Model_Mode {
 func toProtoModelPrefill(r *model.Prefill) *pb.Model_Prefill {
 	ret := &pb.Model_Prefill{}
 	ret.SetReplica(r.Replica)
+	ret.SetTensor(r.Tensor)
 	ret.SetVgpumemPercentage(r.VGPUMemory)
 	return ret
 }

@@ -70,12 +70,13 @@ schedulingProfiles:
 //nolint:goconst,funlen // ignore
 func convertModelServiceValuesMap(mode Mode, releaseName, modelName string, fromPVC bool, pvcName string, sizeBytes uint64, prefill *Prefill, decode *Decode, maxModelLength uint32) map[string]string {
 	var (
-		prefillReplica, prefillVGPUMemory             uint32
-		decodeReplica, decodeTensor, decodeVGPUMemory uint32
+		prefillReplica, prefillTensor, prefillVGPUMemory uint32
+		decodeReplica, decodeTensor, decodeVGPUMemory    uint32
 	)
 
 	if prefill != nil {
 		prefillReplica = prefill.Replica
+		prefillTensor = prefill.Tensor
 		prefillVGPUMemory = prefill.VGPUMemory
 	}
 
@@ -168,6 +169,7 @@ func convertModelServiceValuesMap(mode Mode, releaseName, modelName string, from
 		ret["decode.volumes[2].emptyDir.medium"] = "Memory"
 		ret["decode.volumes[2].emptyDir.sizeLimit"] = "16Gi"
 		ret["prefill.replicas"] = strconv.FormatUint(uint64(prefillReplica), 10)
+		ret["prefill.parallelism.tensor"] = strconv.FormatUint(uint64(prefillTensor), 10)
 		ret["prefill.containers[0].image"] = "ghcr.io/llm-d/llm-d-cuda:v" + versions.LLMDCuda
 		ret["prefill.containers[0].modelCommand"] = "vllmServe"
 		ret["prefill.containers[0].args[0]"] = "--kv-transfer-config"

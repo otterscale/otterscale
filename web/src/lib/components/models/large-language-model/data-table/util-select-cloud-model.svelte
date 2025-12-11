@@ -209,21 +209,19 @@
 			<div class="flex h-12 items-center gap-1">
 				<ButtonGroup.Root>
 					<InputGroup.Root class="w-50">
-						<InputGroup.Input placeholder="Search" bind:value={search} />
+						<InputGroup.Input
+							placeholder="Search"
+							bind:value={search}
+							onkeydown={(e) => {
+								if (e.key === 'Enter') {
+									fetch();
+								}
+							}}
+						/>
 						<InputGroup.Addon>
 							<Icon icon="logos:hugging-face-icon" />
 						</InputGroup.Addon>
 					</InputGroup.Root>
-					<Button
-						onclick={() => {
-							fetch();
-						}}
-						variant="outline"
-						size="icon"
-						aria-label="Search"
-					>
-						<Icon icon="ph:magnifying-glass" />
-					</Button>
 				</ButtonGroup.Root>
 				{#if isPipelineTagsLoaded}
 					<!-- Pipeline Filter -->

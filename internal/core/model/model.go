@@ -47,6 +47,7 @@ type Model struct {
 
 type Prefill struct {
 	Replica    uint32
+	Tensor     uint32
 	VGPUMemory uint32
 }
 
@@ -524,6 +525,7 @@ func extractPrefill(config map[string]any) *Prefill {
 	}
 
 	replica := extractReplica(prefillConfig)
+	tensor := extractTensor(prefillConfig)
 	vgpuMemory := extractVGPUMemory(prefillConfig)
 
 	if replica == 0 || vgpuMemory == 0 {
@@ -532,6 +534,7 @@ func extractPrefill(config map[string]any) *Prefill {
 
 	return &Prefill{
 		Replica:    replica,
+		Tensor:     tensor,
 		VGPUMemory: vgpuMemory,
 	}
 }

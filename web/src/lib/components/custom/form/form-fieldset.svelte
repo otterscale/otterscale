@@ -18,7 +18,7 @@
 <fieldset
 	bind:this={ref}
 	data-slot="form-fieldset"
-	class={cn('space-y-4 rounded-md border p-4', disabled ? 'bg-muted/40' : '', className)}
+	class={cn('w-full space-y-4 rounded-md border p-4', disabled ? 'bg-muted/40' : '', className)}
 	{...restProps}
 >
 	{@render children?.()}

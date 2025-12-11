@@ -7,14 +7,15 @@
 package pb
 
 import (
+	reflect "reflect"
+	unsafe "unsafe"
+
 	_ "github.com/otterscale/otterscale/api"
 	v1 "github.com/otterscale/otterscale/api/application/v1"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
-	reflect "reflect"
-	unsafe "unsafe"
 )
 
 const (
@@ -2358,6 +2359,7 @@ func (b0 DeleteModelArtifactRequest_builder) Build() *DeleteModelArtifactRequest
 type Model_Prefill struct {
 	state                        protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Replica           uint32                 `protobuf:"varint,1,opt,name=replica"`
+	xxx_hidden_Tensor            uint32                 `protobuf:"varint,2,opt,name=tensor"`
 	xxx_hidden_VgpumemPercentage uint32                 `protobuf:"varint,11,opt,name=vgpumem_percentage,json=vgpumemPercentage"`
 	XXX_raceDetectHookData       protoimpl.RaceDetectHookData
 	XXX_presence                 [1]uint32
@@ -2397,6 +2399,13 @@ func (x *Model_Prefill) GetReplica() uint32 {
 	return 0
 }
 
+func (x *Model_Prefill) GetTensor() uint32 {
+	if x != nil {
+		return x.xxx_hidden_Tensor
+	}
+	return 0
+}
+
 func (x *Model_Prefill) GetVgpumemPercentage() uint32 {
 	if x != nil {
 		return x.xxx_hidden_VgpumemPercentage
@@ -2406,12 +2415,17 @@ func (x *Model_Prefill) GetVgpumemPercentage() uint32 {
 
 func (x *Model_Prefill) SetReplica(v uint32) {
 	x.xxx_hidden_Replica = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
+}
+
+func (x *Model_Prefill) SetTensor(v uint32) {
+	x.xxx_hidden_Tensor = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
 }
 
 func (x *Model_Prefill) SetVgpumemPercentage(v uint32) {
 	x.xxx_hidden_VgpumemPercentage = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
 }
 
 func (x *Model_Prefill) HasReplica() bool {
@@ -2421,11 +2435,18 @@ func (x *Model_Prefill) HasReplica() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *Model_Prefill) HasVgpumemPercentage() bool {
+func (x *Model_Prefill) HasTensor() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *Model_Prefill) HasVgpumemPercentage() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
 func (x *Model_Prefill) ClearReplica() {
@@ -2433,8 +2454,13 @@ func (x *Model_Prefill) ClearReplica() {
 	x.xxx_hidden_Replica = 0
 }
 
-func (x *Model_Prefill) ClearVgpumemPercentage() {
+func (x *Model_Prefill) ClearTensor() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_Tensor = 0
+}
+
+func (x *Model_Prefill) ClearVgpumemPercentage() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_VgpumemPercentage = 0
 }
 
@@ -2442,6 +2468,7 @@ type Model_Prefill_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Replica           *uint32
+	Tensor            *uint32
 	VgpumemPercentage *uint32
 }
 
@@ -2450,11 +2477,15 @@ func (b0 Model_Prefill_builder) Build() *Model_Prefill {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Replica != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
 		x.xxx_hidden_Replica = *b.Replica
 	}
+	if b.Tensor != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
+		x.xxx_hidden_Tensor = *b.Tensor
+	}
 	if b.VgpumemPercentage != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
 		x.xxx_hidden_VgpumemPercentage = *b.VgpumemPercentage
 	}
 	return m0
@@ -2599,7 +2630,7 @@ var File_api_model_v1_model_proto protoreflect.FileDescriptor
 
 const file_api_model_v1_model_proto_rawDesc = "" +
 	"\n" +
-	"\x18api/model/v1/model.proto\x12\x13otterscale.model.v1\x1a\x15api/annotations.proto\x1a$api/application/v1/application.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\x8b\b\n" +
+	"\x18api/model/v1/model.proto\x12\x13otterscale.model.v1\x1a\x15api/annotations.proto\x1a$api/application/v1/application.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xa3\b\n" +
 	"\x05Model\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04name\x18\v \x01(\tR\x04name\x12\x1c\n" +
@@ -2617,9 +2648,10 @@ const file_api_model_v1_model_proto_rawDesc = "" +
 	"\x10max_model_length\x18\" \x01(\rR\x0emaxModelLength\x12>\n" +
 	"\x04pods\x18) \x03(\v2*.otterscale.application.v1.Application.PodR\x04pods\x12?\n" +
 	"\x1cfrom_persistent_volume_claim\x183 \x01(\bR\x19fromPersistentVolumeClaim\x12?\n" +
-	"\x1cpersistent_volume_claim_name\x184 \x01(\tR\x19persistentVolumeClaimName\x1aR\n" +
+	"\x1cpersistent_volume_claim_name\x184 \x01(\tR\x19persistentVolumeClaimName\x1aj\n" +
 	"\aPrefill\x12\x18\n" +
-	"\areplica\x18\x01 \x01(\rR\areplica\x12-\n" +
+	"\areplica\x18\x01 \x01(\rR\areplica\x12\x16\n" +
+	"\x06tensor\x18\x02 \x01(\rR\x06tensor\x12-\n" +
 	"\x12vgpumem_percentage\x18\v \x01(\rR\x11vgpumemPercentage\x1ai\n" +
 	"\x06Decode\x12\x18\n" +
 	"\areplica\x18\x01 \x01(\rR\areplica\x12\x16\n" +
