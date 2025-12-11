@@ -1321,7 +1321,7 @@ config_ceph_rbd_modules() {
     local modules_file="/etc/modules"
 
     log "INFO" "Configuring kernel modules..." "KERNEL_CONFIG"
-
+    modprobe "$module"
     if ! grep -q "^$module$" "$modules_file"; then
         echo "$module" >> "$modules_file"
         log "INFO" "Added $module to $modules_file" "KERNEL_CONFIG"
