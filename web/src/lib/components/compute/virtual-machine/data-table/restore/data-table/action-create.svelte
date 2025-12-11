@@ -54,13 +54,9 @@
 
 	$effect(() => {
 		if (request.snapshotName) {
-			const now = new Date();
-			const year = now.getFullYear();
-			const month = (now.getMonth() + 1).toString().padStart(2, '0');
-			const day = now.getDate().toString().padStart(2, '0');
-			const hours = now.getHours().toString().padStart(2, '0');
-			const minutes = now.getMinutes().toString().padStart(2, '0');
-			request.name = `${request.snapshotName}-${year}${month}${day}${hours}${minutes}`;
+			const timestamp = new Date().toISOString().slice(0, 16).replace(/[-T:]/g, '');
+			request.name = `${request.snapshotName}-${timestamp}`;
+			console.log(request.name);
 		}
 	});
 
@@ -90,7 +86,7 @@
 			<!-- ==================== Basic Configuration ==================== -->
 			<Form.Fieldset>
 				<Form.Field>
-					<Form.Label>{m.name()}</Form.Label>
+					<Form.Label>{m.snapshot()}</Form.Label>
 					<SingleSelect.Root
 						required
 						options={snapshotOptions}
