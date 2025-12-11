@@ -138,7 +138,7 @@
 						<Icon icon="ph:terminal-window" />
 					</Button>
 				</Table.Cell>
-				<Table.Cell class="p-0">
+				<Table.Cell>
 					<Actions {pod} {scope} {namespace} {reloadManager} />
 				</Table.Cell>
 			</Table.Row>

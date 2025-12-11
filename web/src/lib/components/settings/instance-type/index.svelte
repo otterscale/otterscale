@@ -57,9 +57,9 @@
 		<Layout.Controller>
 			<Create {scope} {reloadManager} />
 			<Reloader
-				bind:checked={reloadManager.state}
-				onCheckedChange={() => {
-					if (reloadManager.state) {
+				checked={reloadManager.state}
+				onCheckedChange={(isChecked) => {
+					if (isChecked) {
 						reloadManager.restart();
 					} else {
 						reloadManager.stop();
@@ -71,9 +71,7 @@
 			<div class="w-full rounded-lg border shadow-sm">
 				<Table.Root>
 					<Table.Header>
-						<Table.Row
-							class="*:px-4 [&_th]:bg-muted [&_th]:first:rounded-tl-lg [&_th]:last:rounded-tr-lg"
-						>
+						<Table.Row>
 							<Table.Head>{m.name()}</Table.Head>
 							<Table.Head>{m.namespace()}</Table.Head>
 							<Table.Head class="text-right">{m.cpu_cores()}</Table.Head>
@@ -84,7 +82,7 @@
 					</Table.Header>
 					<Table.Body>
 						{#each $instanceTypes as instanceType}
-							<Table.Row class="*:px-4">
+							<Table.Row>
 								<Table.Cell>{instanceType.name}</Table.Cell>
 								<Table.Cell>
 									{#if instanceType.namespace}
@@ -112,7 +110,7 @@
 										</Tooltip.Provider>
 									{/if}
 								</Table.Cell>
-								<Table.Cell class="p-0">
+								<Table.Cell>
 									<Actions {instanceType} {scope} {reloadManager} />
 								</Table.Cell>
 							</Table.Row>

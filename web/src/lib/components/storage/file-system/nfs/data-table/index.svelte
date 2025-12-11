@@ -139,9 +139,9 @@
 		<Layout.ControllerAction>
 			<Create {scope} {volume} {group} {reloadManager} />
 			<Reloader
-				bind:checked={reloadManager.state}
-				onCheckedChange={() => {
-					if (reloadManager.state) {
+				checked={reloadManager.state}
+				onCheckedChange={(isChecked) => {
+					if (isChecked) {
 						reloadManager.restart();
 					} else {
 						reloadManager.stop();

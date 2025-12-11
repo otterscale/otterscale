@@ -4,9 +4,9 @@
 
 	import type { Application } from '$lib/api/application/v1/application_pb';
 	import { Layout } from '$lib/components/custom/instance';
-	import * as Table from '$lib/components/custom/table';
 	import { Badge } from '$lib/components/ui/badge';
 	import Button from '$lib/components/ui/button/button.svelte';
+	import * as Table from '$lib/components/ui/table';
 	import { m } from '$lib/paraglide/messages';
 </script>
 

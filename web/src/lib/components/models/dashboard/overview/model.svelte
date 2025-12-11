@@ -37,7 +37,7 @@
 	async function fetchLatestAvailableModels() {
 		try {
 			const response = await prometheusDriver.instantQuery(
-				`count by(endpoint) (vllm:gpu_cache_usage_perc{juju_model="${scope}"})`
+				`count by(endpoint) (vllm:cache_config_info{juju_model="${scope}"})`
 			);
 			latestAvailableModels = response.result[0]?.value?.value;
 		} catch (error) {
@@ -48,7 +48,7 @@
 	async function fetchAvailableModels() {
 		try {
 			const response = await prometheusDriver.rangeQuery(
-				`count by(endpoint) (vllm:gpu_cache_usage_perc{juju_model="${scope}"})`,
+				`count by(endpoint) (vllm:cache_config_info{juju_model="${scope}"})`,
 				Date.now() - 10 * 60 * 1000,
 				Date.now(),
 				2 * 60

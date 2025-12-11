@@ -98,6 +98,10 @@ func (uc *UseCase) patchContainerdTemplates(ctx context.Context, scope string, w
 	}
 
 	if wait {
+		if !uc.anyGPU(ctrUnitInfo) {
+			return errors.New("no GPU found in any unit")
+		}
+
 		if err := uc.waitGPUOperatorReady(ctx, scope); err != nil {
 			return err
 		}
@@ -107,7 +111,7 @@ func (uc *UseCase) patchContainerdTemplates(ctx context.Context, scope string, w
 
 	for ctr, unitInfo := range ctrUnitInfo {
 		eg.Go(func() error {
-			hasGPU, err := uc.isNodeContainsGPU(ctx, scope, unitInfo.Hostname)
+			hasGPU, err := uc.nodeContainsGPU(egctx, scope, unitInfo.Hostname)
 			if err != nil {
 				return err
 			}
@@ -123,7 +127,7 @@ func (uc *UseCase) patchContainerdTemplates(ctx context.Context, scope string, w
 	return eg.Wait()
 }
 
-func (uc *UseCase) isNodeContainsGPU(ctx context.Context, scope, name string) (bool, error) {
+func (uc *UseCase) nodeContainsGPU(ctx context.Context, scope, name string) (bool, error) {
 	node, err := uc.node.Get(ctx, scope, name)
 	if err != nil {
 		return false, err
@@ -225,6 +229,15 @@ func (uc *UseCase) containsNvidiaGPU(gpus []machine.GPU) bool {
 	return false
 }
 
+func (uc *UseCase) anyGPU(ctrUnitInfo map[string]unitInfo) bool {
+	for _, unitInfo := range ctrUnitInfo {
+		if unitInfo.HasGPU {
+			return true
+		}
+	}
+	return false
+}
+
 func (uc *UseCase) waitGPUOperatorReady(ctx context.Context, scope string) error {
 	const interval = 5 * time.Second
 
@@ -239,7 +252,7 @@ func (uc *UseCase) waitGPUOperatorReady(ctx context.Context, scope string) error
 		case <-ticker.C:
 			daemonSet, err := uc.daemonSet.Get(ctx, scope, "gpu-operator", "nvidia-operator-validator")
 			if k8serrors.IsNotFound(err) {
-				return nil
+				continue // waiting until it appears or context is canceled.
 			}
 			if err != nil {
 				return err

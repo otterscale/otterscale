@@ -50,7 +50,7 @@
 		{@const backgroundIcon = 'ph:check'}
 		{@const readySnapshots = filteredSnapshots.filter((snapshot) => snapshot.readyToUse).length}
 		{@const totalSnapshots = filteredSnapshots.length}
-		{@const percentage = formatPercentage(readySnapshots, totalSnapshots)}
+		{@const percentage = formatPercentage(readySnapshots, totalSnapshots, 0)}
 		<Card.Root class="relative overflow-hidden">
 			<Card.Header class="gap-3">
 				<Card.Title>
