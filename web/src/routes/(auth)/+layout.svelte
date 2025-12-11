@@ -95,7 +95,9 @@
 			await fetchEdition();
 			// Show appropriate toast based on whether we were redirected from an invalid scope
 			if (invalidScope) {
-				toast.warning(m.scope_not_found_redirect({  invalid_scope: invalidScope, scope: 'OtterScale' }));
+				toast.warning(
+					m.scope_not_found_redirect({ invalid_scope: invalidScope, scope: 'OtterScale' })
+				);
 				invalidScope = '';
 			} else {
 				toast.success(m.switch_scope({ name: scope }));
