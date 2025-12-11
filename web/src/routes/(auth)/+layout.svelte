@@ -51,6 +51,7 @@
 
 	let scopes = $state<Scope[]>([]);
 	let previousScope = $state<string>('');
+	let invalidScope = $state<string>('');
 	let activeScope = $derived(page.params.scope || previousScope || 'OtterScale');
 
 	async function fetchScopes() {
@@ -87,11 +88,18 @@
 			// Validate scope: if not "OtterScale" and not in the scopes list, redirect to "OtterScale"
 			const isValidScope = scope === 'OtterScale' || scopes.some((s) => s.name === scope);
 			if (!isValidScope) {
+				invalidScope = scope;
 				await goto(resolve('/(auth)/scope/[scope]', { scope: 'OtterScale' }));
 				return;
 			}
 			await fetchEdition();
-			toast.success(m.switch_scope({ name: scope }));
+			// Show appropriate toast based on whether we were redirected from an invalid scope
+			if (invalidScope) {
+				toast.warning(m.scope_not_found_redirect({  invalid_scope: invalidScope, scope: 'OtterScale' }));
+				invalidScope = '';
+			} else {
+				toast.success(m.switch_scope({ name: scope }));
+			}
 		} catch (error) {
 			console.error('Failed to initialize:', error);
 		}
