@@ -18,6 +18,7 @@ import (
 	"github.com/otterscale/otterscale/internal/core/application/workload"
 	"github.com/otterscale/otterscale/internal/core/scope"
 	"github.com/otterscale/otterscale/internal/core/storage"
+	"github.com/otterscale/otterscale/internal/core/versions"
 )
 
 const (
@@ -206,7 +207,7 @@ func (uc *UseCase) blockJobSpec(configMapName string, input *FIOInput) batchv1.J
 				Containers: []corev1.Container{
 					{
 						Name:    "bist-container",
-						Image:   "docker.io/otterscale/bist-block:v1",
+						Image:   fmt.Sprintf("ghcr.io/otterscale/built-in-self-test/bist-block:v%s", versions.Bist),
 						Command: []string{"./start.sh"},
 						Env:     env,
 						VolumeMounts: []corev1.VolumeMount{
@@ -256,7 +257,7 @@ func (uc *UseCase) nfsJobSpec(target *FIOTargetNFS, input *FIOInput) batchv1.Job
 				Containers: []corev1.Container{
 					{
 						Name:            "bist-container",
-						Image:           "docker.io/otterscale/bist-nfs:v1",
+						Image:           fmt.Sprintf("ghcr.io/otterscale/built-in-self-test/bist-nfs:v%s", versions.Bist),
 						Command:         []string{"./start.sh"},
 						Env:             env,
 						ImagePullPolicy: corev1.PullIfNotPresent,
@@ -299,7 +300,12 @@ func (uc *UseCase) ensureConfigMap(ctx context.Context, targetScope, scope, name
 				Namespace: namespace,
 			},
 			Data: map[string]string{
-				"ceph.conf": fmt.Sprintf(`[global]\nmon host = %s\nfsid = %s\nkey = %s`, host, id, key),
+				"ceph.conf": fmt.Sprintf(
+					`[global]
+mon host = %s
+fsid = %s
+key = %s
+`, host, id, key),
 			},
 		}
 
