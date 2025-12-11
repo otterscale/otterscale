@@ -21,13 +21,16 @@ func NewNodeDeviceRepo(maas *MAAS) machine.NodeDeviceRepo {
 
 var _ machine.NodeDeviceRepo = (*nodeDeviceRepo)(nil)
 
-func (r *nodeDeviceRepo) ListGPUs(_ context.Context, machineID string) ([]machine.GPU, error) {
-	allowedVendors := map[string]bool{
+var (
+	// allowedVendors is a set of GPU vendor IDs that are supported.
+	allowedVendors = map[string]bool{
 		"10de": true, // NVIDIA
 		"1002": true, // AMD
 		"8086": true, // Intel
 	}
+)
 
+func (r *nodeDeviceRepo) ListGPUs(_ context.Context, machineID string) ([]machine.GPU, error) {
 	client, err := r.maas.Client()
 	if err != nil {
 		return nil, err
