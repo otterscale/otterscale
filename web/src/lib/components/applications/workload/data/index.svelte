@@ -40,6 +40,7 @@
 			{$application.name}
 		</div>
 		<Badge variant="outline">
+			<Icon icon={ApplicationTypeConfig[$application.type].icon} />
 			{ApplicationTypeConfig[$application.type].label}
 		</Badge>
 		<div class="flex flex-wrap gap-1 overflow-visible">
