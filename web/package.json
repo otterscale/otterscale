@@ -60,7 +60,7 @@
 		"mode-watcher": "^1.1.0",
 		"paneforge": "^1.0.2",
 		"playwright": "^1.57.0",
-		"prettier": "3.6.2",
+		"prettier": "3.7.4",
 		"prettier-plugin-svelte": "^3.4.0",
 		"prettier-plugin-tailwindcss": "0.7.1",
 		"svelte": "^5.45.5",
