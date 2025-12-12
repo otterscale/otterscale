@@ -57,7 +57,13 @@
 			<Form.Fieldset>
 				<Form.Field>
 					<Form.Label>{m.name()}</Form.Label>
-					<SingleInput.General required type="text" bind:value={request.poolName} bind:invalid />
+					<SingleInput.General
+						required
+						disabled
+						type="text"
+						bind:value={request.poolName}
+						bind:invalid
+					/>
 				</Form.Field>
 				<Form.Field>
 					<Form.Label>{m.quota_size()}</Form.Label>

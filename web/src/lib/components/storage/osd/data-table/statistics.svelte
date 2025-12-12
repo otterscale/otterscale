@@ -19,7 +19,7 @@
 
 <div class="grid w-full gap-3 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
 	{#snippet ObjectStorageDaemons()}
-		{@const title = m.image()}
+		{@const title = m.osd()}
 		{@const titleIcon = 'ph:chart-bar-bold'}
 		{@const backgroundIcon = 'ph:cube'}
 		{@const objectStorageDaemons = filteredObjectStorageDaemons.length}

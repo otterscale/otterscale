@@ -2,7 +2,7 @@
 	import Icon from '@iconify/svelte';
 	import type { Row } from '@tanstack/table-core';
 
-	import { type Pool, Pool_Type } from '$lib/api/storage/v1/storage_pb';
+	import { type Pool, Pool_Application, Pool_Type } from '$lib/api/storage/v1/storage_pb';
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import * as Progress from '$lib/components/custom/progress';
@@ -11,7 +11,7 @@
 	import { formatCapacity } from '$lib/formatter';
 
 	import Actions from './cell-actions.svelte';
-	import { getPlacementGroupStateVariant } from './utils.svelte';
+	import { getPlacementGroupStateClassName, getPlacementGroupStateVariant } from './utils.svelte';
 
 	export const cells = {
 		row_picker,
@@ -22,6 +22,16 @@
 		usage,
 		actions
 	};
+	export function getPoolApplicationLabel(value: number): string | undefined {
+		switch (value) {
+			case Pool_Application.BLOCK:
+				return 'BLOCK';
+			case Pool_Application.FILE:
+				return 'FILE';
+			case Pool_Application.OBJECT:
+				return 'OBJECT';
+		}
+	}
 </script>
 
 {#snippet row_picker(row: Row<Pool>)}
@@ -57,9 +67,10 @@
 	<Layout.Cell class="items-start">
 		<span class="flex gap-1">
 			{#each row.original.applications as application}
-				{#if application}
+				{@const label = getPoolApplicationLabel(application)}
+				{#if label}
 					<Badge variant="outline">
-						{application}
+						{label}
 					</Badge>
 				{/if}
 			{/each}
@@ -71,7 +82,10 @@
 	<Layout.Cell class="items-start">
 		<span class="flex flex-col gap-1">
 			{#each Object.entries(row.original.placementGroupState) as [state, number]}
-				<Badge variant={getPlacementGroupStateVariant(state)}>
+				<Badge
+					variant={getPlacementGroupStateVariant(state)}
+					class={getPlacementGroupStateClassName(state)}
+				>
 					{state}:{number}
 				</Badge>
 			{/each}
