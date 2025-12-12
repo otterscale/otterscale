@@ -4,7 +4,6 @@
 
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
-	import { TagGroup } from '$lib/components/tag-group';
 	import Badge from '$lib/components/ui/badge/badge.svelte';
 	import * as HoverCard from '$lib/components/ui/hover-card';
 	import * as Table from '$lib/components/ui/table';
@@ -37,9 +36,7 @@
 
 {#snippet type(row: Row<Service>)}
 	<Layout.Cell class="items-start">
-		<Badge variant="outline">
-			{row.original.type}
-		</Badge>
+		{row.original.type}
 	</Layout.Cell>
 {/snippet}
 
@@ -99,13 +96,14 @@
 {#snippet endpoints(row: Row<Service>)}
 	{#if row.original.type === 'NodePort'}
 		<Layout.Cell class="items-start">
-			<TagGroup
-				items={row.original.ports.map((port) => ({
-					title: port.name ?? '',
-					description: `http://${row.original.hostname}:${port.nodePort}`,
-					icon: 'ph:tag'
-				}))}
-			/>
+			<div class="flex gap-3">
+				{#each row.original.ports as port}
+					<Badge variant="outline" class="flex items-center gap-1 hover:underline">
+						<Icon icon="ph:network" />
+						<a href={`http://${row.original.hostname}:${port.nodePort}`}>{port.nodePort}</a>
+					</Badge>
+				{/each}
+			</div>
 		</Layout.Cell>
 	{/if}
 {/snippet}

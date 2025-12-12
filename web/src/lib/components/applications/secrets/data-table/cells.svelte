@@ -8,7 +8,6 @@
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { TagGroup } from '$lib/components/tag-group';
-	import { Badge } from '$lib/components/ui/badge';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { formatTimeAgo } from '$lib/formatter';
@@ -80,9 +79,7 @@
 
 {#snippet type(row: Row<Secret>)}
 	<Layout.Cell class="items-start">
-		<Badge variant="outline">
-			{row.original.type}
-		</Badge>
+		{row.original.type}
 	</Layout.Cell>
 {/snippet}
 
