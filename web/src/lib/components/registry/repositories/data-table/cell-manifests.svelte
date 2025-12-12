@@ -107,14 +107,6 @@
 										</span>
 									</Item.Description>
 								</Item.Content>
-								<!-- <Item.Actions>
-								<ActionDeleteManifest
-									{manifest}
-									{scope}
-									{reloadManager}
-									onSuccess={() => fetchManifests()}
-								/>
-							</Item.Actions> -->
 							</Item.Root>
 						</Dialog.Trigger>
 						<Dialog.Content class="max-h-[77vh] overflow-y-auto  p-2">

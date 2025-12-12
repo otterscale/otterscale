@@ -63,7 +63,7 @@
 		<Icon icon="ph:trash" class="transition-transform duration-200 group-hover:scale-110" />
 	</Modal.Trigger>
 	<Modal.Content>
-		<Modal.Header>{m.repository_delete()}</Modal.Header>
+		<Modal.Header>{m.delete_manifest()}</Modal.Header>
 		<Form.Root>
 			<Form.Fieldset>
 				<Form.Field>
@@ -102,15 +102,16 @@
 				<Modal.Action
 					disabled={invalid}
 					onclick={() => {
+						const repoName = request.repositoryName;
 						toast.promise(() => registryClient.deleteManifest(request), {
-							loading: `Deleting ${request.repositoryName}...`,
+							loading: `Deleting ${repoName}...`,
 							success: () => {
 								reloadManager.force();
 								if (onSuccess) onSuccess();
-								return `Delete ${request.repositoryName} success`;
+								return `Delete ${repoName} success`;
 							},
 							error: (error) => {
-								let message = `Fail to delete ${request.repositoryName}`;
+								let message = `Fail to delete ${repoName}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
 									duration: Number.POSITIVE_INFINITY
@@ -118,8 +119,8 @@
 								return message;
 							}
 						});
-						reset();
 						close();
+						reset();
 					}}
 				>
 					{m.confirm()}

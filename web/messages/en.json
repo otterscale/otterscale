@@ -852,7 +852,7 @@
 	"sync": "Sync",
 	"manifests": "Manifests",
 	"repository_name": "Repository Name",
-	"repository_delete": "Delete Repository",
+	"delete_manifest": "Delete Manifest",
 	"latest_tag": "Latest Tag",
 	"registry": "Registry",
 	"repositories": "Repositories",
