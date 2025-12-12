@@ -5,6 +5,7 @@
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import { Application_Type } from '$lib/api/application/v1/application_pb';
+	import { ApplicationTypeConfig } from '$lib/components/applications/constants';
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import * as Progress from '$lib/components/custom/progress/index.js';
@@ -28,12 +29,6 @@
 		volume,
 		nodeport,
 		actions
-	};
-	const types = {
-		[Application_Type.UNKNOWN]: { label: 'Unknown', icon: 'ph:question' },
-		[Application_Type.DEPLOYMENT]: { label: 'Deployment', icon: 'ph:stack' },
-		[Application_Type.STATEFUL_SET]: { label: 'StatefulSet', icon: 'ph:database' },
-		[Application_Type.DAEMON_SET]: { label: 'DaemonSet', icon: 'ph:browsers' }
 	};
 </script>
 
@@ -61,7 +56,8 @@
 
 {#snippet type(row: Row<Application>)}
 	<Layout.Cell class="items-start">
-		{@const info = types[row.original.type] ?? types[Application_Type.UNKNOWN]}
+		{@const info =
+			ApplicationTypeConfig[row.original.type] ?? ApplicationTypeConfig[Application_Type.UNKNOWN]}
 		<Tooltip.Root>
 			<Tooltip.Trigger>
 				<Icon icon={info.icon} class="size-5" />
