@@ -83,7 +83,7 @@
 				</div>
 			</Sheet.Header>
 			{#each $manifests as manifest (manifest.digest)}
-				<div class="flex w-full items-center gap-2">
+				<div class="flex w-full items-center gap-2 pr-2">
 					<Dialog.Root>
 						<Dialog.Trigger class="grow hover:underline">
 							<Item.Root class="w-full">

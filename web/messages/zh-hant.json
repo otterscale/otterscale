@@ -851,6 +851,8 @@
 	"official": "官方",
 	"sync": "同步",
 	"manifests": "資訊清單 (Manifests)",
+	"repository_name": "儲存庫名稱",
+	"repository_delete": "刪除儲存庫",
 	"latest_tag": "最新標籤",
 	"registry": "映像檔倉庫",
 	"repositories": "儲存庫",

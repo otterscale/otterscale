@@ -56,27 +56,28 @@
 </script>
 
 <Modal.Root bind:open>
-	<Modal.Trigger variant="ghost" class="h-7 w-7 text-destructive">
-		<Icon icon="ph:trash" />
+	<Modal.Trigger
+		variant="ghost"
+		class="group flex h-7 w-7 items-center justify-center text-destructive"
+	>
+		<Icon icon="ph:trash" class="transition-transform duration-200 group-hover:scale-110" />
 	</Modal.Trigger>
 	<Modal.Content>
-		<Modal.Header>{m.delete()} {manifest.repositoryName}</Modal.Header>
+		<Modal.Header>{m.repository_delete()}</Modal.Header>
 		<Form.Root>
 			<Form.Fieldset>
 				<Form.Field>
-					<Form.Label>Repository Name</Form.Label>
-					<Form.Help>
-						{m.deletion_warning({ identifier: 'Repository Name' })}
-					</Form.Help>
+					<Form.Label>{m.repository_name()}</Form.Label>
 					<SingleInput.Confirm
 						required
+						disabled
 						target={manifest.repositoryName}
 						bind:value={request.repositoryName}
 						bind:invalid={invalidity.repositoryName}
 					/>
 				</Form.Field>
 				<Form.Field>
-					<Form.Label>Tag</Form.Label>
+					<Form.Label>{m.tag()}</Form.Label>
 					<Form.Help>
 						{m.deletion_warning({ identifier: 'Tag' })}
 					</Form.Help>
