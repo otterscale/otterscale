@@ -151,8 +151,9 @@ func convertModelServiceValuesMap(mode Mode, releaseName, modelName string, from
 
 	switch mode {
 	case ModeIntelligentInferenceScheduling:
+		ret["decode.parallelism.tensor"] = strconv.FormatUint(uint64(decodeTensor), 10)
 		ret["decode.containers[0].env[2].name"] = "CUDA_VISIBLE_DEVICES"
-		ret["decode.containers[0].env[2].value"] = "[str]" + strconv.FormatUint(0, 10)
+		ret["decode.containers[0].env[2].value"] = "[str]" + generateCUDAVisibleDevices(decodeTensor)
 		ret["decode.containers[0].env[3].name"] = "UCX_TLS"
 		ret["decode.containers[0].env[3].value"] = "cuda_ipc\\,cuda_copy\\,tcp"
 		ret["decode.containers[0].env[4].name"] = "VLLM_NIXL_SIDE_CHANNEL_PORT"
@@ -225,4 +226,17 @@ func convertModelServiceValuesMap(mode Mode, releaseName, modelName string, from
 
 func escapeDot(key string) string {
 	return strings.ReplaceAll(key, ".", "\\.")
+}
+
+func generateCUDAVisibleDevices(tensorSize uint32) string {
+	if tensorSize == 0 {
+		tensorSize = 1
+	}
+
+	devices := make([]string, tensorSize)
+	for i := 0; i < int(tensorSize); i++ {
+		devices[i] = strconv.Itoa(i)
+	}
+
+	return strings.ReplaceAll(strings.Join(devices, ","), ",", "\\,")
 }

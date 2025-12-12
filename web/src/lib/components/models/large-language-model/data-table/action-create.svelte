@@ -183,8 +183,6 @@
 						<InputGroup.Root>
 							<InputGroup.Input
 								placeholder="Select from Artifacts or HuggingFace"
-								readonly
-								class="cursor-default"
 								bind:value={request.modelName}
 							/>
 							<InputGroup.Addon>
@@ -212,7 +210,7 @@
 						type="number"
 						bind:value={request.sizeBytes}
 						required
-						transformer={(value) => (String(value))}
+						transformer={(value) => String(value)}
 						bind:invalid={invalidity.sizeBytes}
 						units={[
 							{ value: Math.pow(2, 10 * 3), label: 'GB' } as SingleInput.UnitType,
