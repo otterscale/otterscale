@@ -67,7 +67,7 @@
 					<SingleInput.General
 						type="number"
 						bind:value={request.mtu}
-						transformer={(value) => String(value)}
+						transformer={(value) => BigInt(value)}
 					/>
 				</Form.Field>
 
