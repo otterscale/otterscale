@@ -39,6 +39,11 @@
 				return 'Stateful Set';
 			case Application_Type.UNKNOWN:
 				return 'Unknown';
+			default: {
+				// This will cause a compile-time error if a new `Application_Type` is added and not handled.
+				const _exhaustiveCheck: never = type;
+				return _exhaustiveCheck;
+			}
 		}
 	}
 </script>
