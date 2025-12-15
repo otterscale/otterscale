@@ -46,7 +46,7 @@
 			value: FIO_Input_AccessMode[key as keyof typeof FIO_Input_AccessMode],
 			label: key
 		}));
-	const fioInputeAccessMode: Writable<SingleSelect.OptionType[]> = writable(Options);
+	const fioInputAccessMode: Writable<SingleSelect.OptionType[]> = writable(Options);
 </script>
 
 <script lang="ts">
@@ -218,11 +218,11 @@
 					<Form.Root class="max-h-[65vh]">
 						<Form.Fieldset>
 							<Form.Legend>{m.parameter()}</Form.Legend>
-							<!-- fioInputeAccessMode -->
+							<!-- fioInputAccessMode -->
 							<Form.Field>
 								<Form.Label for="fio-access-mode">{m.access_mode()}</Form.Label>
 								<SingleSelect.Root
-									options={fioInputeAccessMode}
+									options={fioInputAccessMode}
 									required
 									bind:value={fioAccessMode}
 								>
@@ -233,8 +233,7 @@
 											<SingleSelect.List>
 												<SingleSelect.Empty>{m.no_result()}</SingleSelect.Empty>
 												<SingleSelect.Group>
-													{#each $fioInputeAccessMode as item (item.value)}
-														<SingleSelect.Item option={item}>
+													{#each $fioInputAccessMode as item (item.value)}
 															<Icon
 																icon={item.icon ? item.icon : 'ph:empty'}
 																class={cn('size-5', item.icon ? 'visible' : 'invisible')}
