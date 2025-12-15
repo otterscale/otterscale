@@ -34,13 +34,16 @@ const CATEGORY_WARNING = new Set([
 ]);
 const VALID = CATEGORY_CLEAN.union(CATEGORY_WORKING).union(CATEGORY_WARNING);
 
-function getPlacementGroupStateVariant(placementGroupState: string) {
-	const states = new SvelteSet(
+function parsePlacementGroupStates(placementGroupState: string): SvelteSet<string> {
+	return new SvelteSet(
 		placementGroupState
 			.replace(/[^a-z_]+/g, ' ')
 			.trim()
 			.split(' ')
 	);
+}
+function getPlacementGroupStateVariant(placementGroupState: string) {
+	const states = parsePlacementGroupStates(placementGroupState);
 	if (!states.isSubsetOf(VALID)) {
 		return 'secondary';
 	} else if (states.intersection(CATEGORY_WARNING).size > 0) {
@@ -54,15 +57,11 @@ function getPlacementGroupStateVariant(placementGroupState: string) {
 }
 
 function getPlacementGroupStateClassName(placementGroupState: string) {
-	const states = new SvelteSet(
-		placementGroupState
-			.replace(/[^a-z_]+/g, ' ')
-			.trim()
-			.split(' ')
-	);
+	const states = parsePlacementGroupStates(placementGroupState);
 	if (states.intersection(CATEGORY_WARNING).size > 0) {
 		return 'text-destructive border-destructive/30';
 	}
+	return '';
 }
 
 export { getPlacementGroupStateClassName, getPlacementGroupStateVariant };

@@ -22,16 +22,11 @@
 		usage,
 		actions
 	};
-	export function getPoolApplicationLabel(value: number): string | undefined {
-		switch (value) {
-			case Pool_Application.BLOCK:
-				return 'BLOCK';
-			case Pool_Application.FILE:
-				return 'FILE';
-			case Pool_Application.OBJECT:
-				return 'OBJECT';
-		}
-	}
+	const poolApplicationLabels: Partial<Record<Pool_Application, string>> = {
+		[Pool_Application.BLOCK]: 'BLOCK',
+		[Pool_Application.FILE]: 'FILE',
+		[Pool_Application.OBJECT]: 'OBJECT'
+	};
 </script>
 
 {#snippet row_picker(row: Row<Pool>)}
@@ -67,7 +62,7 @@
 	<Layout.Cell class="items-start">
 		<span class="flex gap-1">
 			{#each row.original.applications as application}
-				{@const label = getPoolApplicationLabel(application)}
+				{@const label = poolApplicationLabels[application]}
 				{#if label}
 					<Badge variant="outline">
 						{label}
