@@ -28,7 +28,7 @@ const messages = {
 	completedAt: m.completed_at()
 };
 
-function getColumns(reloadManager: ReloadManager): ColumnDef<TestResult>[] {
+function getColumns(scope: string, reloadManager: ReloadManager): ColumnDef<TestResult>[] {
 	return [
 		{
 			id: 'select',
@@ -200,7 +200,7 @@ function getColumns(reloadManager: ReloadManager): ColumnDef<TestResult>[] {
 				return renderSnippet(headers.actions, column);
 			},
 			cell: ({ row }) => {
-				return renderSnippet(cells.actions, { row, reloadManager });
+				return renderSnippet(cells.actions, { row, scope, reloadManager });
 			},
 			enableHiding: false
 		}

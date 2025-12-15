@@ -26,10 +26,16 @@
 
 <script lang="ts">
 	let {
+		scope,
 		mode,
 		testResults,
 		reloadManager
-	}: { mode: string; testResults: Writable<TestResult[]>; reloadManager: ReloadManager } = $props();
+	}: {
+		scope: string;
+		mode: string;
+		testResults: Writable<TestResult[]>;
+		reloadManager: ReloadManager;
+	} = $props();
 
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 4 });
 	let sorting = $state<SortingState>([]);
@@ -50,7 +56,7 @@
 			return $testResults;
 		},
 		get columns() {
-			return getColumns(reloadManager);
+			return getColumns(scope, reloadManager);
 		},
 
 		getCoreRowModel: getCoreRowModel(),
@@ -136,7 +142,7 @@
 			<Filters.Column {table} {messages} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>
-			<Create {reloadManager} />
+			<Create {scope} {reloadManager} />
 			<Reloader
 				checked={reloadManager.state}
 				onCheckedChange={(isChecked) => {
