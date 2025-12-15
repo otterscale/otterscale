@@ -75,10 +75,49 @@
 
 	const installed = $derived($extensions.filter((extension) => extension.current).length);
 	const required = $derived($extensions.length);
-	let openInstall = $state(false);
-	let isInstalling = $state(false);
-	let openUpgrade = $state(false);
-	let isUpgrading = $state(false);
+	let open = $state(false);
+	let isLoading = $state(false);
+	const isInstallMode = $derived(installed < required);
+
+	function onConfirm() {
+		isLoading = true;
+		toast.promise(
+			() =>
+				orchestratorClient.installOrUpgradeExtensions({
+					scope: scope,
+					manifests: $extensions
+						.filter(
+							(extension) =>
+								extension.latest && (isInstallMode ? !extension.current : extension.current)
+						)
+						.map((extension) => extension.latest!)
+				}),
+			{
+				loading: isInstallMode
+					? `Installing ${extensionsBundle} extensions.`
+					: `Upgrading ${extensionsBundle} extensions`,
+				success: () => {
+					isLoading = false;
+					updator();
+					return isInstallMode
+						? `Successfully installed ${extensionsBundle} extensions`
+						: `Successfully upgraded ${extensionsBundle} extensions`;
+				},
+				error: (error) => {
+					isLoading = false;
+					let message = isInstallMode
+						? `Failed to install ${extensionsBundle} extensions`
+						: `Failed to upgrade ${extensionsBundle} extensions`;
+					toast.error(message, {
+						description: (error as ConnectError).message.toString(),
+						duration: Number.POSITIVE_INFINITY
+					});
+					return message;
+				}
+			}
+		);
+		open = false;
+	}
 </script>
 
 <div class="flex w-full flex-col gap-4">
@@ -110,121 +149,35 @@
 		</div>
 		<div class="ml-auto flex flex-col items-center justify-between gap-4">
 			<p class="whitespace-nowrap text-muted-foreground">{installed} / {required}</p>
-			{#if installed < required}
-				<div class="ml-auto">
-					<AlertDialog.Root bind:open={openInstall}>
-						<AlertDialog.Trigger
-							class={cn(buttonVariants({ variant: 'default', size: 'sm' }), 'w-full')}
-							disabled={isInstalling}
-							onclick={(e) => e.stopPropagation()}
-						>
-							{m.install()}
-						</AlertDialog.Trigger>
-						<AlertDialog.Content>
-							<AlertDialog.Header>
-								<AlertDialog.Title>{m.install()}</AlertDialog.Title>
-								<AlertDialog.Description>
-									{m.install_extensions_description({ extensionsBundle: extensionsBundle })}
-								</AlertDialog.Description>
-							</AlertDialog.Header>
-							<AlertDialog.Footer>
-								<AlertDialog.Cancel>{m.cancel()}</AlertDialog.Cancel>
-								<AlertDialog.Action
-									onclick={() => {
-										isInstalling = true;
-										toast.promise(
-											() =>
-												orchestratorClient.installOrUpgradeExtensions({
-													scope: scope,
-													manifests: $extensions
-														.filter((extension) => extension.latest && !extension.current)
-														.map((extension) => extension.latest!)
-												}),
-											{
-												loading: `Installing ${extensionsBundle} extensions.`,
-												success: () => {
-													isInstalling = false;
-													updator();
-													return `Successfully installed ${extensionsBundle} extensions`;
-												},
-												error: (error) => {
-													isInstalling = false;
-													let message = `Failed to install ${extensionsBundle} extensions`;
-													toast.error(message, {
-														description: (error as ConnectError).message.toString(),
-														duration: Number.POSITIVE_INFINITY
-													});
-													return message;
-												}
-											}
-										);
-										openInstall = false;
-									}}
-								>
-									{m.confirm()}
-								</AlertDialog.Action>
-							</AlertDialog.Footer>
-						</AlertDialog.Content>
-					</AlertDialog.Root>
-				</div>
-			{:else}
-				<div class="ml-auto">
-					<AlertDialog.Root bind:open={openUpgrade}>
-						<AlertDialog.Trigger
-							class={cn(buttonVariants({ variant: 'default', size: 'sm' }), 'w-full')}
-							disabled={isUpgrading}
-							onclick={(e) => e.stopPropagation()}
-						>
-							{m.extensions_upgrade()}
-						</AlertDialog.Trigger>
-						<AlertDialog.Content>
-							<AlertDialog.Header>
-								<AlertDialog.Title>{m.extensions_upgrade()}</AlertDialog.Title>
-								<AlertDialog.Description>
-									{m.upgrade_extensions_description({ extensionsBundle: extensionsBundle })}
-								</AlertDialog.Description>
-							</AlertDialog.Header>
-							<AlertDialog.Footer>
-								<AlertDialog.Cancel>{m.cancel()}</AlertDialog.Cancel>
-								<AlertDialog.Action
-									onclick={() => {
-										isUpgrading = true;
-										toast.promise(
-											() =>
-												orchestratorClient.installOrUpgradeExtensions({
-													scope: scope,
-													manifests: $extensions
-														.filter((extension) => extension.latest && extension.current)
-														.map((extension) => extension.latest!)
-												}),
-											{
-												loading: `Upgrading ${extensionsBundle} extensions`,
-												success: () => {
-													isUpgrading = false;
-													updator();
-													return `Successfully upgraded ${extensionsBundle} extensions`;
-												},
-												error: (error) => {
-													isUpgrading = false;
-													let message = `Failed to upgrade ${extensionsBundle} extensions`;
-													toast.error(message, {
-														description: (error as ConnectError).message.toString(),
-														duration: Number.POSITIVE_INFINITY
-													});
-													return message;
-												}
-											}
-										);
-										openUpgrade = false;
-									}}
-								>
-									{m.confirm()}
-								</AlertDialog.Action>
-							</AlertDialog.Footer>
-						</AlertDialog.Content>
-					</AlertDialog.Root>
-				</div>
-			{/if}
+			<div class="ml-auto">
+				<AlertDialog.Root bind:open>
+					<AlertDialog.Trigger
+						class={cn(buttonVariants({ variant: 'default', size: 'sm' }), 'w-full')}
+						disabled={isLoading}
+						onclick={(e) => e.stopPropagation()}
+					>
+						{isInstallMode ? m.install() : m.extensions_upgrade()}
+					</AlertDialog.Trigger>
+					<AlertDialog.Content>
+						<AlertDialog.Header>
+							<AlertDialog.Title>
+								{isInstallMode ? m.install() : m.extensions_upgrade()}
+							</AlertDialog.Title>
+							<AlertDialog.Description>
+								{isInstallMode
+									? m.install_extensions_description({ extensionsBundle: extensionsBundle })
+									: m.upgrade_extensions_description({ extensionsBundle: extensionsBundle })}
+							</AlertDialog.Description>
+						</AlertDialog.Header>
+						<AlertDialog.Footer>
+							<AlertDialog.Cancel>{m.cancel()}</AlertDialog.Cancel>
+							<AlertDialog.Action onclick={onConfirm}>
+								{m.confirm()}
+							</AlertDialog.Action>
+						</AlertDialog.Footer>
+					</AlertDialog.Content>
+				</AlertDialog.Root>
+			</div>
 		</div>
 	</div>
 </div>
