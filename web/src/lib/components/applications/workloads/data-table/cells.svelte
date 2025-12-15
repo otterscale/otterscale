@@ -5,11 +5,13 @@
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import { Application_Type } from '$lib/api/application/v1/application_pb';
+	import { ApplicationTypeConfig } from '$lib/components/applications/constants';
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import * as Progress from '$lib/components/custom/progress/index.js';
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import Button from '$lib/components/ui/button/button.svelte';
+	import * as Tooltip from '$lib/components/ui/tooltip';
 
 	import type { Application } from '../types';
 	import Actions from './cell-actions.svelte';
@@ -28,24 +30,6 @@
 		nodeport,
 		actions
 	};
-
-	export function getApplicationType(type: Application_Type): string {
-		switch (type) {
-			case Application_Type.DAEMON_SET:
-				return 'Daemon Set';
-			case Application_Type.DEPLOYMENT:
-				return 'Deployment';
-			case Application_Type.STATEFUL_SET:
-				return 'Stateful Set';
-			case Application_Type.UNKNOWN:
-				return 'Unknown';
-			default: {
-				// This will cause a compile-time error if a new `Application_Type` is added and not handled.
-				const _exhaustiveCheck: never = type;
-				return _exhaustiveCheck;
-			}
-		}
-	}
 </script>
 
 {#snippet row_picker(row: Row<Application>)}
@@ -72,7 +56,16 @@
 
 {#snippet type(row: Row<Application>)}
 	<Layout.Cell class="items-start">
-		{getApplicationType(row.original.type)}
+		{@const info =
+			ApplicationTypeConfig[row.original.type] ?? ApplicationTypeConfig[Application_Type.UNKNOWN]}
+		<Tooltip.Root>
+			<Tooltip.Trigger>
+				<Icon icon={info.icon} class="size-5" />
+			</Tooltip.Trigger>
+			<Tooltip.Content>
+				{info.label}
+			</Tooltip.Content>
+		</Tooltip.Root>
 	</Layout.Cell>
 {/snippet}
 

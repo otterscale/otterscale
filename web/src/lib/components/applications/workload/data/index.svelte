@@ -3,6 +3,7 @@
 	import { type Writable } from 'svelte/store';
 
 	import type { Application } from '$lib/api/application/v1/application_pb';
+	import { ApplicationTypeConfig } from '$lib/components/applications/constants';
 	import { Layout } from '$lib/components/custom/instance';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { Badge } from '$lib/components/ui/badge';
@@ -39,10 +40,11 @@
 			{$application.name}
 		</div>
 		<Badge variant="outline">
-			{$application.type}
+			<Icon icon={ApplicationTypeConfig[$application.type].icon} />
+			{ApplicationTypeConfig[$application.type].label}
 		</Badge>
 		<div class="flex flex-wrap gap-1 overflow-visible">
-			{#each Object.entries($application.labels) as [key, value]}
+			{#each Object.entries($application.labels) as [key, value] (key)}
 				<Badge variant="secondary">
 					{key}: {value}
 				</Badge>
