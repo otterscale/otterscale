@@ -1,5 +1,6 @@
 import { type Writable, writable } from 'svelte/store';
 
+import { browser } from '$app/environment';
 import { resolve } from '$app/paths';
 import { type PremiumTier, PremiumTier_Level } from '$lib/api/environment/v1/environment_pb';
 import { m } from '$lib/paraglide/messages';
@@ -32,11 +33,38 @@ interface AppStores {
 	notifications: Writable<Notification[]>;
 }
 
+// Helper for persisted store
+const createPersistedStore = <T>(key: string, initialValue: T): Writable<T> => {
+	if (!browser) return writable(initialValue);
+
+	let data = initialValue;
+	try {
+		const storedValue = localStorage.getItem(key);
+		if (storedValue) {
+			data = JSON.parse(storedValue);
+		}
+	} catch (e) {
+		console.warn(`Failed to load ${key} from localStorage`, e);
+	}
+
+	const store = writable(data);
+
+	store.subscribe((value) => {
+		try {
+			localStorage.setItem(key, JSON.stringify(value));
+		} catch (e) {
+			console.warn(`Failed to save ${key} to localStorage`, e);
+		}
+	});
+
+	return store;
+};
+
 // Create stores
 const createStores = (): AppStores => ({
 	breadcrumbs: writable<Path[]>([{ title: m.home(), url: resolve('/') }]),
 	premiumTier: writable<PremiumTier>({ level: PremiumTier_Level.COMMUNITY } as PremiumTier),
-	bookmarks: writable<Path[]>([]),
+	bookmarks: createPersistedStore<Path[]>('otterscale:bookmarks', []),
 	// temp
 	notifications: writable<Notification[]>([
 		{
