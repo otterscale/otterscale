@@ -883,5 +883,7 @@
 	"trouble_pushing_image_step_one": "1. 找到或建立 {daemon} 並新增或編輯 {insecure_registries}",
 	"trouble_pushing_image_step_one_details": "在您的 {daemon} 檔案——於 Linux 上，通常位於 {path} ——中新增或更新 {insecure_registries} 以包含映像檔倉庫位址：",
 	"trouble_pushing_image_step_two": "2. 重新啟動 Docker 守護程式",
-	"trouble_pushing_image_step_two_details": "若要在 Linux 上重新啟動 Docker 守護程式，請執行以下指令："
+	"trouble_pushing_image_step_two_details": "若要在 Linux 上重新啟動 Docker 守護程式，請執行以下指令：",
+	"install_extensions_description": "您確定要安裝 {extensionsBundle} 擴充功能嗎？",
+	"upgrade_extensions_description": "您確定要升級 {extensionsBundle} 擴充功能嗎？"
 }

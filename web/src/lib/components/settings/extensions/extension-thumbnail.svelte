@@ -7,8 +7,9 @@
 
 	import type { Extension } from '$lib/api/orchestrator/v1/orchestrator_pb';
 	import { OrchestratorService } from '$lib/api/orchestrator/v1/orchestrator_pb';
+	import * as AlertDialog from '$lib/components/ui/alert-dialog/index.js';
 	import Badge from '$lib/components/ui/badge/badge.svelte';
-	import Button from '$lib/components/ui/button/button.svelte';
+	import { buttonVariants } from '$lib/components/ui/button/index.js';
 	import { Progress } from '$lib/components/ui/progress/index.js';
 	import { m } from '$lib/paraglide/messages';
 	import { cn } from '$lib/utils';
@@ -74,6 +75,8 @@
 
 	const installed = $derived($extensions.filter((extension) => extension.current).length);
 	const required = $derived($extensions.length);
+	let openInstall = $state(false);
+	let openUpgrade = $state(false);
 </script>
 
 <div class="flex w-full flex-col gap-4">
@@ -107,73 +110,109 @@
 			<p class="whitespace-nowrap text-muted-foreground">{installed} / {required}</p>
 			{#if installed < required}
 				<div class="ml-auto">
-					<Button
-						class="w-full"
-						size="sm"
-						onclick={() => {
-							toast.promise(
-								() =>
-									orchestratorClient.installOrUpgradeExtensions({
-										scope: scope,
-										manifests: $extensions
-											.filter((extension) => extension.latest && !extension.current)
-											.map((extension) => extension.latest!)
-									}),
-								{
-									loading: `Installing ${extensionsBundle} extensions.`,
-									success: () => {
-										updator();
-										return `Successfully installed ${extensionsBundle} extensions`;
-									},
-									error: (error) => {
-										let message = `Failed to install ${extensionsBundle} extensions`;
-										toast.error(message, {
-											description: (error as ConnectError).message.toString(),
-											duration: Number.POSITIVE_INFINITY
-										});
-										return message;
-									}
-								}
-							);
-						}}
-					>
-						{m.install()}
-					</Button>
+					<AlertDialog.Root bind:open={openInstall}>
+						<AlertDialog.Trigger
+							class={cn(buttonVariants({ variant: 'default', size: 'sm' }), 'w-full')}
+							onclick={(e) => e.stopPropagation()}
+						>
+							{m.install()}
+						</AlertDialog.Trigger>
+						<AlertDialog.Content>
+							<AlertDialog.Header>
+								<AlertDialog.Title>{m.install()}</AlertDialog.Title>
+								<AlertDialog.Description>
+									{m.install_extensions_description({ extensionsBundle: extensionsBundle })}
+								</AlertDialog.Description>
+							</AlertDialog.Header>
+							<AlertDialog.Footer>
+								<AlertDialog.Cancel>{m.cancel()}</AlertDialog.Cancel>
+								<AlertDialog.Action
+									onclick={() => {
+										toast.promise(
+											() =>
+												orchestratorClient.installOrUpgradeExtensions({
+													scope: scope,
+													manifests: $extensions
+														.filter((extension) => extension.latest && !extension.current)
+														.map((extension) => extension.latest!)
+												}),
+											{
+												loading: `Installing ${extensionsBundle} extensions.`,
+												success: () => {
+													updator();
+													return `Successfully installed ${extensionsBundle} extensions`;
+												},
+												error: (error) => {
+													let message = `Failed to install ${extensionsBundle} extensions`;
+													toast.error(message, {
+														description: (error as ConnectError).message.toString(),
+														duration: Number.POSITIVE_INFINITY
+													});
+													return message;
+												}
+											}
+										);
+										openInstall = false;
+									}}
+								>
+									{m.confirm()}
+								</AlertDialog.Action>
+							</AlertDialog.Footer>
+						</AlertDialog.Content>
+					</AlertDialog.Root>
 				</div>
 			{:else}
 				<div class="ml-auto">
-					<Button
-						class="w-full"
-						size="sm"
-						onclick={() => {
-							toast.promise(
-								() =>
-									orchestratorClient.installOrUpgradeExtensions({
-										scope: scope,
-										manifests: $extensions
-											.filter((extension) => extension.latest && extension.current)
-											.map((extension) => extension.latest!)
-									}),
-								{
-									loading: `Upgrading ${extensionsBundle} extensions`,
-									success: () => {
-										updator();
-										return `Successfully upgraded ${extensionsBundle} extensions`;
-									},
-									error: (error) => {
-										let message = `Failed to upgrade ${extensionsBundle} extensions`;
-										toast.error(message, {
-											description: (error as ConnectError).message.toString(),
-											duration: Number.POSITIVE_INFINITY
-										});
-										return message;
-									}
-								}
-							);
-						}}
-					>
-						{m.extensions_upgrade()}
-					</Button>
+					<AlertDialog.Root bind:open={openUpgrade}>
+						<AlertDialog.Trigger
+							class={cn(buttonVariants({ variant: 'default', size: 'sm' }), 'w-full')}
+							onclick={(e) => e.stopPropagation()}
+						>
+							{m.extensions_upgrade()}
+						</AlertDialog.Trigger>
+						<AlertDialog.Content>
+							<AlertDialog.Header>
+								<AlertDialog.Title>{m.extensions_upgrade()}</AlertDialog.Title>
+								<AlertDialog.Description>
+									{m.upgrade_extensions_description({ extensionsBundle: extensionsBundle })}
+								</AlertDialog.Description>
+							</AlertDialog.Header>
+							<AlertDialog.Footer>
+								<AlertDialog.Cancel>{m.cancel()}</AlertDialog.Cancel>
+								<AlertDialog.Action
+									onclick={() => {
+										toast.promise(
+											() =>
+												orchestratorClient.installOrUpgradeExtensions({
+													scope: scope,
+													manifests: $extensions
+														.filter((extension) => extension.latest && extension.current)
+														.map((extension) => extension.latest!)
+												}),
+											{
+												loading: `Upgrading ${extensionsBundle} extensions`,
+												success: () => {
+													updator();
+													return `Successfully upgraded ${extensionsBundle} extensions`;
+												},
+												error: (error) => {
+													let message = `Failed to upgrade ${extensionsBundle} extensions`;
+													toast.error(message, {
+														description: (error as ConnectError).message.toString(),
+														duration: Number.POSITIVE_INFINITY
+													});
+													return message;
+												}
+											}
+										);
+										openUpgrade = false;
+									}}
+								>
+									{m.confirm()}
+								</AlertDialog.Action>
+							</AlertDialog.Footer>
+						</AlertDialog.Content>
+					</AlertDialog.Root>
 				</div>
 			{/if}
 		</div>
