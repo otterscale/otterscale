@@ -296,8 +296,8 @@
 	{/if}
 {/snippet}
 
-{#snippet actions(data: { row: Row<TestResult>; reloadManager: ReloadManager })}
+{#snippet actions(data: { row: Row<TestResult>; scope: string; reloadManager: ReloadManager })}
 	<Layout.Cell class="items-start">
-		<Actions testResult={data.row.original} reloadManager={data.reloadManager} />
+		<Actions testResult={data.row.original} scope={data.scope} reloadManager={data.reloadManager} />
 	</Layout.Cell>
 {/snippet}
