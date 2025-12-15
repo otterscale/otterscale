@@ -8,11 +8,13 @@
 <script lang="ts">
 	let {
 		testResult,
+		scope,
 		reloadManager
 	}: {
 		testResult: TestResult;
+		scope: string;
 		reloadManager: ReloadManager;
 	} = $props();
 </script>
 
-<Test {testResult} {reloadManager} />
+<Test {testResult} {scope} {reloadManager} />

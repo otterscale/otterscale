@@ -46,15 +46,17 @@
 			value: FIO_Input_AccessMode[key as keyof typeof FIO_Input_AccessMode],
 			label: key
 		}));
-	const fioInputeAccessMode: Writable<SingleSelect.OptionType[]> = writable(Options);
+	const fioInputAccessMode: Writable<SingleSelect.OptionType[]> = writable(Options);
 </script>
 
 <script lang="ts">
 	let {
 		testResult,
+		scope,
 		reloadManager
 	}: {
 		testResult?: TestResult;
+		scope: string;
 		reloadManager: ReloadManager;
 	} = $props();
 
@@ -89,11 +91,6 @@
 					fileSizeBytes: 1024 * 1024 * 1024,
 					ioDepth: 1
 				} as unknown as FIO_Input);
-	let selectedScope = $state(
-		testResult && testResult.kind.value?.target?.case === 'cephBlockDevice'
-			? (testResult.kind.value.target.value?.scope ?? '')
-			: ''
-	);
 
 	let request: CreateTestResultRequest = $state(DEFAULT_REQUEST);
 	let requestFio: FIO = $state(DEFAULT_FIO_REQUEST);
@@ -175,7 +172,7 @@
 											<SingleSelect.List>
 												<SingleSelect.Empty>{m.no_result()}</SingleSelect.Empty>
 												<SingleSelect.Group>
-													{#each $fioTarget as item}
+													{#each $fioTarget as item (item.value)}
 														<SingleSelect.Item option={item}>
 															<Icon
 																icon={item.icon ? item.icon : 'ph:empty'}
@@ -221,14 +218,10 @@
 					<Form.Root class="max-h-[65vh]">
 						<Form.Fieldset>
 							<Form.Legend>{m.parameter()}</Form.Legend>
-							<!-- fioInputeAccessMode -->
+							<!-- fioInputAccessMode -->
 							<Form.Field>
 								<Form.Label for="fio-access-mode">{m.access_mode()}</Form.Label>
-								<SingleSelect.Root
-									options={fioInputeAccessMode}
-									required
-									bind:value={fioAccessMode}
-								>
+								<SingleSelect.Root options={fioInputAccessMode} required bind:value={fioAccessMode}>
 									<SingleSelect.Trigger />
 									<SingleSelect.Content>
 										<SingleSelect.Options>
@@ -236,7 +229,7 @@
 											<SingleSelect.List>
 												<SingleSelect.Empty>{m.no_result()}</SingleSelect.Empty>
 												<SingleSelect.Group>
-													{#each $fioInputeAccessMode as item}
+													{#each $fioInputAccessMode as item (item.value)}
 														<SingleSelect.Item option={item}>
 															<Icon
 																icon={item.icon ? item.icon : 'ph:empty'}
@@ -318,7 +311,7 @@
 							<Form.Description>{m.name()}: {request.name}</Form.Description>
 							<Form.Description>{m.target()}: {requestFio.target.case}</Form.Description>
 							{#if requestFio.target.case == 'cephBlockDevice'}
-								<Form.Description>{m.scope()}: {selectedScope}</Form.Description>
+								<Form.Description>{m.scope()}: {scope}</Form.Description>
 							{:else if requestFio.target.case == 'networkFileSystem'}
 								<Form.Description>{m.type()}: {requestNetworkFileSystem.host}</Form.Description>
 								<Form.Description>{m.name()}: {requestNetworkFileSystem.path}</Form.Description>
@@ -359,7 +352,7 @@
 					onclick={() => {
 						// prepare request
 						if (requestFio.target.case == 'cephBlockDevice') {
-							requestCephBlockDevice.scope = selectedScope;
+							requestCephBlockDevice.scope = scope;
 							requestFio.target.value = requestCephBlockDevice;
 						} else if (requestFio.target.case == 'networkFileSystem') {
 							requestFio.target.value = requestNetworkFileSystem;
