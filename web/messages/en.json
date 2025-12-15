@@ -851,6 +851,8 @@
 	"official": "Official",
 	"sync": "Sync",
 	"manifests": "Manifests",
+	"repository_name": "Repository Name",
+	"delete_manifest": "Delete Manifest",
 	"latest_tag": "Latest Tag",
 	"registry": "Registry",
 	"repositories": "Repositories",
