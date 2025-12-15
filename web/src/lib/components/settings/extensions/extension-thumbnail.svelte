@@ -76,7 +76,9 @@
 	const installed = $derived($extensions.filter((extension) => extension.current).length);
 	const required = $derived($extensions.length);
 	let openInstall = $state(false);
+	let isInstalling = $state(false);
 	let openUpgrade = $state(false);
+	let isUpgrading = $state(false);
 </script>
 
 <div class="flex w-full flex-col gap-4">
@@ -113,6 +115,7 @@
 					<AlertDialog.Root bind:open={openInstall}>
 						<AlertDialog.Trigger
 							class={cn(buttonVariants({ variant: 'default', size: 'sm' }), 'w-full')}
+							disabled={isInstalling}
 							onclick={(e) => e.stopPropagation()}
 						>
 							{m.install()}
@@ -128,6 +131,7 @@
 								<AlertDialog.Cancel>{m.cancel()}</AlertDialog.Cancel>
 								<AlertDialog.Action
 									onclick={() => {
+										isInstalling = true;
 										toast.promise(
 											() =>
 												orchestratorClient.installOrUpgradeExtensions({
@@ -139,10 +143,12 @@
 											{
 												loading: `Installing ${extensionsBundle} extensions.`,
 												success: () => {
+													isInstalling = false;
 													updator();
 													return `Successfully installed ${extensionsBundle} extensions`;
 												},
 												error: (error) => {
+													isInstalling = false;
 													let message = `Failed to install ${extensionsBundle} extensions`;
 													toast.error(message, {
 														description: (error as ConnectError).message.toString(),
@@ -166,6 +172,7 @@
 					<AlertDialog.Root bind:open={openUpgrade}>
 						<AlertDialog.Trigger
 							class={cn(buttonVariants({ variant: 'default', size: 'sm' }), 'w-full')}
+							disabled={isUpgrading}
 							onclick={(e) => e.stopPropagation()}
 						>
 							{m.extensions_upgrade()}
@@ -181,6 +188,7 @@
 								<AlertDialog.Cancel>{m.cancel()}</AlertDialog.Cancel>
 								<AlertDialog.Action
 									onclick={() => {
+										isUpgrading = true;
 										toast.promise(
 											() =>
 												orchestratorClient.installOrUpgradeExtensions({
@@ -192,10 +200,12 @@
 											{
 												loading: `Upgrading ${extensionsBundle} extensions`,
 												success: () => {
+													isUpgrading = false;
 													updator();
 													return `Successfully upgraded ${extensionsBundle} extensions`;
 												},
 												error: (error) => {
+													isUpgrading = false;
 													let message = `Failed to upgrade ${extensionsBundle} extensions`;
 													toast.error(message, {
 														description: (error as ConnectError).message.toString(),
