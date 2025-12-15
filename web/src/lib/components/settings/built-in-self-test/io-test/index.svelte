@@ -15,7 +15,8 @@
 </script>
 
 <script lang="ts">
-	let { selectedTab, trigger }: { selectedTab: string; trigger: Snippet } = $props();
+	let { scope, selectedTab, trigger }: { scope: string; selectedTab: string; trigger: Snippet } =
+		$props();
 
 	let mode = $state('read');
 
@@ -50,7 +51,7 @@
 			{@render trigger()}
 			<Pickers bind:selectedMode={mode} />
 		</div>
-		<DataTable {mode} {testResults} {reloadManager} />
+		<DataTable {scope} {mode} {testResults} {reloadManager} />
 	{:else}
 		<Loading.DataTable />
 	{/if}

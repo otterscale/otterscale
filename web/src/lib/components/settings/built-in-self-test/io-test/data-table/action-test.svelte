@@ -51,9 +51,11 @@
 
 <script lang="ts">
 	let {
+		scope,
 		testResult,
 		reloadManager
 	}: {
+		scope: string;
 		testResult?: TestResult;
 		reloadManager: ReloadManager;
 	} = $props();
@@ -89,11 +91,6 @@
 					fileSizeBytes: 1024 * 1024 * 1024,
 					ioDepth: 1
 				} as unknown as FIO_Input);
-	let selectedScope = $state(
-		testResult && testResult.kind.value?.target?.case === 'cephBlockDevice'
-			? (testResult.kind.value.target.value?.scope ?? '')
-			: ''
-	);
 
 	let request: CreateTestResultRequest = $state(DEFAULT_REQUEST);
 	let requestFio: FIO = $state(DEFAULT_FIO_REQUEST);
@@ -175,7 +172,7 @@
 											<SingleSelect.List>
 												<SingleSelect.Empty>{m.no_result()}</SingleSelect.Empty>
 												<SingleSelect.Group>
-													{#each $fioTarget as item}
+													{#each $fioTarget as item (item.value)}
 														<SingleSelect.Item option={item}>
 															<Icon
 																icon={item.icon ? item.icon : 'ph:empty'}
@@ -236,7 +233,7 @@
 											<SingleSelect.List>
 												<SingleSelect.Empty>{m.no_result()}</SingleSelect.Empty>
 												<SingleSelect.Group>
-													{#each $fioInputeAccessMode as item}
+													{#each $fioInputeAccessMode as item (item.value)}
 														<SingleSelect.Item option={item}>
 															<Icon
 																icon={item.icon ? item.icon : 'ph:empty'}
@@ -318,7 +315,7 @@
 							<Form.Description>{m.name()}: {request.name}</Form.Description>
 							<Form.Description>{m.target()}: {requestFio.target.case}</Form.Description>
 							{#if requestFio.target.case == 'cephBlockDevice'}
-								<Form.Description>{m.scope()}: {selectedScope}</Form.Description>
+								<Form.Description>{m.scope()}: {scope}</Form.Description>
 							{:else if requestFio.target.case == 'networkFileSystem'}
 								<Form.Description>{m.type()}: {requestNetworkFileSystem.host}</Form.Description>
 								<Form.Description>{m.name()}: {requestNetworkFileSystem.path}</Form.Description>
@@ -359,7 +356,7 @@
 					onclick={() => {
 						// prepare request
 						if (requestFio.target.case == 'cephBlockDevice') {
-							requestCephBlockDevice.scope = selectedScope;
+							requestCephBlockDevice.scope = scope;
 							requestFio.target.value = requestCephBlockDevice;
 						} else if (requestFio.target.case == 'networkFileSystem') {
 							requestFio.target.value = requestNetworkFileSystem;
