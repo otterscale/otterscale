@@ -31,7 +31,7 @@ require (
 	github.com/jaypipes/pcidb v1.1.1
 	github.com/juju/juju v0.0.0-00010101000000-000000000000
 	github.com/juju/names/v5 v5.0.0
-	github.com/lestrrat-go/httprc/v3 v3.0.1
+	github.com/lestrrat-go/httprc/v3 v3.0.2
 	github.com/lestrrat-go/jwx/v3 v3.0.12
 	github.com/open-feature/go-sdk v1.17.0
 	github.com/open-feature/go-sdk-contrib/providers/flagd v0.3.1
@@ -194,7 +194,6 @@ require (
 	github.com/lann/ps v0.0.0-20150810152359-62de8c46ede0 // indirect
 	github.com/lestrrat-go/blackmagic v1.0.4 // indirect
 	github.com/lestrrat-go/httpcc v1.0.1 // indirect
-	github.com/lestrrat-go/option v1.0.1 // indirect
 	github.com/lestrrat-go/option/v2 v2.0.0 // indirect
 	github.com/lib/pq v1.10.9 // indirect
 	github.com/liggitt/tabwriter v0.0.0-20181228230101-89fcab3d43de // indirect
