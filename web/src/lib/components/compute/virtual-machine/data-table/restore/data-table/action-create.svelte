@@ -2,6 +2,7 @@
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import { getContext } from 'svelte';
+	import { type Writable, writable } from 'svelte/store';
 	import { toast } from 'svelte-sonner';
 
 	import type {
@@ -10,10 +11,11 @@
 	} from '$lib/api/instance/v1/instance_pb';
 	import { InstanceService } from '$lib/api/instance/v1/instance_pb';
 	import * as Form from '$lib/components/custom/form';
-	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
+	import { Single as SingleSelect } from '$lib/components/custom/select';
 	import { m } from '$lib/paraglide/messages';
+	import { cn } from '$lib/utils';
 
 	// Props
 	let {
@@ -24,40 +26,56 @@
 
 	// Context dependencies
 	const transport: Transport = getContext('transport');
-
 	const virtualMachineClient = createClient(InstanceService, transport);
 
 	// ==================== State Variables ====================
-
 	// UI state
 	let open = $state(false);
 
 	// Form validation state
 	let invalid: boolean | undefined = $state();
 
-	// ==================== Default Values & Constants ====================
-
-	// Default request structure for creating a virtual machine restore
-	const DEFAULT_REQUEST = {
-		scope: scope,
-		namespace: virtualMachine.namespace,
-		name: '',
-		virtualMachineName: virtualMachine.name
-	} as CreateVirtualMachineRestoreRequest;
-
 	// ==================== Form State ====================
-	let request: CreateVirtualMachineRestoreRequest = $state({ ...DEFAULT_REQUEST });
+	let request = $state({} as CreateVirtualMachineRestoreRequest);
+
+	// ==================== Local Dropdown Options ====================
+	const snapshotOptions: Writable<SingleSelect.OptionType[]> = writable([]);
+
+	$effect(() => {
+		const options = (virtualMachine.snapshots || [])
+			.filter((snapshot) => snapshot.phase == 'Succeeded')
+			.map((snapshot) => ({
+				value: snapshot.name,
+				label: snapshot.name,
+				icon: 'ph:camera'
+			}));
+		snapshotOptions.set(options);
+	});
+
+	$effect(() => {
+		if (request.snapshotName) {
+			const timestamp = new Date().toISOString().slice(0, 16).replace(/[-T:]/g, '');
+			request.name = `${request.snapshotName}-${timestamp}`;
+			console.log(request.name);
+		}
+	});
 
 	// ==================== Utility Functions ====================
 	function reset() {
-		request = { ...DEFAULT_REQUEST };
+		request = {
+			scope: scope,
+			namespace: virtualMachine.namespace,
+			name: '',
+			virtualMachineName: virtualMachine.name,
+			snapshotName: ''
+		} as CreateVirtualMachineRestoreRequest;
 	}
 	function close() {
 		open = false;
 	}
 </script>
 
-<Modal.Root bind:open>
+<Modal.Root bind:open onOpenChange={(isOpen) => isOpen && reset()}>
 	<Modal.Trigger variant="default">
 		<Icon icon="ph:plus" />
 		{m.create()}
@@ -68,8 +86,35 @@
 			<!-- ==================== Basic Configuration ==================== -->
 			<Form.Fieldset>
 				<Form.Field>
-					<Form.Label>{m.name()}</Form.Label>
-					<SingleInput.General required type="text" bind:value={request.name} bind:invalid />
+					<Form.Label>{m.snapshot()}</Form.Label>
+					<SingleSelect.Root
+						required
+						options={snapshotOptions}
+						bind:value={request.snapshotName}
+						bind:invalid
+					>
+						<SingleSelect.Trigger />
+						<SingleSelect.Content>
+							<SingleSelect.Options>
+								<SingleSelect.Input />
+								<SingleSelect.List>
+									<SingleSelect.Empty>{m.no_result()}</SingleSelect.Empty>
+									<SingleSelect.Group>
+										{#each $snapshotOptions as option (option.value)}
+											<SingleSelect.Item {option}>
+												<Icon
+													icon={option.icon ? option.icon : 'ph:empty'}
+													class={cn('size-5', option.icon ? 'visible' : 'invisible')}
+												/>
+												{option.label}
+												<SingleSelect.Check {option} />
+											</SingleSelect.Item>
+										{/each}
+									</SingleSelect.Group>
+								</SingleSelect.List>
+							</SingleSelect.Options>
+						</SingleSelect.Content>
+					</SingleSelect.Root>
 				</Form.Field>
 			</Form.Fieldset>
 		</Form.Root>
@@ -101,7 +146,6 @@
 								return message;
 							}
 						});
-						reset();
 						close();
 					}}
 				>

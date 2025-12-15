@@ -47,3 +47,8 @@ const (
 	Juju = "3.9"
 	MAAS = "3.6"
 )
+
+// Bist Image Version
+const (
+	Bist = "0.0.4"
+)
