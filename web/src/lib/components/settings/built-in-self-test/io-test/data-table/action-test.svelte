@@ -221,11 +221,7 @@
 							<!-- fioInputAccessMode -->
 							<Form.Field>
 								<Form.Label for="fio-access-mode">{m.access_mode()}</Form.Label>
-								<SingleSelect.Root
-									options={fioInputAccessMode}
-									required
-									bind:value={fioAccessMode}
-								>
+								<SingleSelect.Root options={fioInputAccessMode} required bind:value={fioAccessMode}>
 									<SingleSelect.Trigger />
 									<SingleSelect.Content>
 										<SingleSelect.Options>
@@ -234,6 +230,7 @@
 												<SingleSelect.Empty>{m.no_result()}</SingleSelect.Empty>
 												<SingleSelect.Group>
 													{#each $fioInputAccessMode as item (item.value)}
+														<SingleSelect.Item option={item}>
 															<Icon
 																icon={item.icon ? item.icon : 'ph:empty'}
 																class={cn('size-5', item.icon ? 'visible' : 'invisible')}
