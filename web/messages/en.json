@@ -883,5 +883,7 @@
 	"trouble_pushing_image_step_one": "1. Locate or Create {daemon} and Add or Edit {insecure_registries}",
 	"trouble_pushing_image_step_one_details": "Add or update the {insecure_registries} array in your {daemon} file (typically located at {path} on Linux) to include the registry address:",
 	"trouble_pushing_image_step_two": "2. Restart Docker Daemon",
-	"trouble_pushing_image_step_two_details": "To restart the Docker daemon on Linux, run the following commands:"
+	"trouble_pushing_image_step_two_details": "To restart the Docker daemon on Linux, run the following commands:",
+	"install_extensions_description": "Are you sure you want to install {extensionsBundle} extensions?",
+	"upgrade_extensions_description": "Are you sure you want to upgrade {extensionsBundle} extensions?"
 }
