@@ -81,6 +81,7 @@
 				<h3 class="text-sm font-semibold">{m.trouble_pushing_image()}</h3>
 				<Collapsible.Root>
 					<Collapsible.Trigger class="text-sm hover:underline">
+						<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 						{@html m.trouble_pushing_image_step_one({
 							daemon: '<span class="font-mono">daemon.json</span>',
 							insecure_registries: '<span class="font-mono">insecure-registries</span>'
@@ -88,6 +89,7 @@
 					</Collapsible.Trigger>
 					<Collapsible.Content>
 						<div class="space-y-2 p-4 text-sm text-muted-foreground">
+							<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 							{@html m.trouble_pushing_image_step_one_details({
 								insecure_registries: '<span class="font-mono">insecure-registries</span>',
 								daemon: '<span class="font-mono">daemon.json</span>',
