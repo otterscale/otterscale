@@ -18,7 +18,7 @@
 {/snippet}
 <Tabs.Root bind:value={selectedTab}>
 	<Tabs.Content value="io-test" class="max-w-[70vw]">
-		<IOTest {selectedTab} {trigger} />
+		<IOTest {scope} {selectedTab} {trigger} />
 	</Tabs.Content>
 	<Tabs.Content value="object-storage-test" class="max-w-[70vw]">
 		<ObjectStorageTest {scope} {selectedTab} {trigger} />
