@@ -12,9 +12,11 @@
 <script lang="ts">
 	let {
 		testResult,
+		scope,
 		reloadManager
 	}: {
 		testResult: TestResult;
+		scope: string;
 		reloadManager: ReloadManager;
 	} = $props();
 </script>
@@ -25,7 +27,7 @@
 		<View {testResult} />
 	</Layout.ActionItem>
 	<Layout.ActionItem>
-		<Retest {testResult} {reloadManager} />
+		<Retest {testResult} {scope} {reloadManager} />
 	</Layout.ActionItem>
 	<Layout.ActionItem>
 		<Delete {testResult} {reloadManager} />

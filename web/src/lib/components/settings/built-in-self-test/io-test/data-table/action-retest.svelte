@@ -7,14 +7,14 @@
 
 <script lang="ts">
 	let {
-		scope,
 		testResult,
+		scope,
 		reloadManager
 	}: {
-		scope: string;
 		testResult: TestResult;
+		scope: string;
 		reloadManager: ReloadManager;
 	} = $props();
 </script>
 
-<Test {scope} {testResult} {reloadManager} />
+<Test {testResult} {scope} {reloadManager} />

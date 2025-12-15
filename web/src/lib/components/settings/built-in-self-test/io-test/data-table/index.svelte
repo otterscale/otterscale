@@ -56,7 +56,7 @@
 			return $testResults;
 		},
 		get columns() {
-			return getColumns(reloadManager);
+			return getColumns(scope, reloadManager);
 		},
 
 		getCoreRowModel: getCoreRowModel(),
