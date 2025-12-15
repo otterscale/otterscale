@@ -870,12 +870,16 @@
 	"gpu_relation_guide_description": "與圖表互動以探索連線和分配。",
 	"no_available_machines": "無可用機器",
 	"no_available_storage_devices": "無可用儲存裝置",
-	"gpu_relation_guide_description": "與圖表互動以探索連線和分配。",
 	"download": "下載",
 	"temperature": "溫度",
 	"max_tokens": "最大 Token 數",
 	"model_testing": "模型測試",
 	"model_testing_description": "請在下方輸入提示並按下傳送以測試模型。",
 	"model_response_error": "哎呀！取得回應時發生錯誤。請重試或檢查您的網路連線。",
-	"health_check": "健康檢查"
+	"health_check": "健康檢查",
+	"trouble_pushing_image": "無法將映像檔推送至 Otterscale? ",
+	"trouble_pushing_image_step_one": "1. 找到或建立 {daemon} 並新增或編輯 {insecure_registries}",
+	"trouble_pushing_image_step_one_details": "在您的 {daemon} 檔案——於 Linux 上，通常位於 {path} ——中新增或更新 {insecure_registries} 以包含映像檔倉庫位址：",
+	"trouble_pushing_image_step_two": "2. 重新啟動 Docker 守護程式",
+	"trouble_pushing_image_step_two_details": "若要在 Linux 上重新啟動 Docker 守護程式，請執行以下指令："
 }

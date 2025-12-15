@@ -870,12 +870,16 @@
 	"gpu_relation_guide_description": "Interact with the graph to explore connections and allocations.",
 	"no_available_machines": "No available machines",
 	"no_available_storage_devices": "No available storage devices",
-	"gpu_relation_guide_description": "Interact with the graph to explore connections and allocations.",
 	"download": "Download",
 	"temperature": "Temperature",
 	"max_tokens": "Max Tokens",
 	"model_testing": "Model Testing",
 	"model_testing_description": "Type a prompt below and press Send to test the model.",
 	"model_response_error": "Oops! Something went wrong while fetching the response. Please try again or check your network connection.",
-	"health_check": "Health Check"
+	"health_check": "Health Check",
+	"trouble_pushing_image": "Trouble pushing images to Otterscale?",
+	"trouble_pushing_image_step_one": "1. Locate or Create {daemon} and Add or Edit {insecure_registries}",
+	"trouble_pushing_image_step_one_details": "Add or update the {insecure_registries} array in your {daemon} file (typically located at {path} on Linux) to include the registry address:",
+	"trouble_pushing_image_step_two": "2. Restart Docker Daemon",
+	"trouble_pushing_image_step_two_details": "To restart the Docker daemon on Linux, run the following commands:"
 }
