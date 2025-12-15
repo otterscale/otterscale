@@ -25,7 +25,7 @@
 		reloadManager: ReloadManager;
 	} = $props();
 
-	const exportClinets = $derived(subvolume?.export?.clients ?? []);
+	const exportedClients = $derived(subvolume?.export?.clients ?? []);
 </script>
 
 <Layout.Actions>
@@ -33,7 +33,7 @@
 	<Layout.ActionItem>
 		<Grant {subvolume} {scope} {volume} {reloadManager} />
 	</Layout.ActionItem>
-	<Layout.ActionItem disabled={!(exportClinets.length > 1)}>
+	<Layout.ActionItem disabled={exportedClients.length <= 1}>
 		<Revoke {subvolume} {scope} {volume} {reloadManager} />
 	</Layout.ActionItem>
 	<Layout.ActionItem>
