@@ -23,8 +23,12 @@ type UserRepo interface {
 	DeleteKey(ctx context.Context, scope, id, accessKey string) error
 }
 
-func (uc *UseCase) ListUsers(ctx context.Context, scope string) ([]User, error) {
-	return uc.user.List(ctx, scope)
+func (uc *UseCase) ListUsers(ctx context.Context, scope string) (users []User, uri string, err error) {
+	users, err = uc.user.List(ctx, scope)
+	if err != nil {
+		return nil, "", err
+	}
+	return users, uc.bucket.Endpoint(scope), nil
 }
 
 func (uc *UseCase) CreateUser(ctx context.Context, scope, id, name string, suspended bool) (*User, error) {
