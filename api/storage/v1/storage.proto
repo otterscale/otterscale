@@ -726,6 +726,7 @@ message ListBucketsRequest {
 
 message ListBucketsResponse {
   repeated Bucket buckets = 1;
+  string service_uri = 2;
 }
 
 message CreateBucketRequest {
@@ -759,6 +760,7 @@ message ListUsersRequest {
 
 message ListUsersResponse {
   repeated User users = 1;
+  string service_uri = 2;
 }
 
 message CreateUserRequest {

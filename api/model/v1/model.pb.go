@@ -7,15 +7,14 @@
 package pb
 
 import (
-	reflect "reflect"
-	unsafe "unsafe"
-
 	_ "github.com/otterscale/otterscale/api"
 	v1 "github.com/otterscale/otterscale/api/application/v1"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
+	reflect "reflect"
+	unsafe "unsafe"
 )
 
 const (

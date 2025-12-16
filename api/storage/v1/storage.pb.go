@@ -8770,10 +8770,13 @@ func (b0 ListBucketsRequest_builder) Build() *ListBucketsRequest {
 }
 
 type ListBucketsResponse struct {
-	state              protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Buckets *[]*Bucket             `protobuf:"bytes,1,rep,name=buckets"`
-	unknownFields      protoimpl.UnknownFields
-	sizeCache          protoimpl.SizeCache
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Buckets     *[]*Bucket             `protobuf:"bytes,1,rep,name=buckets"`
+	xxx_hidden_ServiceUri  *string                `protobuf:"bytes,2,opt,name=service_uri,json=serviceUri"`
+	XXX_raceDetectHookData protoimpl.RaceDetectHookData
+	XXX_presence           [1]uint32
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
 }
 
 func (x *ListBucketsResponse) Reset() {
@@ -8810,14 +8813,42 @@ func (x *ListBucketsResponse) GetBuckets() []*Bucket {
 	return nil
 }
 
+func (x *ListBucketsResponse) GetServiceUri() string {
+	if x != nil {
+		if x.xxx_hidden_ServiceUri != nil {
+			return *x.xxx_hidden_ServiceUri
+		}
+		return ""
+	}
+	return ""
+}
+
 func (x *ListBucketsResponse) SetBuckets(v []*Bucket) {
 	x.xxx_hidden_Buckets = &v
+}
+
+func (x *ListBucketsResponse) SetServiceUri(v string) {
+	x.xxx_hidden_ServiceUri = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
+}
+
+func (x *ListBucketsResponse) HasServiceUri() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *ListBucketsResponse) ClearServiceUri() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_ServiceUri = nil
 }
 
 type ListBucketsResponse_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Buckets []*Bucket
+	Buckets    []*Bucket
+	ServiceUri *string
 }
 
 func (b0 ListBucketsResponse_builder) Build() *ListBucketsResponse {
@@ -8825,6 +8856,10 @@ func (b0 ListBucketsResponse_builder) Build() *ListBucketsResponse {
 	b, x := &b0, m0
 	_, _ = b, x
 	x.xxx_hidden_Buckets = &b.Buckets
+	if b.ServiceUri != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
+		x.xxx_hidden_ServiceUri = b.ServiceUri
+	}
 	return m0
 }
 
@@ -9436,10 +9471,13 @@ func (b0 ListUsersRequest_builder) Build() *ListUsersRequest {
 }
 
 type ListUsersResponse struct {
-	state            protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Users *[]*User               `protobuf:"bytes,1,rep,name=users"`
-	unknownFields    protoimpl.UnknownFields
-	sizeCache        protoimpl.SizeCache
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Users       *[]*User               `protobuf:"bytes,1,rep,name=users"`
+	xxx_hidden_ServiceUri  *string                `protobuf:"bytes,2,opt,name=service_uri,json=serviceUri"`
+	XXX_raceDetectHookData protoimpl.RaceDetectHookData
+	XXX_presence           [1]uint32
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
 }
 
 func (x *ListUsersResponse) Reset() {
@@ -9476,14 +9514,42 @@ func (x *ListUsersResponse) GetUsers() []*User {
 	return nil
 }
 
+func (x *ListUsersResponse) GetServiceUri() string {
+	if x != nil {
+		if x.xxx_hidden_ServiceUri != nil {
+			return *x.xxx_hidden_ServiceUri
+		}
+		return ""
+	}
+	return ""
+}
+
 func (x *ListUsersResponse) SetUsers(v []*User) {
 	x.xxx_hidden_Users = &v
+}
+
+func (x *ListUsersResponse) SetServiceUri(v string) {
+	x.xxx_hidden_ServiceUri = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
+}
+
+func (x *ListUsersResponse) HasServiceUri() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *ListUsersResponse) ClearServiceUri() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_ServiceUri = nil
 }
 
 type ListUsersResponse_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Users []*User
+	Users      []*User
+	ServiceUri *string
 }
 
 func (b0 ListUsersResponse_builder) Build() *ListUsersResponse {
@@ -9491,6 +9557,10 @@ func (b0 ListUsersResponse_builder) Build() *ListUsersResponse {
 	b, x := &b0, m0
 	_, _ = b, x
 	x.xxx_hidden_Users = &b.Users
+	if b.ServiceUri != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
+		x.xxx_hidden_ServiceUri = b.ServiceUri
+	}
 	return m0
 }
 
@@ -12853,9 +12923,11 @@ const file_api_storage_v1_storage_proto_rawDesc = "" +
 	"\n" +
 	"group_name\x18\x04 \x01(\tR\tgroupNameJ\x04\b\x02\x10\x03\"0\n" +
 	"\x12ListBucketsRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scopeJ\x04\b\x02\x10\x03\"N\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scopeJ\x04\b\x02\x10\x03\"o\n" +
 	"\x13ListBucketsResponse\x127\n" +
-	"\abuckets\x18\x01 \x03(\v2\x1d.otterscale.storage.v1.BucketR\abuckets\"\xb5\x01\n" +
+	"\abuckets\x18\x01 \x03(\v2\x1d.otterscale.storage.v1.BucketR\abuckets\x12\x1f\n" +
+	"\vservice_uri\x18\x02 \x01(\tR\n" +
+	"serviceUri\"\xb5\x01\n" +
 	"\x13CreateBucketRequest\x12\x14\n" +
 	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1f\n" +
 	"\vbucket_name\x18\x03 \x01(\tR\n" +
@@ -12875,9 +12947,11 @@ const file_api_storage_v1_storage_proto_rawDesc = "" +
 	"\vbucket_name\x18\x03 \x01(\tR\n" +
 	"bucketNameJ\x04\b\x02\x10\x03\".\n" +
 	"\x10ListUsersRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scopeJ\x04\b\x02\x10\x03\"F\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scopeJ\x04\b\x02\x10\x03\"g\n" +
 	"\x11ListUsersResponse\x121\n" +
-	"\x05users\x18\x01 \x03(\v2\x1b.otterscale.storage.v1.UserR\x05users\"\x83\x01\n" +
+	"\x05users\x18\x01 \x03(\v2\x1b.otterscale.storage.v1.UserR\x05users\x12\x1f\n" +
+	"\vservice_uri\x18\x02 \x01(\tR\n" +
+	"serviceUri\"\x83\x01\n" +
 	"\x11CreateUserRequest\x12\x14\n" +
 	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x17\n" +
 	"\auser_id\x18\x03 \x01(\tR\x06userId\x12\x1b\n" +

@@ -46,10 +46,10 @@ type BucketRepo interface {
 	Key(scope string) (accessKey string, secretKey string)
 }
 
-func (uc *UseCase) ListBuckets(ctx context.Context, scope string) ([]BucketData, error) {
+func (uc *UseCase) ListBuckets(ctx context.Context, scope string) (bucketDatas []BucketData, uri string, err error) {
 	buckets, err := uc.bucket.List(ctx, scope)
 	if err != nil {
-		return nil, err
+		return nil, "", err
 	}
 
 	ret := []BucketData{}
@@ -65,7 +65,7 @@ func (uc *UseCase) ListBuckets(ctx context.Context, scope string) ([]BucketData,
 		})
 	}
 
-	return ret, nil
+	return ret, uc.bucket.Endpoint(scope), nil
 }
 
 func (uc *UseCase) CreateBucket(ctx context.Context, scope, bucket, owner, policy string, acl BucketCannedACL) (*BucketData, error) {
