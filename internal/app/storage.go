@@ -350,13 +350,14 @@ func (s *StorageService) DeleteSubvolumeGroup(ctx context.Context, req *pb.Delet
 }
 
 func (s *StorageService) ListBuckets(ctx context.Context, req *pb.ListBucketsRequest) (*pb.ListBucketsResponse, error) {
-	buckets, err := s.object.ListBuckets(ctx, req.GetScope())
+	buckets, uri, err := s.object.ListBuckets(ctx, req.GetScope())
 	if err != nil {
 		return nil, err
 	}
 
 	resp := &pb.ListBucketsResponse{}
 	resp.SetBuckets(toProtoBuckets(buckets))
+	resp.SetServiceUri(uri)
 	return resp, nil
 }
 
@@ -390,13 +391,14 @@ func (s *StorageService) DeleteBucket(ctx context.Context, req *pb.DeleteBucketR
 }
 
 func (s *StorageService) ListUsers(ctx context.Context, req *pb.ListUsersRequest) (*pb.ListUsersResponse, error) {
-	users, err := s.object.ListUsers(ctx, req.GetScope())
+	users, uri, err := s.object.ListUsers(ctx, req.GetScope())
 	if err != nil {
 		return nil, err
 	}
 
 	resp := &pb.ListUsersResponse{}
 	resp.SetUsers(toProtoUsers(users))
+	resp.SetServiceUri(uri)
 	return resp, nil
 }
 
@@ -1060,10 +1062,10 @@ func toProtoUserKeys(uks []object.UserKey) []*pb.User_Key {
 	return ret
 }
 
+// ignore secret key in proto for security reason
 func toProtoUserKey(uk *object.UserKey) *pb.User_Key {
 	ret := &pb.User_Key{}
 	ret.SetAccessKey(uk.AccessKey)
-	ret.SetSecretKey(uk.SecretKey)
 	return ret
 }
 
