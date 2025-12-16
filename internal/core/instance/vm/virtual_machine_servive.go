@@ -21,6 +21,9 @@ func (uc *UseCase) CreateVirtualMachineService(ctx context.Context, scope, names
 		Spec: corev1.ServiceSpec{
 			Ports: ports,
 			Type:  corev1.ServiceTypeNodePort,
+			Selector: map[string]string{
+				"vm.kubevirt.io/name": vmName,
+			},
 		},
 	}
 
