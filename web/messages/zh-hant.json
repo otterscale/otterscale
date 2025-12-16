@@ -890,5 +890,7 @@
 	"validate_alphanum_dash": "必須由字母、數字或 '-' 組成。",
 	"validate_lower_alphanum_dash": "必須由小寫字母、數字或 '-' 組成。",
 	"validate_alphanum_dash_start_alpha": "必須由字母、數字或 '-' 組成，並以字母開頭。",
-	"validate_lower_alphanum_dash_start_alpha": "必須由小寫字母、數字或 '-' 組成，並以字母開頭。"
+	"validate_lower_alphanum_dash_start_alpha": "必須由小寫字母、數字或 '-' 組成，並以字母開頭。",
+	"validate_lower_alphanum_dash_dot": "必須由小寫字母、數字、'-' 或 '.' 組成，可以 '.' 開頭。",
+	"validate_max_length": "必須少於 {max} 個字元。"
 }

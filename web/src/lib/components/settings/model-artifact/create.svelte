@@ -113,11 +113,12 @@
 			<Form.Fieldset>
 				<Form.Field>
 					<Form.Label>{m.name()}</Form.Label>
-					<SingleInput.General
+					<SingleInput.GeneralRule
 						type="text"
 						required
 						bind:value={request.name}
 						bind:invalid={invalidity.name}
+						validateRule="rfc1123"
 					/>
 				</Form.Field>
 

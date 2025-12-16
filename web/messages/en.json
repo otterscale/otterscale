@@ -890,5 +890,7 @@
 	"validate_alphanum_dash": "Must consist of alphanumeric characters or '-'.",
 	"validate_lower_alphanum_dash": "Must consist of lower case alphanumeric characters or '-'.",
 	"validate_alphanum_dash_start_alpha": "Must consist of alphanumeric characters or '-', and start with a letter.",
-	"validate_lower_alphanum_dash_start_alpha": "Must consist of lower case alphanumeric characters or '-', and start with a letter."
+	"validate_lower_alphanum_dash_start_alpha": "Must consist of lower case alphanumeric characters or '-', and start with a letter.",
+	"validate_lower_alphanum_dash_dot": "Must consist of lower case alphanumeric characters, '-' or '.', and can start with '.'.",
+	"validate_max_length": "Must be at most {max} characters long."
 }

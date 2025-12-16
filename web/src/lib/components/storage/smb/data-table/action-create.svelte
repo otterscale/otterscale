@@ -121,13 +121,13 @@
 			<Form.Fieldset>
 				<Form.Field>
 					<Form.Label>{m.name()}</Form.Label>
-					<Form.Help>{m.smb_share_name_constraint()}</Form.Help>
-					<SingleInput.General
+					<SingleInput.GeneralRule
 						required
 						type="text"
 						bind:value={request.name}
 						bind:invalid={invaliditySMBShare.name}
-						validator={(value) => !/^\d/.test(value) && value.length <= 10}
+						validateRule="lower-alphanum-dash-start-alpha"
+						maxLength={10}
 					/>
 				</Form.Field>
 				<Form.Field>

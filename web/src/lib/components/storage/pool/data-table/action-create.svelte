@@ -95,11 +95,12 @@
 			<Form.Fieldset>
 				<Form.Field>
 					<Form.Label>{m.name()}</Form.Label>
-					<SingleInput.General
+					<SingleInput.GeneralRule
 						required
 						type="text"
 						bind:value={request.poolName}
 						bind:invalid={invalidity.poolName}
+						validateRule="lower-alphanum-dash-dot"
 					/>
 				</Form.Field>
 				<Form.Field>

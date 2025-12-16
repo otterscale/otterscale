@@ -99,11 +99,12 @@
 			<Form.Fieldset>
 				<Form.Field>
 					<Form.Label>{m.image_name()}</Form.Label>
-					<SingleInput.General
+					<SingleInput.GeneralRule
 						required
 						type="text"
 						bind:value={request.imageName}
 						bind:invalid={invalidity.imageName}
+						validateRule="lower-alphanum-dash-start-alpha"
 					/>
 				</Form.Field>
 

@@ -24,6 +24,7 @@
 		validator = () => true,
 		invalid = $bindable(),
 		validateRule,
+		maxLength,
 		...restProps
 	}: WithElementRef<
 		Omit<HTMLInputAttributes, 'type' | 'files'> & { type?: InputType | undefined }
@@ -36,7 +37,9 @@
 			| 'alphanum-dash'
 			| 'lower-alphanum-dash'
 			| 'alphanum-dash-start-alpha'
-			| 'lower-alphanum-dash-start-alpha';
+			| 'lower-alphanum-dash-start-alpha'
+			| 'lower-alphanum-dash-dot';
+		maxLength?: number;
 	} = $props();
 
 	const isNull = $derived(required && (value === null || value === undefined || value === ''));
@@ -48,6 +51,7 @@
 
 	const alphanumDashStartAlphaRegex = /^[a-zA-Z][a-zA-Z0-9-]*$/;
 	const lowerAlphanumDashStartAlphaRegex = /^[a-z][a-z0-9-]*$/;
+	const lowerAlphanumDashDotRegex = /^[.a-z0-9][-a-z0-9.]*$/;
 
 	const isRuleValid = $derived(
 		!value ||
@@ -57,10 +61,13 @@
 			(validateRule === 'lower-alphanum-dash' && lowerAlphanumDashRegex.test(value)) ||
 			(validateRule === 'alphanum-dash-start-alpha' && alphanumDashStartAlphaRegex.test(value)) ||
 			(validateRule === 'lower-alphanum-dash-start-alpha' &&
-				lowerAlphanumDashStartAlphaRegex.test(value))
+				lowerAlphanumDashStartAlphaRegex.test(value)) ||
+			(validateRule === 'lower-alphanum-dash-dot' && lowerAlphanumDashDotRegex.test(value))
 	);
 
-	const isInvalid = $derived(isNull || !isValidated || !isRuleValid);
+	const isMaxLengthValid = $derived(!maxLength || !value || value.length <= maxLength);
+
+	const isInvalid = $derived(isNull || !isValidated || !isRuleValid || !isMaxLengthValid);
 	$effect(() => {
 		invalid = isInvalid;
 	});
@@ -118,6 +125,16 @@
 	{#if validateRule === 'lower-alphanum-dash-start-alpha' && !isRuleValid && value}
 		<p class="mt-1 text-[12px] font-medium text-destructive">
 			{m.validate_lower_alphanum_dash_start_alpha()}
+		</p>
+	{/if}
+	{#if validateRule === 'lower-alphanum-dash-dot' && !isRuleValid && value}
+		<p class="mt-1 text-[12px] font-medium text-destructive">
+			{m.validate_lower_alphanum_dash_dot()}
+		</p>
+	{/if}
+	{#if !isMaxLengthValid && value}
+		<p class="mt-1 text-[12px] font-medium text-destructive">
+			{m.validate_max_length(maxLength)}
 		</p>
 	{/if}
 </div>

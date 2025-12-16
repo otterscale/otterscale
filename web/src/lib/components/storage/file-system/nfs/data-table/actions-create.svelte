@@ -60,11 +60,12 @@
 			<Form.Fieldset>
 				<Form.Field>
 					<Form.Label>{m.name()}</Form.Label>
-					<SingleInput.General
+					<SingleInput.GeneralRule
 						required
 						type="text"
 						bind:value={request.subvolumeName}
 						bind:invalid
+						validateRule="lower-alphanum-dash-start-alpha"
 					/>
 				</Form.Field>
 
