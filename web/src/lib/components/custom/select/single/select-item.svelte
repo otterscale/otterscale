@@ -14,11 +14,13 @@
 		ref = $bindable(null),
 		class: className,
 		onclick,
+		onSelect,
 		option,
 		...restProps
 	}: CommandPrimitive.ItemProps & { option: OptionType } = $props();
 
 	const optionManager: OptionManager = getContext('OptionManager');
+	const selectContext: { close: () => void } = getContext('selectContext');
 </script>
 
 <Command.Item
@@ -27,7 +29,13 @@
 	class={cn(className)}
 	onclick={(e) => {
 		optionManager.handleSelect(option);
+		selectContext.close();
 		onclick?.(e);
+	}}
+	onSelect={() => {
+		optionManager.handleSelect(option);
+		selectContext.close();
+		onSelect?.();
 	}}
 	{...restProps}
 />
