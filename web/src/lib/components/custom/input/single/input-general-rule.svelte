@@ -134,7 +134,7 @@
 	{/if}
 	{#if !isMaxLengthValid && value}
 		<p class="mt-1 text-[12px] font-medium text-destructive">
-			{m.validate_max_length(maxLength)}
+			{m.validate_max_length({ max: maxLength })}
 		</p>
 	{/if}
 </div>
