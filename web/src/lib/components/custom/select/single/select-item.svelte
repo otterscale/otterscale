@@ -21,6 +21,11 @@
 
 	const optionManager: OptionManager = getContext('OptionManager');
 	const selectContext: { close: () => void } = getContext('selectContext');
+
+	function handleItemSelect() {
+		optionManager.handleSelect(option);
+		selectContext.close();
+	}
 </script>
 
 <Command.Item
@@ -28,13 +33,11 @@
 	data-slot="select-item"
 	class={cn(className)}
 	onclick={(e) => {
-		optionManager.handleSelect(option);
-		selectContext.close();
+		handleItemSelect();
 		onclick?.(e);
 	}}
 	onSelect={() => {
-		optionManager.handleSelect(option);
-		selectContext.close();
+		handleItemSelect();
 		onSelect?.();
 	}}
 	{...restProps}
