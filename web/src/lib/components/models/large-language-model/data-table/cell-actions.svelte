@@ -20,12 +20,12 @@
 	} = $props();
 </script>
 
-	<Layout.Actions>
-		<Layout.ActionLabel>{m.actions()}</Layout.ActionLabel>
-		<Layout.ActionItem>
-			<Update {model} {scope} {reloadManager} />
-		</Layout.ActionItem>
-		<Layout.ActionItem>
-			<Delete {model} {scope} {reloadManager} />
-		</Layout.ActionItem>
-	</Layout.Actions>
+<Layout.Actions>
+	<Layout.ActionLabel>{m.actions()}</Layout.ActionLabel>
+	<Layout.ActionItem>
+		<Update {model} {scope} {reloadManager} />
+	</Layout.ActionItem>
+	<Layout.ActionItem>
+		<Delete {model} {scope} {reloadManager} />
+	</Layout.ActionItem>
+</Layout.Actions>
