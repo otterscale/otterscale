@@ -132,7 +132,7 @@
 			{m.validate_lower_alphanum_dash_dot()}
 		</p>
 	{/if}
-	{#if !isMaxLengthValid && value}
+	{#if !isMaxLengthValid && value && maxLength}
 		<p class="mt-1 text-[12px] font-medium text-destructive">
 			{m.validate_max_length({ max: maxLength })}
 		</p>
