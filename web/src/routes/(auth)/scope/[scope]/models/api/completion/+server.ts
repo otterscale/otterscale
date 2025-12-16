@@ -15,13 +15,12 @@ export async function POST(event: RequestEvent): Promise<Response> {
 				model: modelIdentifier,
 				prompt,
 				max_tokens,
-				temperature
+				temperature,
+				stream: true
 			})
 		});
 
-		const body = await upstream.text();
-
-		return new Response(body, {
+		return new Response(upstream.body, {
 			status: upstream.status,
 			headers: upstream.headers
 		});

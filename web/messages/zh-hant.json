@@ -869,12 +869,13 @@
 	"gpu_relation_guide_description": "與圖表互動以探索連線和分配。",
 	"no_available_machines": "無可用機器",
 	"no_available_storage_devices": "無可用儲存裝置",
-	"gpu_relation_guide_description": "與圖表互動以探索連線和分配。",
 	"download": "下載",
 	"temperature": "溫度",
 	"max_tokens": "最大 Token 數",
 	"model_testing": "模型測試",
 	"model_testing_description": "請在下方輸入提示並按下傳送以測試模型。",
 	"model_response_error": "哎呀！取得回應時發生錯誤。請重試或檢查您的網路連線。",
-	"health_check": "健康檢查"
+	"health_check": "健康檢查",
+	"health_check_statment": "你還活著嗎？如果你能處理這條訊息，請回應。",
+	"model_testing_init": "歡迎!我是您的 AI 助理。今天有什麼我可以幫忙的嗎?"
 }

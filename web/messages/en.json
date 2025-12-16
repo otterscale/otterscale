@@ -869,12 +869,13 @@
 	"gpu_relation_guide_description": "Interact with the graph to explore connections and allocations.",
 	"no_available_machines": "No available machines",
 	"no_available_storage_devices": "No available storage devices",
-	"gpu_relation_guide_description": "Interact with the graph to explore connections and allocations.",
 	"download": "Download",
 	"temperature": "Temperature",
 	"max_tokens": "Max Tokens",
 	"model_testing": "Model Testing",
 	"model_testing_description": "Type a prompt below and press Send to test the model.",
 	"model_response_error": "Oops! Something went wrong while fetching the response. Please try again or check your network connection.",
-	"health_check": "Health Check"
+	"health_check": "Health Check",
+	"health_check_statment": "Are you alive? Please respond if you can process this message.",
+	"model_testing_init": "Welcome! I'm your AI assistant. How can I help you today?"
 }

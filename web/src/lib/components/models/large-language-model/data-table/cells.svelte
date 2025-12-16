@@ -115,6 +115,8 @@
 			<Layout.SubCell>
 				{row.original.prefill.replica}
 				{m.replica()}
+				{row.original.prefill.tensor}
+				{m.tensor()}
 			</Layout.SubCell>
 		</Layout.Cell>
 	{/if}
@@ -125,6 +127,8 @@
 		<Layout.Cell class="items-start">
 			{row.original.decode.vgpumemPercentage}%
 			<Layout.SubCell>
+				{row.original.decode.replica}
+				{m.replica()}
 				{row.original.decode.tensor}
 				{m.tensor()}
 			</Layout.SubCell>

@@ -32,28 +32,46 @@
 		...restProps
 	}: DialogPrimitive.TriggerProps & { serviceUri: string; model: Model; scope: string } = $props();
 
+	let conversation = $state<HTMLDivElement>();
+
 	// Parameters
 	let temperature = $state(defaults.temperature);
 	let max_tokens = $state(defaults.max_tokens);
 
 	// Messages
-	let messages: Message[] = $state([]);
-	const isNewChat = $derived(messages.length === 0);
-	// Completion
-	let hasError = $state(false);
-	let userMessage = $state('');
-	let modelMessage = $state('');
-	let isModelLoaded = $state(false);
-	async function onsubmit() {
-		isModelLoaded = false;
-		messages.push({
-			message: userMessage,
-			senderId: userIdentifier,
+	let messages: Message[] = $state([
+		{
+			message: m.model_testing_init(),
+			senderId: receiverIdentifier,
 			sentAt: new Date().toLocaleTimeString('en-US', {
 				hour: 'numeric',
 				minute: '2-digit'
 			})
-		});
+		}
+	]);
+	const isNewChat = $derived(messages.length === 0);
+	const latestModelResponseIndex = $derived(
+		messages.findLastIndex((message) => message.senderId === receiverIdentifier)
+	);
+
+	// Completion
+	let isModelLoaded = $state(false);
+	let hasError = $state(false);
+	let userMessage = $state('');
+	async function onsubmit() {
+		isModelLoaded = false;
+
+		messages = [
+			...messages,
+			{
+				message: userMessage,
+				senderId: userIdentifier,
+				sentAt: new Date().toLocaleTimeString('en-US', {
+					hour: 'numeric',
+					minute: '2-digit'
+				})
+			}
+		];
 
 		const response = await fetch(
 			resolve('/(auth)/scope/[scope]/models/api/completion', { scope }),
@@ -80,32 +98,78 @@
 			});
 		}
 
-		const body = await response.json();
+		messages = [
+			...messages,
+			{
+				message: '',
+				senderId: receiverIdentifier,
+				sentAt: new Date().toLocaleTimeString('en-US', {
+					hour: 'numeric',
+					minute: '2-digit'
+				})
+			}
+		];
 
-		modelMessage = body.choices.map((choice: { text: string }) => choice.text).join('');
+		if (response.body) {
+			const reader = response.body.getReader();
+			const decoder = new TextDecoder();
+			let buffer = '';
 
-		isModelLoaded = true;
-		messages.push({
-			message: modelMessage,
-			senderId: receiverIdentifier,
-			sentAt: new Date().toLocaleTimeString('en-US', {
-				hour: 'numeric',
-				minute: '2-digit'
-			})
-		});
+			while (true) {
+				const { done, value } = await reader.read();
+				if (done) break;
+
+				buffer += decoder.decode(value, { stream: true });
+				const lines = buffer.split('\n');
+				buffer = lines.pop() || '';
+
+				for (const line of lines) {
+					if (line.startsWith('data: ')) {
+						const jsonString = line.slice(6);
+						if (jsonString === '[DONE]') {
+							continue;
+						}
+						try {
+							const data = JSON.parse(jsonString);
+							if (data.choices?.[0]?.text) {
+								messages[latestModelResponseIndex].message += data.choices[0].text;
+							}
+						} catch (error) {
+							console.error(error);
+						}
+
+						scrollToBottom();
+					}
+				}
+			}
+		}
 
 		userMessage = '';
-		modelMessage = '';
+		isModelLoaded = true;
 	}
 
 	function reset() {
 		max_tokens = defaults.max_tokens;
 		temperature = defaults.temperature;
 		userMessage = '';
-		modelMessage = '';
-		messages = [] as Message[];
+		messages = [
+			{
+				message: `Welcome! I'm your AI assistant. How can I help you today?`,
+				senderId: receiverIdentifier,
+				sentAt: new Date().toLocaleTimeString('en-US', {
+					hour: 'numeric',
+					minute: '2-digit'
+				})
+			}
+		] as Message[];
 		isModelLoaded = false;
 		hasError = false;
+	}
+
+	function scrollToBottom() {
+		if (conversation) {
+			conversation.scrollTop = conversation.scrollHeight;
+		}
 	}
 </script>
 
@@ -197,87 +261,55 @@
 				{/if}
 			</div>
 		</div>
-		<div class="relative h-[calc(77vh-200px)] overflow-y-auto">
-			{#if isNewChat}
-				<!-- Background -->
-				<div
-					class="relative mx-auto mt-0 flex h-[50vh] w-full max-w-4xl flex-col items-center justify-center overflow-hidden px-4 text-center sm:px-6 lg:px-8"
-				>
-					<Icon
-						icon="ph:sparkle"
-						class="absolute -z-10 h-[500px] w-[500px] rotate-45 transform animate-pulse text-muted-foreground opacity-10 blur-sm"
-					/>
-					<div class="z-10">
-						<h1 class="text-3xl font-bold text-primary sm:text-4xl">{m.model_testing()}</h1>
-						<p class="mt-3 text-muted-foreground">
-							{m.model_testing_description()}
-						</p>
-					</div>
-				</div>
-			{:else}
-				<!-- Conversations -->
-				<Chat.List>
-					{#each messages as message (message)}
-						<Chat.Bubble variant={message.senderId === userIdentifier ? 'sent' : 'received'}>
-							<div
-								class="relative order-1 flex size-8 shrink-0 overflow-hidden rounded-full border group-data-[variant='sent']/chat-bubble:order-2"
-							>
-								<Icon
-									icon={message.senderId === userIdentifier ? 'ph:user' : 'ph:robot'}
-									class="absolute top-1/2 left-1/2 size-5 -translate-x-1/2 -translate-y-1/2"
-								/>
+		<div bind:this={conversation} class="relative h-[calc(77vh-200px)] overflow-y-auto">
+			<!-- Conversations -->
+			<Chat.List>
+				{#each messages as message (message)}
+					<Chat.Bubble variant={message.senderId === userIdentifier ? 'sent' : 'received'}>
+						<div
+							class="relative order-1 flex size-8 shrink-0 overflow-hidden rounded-full border group-data-[variant='sent']/chat-bubble:order-2"
+						>
+							<Icon
+								icon={message.senderId === userIdentifier ? 'ph:user' : 'ph:robot'}
+								class="absolute top-1/2 left-1/2 size-5 -translate-x-1/2 -translate-y-1/2"
+							/>
+						</div>
+						<Chat.BubbleMessage class="flex max-w-96 flex-col gap-1 break-all">
+							<p>{message.message}</p>
+							<div class="w-full text-xs group-data-[variant='sent']/chat-bubble:text-end">
+								{message.sentAt}
 							</div>
-							<Chat.BubbleMessage class="flex max-w-96 flex-col gap-1 break-all">
-								<p>{message.message}</p>
-								<div class="w-full text-xs group-data-[variant='sent']/chat-bubble:text-end">
-									{message.sentAt}
-								</div>
-							</Chat.BubbleMessage>
-						</Chat.Bubble>
-					{/each}
-					{#if hasError}
-						<Chat.Bubble variant="received">
-							<div
-								class="relative order-1 flex size-8 shrink-0 overflow-hidden rounded-full border group-data-[variant='sent']/chat-bubble:order-2"
-							>
-								<Icon
-									icon="ph:robot"
-									class="absolute  top-1/2 left-1/2 size-5 -translate-x-1/2 -translate-y-1/2"
-								/>
-							</div>
-							<Chat.BubbleMessage class="flex max-w-96 flex-col gap-1 break-all">
-								<p class="text-destructive">
-									{m.model_response_error()}
-								</p>
-							</Chat.BubbleMessage>
-						</Chat.Bubble>
-					{:else if !isModelLoaded && modelMessage === ''}
-						<Chat.Bubble variant="received">
-							<div class="relative flex size-8 shrink-0 overflow-hidden rounded-full border">
-								<Icon
-									icon="ph:robot"
-									class="absolute top-1/2 left-1/2 size-5 -translate-x-1/2 -translate-y-1/2"
-								/>
-							</div>
-							<Chat.BubbleMessage typing />
-						</Chat.Bubble>
-					{:else if !isModelLoaded && modelMessage !== ''}
-						<Chat.Bubble variant="received">
-							<div
-								class="relative order-1 flex size-8 shrink-0 overflow-hidden rounded-full border group-data-[variant='sent']/chat-bubble:order-2"
-							>
-								<Icon
-									icon="ph:robot"
-									class="absolute top-1/2 left-1/2 size-5 -translate-x-1/2 -translate-y-1/2"
-								/>
-							</div>
-							<Chat.BubbleMessage class="flex max-w-96 flex-col gap-1 break-all">
-								<p>{modelMessage}</p>
-							</Chat.BubbleMessage>
-						</Chat.Bubble>
-					{/if}
-				</Chat.List>
-			{/if}
+						</Chat.BubbleMessage>
+					</Chat.Bubble>
+				{/each}
+				{#if hasError}
+					<Chat.Bubble variant="received">
+						<div
+							class="relative order-1 flex size-8 shrink-0 overflow-hidden rounded-full border group-data-[variant='sent']/chat-bubble:order-2"
+						>
+							<Icon
+								icon="ph:robot"
+								class="absolute  top-1/2 left-1/2 size-5 -translate-x-1/2 -translate-y-1/2"
+							/>
+						</div>
+						<Chat.BubbleMessage class="flex max-w-96 flex-col gap-1 break-all">
+							<p class="text-destructive">
+								{m.model_response_error()}
+							</p>
+						</Chat.BubbleMessage>
+					</Chat.Bubble>
+				{:else if !isModelLoaded && messages[latestModelResponseIndex].message === ''}
+					<Chat.Bubble variant="received">
+						<div class="relative flex size-8 shrink-0 overflow-hidden rounded-full border">
+							<Icon
+								icon="ph:robot"
+								class="absolute top-1/2 left-1/2 size-5 -translate-x-1/2 -translate-y-1/2"
+							/>
+						</div>
+						<Chat.BubbleMessage typing />
+					</Chat.Bubble>
+				{/if}
+			</Chat.List>
 		</div>
 		<!-- Inputs -->
 		<InputGroup.Root class="flex h-24 bg-muted">
@@ -288,16 +320,16 @@
 			<InputGroup.Addon align="block-end" class="flex h-12 items-center gap-2">
 				<InputGroup.Button
 					variant="outline"
-					class="rounded-lg text-destructive/70 hover:text-primary"
+					class="text-muted-foreground hover:text-primary"
 					onclick={() => {
-						userMessage = 'Are you alive?';
+						userMessage = m.health_check_statment();
 						onsubmit();
 					}}
 				>
 					<Icon icon="ph:heartbeat" />
-					<p class="text-xs">Health Check</p>
+					<p class="text-xs">{m.health_check()}</p>
 				</InputGroup.Button>
-				<InputGroup.Button
+				<Button
 					variant="default"
 					class="ml-auto rounded-full"
 					size="icon-sm"
@@ -307,7 +339,7 @@
 					}}
 				>
 					<SendIcon />
-				</InputGroup.Button>
+				</Button>
 			</InputGroup.Addon>
 		</InputGroup.Root>
 	</Dialog.Content>
