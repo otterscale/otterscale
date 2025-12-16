@@ -23,6 +23,7 @@
 	import { buttonVariants } from '$lib/components/ui/button';
 	import * as ButtonGroup from '$lib/components/ui/button-group/index.js';
 	import Input from '$lib/components/ui/input/input.svelte';
+	import * as InputGroup from '$lib/components/ui/input-group/index.js';
 	import * as Item from '$lib/components/ui/item/index.js';
 	import * as Popover from '$lib/components/ui/popover';
 	import { Slider } from '$lib/components/ui/slider/index.js';
@@ -30,7 +31,8 @@
 	import { m } from '$lib/paraglide/messages.js';
 	import { cn } from '$lib/utils';
 
-	import SelectModel from './util-select-model.svelte';
+	import SelectCloudModel from './util-select-cloud-model.svelte';
+	import SelectLocalModel from './util-select-local-model.svelte';
 </script>
 
 <script lang="ts">
@@ -52,7 +54,7 @@
 		maxModelLength: 8192,
 		mode: Model_Mode.INTELLIGENT_INFERENCE_SCHEDULING
 	} as CreateModelRequest;
-	const defaultPrefillResource = {} as Model_Prefill;
+	const defaultPrefillResource = { replica: 1, tensor: 1 } as Model_Prefill;
 	const defaultDecodeResource = { replica: 1, tensor: 1 } as Model_Decode;
 
 	let request = $state(defaults);
@@ -178,14 +180,25 @@
 
 				<Form.Field>
 					<Form.Label>{m.model_name()}</Form.Label>
-					<SelectModel
-						bind:value={request.modelName}
-						bind:fromLocal={request.fromPersistentVolumeClaim}
-						required
-						bind:invalid={invalidity.modelName}
-						{scope}
-						{namespace}
-					/>
+					<ButtonGroup.Root class="w-full" aria-invalid={invalid}>
+						<InputGroup.Root>
+							<InputGroup.Input
+								placeholder="Select from Artifacts or HuggingFace"
+								bind:value={request.modelName}
+							/>
+							<InputGroup.Addon>
+								<Icon icon="ph:robot" />
+							</InputGroup.Addon>
+						</InputGroup.Root>
+						<SelectLocalModel
+							bind:modelName={request.modelName}
+							bind:persistentVolumeClaimName={request.persistentVolumeClaimName}
+							bind:fromPersistentVolumeClaim={request.fromPersistentVolumeClaim}
+							{scope}
+							{namespace}
+						/>
+						<SelectCloudModel bind:value={request.modelName} />
+					</ButtonGroup.Root>
 
 					{#if invalidity.modelName}
 						<p class="text-sm text-destructive/50">{m.select_model_description()}</p>
@@ -198,6 +211,7 @@
 						type="number"
 						bind:value={request.sizeBytes}
 						required
+						transformer={(value) => String(value)}
 						bind:invalid={invalidity.sizeBytes}
 						units={[
 							{ value: Math.pow(2, 10 * 3), label: 'GB' } as SingleInput.UnitType,
@@ -221,7 +235,7 @@
 										<Popover.Content
 											align="center"
 											side="left"
-											class="max-h-[50vh] w-fit overflow-y-auto"
+											class="max-h-[50vh] w-fit max-w-[38vw] overflow-y-auto"
 										>
 											<Item.Root class="w-full">
 												<Item.Content class="flex flex-col items-start">
@@ -268,7 +282,7 @@
 
 					<Form.Field>
 						<Form.Label>{m.memory()}</Form.Label>
-						<div class="flex items-center gap-4">
+						<div class="flex items-center gap-8">
 							<p class="w-6 whitespace-nowrap">{requestDecodeResource.vgpumemPercentage} %</p>
 							<Slider
 								type="single"
@@ -291,8 +305,13 @@
 						</Form.Field>
 
 						<Form.Field>
+							<Form.Label>{m.tensor()}</Form.Label>
+							<SingleInput.General type="number" bind:value={requestPrefillResource.tensor} />
+						</Form.Field>
+
+						<Form.Field>
 							<Form.Label>{m.memory()}</Form.Label>
-							<div class="flex items-center gap-4">
+							<div class="flex items-center gap-8">
 								<p class="w-6 whitespace-nowrap">{requestPrefillResource.vgpumemPercentage} %</p>
 								<Slider
 									type="single"
@@ -314,7 +333,7 @@
 							<SingleInput.General
 								type="number"
 								bind:value={requestDecodeResource.replica}
-								readonly
+								disabled
 							/>
 						</Form.Field>
 
@@ -325,7 +344,7 @@
 
 						<Form.Field>
 							<Form.Label>{m.memory()}</Form.Label>
-							<div class="flex items-center gap-4">
+							<div class="flex items-center gap-8">
 								<p class="w-6 whitespace-nowrap">{requestDecodeResource.vgpumemPercentage} %</p>
 								<Slider
 									type="single"

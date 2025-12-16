@@ -7,7 +7,6 @@
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import Prompting from '$lib/components/prompting/index.svelte';
-	import { fetchHuggingFaceModelInformation } from '$lib/components/settings/model-artifact/utils.svelte';
 	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
 	import { formatTimeAgo } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
@@ -116,6 +115,8 @@
 			<Layout.SubCell>
 				{row.original.prefill.replica}
 				{m.replica()}
+				{row.original.prefill.tensor}
+				{m.tensor()}
 			</Layout.SubCell>
 		</Layout.Cell>
 	{/if}
@@ -126,6 +127,8 @@
 		<Layout.Cell class="items-start">
 			{row.original.decode.vgpumemPercentage}%
 			<Layout.SubCell>
+				{row.original.decode.replica}
+				{m.replica()}
 				{row.original.decode.tensor}
 				{m.tensor()}
 			</Layout.SubCell>
@@ -142,21 +145,20 @@
 {/snippet}
 
 {#snippet test(data: { row: Row<Model>; serviceUri: string; scope: string })}
-	{#await fetchHuggingFaceModelInformation(data.row.original.id) then response}
-		{@const tags = response['tags']}
-		{#if tags.includes('text-generation')}
-			{@const isReady =
-				data.row.original.pods.filter((pod) => pod.phase.toUpperCase() === 'RUNNING').length > 0}
-			<Layout.Cell class="items-center">
-				<Prompting
-					serviceUri={data.serviceUri}
-					model={data.row.original}
-					scope={data.scope}
-					disabled={!isReady}
-				/>
-			</Layout.Cell>
-		{/if}
-	{/await}
+	{@const readyPods = data.row.original.pods.filter((pod) => {
+		const match = pod.ready.match(/^(\d+)\/(\d+)$/);
+		if (!match) return false;
+		return Number(match[1]) / Number(match[2]) === 1;
+	})}
+	{@const isReady = readyPods.length > 0}
+	<Layout.Cell class="items-center">
+		<Prompting
+			serviceUri={data.serviceUri}
+			model={data.row.original}
+			scope={data.scope}
+			disabled={!isReady}
+		/>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet action(data: { row: Row<Model>; scope: string; reloadManager: ReloadManager })}
