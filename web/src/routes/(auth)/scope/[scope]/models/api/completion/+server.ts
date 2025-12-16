@@ -25,9 +25,9 @@ export async function POST(event: RequestEvent): Promise<Response> {
 			headers: upstream.headers
 		});
 	} catch (error) {
-		return new Response(JSON.stringify({ error: error ?? 'Internal Server Error' }), {
-			status: 500,
-			headers: { 'Content-Type': 'application/json' }
-		});
+		return new Response(
+			JSON.stringify({ error: 'Proxy request failed', detail: (error as Error).message }),
+			{ status: 502, headers: { 'Content-Type': 'application/json' } }
+		);
 	}
 }
