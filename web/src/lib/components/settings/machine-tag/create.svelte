@@ -41,7 +41,7 @@
 			<Form.Fieldset>
 				<Form.Field>
 					<Form.Label>{m.name()}</Form.Label>
-					<SingleInput.General type="text" bind:value={request.name} />
+					<SingleInput.GeneralRule type="text" bind:value={request.name} validateRule="rfc1123" />
 				</Form.Field>
 
 				<Form.Field>

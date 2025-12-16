@@ -71,7 +71,13 @@
 			<Form.Fieldset>
 				<Form.Field>
 					<Form.Label>{m.name()}</Form.Label>
-					<SingleInput.General required type="text" bind:value={request.name} bind:invalid />
+					<SingleInput.GeneralRule
+						required
+						type="text"
+						bind:value={request.name}
+						bind:invalid
+						validateRule="rfc1123"
+					/>
 				</Form.Field>
 				<Form.Field>
 					<Form.Label>{m.namespace()}</Form.Label>

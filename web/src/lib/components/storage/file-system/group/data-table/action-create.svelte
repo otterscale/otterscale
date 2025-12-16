@@ -55,7 +55,13 @@
 			<Form.Fieldset>
 				<Form.Field>
 					<Form.Label>{m.name()}</Form.Label>
-					<SingleInput.General required type="text" bind:value={request.groupName} bind:invalid />
+					<SingleInput.GeneralRule
+						required
+						type="text"
+						bind:value={request.groupName}
+						bind:invalid
+						validateRule="lower-alphanum-dash-start-alpha"
+					/>
 				</Form.Field>
 
 				<Form.Field>
