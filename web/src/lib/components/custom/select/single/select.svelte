@@ -34,15 +34,21 @@
 			value = newValue;
 		}
 	});
+	const selectContext = {
+		close: () => {
+			open = false;
+		}
+	};
 	setContext('id', id);
 	setContext('required', required);
 	setContext('options', options);
 	setContext('OptionManager', optionManager);
+	setContext('selectContext', selectContext);
 	$effect(() => {
 		invalid = validate(required, optionManager);
 	});
 </script>
 
-<Popover.Root {open} {...restProps}>
+<Popover.Root bind:open {...restProps}>
 	{@render children?.()}
 </Popover.Root>
