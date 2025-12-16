@@ -186,6 +186,7 @@
 	"create": "Create",
 	"cancel": "Cancel",
 	"switch_scope": "Switched to scope {name}",
+	"scope_not_found_redirect": "Scope  '{invalid_scope}' does not exist, redirected to default scope '{scope}'",
 	"scope_not_configured": "Scope {name} is not configured",
 	"home_integration": "Integrate with your favorite tools",
 	"home_integration_description": "Connect seamlessly with popular platforms and services to enhance your workflow.",
@@ -850,6 +851,8 @@
 	"official": "Official",
 	"sync": "Sync",
 	"manifests": "Manifests",
+	"repository_name": "Repository Name",
+	"delete_manifest": "Delete Manifest",
 	"latest_tag": "Latest Tag",
 	"registry": "Registry",
 	"repositories": "Repositories",
@@ -878,4 +881,11 @@
 	"health_check": "Health Check",
 	"health_check_statment": "Are you alive? Please respond if you can process this message.",
 	"model_testing_init": "Welcome! I'm your AI assistant. How can I help you today?"
+	"trouble_pushing_image": "Trouble pushing images to Otterscale?",
+	"trouble_pushing_image_step_one": "1. Locate or Create {daemon} and Add or Edit {insecure_registries}",
+	"trouble_pushing_image_step_one_details": "Add or update the {insecure_registries} array in your {daemon} file (typically located at {path} on Linux) to include the registry address:",
+	"trouble_pushing_image_step_two": "2. Restart Docker Daemon",
+	"trouble_pushing_image_step_two_details": "To restart the Docker daemon on Linux, run the following commands:",
+	"install_extensions_description": "Are you sure you want to install {extensionsBundle} extensions?",
+	"upgrade_extensions_description": "Are you sure you want to upgrade {extensionsBundle} extensions?"
 }

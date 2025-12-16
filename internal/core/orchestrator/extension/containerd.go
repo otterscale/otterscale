@@ -12,8 +12,6 @@ import (
 
 	"golang.org/x/sync/errgroup"
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
-
-	"github.com/otterscale/otterscale/internal/core/machine"
 )
 
 type unitInfo struct {
@@ -213,20 +211,11 @@ func (uc *UseCase) findMachineUnitInfo(ctx context.Context, scope string) (map[s
 
 		machineUnitInfo[jujuID] = unitInfo{
 			Hostname: machines[i].Hostname,
-			HasGPU:   uc.containsNvidiaGPU(gpus),
+			HasGPU:   len(gpus) > 0,
 		}
 	}
 
 	return machineUnitInfo, nil
-}
-
-func (uc *UseCase) containsNvidiaGPU(gpus []machine.GPU) bool {
-	for i := range gpus {
-		if strings.EqualFold(gpus[i].VendorID, "10de") {
-			return true
-		}
-	}
-	return false
 }
 
 func (uc *UseCase) anyGPU(ctrUnitInfo map[string]unitInfo) bool {

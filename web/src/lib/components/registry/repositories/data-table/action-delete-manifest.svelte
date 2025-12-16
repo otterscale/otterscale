@@ -4,41 +4,50 @@
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
 
-	import type { Pool, UpdatePoolRequest } from '$lib/api/storage/v1/storage_pb';
-	import { StorageService } from '$lib/api/storage/v1/storage_pb';
+	import type { DeleteManifestRequest, Manifest } from '$lib/api/registry/v1/registry_pb';
+	import { RegistryService } from '$lib/api/registry/v1/registry_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
+	import type { Booleanified } from '$lib/components/custom/modal/single-step/type';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { m } from '$lib/paraglide/messages';
 </script>
 
 <script lang="ts">
 	let {
-		pool,
+		manifest,
 		scope,
-		reloadManager
+		reloadManager,
+		onSuccess
 	}: {
-		pool: Pool;
+		manifest: Manifest;
 		scope: string;
 		reloadManager: ReloadManager;
+		onSuccess?: () => void;
 	} = $props();
 
 	const transport: Transport = getContext('transport');
-
-	const storageClient = createClient(StorageService, transport);
-	let invalid = $state(false);
+	const registryClient = createClient(RegistryService, transport);
 
 	const defaults = {
 		scope: scope,
-		poolName: pool.name,
-		quotaBytes: pool.quotaBytes,
-		quotaObjects: pool.quotaObjects
-	} as UpdatePoolRequest;
+		digest: manifest.digest,
+		repositoryName: manifest.repositoryName
+	} as DeleteManifestRequest;
 	let request = $state(defaults);
+
+	let verification = $state({
+		tag: ''
+	});
+
 	function reset() {
 		request = defaults;
+		verification = { tag: '' };
 	}
+
+	let invalidity = $state({} as Booleanified<{ repositoryName: string; tag: string }>);
+	const invalid = $derived(invalidity.repositoryName || invalidity.tag);
 
 	let open = $state(false);
 	function close() {
@@ -47,44 +56,37 @@
 </script>
 
 <Modal.Root bind:open>
-	<Modal.Trigger variant="creative">
-		<Icon icon="ph:pencil" />
-		{m.edit()}
+	<Modal.Trigger
+		variant="ghost"
+		class="group flex h-7 w-7 items-center justify-center text-destructive"
+	>
+		<Icon icon="ph:trash" class="transition-transform duration-200 group-hover:scale-110" />
 	</Modal.Trigger>
 	<Modal.Content>
-		<Modal.Header>{m.edit_pool()}</Modal.Header>
+		<Modal.Header>{m.delete_manifest()}</Modal.Header>
 		<Form.Root>
 			<Form.Fieldset>
 				<Form.Field>
-					<Form.Label>{m.name()}</Form.Label>
-					<SingleInput.General
+					<Form.Label>{m.repository_name()}</Form.Label>
+					<SingleInput.Confirm
 						required
 						disabled
-						type="text"
-						bind:value={request.poolName}
-						bind:invalid
+						target={manifest.repositoryName}
+						bind:value={request.repositoryName}
+						bind:invalid={invalidity.repositoryName}
 					/>
 				</Form.Field>
 				<Form.Field>
-					<Form.Label>{m.quota_size()}</Form.Label>
+					<Form.Label>{m.tag()}</Form.Label>
 					<Form.Help>
-						{m.pool_quota_size_direction()}
+						{m.deletion_warning({ identifier: 'Tag' })}
 					</Form.Help>
-					<SingleInput.Measurement
-						bind:value={request.quotaBytes}
-						transformer={(value) => String(value)}
-						units={[
-							{ value: Math.pow(2, 10 * 3), label: 'GB' } as SingleInput.UnitType,
-							{ value: Math.pow(2, 10 * 4), label: 'TB' } as SingleInput.UnitType
-						]}
+					<SingleInput.Confirm
+						required
+						target={manifest.tag}
+						bind:value={verification.tag}
+						bind:invalid={invalidity.tag}
 					/>
-				</Form.Field>
-				<Form.Field>
-					<Form.Label>{m.quota_objects()}</Form.Label>
-					<Form.Help>
-						{m.pool_quota_objects_direction()}
-					</Form.Help>
-					<SingleInput.General bind:value={request.quotaObjects} />
 				</Form.Field>
 			</Form.Fieldset>
 		</Form.Root>
@@ -100,14 +102,16 @@
 				<Modal.Action
 					disabled={invalid}
 					onclick={() => {
-						toast.promise(() => storageClient.updatePool(request), {
-							loading: `Updating ${request.poolName}...`,
+						const repoName = request.repositoryName;
+						toast.promise(() => registryClient.deleteManifest(request), {
+							loading: `Deleting ${repoName}...`,
 							success: () => {
 								reloadManager.force();
-								return `Update ${request.poolName}`;
+								if (onSuccess) onSuccess();
+								return `Delete ${repoName} success`;
 							},
 							error: (error) => {
-								let message = `Fail to update ${request.poolName}`;
+								let message = `Fail to delete ${repoName}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
 									duration: Number.POSITIVE_INFINITY
@@ -115,8 +119,8 @@
 								return message;
 							}
 						});
-						reset();
 						close();
+						reset();
 					}}
 				>
 					{m.confirm()}

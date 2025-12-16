@@ -1,8 +1,7 @@
-<script lang="ts" module>
+<script lang="ts">
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import { getContext } from 'svelte';
-	import type { Writable } from 'svelte/store';
 	import { toast } from 'svelte-sonner';
 
 	import {
@@ -15,37 +14,40 @@
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import { m } from '$lib/paraglide/messages';
-</script>
 
-<script lang="ts">
 	let {
 		packageRepository,
-		configuration
+		configuration = $bindable()
 	}: {
 		packageRepository: Configuration_PackageRepository;
-		configuration: Writable<Configuration>;
+		configuration: Configuration;
 	} = $props();
 
 	const transport: Transport = getContext('transport');
-
 	const client = createClient(ConfigurationService, transport);
-	const defaults = {
-		id: packageRepository.id,
-		url: packageRepository.url
-	} as UpdatePackageRepositoryRequest;
-	let request = $state(defaults);
+
+	let request = $state({} as UpdatePackageRepositoryRequest);
+	let open = $state(false);
+
 	function reset() {
-		request = defaults;
+		request = {
+			id: packageRepository.id,
+			url: packageRepository.url
+		} as UpdatePackageRepositoryRequest;
 	}
 
-	let open = $state(false);
 	function close() {
 		open = false;
 	}
 </script>
 
 <span>
-	<Modal.Root bind:open>
+	<Modal.Root
+		bind:open
+		onOpenChange={(isOpen) => {
+			if (isOpen) reset();
+		}}
+	>
 		<Modal.Trigger variant="creative">
 			<Icon icon="ph:pencil" />
 			{m.edit()}
@@ -61,11 +63,7 @@
 				</Form.Fieldset>
 			</Form.Root>
 			<Modal.Footer>
-				<Modal.Cancel
-					onclick={() => {
-						reset();
-					}}
-				>
+				<Modal.Cancel>
 					{m.cancel()}
 				</Modal.Cancel>
 				<Modal.ActionsGroup>
@@ -75,7 +73,7 @@
 								loading: 'Loading...',
 								success: () => {
 									client.getConfiguration({}).then((response) => {
-										configuration.set(response);
+										configuration = response;
 									});
 									return `Update ${packageRepository.name} success`;
 								},
@@ -89,7 +87,6 @@
 								}
 							});
 
-							reset();
 							close();
 						}}
 					>

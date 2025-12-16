@@ -36,7 +36,7 @@
 		reloadManager: ReloadManager;
 	} = $props();
 
-	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 14 });
+	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 11 });
 	let sorting = $state<SortingState>([]);
 	let columnFilters = $state<ColumnFiltersState>([]);
 	let columnVisibility = $state<VisibilityState>({});
@@ -164,7 +164,7 @@
 				{#each table.getRowModel().rows as row (row.id)}
 					<Table.Row data-state={row.getIsSelected() && 'selected'}>
 						{#each row.getVisibleCells() as cell (cell.id)}
-							<Table.Cell>
+							<Table.Cell class="p-3">
 								<FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
 							</Table.Cell>
 						{/each}

@@ -16,6 +16,7 @@ import (
 	"github.com/otterscale/otterscale/internal/core/application/release"
 	"github.com/otterscale/otterscale/internal/core/application/workload"
 	"github.com/otterscale/otterscale/internal/core/scope"
+	"github.com/otterscale/otterscale/internal/core/versions"
 )
 
 type Warp struct {
@@ -184,7 +185,7 @@ func (uc *UseCase) warpJobSpec(target *WarpTargetExternal, input *WarpInput) bat
 		{Name: "BENCHMARK_ARGS_WARP_OBJ.SIZE", Value: strconv.FormatInt(input.ObjectSize, 10)},
 	}
 
-	if strings.EqualFold(input.Operation.String(), http.MethodPut) {
+	if !strings.EqualFold(input.Operation.String(), http.MethodPut) {
 		env = append(env, corev1.EnvVar{Name: "BENCHMARK_ARGS_WARP_OBJECTS", Value: strconv.FormatInt(input.ObjectCount, 10)})
 	}
 
@@ -195,7 +196,7 @@ func (uc *UseCase) warpJobSpec(target *WarpTargetExternal, input *WarpInput) bat
 				Containers: []corev1.Container{
 					{
 						Name:            "bist-container",
-						Image:           "docker.io/otterscale/bist-s3:v3",
+						Image:           fmt.Sprintf("ghcr.io/otterscale/built-in-self-test/bist-s3:v%s", versions.Bist),
 						Command:         []string{"./start.sh"},
 						Env:             env,
 						ImagePullPolicy: corev1.PullIfNotPresent,
