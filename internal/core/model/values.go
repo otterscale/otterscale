@@ -238,5 +238,5 @@ func generateCUDAVisibleDevices(tensorSize uint32) string {
 		devices[i] = strconv.Itoa(i)
 	}
 
-	return strings.Join(devices, "\\.")
+	return strings.Join(devices, "\\,")
 }
