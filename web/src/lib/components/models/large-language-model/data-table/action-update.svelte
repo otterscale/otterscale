@@ -7,12 +7,13 @@
 
 	import { ApplicationService } from '$lib/api/application/v1/application_pb';
 	import {
+		type Model,
 		type Model_Decode,
 		Model_Mode,
 		type Model_Prefill,
-		ModelService
+		ModelService,
+		type UpdateModelRequest
 	} from '$lib/api/model/v1/model_pb';
-	import { type Model, type UpdateModelRequest } from '$lib/api/model/v1/model_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
@@ -29,48 +30,60 @@
 	let {
 		model,
 		scope,
-		reloadManager
-	}: { model: Model; scope: string; reloadManager: ReloadManager } = $props();
+		reloadManager,
+		closeActions
+	}: {
+		model: Model;
+		scope: string;
+		reloadManager: ReloadManager;
+		closeActions: () => void;
+	} = $props();
 
 	const transport: Transport = getContext('transport');
 
 	const modelClient = createClient(ModelService, transport);
 	const applicationClient = createClient(ApplicationService, transport);
 
-	let isDisaggregationMode = $state(model.mode === Model_Mode.PREFILL_DECODE_DISAGGREGATION);
-
-	const defaults = {
-		scope: scope,
-		name: model.name,
-		namespace: model.namespace,
-		maxModelLength: model.maxModelLength,
-		mode: model.mode,
-		prefill: { ...model.prefill },
-		decode: { ...model.decode }
-	} as UpdateModelRequest;
-	const defaultPrefillResource = { ...model.prefill } as Model_Prefill;
-	const defaultDecodeResource = { ...model.decode } as Model_Decode;
-
-	let request = $state(defaults);
-	let requestPrefillResource = $state({ ...defaultPrefillResource });
-	let requestDecodeResource = $state({ ...defaultDecodeResource });
-
-	function resetPrefillResources() {
-		requestPrefillResource = { ...defaultPrefillResource };
-	}
-	function resetDecodeResources() {
-		requestDecodeResource = { ...defaultDecodeResource };
+	let isDisaggregationMode: boolean = $state(false);
+	function initDisaggregationMode() {
+		isDisaggregationMode = model.mode === Model_Mode.PREFILL_DECODE_DISAGGREGATION ? true : false;
 	}
 
-	function reset() {
-		request = { ...defaults };
-		resetPrefillResources();
-		resetDecodeResources();
+	let requestPrefill = $state({} as Model_Prefill);
+	function initPrefill() {
+		requestPrefill = {
+			replica: model.prefill?.replica ?? 1,
+			tensor: model.prefill?.tensor ?? 1,
+			vgpumemPercentage: model.prefill?.vgpumemPercentage ?? 50
+		} as Model_Prefill;
+	}
+	let requestDecode = $state({} as Model_Decode);
+	function initDecode() {
+		requestDecode = {
+			replica: model.decode?.replica ?? 1,
+			tensor: model.decode?.tensor ?? 1,
+			vgpumemPercentage: model.decode?.vgpumemPercentage ?? 50
+		} as Model_Decode;
+	}
+	let request = $state({} as UpdateModelRequest);
+	function init() {
+		request = {
+			scope: scope,
+			name: model.name,
+			namespace: model.namespace,
+			maxModelLength: model.maxModelLength,
+			mode: model.mode,
+			prefill: model.prefill,
+			decode: model.decode
+		} as UpdateModelRequest;
+		initDisaggregationMode();
+		initPrefill();
+		initDecode();
 	}
 
 	function integrate() {
-		request.prefill = requestPrefillResource;
-		request.decode = requestDecodeResource;
+		request.prefill = requestPrefill;
+		request.decode = requestDecode;
 		request.mode = isDisaggregationMode
 			? Model_Mode.PREFILL_DECODE_DISAGGREGATION
 			: Model_Mode.INTELLIGENT_INFERENCE_SCHEDULING;
@@ -111,7 +124,12 @@
 	bind:open
 	onOpenChange={(isOpen) => {
 		if (isOpen) {
-			reset();
+			init();
+		}
+	}}
+	onOpenChangeComplete={(isOpen) => {
+		if (!isOpen) {
+			closeActions();
 		}
 	}}
 >
@@ -190,21 +208,21 @@
 
 					<Form.Field>
 						<Form.Label>{m.replica()}</Form.Label>
-						<SingleInput.General type="number" bind:value={requestDecodeResource.replica} />
+						<SingleInput.General type="number" bind:value={requestDecode.replica} />
 					</Form.Field>
 
 					<Form.Field>
 						<Form.Label>{m.tensor()}</Form.Label>
-						<SingleInput.General type="number" bind:value={requestDecodeResource.tensor} />
+						<SingleInput.General type="number" bind:value={requestDecode.tensor} />
 					</Form.Field>
 
 					<Form.Field>
 						<Form.Label>{m.memory()}</Form.Label>
 						<div class="flex items-center gap-8">
-							<p class="w-6 whitespace-nowrap">{requestDecodeResource.vgpumemPercentage} %</p>
+							<p class="w-6 whitespace-nowrap">{requestDecode.vgpumemPercentage} %</p>
 							<Slider
 								type="single"
-								bind:value={requestDecodeResource.vgpumemPercentage}
+								bind:value={requestDecode.vgpumemPercentage}
 								min={1}
 								max={100}
 								step={1}
@@ -219,21 +237,21 @@
 						<Form.Legend>{m.prefill()}</Form.Legend>
 						<Form.Field>
 							<Form.Label>{m.replica()}</Form.Label>
-							<SingleInput.General type="number" bind:value={requestPrefillResource.replica} />
+							<SingleInput.General type="number" bind:value={requestPrefill.replica} />
 						</Form.Field>
 
 						<Form.Field>
 							<Form.Label>{m.tensor()}</Form.Label>
-							<SingleInput.General type="number" bind:value={requestPrefillResource.tensor} />
+							<SingleInput.General type="number" bind:value={requestPrefill.tensor} />
 						</Form.Field>
 
 						<Form.Field>
 							<Form.Label>{m.memory()}</Form.Label>
 							<div class="flex items-center gap-8">
-								<p class="w-6 whitespace-nowrap">{requestPrefillResource.vgpumemPercentage} %</p>
+								<p class="w-6 whitespace-nowrap">{requestPrefill.vgpumemPercentage} %</p>
 								<Slider
 									type="single"
-									bind:value={requestPrefillResource.vgpumemPercentage}
+									bind:value={requestPrefill.vgpumemPercentage}
 									min={1}
 									max={100}
 									step={1}
@@ -248,25 +266,21 @@
 
 						<Form.Field>
 							<Form.Label>{m.replica()}</Form.Label>
-							<SingleInput.General
-								type="number"
-								bind:value={requestDecodeResource.replica}
-								disabled
-							/>
+							<SingleInput.General type="number" bind:value={requestDecode.replica} disabled />
 						</Form.Field>
 
 						<Form.Field>
 							<Form.Label>{m.tensor()}</Form.Label>
-							<SingleInput.General type="number" bind:value={requestDecodeResource.tensor} />
+							<SingleInput.General type="number" bind:value={requestDecode.tensor} />
 						</Form.Field>
 
 						<Form.Field>
 							<Form.Label>{m.memory()}</Form.Label>
 							<div class="flex items-center gap-8">
-								<p class="w-6 whitespace-nowrap">{requestDecodeResource.vgpumemPercentage} %</p>
+								<p class="w-6 whitespace-nowrap">{requestDecode.vgpumemPercentage} %</p>
 								<Slider
 									type="single"
-									bind:value={requestDecodeResource.vgpumemPercentage}
+									bind:value={requestDecode.vgpumemPercentage}
 									min={1}
 									max={100}
 									step={1}

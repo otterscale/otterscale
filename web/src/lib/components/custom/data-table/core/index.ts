@@ -32,8 +32,8 @@ const Headers = {
 };
 
 const Actions = {
-	ActionList: ActionList,
-	ActionItem: ActionItem
+	List: ActionList,
+	Item: ActionItem
 };
 
 export { Actions, Cells, Empty, Filters, Footer, getSortingFunction, Headers, Pagination, Sorter };
