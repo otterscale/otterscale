@@ -39,7 +39,7 @@ function getAccessControlList(grants: Bucket_Grant[]): Bucket_ACL {
 	}
 
 	if (grants.some((grant) => grant.uri.includes('AllUsers'))) {
-		return Bucket_ACL.ACL_PUBLIC_READ_WRITE;
+		return Bucket_ACL.ACL_PUBLIC_READ;
 	}
 
 	return Bucket_ACL.ACL_PRIVATE;
