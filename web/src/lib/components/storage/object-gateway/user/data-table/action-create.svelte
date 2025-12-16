@@ -58,11 +58,12 @@
 			<Form.Fieldset>
 				<Form.Field>
 					<Form.Label>{m.id()}</Form.Label>
-					<SingleInput.General
+					<SingleInput.GeneralRule
 						required
 						type="text"
 						bind:value={request.userId}
 						bind:invalid={invalidity.userId}
+						validateRule="lower-alphanum-dash-start-alpha"
 					/>
 				</Form.Field>
 

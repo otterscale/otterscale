@@ -84,12 +84,13 @@
 			<Form.Fieldset>
 				<Form.Field>
 					<Form.Label>{m.name()}</Form.Label>
-					<SingleInput.General
+					<SingleInput.GeneralRule
 						id="name"
 						required
 						type="text"
 						bind:value={request.bucketName}
 						bind:invalid={invalidity.bucketName}
+						validateRule="rfc1123"
 					/>
 				</Form.Field>
 
