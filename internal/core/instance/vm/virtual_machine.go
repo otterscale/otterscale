@@ -72,20 +72,22 @@ type UseCase struct {
 	virtualMachineRestore  VirtualMachineRestoreRepo
 	virtualMachineSnapshot VirtualMachineSnapshotRepo
 
-	machine                machine.MachineRepo
-	service                service.ServiceRepo
-	virtualMachineInstance vmi.VirtualMachineInstanceRepo
+	machine                    machine.MachineRepo
+	service                    service.ServiceRepo
+	virtualMachineInstance     vmi.VirtualMachineInstanceRepo
+	virtualMachineInstanceType vmi.VirtualMachineInstanceTypeRepo
 }
 
-func NewUseCase(virtualMachine VirtualMachineRepo, virtualMachineClone VirtualMachineCloneRepo, virtualMachineRestore VirtualMachineRestoreRepo, virtualMachineSnapshot VirtualMachineSnapshotRepo, machine machine.MachineRepo, service service.ServiceRepo, virtualMachineInstance vmi.VirtualMachineInstanceRepo) *UseCase {
+func NewUseCase(virtualMachine VirtualMachineRepo, virtualMachineClone VirtualMachineCloneRepo, virtualMachineRestore VirtualMachineRestoreRepo, virtualMachineSnapshot VirtualMachineSnapshotRepo, machine machine.MachineRepo, service service.ServiceRepo, virtualMachineInstance vmi.VirtualMachineInstanceRepo, virtualMachineInstanceType vmi.VirtualMachineInstanceTypeRepo) *UseCase {
 	return &UseCase{
-		virtualMachine:         virtualMachine,
-		virtualMachineClone:    virtualMachineClone,
-		virtualMachineRestore:  virtualMachineRestore,
-		virtualMachineSnapshot: virtualMachineSnapshot,
-		service:                service,
-		machine:                machine,
-		virtualMachineInstance: virtualMachineInstance,
+		virtualMachine:             virtualMachine,
+		virtualMachineClone:        virtualMachineClone,
+		virtualMachineRestore:      virtualMachineRestore,
+		virtualMachineSnapshot:     virtualMachineSnapshot,
+		service:                    service,
+		machine:                    machine,
+		virtualMachineInstance:     virtualMachineInstance,
+		virtualMachineInstanceType: virtualMachineInstanceType,
 	}
 }
 
@@ -254,7 +256,26 @@ func (uc *UseCase) GetVirtualMachine(ctx context.Context, scope, namespace, name
 }
 
 func (uc *UseCase) CreateVirtualMachine(ctx context.Context, scope, namespace, name, instanceType, bootDataVolume, startupScript string) (*VirtualMachineData, error) {
-	virtualMachine, err := uc.virtualMachine.Create(ctx, scope, namespace, uc.buildVirtualMachine(namespace, name, instanceType, bootDataVolume, startupScript))
+	// Determine instancetype kind by checking if it exists as cluster-scoped or namespace-scoped
+	instanceTypeKind := "VirtualMachineClusterInstancetype"
+
+	// Try to get cluster instancetype first
+	_, err := uc.virtualMachineInstanceType.GetCluster(ctx, scope, instanceType)
+	if err != nil {
+		// If cluster instancetype not found, check namespace-scoped instancetype
+		if k8serrors.IsNotFound(err) {
+			_, err = uc.virtualMachineInstanceType.Get(ctx, scope, namespace, instanceType)
+			if err == nil {
+				instanceTypeKind = "VirtualMachineInstancetype"
+			} else if !k8serrors.IsNotFound(err) {
+				return nil, err
+			}
+		} else {
+			return nil, err
+		}
+	}
+
+	virtualMachine, err := uc.virtualMachine.Create(ctx, scope, namespace, uc.buildVirtualMachine(namespace, name, instanceType, instanceTypeKind, bootDataVolume, startupScript))
 	if err != nil {
 		return nil, err
 	}
@@ -541,7 +562,7 @@ func (uc *UseCase) combineVirtualMachine(namespace, name string, virtualMachine 
 	}
 }
 
-func (uc *UseCase) buildVirtualMachine(namespace, name, instanceType, bootDataVolume, startupScript string) *VirtualMachine {
+func (uc *UseCase) buildVirtualMachine(namespace, name, instanceType, instanceTypeKind, bootDataVolume, startupScript string) *VirtualMachine {
 	var (
 		runStrategy   = corev1.RunStrategyHalted
 		enabled       = true
@@ -563,6 +584,7 @@ func (uc *UseCase) buildVirtualMachine(namespace, name, instanceType, bootDataVo
 			RunStrategy: &runStrategy,
 			Instancetype: &corev1.InstancetypeMatcher{
 				Name: instanceType,
+				Kind: instanceTypeKind,
 			},
 			Template: &corev1.VirtualMachineInstanceTemplateSpec{
 				Spec: corev1.VirtualMachineInstanceSpec{
