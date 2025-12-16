@@ -83,6 +83,10 @@ func (uc *UseCase) CreateBucket(ctx context.Context, scope, bucket, owner, polic
 		}
 	}
 
+	if err := uc.bucket.UpdateACL(ctx, scope, bucket, acl); err != nil {
+		return nil, err
+	}
+
 	b, err := uc.bucket.Get(ctx, scope, bucket)
 	if err != nil {
 		return nil, err
