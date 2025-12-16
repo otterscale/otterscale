@@ -256,13 +256,10 @@ func (uc *UseCase) GetVirtualMachine(ctx context.Context, scope, namespace, name
 }
 
 func (uc *UseCase) CreateVirtualMachine(ctx context.Context, scope, namespace, name, instanceType, bootDataVolume, startupScript string) (*VirtualMachineData, error) {
-	// Determine instancetype kind by checking if it exists as cluster-scoped or namespace-scoped
 	instanceTypeKind := "VirtualMachineClusterInstancetype"
 
-	// Try to get cluster instancetype first
 	_, err := uc.virtualMachineInstanceType.GetCluster(ctx, scope, instanceType)
 	if err != nil {
-		// If cluster instancetype not found, check namespace-scoped instancetype
 		if k8serrors.IsNotFound(err) {
 			_, err = uc.virtualMachineInstanceType.Get(ctx, scope, namespace, instanceType)
 			if err == nil {
