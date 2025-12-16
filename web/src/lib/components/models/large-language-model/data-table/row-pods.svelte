@@ -117,26 +117,22 @@
 								<Table.Cell class="text-end">{pod.restarts}</Table.Cell>
 								<Table.Cell class="text-start">
 									{#if pod.lastCondition}
-										{@const status = pod.lastCondition.status}
-										{#if status === 'True'}
-											{pod.lastCondition.type}
-										{:else}
-											<div class="flex items-center gap-1 text-destructive">
-												<Badge variant="destructive">{pod.lastCondition.reason}</Badge>
-												<Tooltip.Provider>
-													<Tooltip.Root>
-														<Tooltip.Trigger>
-															<p class="max-w-[100px] truncate">
-																{pod.lastCondition.message}
-															</p>
-														</Tooltip.Trigger>
-														<Tooltip.Content>
+										{pod.lastCondition.type}
+										<div class="flex items-center gap-1 text-destructive">
+											{pod.lastCondition.reason}
+											<Tooltip.Provider>
+												<Tooltip.Root>
+													<Tooltip.Trigger>
+														<p class="max-w-[100px] truncate">
 															{pod.lastCondition.message}
-														</Tooltip.Content>
-													</Tooltip.Root>
-												</Tooltip.Provider>
-											</div>
-										{/if}
+														</p>
+													</Tooltip.Trigger>
+													<Tooltip.Content>
+														{pod.lastCondition.message}
+													</Tooltip.Content>
+												</Tooltip.Root>
+											</Tooltip.Provider>
+										</div>
 									{/if}
 								</Table.Cell>
 								<Table.Cell class="text-center">

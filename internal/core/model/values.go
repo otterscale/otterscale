@@ -70,12 +70,13 @@ schedulingProfiles:
 //nolint:goconst,funlen // ignore
 func convertModelServiceValuesMap(mode Mode, releaseName, modelName string, fromPVC bool, pvcName string, sizeBytes uint64, prefill *Prefill, decode *Decode, maxModelLength uint32) map[string]string {
 	var (
-		prefillReplica, prefillVGPUMemory             uint32
-		decodeReplica, decodeTensor, decodeVGPUMemory uint32
+		prefillReplica, prefillTensor, prefillVGPUMemory uint32
+		decodeReplica, decodeTensor, decodeVGPUMemory    uint32
 	)
 
 	if prefill != nil {
 		prefillReplica = prefill.Replica
+		prefillTensor = prefill.Tensor
 		prefillVGPUMemory = prefill.VGPUMemory
 	}
 
@@ -150,8 +151,9 @@ func convertModelServiceValuesMap(mode Mode, releaseName, modelName string, from
 
 	switch mode {
 	case ModeIntelligentInferenceScheduling:
+		ret["decode.parallelism.tensor"] = strconv.FormatUint(uint64(decodeTensor), 10)
 		ret["decode.containers[0].env[2].name"] = "CUDA_VISIBLE_DEVICES"
-		ret["decode.containers[0].env[2].value"] = "[str]" + strconv.FormatUint(0, 10)
+		ret["decode.containers[0].env[2].value"] = "[str]" + generateCUDAVisibleDevices(decodeTensor)
 		ret["decode.containers[0].env[3].name"] = "UCX_TLS"
 		ret["decode.containers[0].env[3].value"] = "cuda_ipc\\,cuda_copy\\,tcp"
 		ret["decode.containers[0].env[4].name"] = "VLLM_NIXL_SIDE_CHANNEL_PORT"
@@ -168,6 +170,7 @@ func convertModelServiceValuesMap(mode Mode, releaseName, modelName string, from
 		ret["decode.volumes[2].emptyDir.medium"] = "Memory"
 		ret["decode.volumes[2].emptyDir.sizeLimit"] = "16Gi"
 		ret["prefill.replicas"] = strconv.FormatUint(uint64(prefillReplica), 10)
+		ret["prefill.parallelism.tensor"] = strconv.FormatUint(uint64(prefillTensor), 10)
 		ret["prefill.containers[0].image"] = "ghcr.io/llm-d/llm-d-cuda:v" + versions.LLMDCuda
 		ret["prefill.containers[0].modelCommand"] = "vllmServe"
 		ret["prefill.containers[0].args[0]"] = "--kv-transfer-config"
@@ -223,4 +226,17 @@ func convertModelServiceValuesMap(mode Mode, releaseName, modelName string, from
 
 func escapeDot(key string) string {
 	return strings.ReplaceAll(key, ".", "\\.")
+}
+
+func generateCUDAVisibleDevices(tensorSize uint32) string {
+	if tensorSize == 0 {
+		tensorSize = 1
+	}
+
+	devices := make([]string, tensorSize)
+	for i := 0; i < int(tensorSize); i++ {
+		devices[i] = strconv.Itoa(i)
+	}
+
+	return strings.Join(devices, "\\.")
 }
