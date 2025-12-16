@@ -885,5 +885,10 @@
 	"trouble_pushing_image_step_two": "2. Restart Docker Daemon",
 	"trouble_pushing_image_step_two_details": "To restart the Docker daemon on Linux, run the following commands:",
 	"install_extensions_description": "Are you sure you want to install {extensionsBundle} extensions?",
-	"upgrade_extensions_description": "Are you sure you want to upgrade {extensionsBundle} extensions?"
+	"upgrade_extensions_description": "Are you sure you want to upgrade {extensionsBundle} extensions?",
+	"validate_rfc1123": "Must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character.",
+	"validate_alphanum_dash": "Must consist of alphanumeric characters or '-'.",
+	"validate_lower_alphanum_dash": "Must consist of lower case alphanumeric characters or '-'.",
+	"validate_alphanum_dash_start_alpha": "Must consist of alphanumeric characters or '-', and start with a letter.",
+	"validate_lower_alphanum_dash_start_alpha": "Must consist of lower case alphanumeric characters or '-', and start with a letter."
 }

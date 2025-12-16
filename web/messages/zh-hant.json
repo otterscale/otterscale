@@ -885,5 +885,10 @@
 	"trouble_pushing_image_step_two": "2. 重新啟動 Docker 守護程式",
 	"trouble_pushing_image_step_two_details": "若要在 Linux 上重新啟動 Docker 守護程式，請執行以下指令：",
 	"install_extensions_description": "您確定要安裝 {extensionsBundle} 擴充功能嗎？",
-	"upgrade_extensions_description": "您確定要升級 {extensionsBundle} 擴充功能嗎？"
+	"upgrade_extensions_description": "您確定要升級 {extensionsBundle} 擴充功能嗎？",
+	"validate_rfc1123": "必須由小寫字母、數字、'.' 或 '-' 組成，且必須以字母或數字開頭與結尾。",
+	"validate_alphanum_dash": "必須由字母、數字或 '-' 組成。",
+	"validate_lower_alphanum_dash": "必須由小寫字母、數字或 '-' 組成。",
+	"validate_alphanum_dash_start_alpha": "必須由字母、數字或 '-' 組成，並以字母開頭。",
+	"validate_lower_alphanum_dash_start_alpha": "必須由小寫字母、數字或 '-' 組成，並以字母開頭。"
 }
