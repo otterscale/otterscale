@@ -5,6 +5,7 @@ import (
 
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	kvcorev1 "kubevirt.io/api/core/v1"
 
 	"github.com/otterscale/otterscale/internal/core/application/service"
 )
@@ -22,7 +23,7 @@ func (uc *UseCase) CreateVirtualMachineService(ctx context.Context, scope, names
 			Ports: ports,
 			Type:  corev1.ServiceTypeNodePort,
 			Selector: map[string]string{
-				"vm.kubevirt.io/name": vmName,
+				kvcorev1.VirtualMachineNameLabel: vmName, // will be deprecated on v1.7.0
 			},
 		},
 	}
