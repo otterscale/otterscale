@@ -2,6 +2,8 @@ package maas
 
 import (
 	"context"
+	"slices"
+	"strings"
 
 	"github.com/canonical/gomaasclient/entity"
 
@@ -21,15 +23,6 @@ func NewNodeDeviceRepo(maas *MAAS) machine.NodeDeviceRepo {
 
 var _ machine.NodeDeviceRepo = (*nodeDeviceRepo)(nil)
 
-var (
-	// allowedVendors is a set of GPU vendor IDs that are supported.
-	allowedVendors = map[string]bool{
-		"10de": true, // NVIDIA
-		"1002": true, // AMD
-		"8086": true, // Intel
-	}
-)
-
 func (r *nodeDeviceRepo) ListGPUs(_ context.Context, machineID string) ([]machine.GPU, error) {
 	client, err := r.maas.Client()
 	if err != nil {
@@ -45,12 +38,11 @@ func (r *nodeDeviceRepo) ListGPUs(_ context.Context, machineID string) ([]machin
 		return nil, err
 	}
 
-	filteredGPUs := make([]entity.NodeDevice, 0, len(nodeGPUs))
-	for _, gpu := range nodeGPUs {
-		if allowedVendors[gpu.VendorID] {
-			filteredGPUs = append(filteredGPUs, gpu)
-		}
-	}
+	return r.filterNvidiaGPUs(nodeGPUs), nil
+}
 
-	return filteredGPUs, nil
+func (r *nodeDeviceRepo) filterNvidiaGPUs(gpus []machine.GPU) []machine.GPU {
+	return slices.DeleteFunc(gpus, func(gpu machine.GPU) bool {
+		return !strings.EqualFold(gpu.VendorID, "10de")
+	})
 }
