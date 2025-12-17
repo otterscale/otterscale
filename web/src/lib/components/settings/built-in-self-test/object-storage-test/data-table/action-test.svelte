@@ -74,7 +74,7 @@
 		: ({ target: { value: {}, case: {} } } as Warp);
 	const DEFAULT_REQUEST = {
 		kind: { value: DEFAULT_WARP_REQUEST, case: 'warp' },
-		createdBy: page.data.user?.name?.replaceAll(' ', '_') ?? ''
+		createdBy: page.data.user?.username ?? ''
 	} as CreateTestResultRequest;
 	const DEFAULT_INTERNAL_OBJECT_SERVICE =
 		testResult && testResult.kind.value?.target?.case === 'internalObjectService'
