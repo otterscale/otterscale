@@ -29,7 +29,7 @@
 		"@iconify-json/ph": "^1.2.2",
 		"@iconify-json/simple-icons": "^1.2.63",
 		"@inlang/paraglide-js": "^2.7.0",
-		"@internationalized/date": "^3.10.0",
+		"@internationalized/date": "^3.10.1",
 		"@lucide/svelte": "^0.561.0",
 		"@neoconfetti/svelte": "^2.2.2",
 		"@playwright/test": "^1.57.0",
