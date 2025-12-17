@@ -200,7 +200,7 @@ func (uc *UseCase) buildGPURelations(machines []machine.Machine, nodes []cluster
 				Index:       uint32(nodeDevice.Index), //nolint:gosec // uint to uint32
 				Count:       nodeDevice.Count,
 				Cores:       nodeDevice.Devcore,
-				MemoryBytes: int64(nodeDevice.Devmem) * 1024 * 1024, // gigabytes to bytes
+				MemoryBytes: int64(nodeDevice.Devmem) * 1024 * 1024, // mebibytes to bytes
 				Type:        nodeDevice.Type,
 				Health:      nodeDevice.Health,
 				MachineID:   machine.SystemID,
@@ -225,7 +225,7 @@ func (uc *UseCase) extractPodDevices(pod *workload.Pod, checkList map[string]str
 				devices = append(devices, PodDevice{
 					GPUID:           containerDevice.UUID,
 					UsedCores:       containerDevice.Usedcores,
-					UsedMemoryBytes: int64(containerDevice.Usedmem) * 1024 * 1024, // gigabytes to bytes
+					UsedMemoryBytes: int64(containerDevice.Usedmem) * 1024 * 1024, // mebibytes to bytes
 				})
 			}
 		}
