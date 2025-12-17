@@ -30,10 +30,11 @@
 		scope,
 		serviceUri,
 		reloadManager
-	}: { buckets: Writable<Bucket[]>; 
+	}: {
+		buckets: Writable<Bucket[]>;
 		scope: string;
-		serviceUri: string; 
-		reloadManager: ReloadManager 
+		serviceUri: string;
+		reloadManager: ReloadManager;
 	} = $props();
 
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 8 });
@@ -113,7 +114,7 @@
 
 <Layout.Root>
 	<Layout.Statistics>
-		<Statistics {table} {serviceUri}/>
+		<Statistics {table} {serviceUri} />
 	</Layout.Statistics>
 	<Layout.Controller>
 		<Layout.ControllerFilter>
