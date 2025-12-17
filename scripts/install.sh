@@ -1240,7 +1240,7 @@ juju_add_k8s() {
         log "INFO" "Application prometheus (from cos-lite bundle) already exists" "JUJU_APPLICATION"
     else
         log "INFO" "Deploy application cos-lite" "JUJU_APPLICATION"
-        su "$NON_ROOT_USER" -c "juju deploy -m cos cos-lite --trust --storage prometheus-database=30G --debug" >>"$TEMP_LOG" 2>&1
+        su "$NON_ROOT_USER" -c "juju deploy -m cos cos-lite --trust --overlay <(echo '{\"applications\": {\"prometheus\": {\"storage\": {\"database\": \"30G\"}}}}') --debug" >>"$TEMP_LOG" 2>&1
     fi
 
     if su "$NON_ROOT_USER" -c "juju show-application -m cos prometheus-scrape-target-k8s >/dev/null 2>&1"; then
@@ -1252,8 +1252,6 @@ juju_add_k8s() {
 
     ## Config prometheus
     su "$NON_ROOT_USER" -c "juju config -m cos prometheus metrics_retention_time=180d" >>"$TEMP_LOG" 2>&1
-    su "$NON_ROOT_USER" -c "juju config -m cos prometheus maximum_retention_size=80%" >>"$TEMP_LOG" 2>&1
-
 
     ## Offer
     su "$NON_ROOT_USER" -c "juju offer cos.grafana:grafana-dashboard global-grafana" >>"$TEMP_LOG" 2>&1
