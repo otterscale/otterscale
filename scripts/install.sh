@@ -1240,7 +1240,7 @@ juju_add_k8s() {
         log "INFO" "Application prometheus (from cos-lite bundle) already exists" "JUJU_APPLICATION"
     else
         log "INFO" "Deploy application cos-lite" "JUJU_APPLICATION"
-        su "$NON_ROOT_USER" -c "juju deploy -m cos cos-lite --trust --debug" >>"$TEMP_LOG" 2>&1
+        su "$NON_ROOT_USER" -c "juju deploy -m cos cos-lite --trust --overlay <(echo '{\"applications\": {\"prometheus\": {\"storage\": {\"database\": \"30G\"}}}}') --debug" >>"$TEMP_LOG" 2>&1
     fi
 
     if su "$NON_ROOT_USER" -c "juju show-application -m cos prometheus-scrape-target-k8s >/dev/null 2>&1"; then
@@ -1252,7 +1252,6 @@ juju_add_k8s() {
 
     ## Config prometheus
     su "$NON_ROOT_USER" -c "juju config -m cos prometheus metrics_retention_time=180d" >>"$TEMP_LOG" 2>&1
-    su "$NON_ROOT_USER" -c "juju config -m cos prometheus maximum_retention_size=70%" >>"$TEMP_LOG" 2>&1
 
     ## Offer
     su "$NON_ROOT_USER" -c "juju offer cos.grafana:grafana-dashboard global-grafana" >>"$TEMP_LOG" 2>&1
@@ -1471,7 +1470,7 @@ EOF
 }
 
 generate_chart_values() {
-    local keycloak_realm="otters"
+    local keycloak_realm="otterscale"
 
     # Collect MAAS configuration
     local maas_endpoint="http://$OTTERSCALE_INTERFACE_IP:5240/MAAS"
@@ -1632,12 +1631,12 @@ keycloakx:
   extraVolumes: |
     - name: realm-import-volume
       secret:
-        secretName: '{{ .Release.Name }}-keycloakx-otters-realm'
+        secretName: '{{ .Release.Name }}-keycloakx-otterscale-realm'
 
   extraVolumeMounts: |
     - name: realm-import-volume
-      mountPath: "/opt/keycloak/data/import/otters-realm.json"
-      subPath: "otters-realm.json"
+      mountPath: "/opt/keycloak/data/import/otterscale-realm.json"
+      subPath: "otterscale-realm.json"
       readOnly: true
 
   secrets:
@@ -1646,12 +1645,13 @@ keycloakx:
         user: admin
         password: "$keycloak_admin_paswd"
 
-    otters-realm:
+    otterscale-realm:
       stringData:
-        otters-realm.json: |
+        otterscale-realm.json: |
           {
             "realm": "$keycloak_realm",
             "enabled": true,
+            "displayNameHtml": "<img src=\"https://upload.wikimedia.org/wikipedia/commons/6/61/Phison-logo.svg\" alt=\"Phison\">",
             "registrationAllowed": true,
             "rememberMe": true,
             "resetPasswordAllowed": true,

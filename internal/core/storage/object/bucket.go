@@ -46,10 +46,10 @@ type BucketRepo interface {
 	Key(scope string) (accessKey string, secretKey string)
 }
 
-func (uc *UseCase) ListBuckets(ctx context.Context, scope string) ([]BucketData, error) {
+func (uc *UseCase) ListBuckets(ctx context.Context, scope string) (bucketDatas []BucketData, uri string, err error) {
 	buckets, err := uc.bucket.List(ctx, scope)
 	if err != nil {
-		return nil, err
+		return nil, "", err
 	}
 
 	ret := []BucketData{}
@@ -65,7 +65,7 @@ func (uc *UseCase) ListBuckets(ctx context.Context, scope string) ([]BucketData,
 		})
 	}
 
-	return ret, nil
+	return ret, uc.bucket.Endpoint(scope), nil
 }
 
 func (uc *UseCase) CreateBucket(ctx context.Context, scope, bucket, owner, policy string, acl BucketCannedACL) (*BucketData, error) {
@@ -73,36 +73,7 @@ func (uc *UseCase) CreateBucket(ctx context.Context, scope, bucket, owner, polic
 		return nil, err
 	}
 
-	if err := uc.bucket.UpdateOwner(ctx, scope, bucket, owner); err != nil {
-		return nil, err
-	}
-
-	if policy != "" {
-		if err := uc.bucket.UpdatePolicy(ctx, scope, bucket, policy); err != nil {
-			return nil, err
-		}
-	}
-
-	b, err := uc.bucket.Get(ctx, scope, bucket)
-	if err != nil {
-		return nil, err
-	}
-
-	p, err := uc.bucket.GetPolicy(ctx, scope, bucket)
-	if err != nil {
-		return nil, err
-	}
-
-	a, err := uc.bucket.GetACL(ctx, scope, bucket)
-	if err != nil {
-		return nil, err
-	}
-
-	return &BucketData{
-		Bucket: b,
-		Policy: p,
-		Grants: a,
-	}, nil
+	return uc.UpdateBucket(ctx, scope, bucket, owner, policy, acl)
 }
 
 func (uc *UseCase) UpdateBucket(ctx context.Context, scope, bucket, owner, policy string, acl BucketCannedACL) (*BucketData, error) {

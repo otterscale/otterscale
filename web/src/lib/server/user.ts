@@ -7,6 +7,7 @@ export type User = typeof usersTable.$inferSelect;
 
 export async function createUser(
 	sub: string,
+	username: string,
 	email: string,
 	name: string,
 	picture: string
@@ -15,6 +16,7 @@ export async function createUser(
 		.insert(usersTable)
 		.values({
 			sub,
+			username,
 			email,
 			name,
 			picture

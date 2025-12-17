@@ -157,7 +157,9 @@
 									{/if}
 								</Table.Cell>
 								<Table.Cell>
-									<span class="flex items-center justify-end gap-1">{dataVolume.progress}</span>
+									<span class="flex items-center justify-end gap-1"
+										>{Math.round(parseFloat(dataVolume.progress))}%</span
+									>
 								</Table.Cell>
 								<Table.Cell>
 									{@const { value: capacity, unit } = formatCapacity(dataVolume.sizeBytes)}

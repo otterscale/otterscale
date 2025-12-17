@@ -456,6 +456,7 @@
 	"users": "使用者",
 	"bucket": "Bucket",
 	"access_key": "存取金鑰",
+	"created_access_key": "存取金鑰已建立",
 	"delete_key": "刪除金鑰",
 	"user_suspended_direction": "系統使用者 S3 金鑰 自動產生金鑰 使用者配額 已啟用 Bucket 配額 已啟用 暫停使用者會停用使用者和子使用者。",
 	"id": "ID",

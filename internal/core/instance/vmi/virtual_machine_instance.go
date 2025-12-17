@@ -3,11 +3,11 @@ package vmi
 import (
 	"context"
 
-	corev1 "kubevirt.io/api/core/v1"
+	kvcorev1 "kubevirt.io/api/core/v1"
 )
 
 // VirtualMachineInstance represents a KubeVirt VirtualMachineInstance resource.
-type VirtualMachineInstance = corev1.VirtualMachineInstance
+type VirtualMachineInstance = kvcorev1.VirtualMachineInstance
 
 type VirtualMachineInstanceRepo interface {
 	List(ctx context.Context, scope, namespace, selector string) ([]VirtualMachineInstance, error)

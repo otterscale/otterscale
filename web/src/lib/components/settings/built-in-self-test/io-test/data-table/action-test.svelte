@@ -71,7 +71,7 @@
 		: ({ target: { value: {}, case: {} } } as FIO);
 	const DEFAULT_REQUEST = {
 		kind: { value: DEFAULT_FIO_REQUEST, case: 'fio' },
-		createdBy: page.data.user?.name?.replaceAll(' ', '_') ?? ''
+		createdBy: page.data.user?.username ?? ''
 	} as CreateTestResultRequest;
 	const DEFAULT_CEPH_BLOCK_DEVICE =
 		testResult && testResult.kind.value?.target?.case === 'cephBlockDevice'

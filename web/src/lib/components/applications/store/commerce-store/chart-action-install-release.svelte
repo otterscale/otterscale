@@ -7,7 +7,8 @@
 
 	import {
 		ApplicationService,
-		type CreateReleaseRequest
+		type CreateReleaseRequest,
+		type Release
 	} from '$lib/api/application/v1/application_pb';
 	import {
 		type Chart,
@@ -27,10 +28,12 @@
 <script lang="ts">
 	let {
 		scope,
-		chart
+		chart,
+		releases
 	}: {
 		scope: string;
 		chart: Chart;
+		releases: Writable<Release[]>;
 	} = $props();
 
 	const transport: Transport = getContext('transport');
@@ -63,14 +66,18 @@
 
 	let versionReference = $state('');
 	let versionReferenceOptions: Writable<SingleSelect.OptionType[]> = writable([]);
+	let request = $state({} as CreateReleaseRequest);
+	let open = $state(false);
 
-	const defaults = $state({} as CreateReleaseRequest);
-	let request = $state(defaults);
-	function reset() {
-		request = defaults;
+	function init() {
+		request = {
+			scope: scope,
+			chartRef: versionReference,
+			valuesYaml: '',
+			valuesMap: {}
+		} as CreateReleaseRequest;
 	}
 
-	let open = $state(false);
 	function close() {
 		open = false;
 	}
@@ -84,7 +91,14 @@
 	});
 </script>
 
-<Modal.Root bind:open>
+<Modal.Root
+	bind:open
+	onOpenChange={(isOpen) => {
+		if (isOpen) {
+			init();
+		}
+	}}
+>
 	<Modal.Trigger disabled={chart.deprecated} variant="primary" class="w-full">
 		<Icon icon="ph:download-simple" />
 		{m.install()}
@@ -122,7 +136,7 @@
 							<SingleSelect.List>
 								<SingleSelect.Empty>No results found.</SingleSelect.Empty>
 								<SingleSelect.Group>
-									{#each $versionReferenceOptions as option}
+									{#each $versionReferenceOptions as option (option.value)}
 										<SingleSelect.Item {option}>
 											<Icon
 												icon={option.icon ? option.icon : 'ph:empty'}
@@ -152,11 +166,7 @@
 		</Form.Fieldset>
 
 		<Modal.Footer>
-			<Modal.Cancel
-				onclick={() => {
-					reset();
-				}}
-			>
+			<Modal.Cancel>
 				{m.cancel()}
 			</Modal.Cancel>
 			<Modal.Action
@@ -164,6 +174,9 @@
 					toast.promise(() => applicationClient.createRelease(request), {
 						loading: `Creating ${request.name}...`,
 						success: () => {
+							applicationClient.listReleases({ scope: scope }).then((r) => {
+								releases.set(r.releases);
+							});
 							return `Create ${request.name}`;
 						},
 						error: (error) => {
@@ -175,8 +188,6 @@
 							return message;
 						}
 					});
-
-					reset();
 					close();
 				}}
 			>
