@@ -18,14 +18,22 @@
 
 	let configuration = $state('');
 	async function fetchConfiguration() {
-		const response = await fetch(`https://huggingface.co/${modelName}/resolve/main/config.json`);
-		configuration = await response.text();
+		try {
+			const response = await fetch(`https://huggingface.co/${modelName}/resolve/main/config.json`);
+			configuration = await response.text();
+		} catch (error) {
+			console.error('Failed to fetch model configuration:', error);
+		}
 	}
 
 	let information = $state('');
 	async function fetchInformation() {
-		const response = await fetch(`https://huggingface.co/api/models/${modelName}`);
-		information = await response.text();
+		try {
+			const response = await fetch(`https://huggingface.co/api/models/${modelName}`);
+			information = await response.text();
+		} catch (error) {
+			console.error('Failed to fetch model information:', error);
+		}
 	}
 
 	async function fetchAll() {

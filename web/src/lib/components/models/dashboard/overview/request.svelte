@@ -147,18 +147,26 @@
 					}}
 				>
 					{#snippet tooltip()}
-						<Chart.Tooltip
-							indicator="dot"
-							labelFormatter={(v: Date) => {
-								return v.toLocaleDateString('en-US', {
-									year: 'numeric',
-									month: 'short',
-									day: 'numeric',
-									hour: 'numeric',
-									minute: 'numeric'
-								});
-							}}
-						/>
+						<Chart.Tooltip hideLabel>
+							{#snippet formatter({ item, name, value })}
+								<div
+									style="--color-bg: {item.color}"
+									class="aspect-square h-full w-fit shrink-0 border-(--color-border) bg-(--color-bg)"
+								></div>
+								<div
+									class="flex flex-1 shrink-0 items-center justify-between gap-2 text-xs leading-none"
+								>
+									<div class="grid gap-1.5">
+										<span class="text-muted-foreground">{name}</span>
+									</div>
+									{#if value}
+										<p class="font-mono">{Number(value).toFixed(2)} {m.second()}</p>
+									{:else}
+										NaN
+									{/if}
+								</div>
+							{/snippet}
+						</Chart.Tooltip>
 					{/snippet}
 					{#snippet marks({ series, getAreaProps })}
 						{#each series as s, i (s.key)}

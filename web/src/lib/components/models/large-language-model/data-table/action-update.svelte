@@ -48,7 +48,7 @@
 
 	let isDisaggregationMode: boolean = $state(false);
 	function initDisaggregationMode() {
-		isDisaggregationMode = model.mode === Model_Mode.PREFILL_DECODE_DISAGGREGATION ? true : false;
+		isDisaggregationMode = model.mode === Model_Mode.PREFILL_DECODE_DISAGGREGATION;
 	}
 
 	let requestPrefill = $state({} as Model_Prefill);

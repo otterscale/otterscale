@@ -48,9 +48,9 @@
 		try {
 			const response = await prometheusDriver.rangeQuery(
 				`histogram_quantile(0.95, sum by(le) (rate(vllm:e2e_request_latency_seconds_bucket{juju_model="${scope}"}[5m])))`,
-				Date.now() - 60 * 60 * 1000,
+				Date.now() - 24 * 60 * 60 * 1000,
 				Date.now(),
-				10 * 60
+				2 * 60
 			);
 			const sampleValues: SampleValue[] = response.result[0]?.values ?? [];
 			latencies =

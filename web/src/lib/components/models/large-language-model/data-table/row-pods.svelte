@@ -180,9 +180,14 @@
 								</Table.Cell>
 								<Table.Cell class="text-center">
 									{@const configuration = {
-										time: { label: 'time', color: 'var(--chart-1)' }
+										time: { label: 'latency', color: 'var(--chart-1)' }
 									} satisfies Chart.ChartConfig}
-									{@const requestLatencies: SampleValue[] = (metrics.requestLatency?.get(pod.name) ?? []).map((sampleValue: SampleValue) => ({time: sampleValue.time, value: sampleValue.value && !isNaN(sampleValue.value) ? sampleValue.value : 0 } as SampleValue))}
+									{@const requestLatencies = (metrics.requestLatency?.get(pod.name) ?? []).map(
+										(sampleValue: SampleValue) => ({
+											time: sampleValue.time,
+											value: sampleValue.value && !isNaN(sampleValue.value) ? sampleValue.value : 0
+										})
+									)}
 									<Chart.Container config={configuration} class="h-10 w-full">
 										<LineChart
 											data={requestLatencies}

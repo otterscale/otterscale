@@ -36,7 +36,7 @@
 
 	async function fetchTimesToFirstToken(quantile: number) {
 		const response = await prometheusDriver.rangeQuery(
-			`histogram_quantile(${quantile}, sum by(le) (rate(vllm:time_to_first_token_seconds_bucket{juju_model="${scope}"}[2m])))`,
+			`histogram_quantile(${quantile}, sum by(le) (rate(vllm:time_to_first_token_seconds_bucket{juju_model="${scope}"}[5m])))`,
 			Date.now() - 24 * 60 * 60 * 1000,
 			Date.now(),
 			2 * 60

@@ -53,7 +53,7 @@
 		try {
 			const response = await prometheusDriver.rangeQuery(
 				`count by(endpoint) (vllm:cache_config_info{juju_model="${scope}"})`,
-				Date.now() - 10 * 60 * 1000,
+				Date.now() - 24 * 60 * 60 * 1000,
 				Date.now(),
 				2 * 60
 			);
