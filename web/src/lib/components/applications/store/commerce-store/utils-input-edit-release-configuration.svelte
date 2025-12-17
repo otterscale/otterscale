@@ -196,7 +196,7 @@
 		@apply mb-4;
 	}
 	.markdown :global(a) {
-		@apply wrap-break-word text-blue-600 underline transition-colors hover:text-blue-800;
+		@apply break-words text-blue-600 underline transition-colors hover:text-blue-800;
 	}
 	.markdown :global(ul),
 	.markdown :global(ol) {

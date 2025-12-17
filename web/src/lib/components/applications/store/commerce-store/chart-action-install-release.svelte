@@ -70,7 +70,6 @@
 	let open = $state(false);
 
 	function init() {
-		console.log('init');
 		request = {
 			scope: scope,
 			chartRef: versionReference,
