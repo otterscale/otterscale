@@ -20,7 +20,7 @@
 	let {
 		release,
 		scope,
-		releases = $bindable()
+		releases
 	}: {
 		release: Release;
 		scope: string;
@@ -28,28 +28,33 @@
 	} = $props();
 
 	const transport: Transport = getContext('transport');
-
 	const client = createClient(ApplicationService, transport);
 
-	const defaults = {
-		dryRun: false,
-		scope: scope,
-		namespace: release.namespace
-	} as DeleteReleaseRequest;
-	let request = $state(defaults as DeleteReleaseRequest);
-	function reset() {
-		request = { dryRun: false } as DeleteReleaseRequest;
+	let request = $state({} as DeleteReleaseRequest);
+	let invalid = $state(false);
+	let open = $state(false);
+
+	function init() {
+		request = {
+			dryRun: false,
+			scope: scope,
+			namespace: release.namespace
+		} as DeleteReleaseRequest;
 	}
 
-	let invalid = $state(false);
-
-	let open = $state(false);
 	function close() {
 		open = false;
 	}
 </script>
 
-<Modal.Root bind:open>
+<Modal.Root
+	bind:open
+	onOpenChange={(isOpen) => {
+		if (isOpen) {
+			init();
+		}
+	}}
+>
 	<Modal.Trigger variant="destructive">
 		<Icon icon="ph:trash" />
 		{m.delete()}
@@ -76,11 +81,7 @@
 			</Form.Fieldset>
 		</Form.Root>
 		<Modal.Footer>
-			<Modal.Cancel
-				onclick={() => {
-					reset();
-				}}
-			>
+			<Modal.Cancel>
 				{m.cancel()}
 			</Modal.Cancel>
 			<Modal.Action
@@ -89,7 +90,7 @@
 					toast.promise(() => client.deleteRelease(request), {
 						loading: 'Loading...',
 						success: () => {
-							client.listReleases({}).then((r) => {
+							client.listReleases({ scope: scope }).then((r) => {
 								releases.set(r.releases);
 							});
 							return `Delete ${request.name}`;
