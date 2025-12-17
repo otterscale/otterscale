@@ -24,7 +24,7 @@
 		release,
 		scope,
 		valuesYaml = '',
-		releases = $bindable()
+		releases
 	}: {
 		release: Release;
 		scope: string;
@@ -32,27 +32,27 @@
 		releases: Writable<Release[]>;
 	} = $props();
 
-	const defaults = {
-		dryRun: false,
-		scope: scope,
-		namespace: release.namespace,
-		name: release.name,
-		chartRef: '',
-		valuesYaml: valuesYaml
-	} as UpdateReleaseRequest;
-	let request = $state(defaults);
-	function reset() {
-		request = defaults;
-	}
-
-	let open = $state(false);
-	function close() {
-		open = false;
-	}
-
 	const transport: Transport = getContext('transport');
 	const applicationClient = createClient(ApplicationService, transport);
 	const registryClient = createClient(RegistryService, transport);
+
+	let request = $state({} as UpdateReleaseRequest);
+	let open = $state(false);
+
+	function init() {
+		request = {
+			dryRun: false,
+			scope: scope,
+			namespace: release.namespace,
+			name: release.name,
+			chartRef: '',
+			valuesYaml: valuesYaml
+		} as UpdateReleaseRequest;
+	}
+
+	function close() {
+		open = false;
+	}
 
 	async function fetchChartRef(scope: string, repositoryName: string, chartVersion: string) {
 		try {
@@ -81,7 +81,14 @@
 	});
 </script>
 
-<Modal.Root bind:open>
+<Modal.Root
+	bind:open
+	onOpenChange={(isOpen) => {
+		if (isOpen) {
+			init();
+		}
+	}}
+>
 	<Modal.Trigger variant="creative">
 		<Icon icon="ph:pencil" />
 		{m.edit()}
@@ -114,11 +121,7 @@
 			</Form.Field>
 		</Form.Fieldset>
 		<Modal.Footer>
-			<Modal.Cancel
-				onclick={() => {
-					reset();
-				}}
-			>
+			<Modal.Cancel>
 				{m.cancel()}
 			</Modal.Cancel>
 			<Modal.Action
@@ -126,7 +129,7 @@
 					toast.promise(() => applicationClient.updateRelease(request), {
 						loading: 'Loading...',
 						success: (r) => {
-							applicationClient.listReleases({}).then((r) => {
+							applicationClient.listReleases({ scope: scope }).then((r) => {
 								releases.set(r.releases);
 							});
 							return `Update ${r.name} success`;
@@ -141,7 +144,6 @@
 						}
 					});
 
-					reset();
 					close();
 				}}
 			>

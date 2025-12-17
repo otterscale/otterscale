@@ -29,12 +29,8 @@
 	}: {
 		chartRef: string;
 		valuesYaml: string;
-		valuesMap?: { [key: string]: any };
+		valuesMap?: { [key: string]: string };
 	} = $props();
-
-	if (!valuesMap) {
-		valuesMap = { nodePort: '', storageClasses: [] };
-	}
 
 	const transport: Transport = getContext('transport');
 	const client = createClient(RegistryService, transport);
@@ -107,7 +103,7 @@
 				<div class="flex items-center gap-2">
 					<Tabs.Root bind:value={tab}>
 						<Tabs.List>
-							<Tabs.Trigger value="basic">
+							<Tabs.Trigger disabled value="basic">
 								{m.basic()}
 							</Tabs.Trigger>
 							<Tabs.Trigger value="advance">
@@ -139,7 +135,7 @@
 			<Resizable.Pane defaultSize={50} class="h-[70vh]">
 				<Tabs.Root value={tab}>
 					<Tabs.Content value="basic">
-						<div class="grid h-full max-h-[calc(70vh_-_40px)] gap-4 overflow-auto px-2">
+						<div class="grid h-full max-h-[calc(70vh-40px)] gap-4 overflow-auto px-2">
 							<Unstruct bind:data={valuesMap} />
 						</div>
 					</Tabs.Content>
@@ -200,7 +196,7 @@
 		@apply mb-4;
 	}
 	.markdown :global(a) {
-		@apply break-words text-blue-600 underline transition-colors hover:text-blue-800;
+		@apply wrap-break-word text-blue-600 underline transition-colors hover:text-blue-800;
 	}
 	.markdown :global(ul),
 	.markdown :global(ol) {

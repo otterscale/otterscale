@@ -14,7 +14,7 @@
 	let {
 		release,
 		scope,
-		releases = $bindable()
+		releases
 	}: {
 		release: Release;
 		scope: string;
@@ -28,13 +28,13 @@
 	</Layout.ActionLabel>
 	<Layout.ActionSeparator />
 	<Layout.ActionItem>
-		<Edit {release} {scope} bind:releases />
+		<Edit {release} {scope} {releases} />
 	</Layout.ActionItem>
 	<Layout.ActionItem>
-		<Rollback {release} {scope} bind:releases />
+		<Rollback {release} {scope} {releases} />
 	</Layout.ActionItem>
 	<Layout.ActionSeparator />
 	<Layout.ActionItem>
-		<Delete {release} {scope} bind:releases />
+		<Delete {release} {scope} {releases} />
 	</Layout.ActionItem>
 </Layout.Actions>
