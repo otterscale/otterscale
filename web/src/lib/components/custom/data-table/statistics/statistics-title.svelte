@@ -1,5 +1,5 @@
 <script lang="ts" module>
-	import type { Type } from './statistics.svelte';
+	import type { Type, TypeAccessor } from './statistics.svelte';
 
 	function getIcon(type: Type) {
 		switch (type) {
@@ -30,7 +30,7 @@
 		...restProps
 	}: WithElementRef<HTMLAttributes<HTMLDivElement>> = $props();
 
-	const type: Type = getContext('type');
+	const typeAccessor: TypeAccessor = getContext('typeAccessor');
 </script>
 
 <Card.Title
@@ -40,7 +40,11 @@
 	{...restProps}
 >
 	<div class="flex shrink-0 items-center justify-center rounded-md bg-primary/10 p-2 text-primary">
-		<Icon data-slot="data-table-statistics-title-icon" icon={getIcon(type)} class="size-5" />
+		<Icon
+			data-slot="data-table-statistics-title-icon"
+			icon={getIcon(typeAccessor.value)}
+			class="size-5"
+		/>
 	</div>
 	{@render children?.()}
 </Card.Title>

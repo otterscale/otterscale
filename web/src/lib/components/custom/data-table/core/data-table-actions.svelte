@@ -8,15 +8,17 @@
 
 	let {
 		ref = $bindable(null),
+		open = $bindable(),
 		class: className,
 		children,
 		...restProps
 	}: DropdownMenuPrimitive.ContentProps & {
+		open?: boolean;
 		portalProps?: DropdownMenuPrimitive.PortalProps;
 	} = $props();
 </script>
 
-<DropdownMenu.Root>
+<DropdownMenu.Root bind:open>
 	<DropdownMenu.Trigger>
 		{#snippet child({ props })}
 			<div class="w-full">

@@ -57,20 +57,28 @@
 						const pods = response.gpuRelations
 							.filter((gpuRelation) => gpuRelation.entity.case === 'pod')
 							.map((gpuRelation) => gpuRelation.entity.value as GPURelation_Pod);
-						return {
-							type: 'gpu',
-							id: `gpu${gpuRelation.entity.value.id}`,
-							data: {
-								scope,
-								gpu: gpuRelation.entity.value,
-								devices: pods.flatMap((pod) =>
-									pod.devices.filter((device) => {
-										return device.gpuId === (gpuRelation.entity.value as GPURelation_GPU).id;
-									})
-								)
-							},
-							position
-						};
+						if (
+							pods
+								.flatMap((pod) => pod.devices.map((device) => device.gpuId))
+								.includes(gpuRelation.entity.value.id)
+						) {
+							return {
+								type: 'gpu',
+								id: `gpu${gpuRelation.entity.value.id}`,
+								data: {
+									scope,
+									gpu: gpuRelation.entity.value,
+									devices: pods.flatMap((pod) =>
+										pod.devices.filter((device) => {
+											return device.gpuId === (gpuRelation.entity.value as GPURelation_GPU).id;
+										})
+									)
+								},
+								position
+							};
+						} else {
+							return {} as Node;
+						}
 					} else if (gpuRelation.entity.case === 'pod') {
 						return {
 							type: 'model',

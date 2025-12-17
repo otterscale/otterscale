@@ -19,9 +19,9 @@
 				<p class="text-center text-lg font-semibold">{serviceUri}</p>
 			</Statistics.Header>
 			<Statistics.Footer class="space-x-1">
-				<Badge>chat</Badge>
-				<Badge>completions</Badge>
-				<Badge>embedding</Badge>
+				<Badge class="select-none">chat</Badge>
+				<Badge class="select-none">completions</Badge>
+				<Badge class="select-none">embedding</Badge>
 			</Statistics.Footer>
 			<Statistics.Background icon="ph:squares-four" />
 		</Statistics.Root>

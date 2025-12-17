@@ -52,7 +52,6 @@
 		if (request.snapshotName) {
 			const timestamp = new Date().toISOString().slice(0, 16).replace(/[-T:]/g, '');
 			request.name = `${request.snapshotName}-${timestamp}`;
-			console.log(request.name);
 		}
 	});
 

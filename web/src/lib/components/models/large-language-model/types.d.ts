@@ -10,7 +10,6 @@ type Meta = {
 type Metric = SvelteMap<string, SampleValue[]>;
 
 type Metrics = {
-	kvCache: Metric;
 	requestLatency: Metric;
 	timeToFirstToken: Metric;
 };

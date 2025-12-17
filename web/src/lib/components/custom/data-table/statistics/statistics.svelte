@@ -1,5 +1,6 @@
 <script lang="ts" module>
 	export type Type = 'data' | 'count' | 'ratio';
+	export type TypeAccessor = { value: Type };
 </script>
 
 <script lang="ts">
@@ -19,7 +20,15 @@
 		type: Type;
 	} = $props();
 
-	setContext('type', type);
+	const typeAccessor: TypeAccessor = {
+		get value() {
+			return type;
+		},
+		set value(newType: Type) {
+			type = newType;
+		}
+	};
+	setContext('typeAccessor', typeAccessor);
 </script>
 
 <Card.Root

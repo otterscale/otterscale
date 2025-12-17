@@ -13,24 +13,20 @@
 		type Model_Prefill,
 		ModelService
 	} from '$lib/api/model/v1/model_pb';
-	import * as Code from '$lib/components/custom/code';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { Booleanified } from '$lib/components/custom/modal/single-step/type';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { Single as SingleSelect } from '$lib/components/custom/select';
-	import { buttonVariants } from '$lib/components/ui/button';
 	import * as ButtonGroup from '$lib/components/ui/button-group/index.js';
-	import Input from '$lib/components/ui/input/input.svelte';
 	import * as InputGroup from '$lib/components/ui/input-group/index.js';
-	import * as Item from '$lib/components/ui/item/index.js';
-	import * as Popover from '$lib/components/ui/popover';
 	import { Slider } from '$lib/components/ui/slider/index.js';
 	import Switch from '$lib/components/ui/switch/switch.svelte';
 	import { m } from '$lib/paraglide/messages.js';
 	import { cn } from '$lib/utils';
 
+	import Reference from './util-reference.svelte';
 	import SelectCloudModel from './util-select-cloud-model.svelte';
 	import SelectLocalModel from './util-select-local-model.svelte';
 </script>
@@ -47,37 +43,32 @@
 	const modelClient = createClient(ModelService, transport);
 	const applicationClient = createClient(ApplicationService, transport);
 
-	const defaults = {
-		scope: scope,
-		namespace: namespace,
-		sizeBytes: BigInt(100 * 1024 ** 3),
-		maxModelLength: 8192,
-		mode: Model_Mode.INTELLIGENT_INFERENCE_SCHEDULING
-	} as CreateModelRequest;
-	const defaultPrefillResource = { replica: 1, tensor: 1 } as Model_Prefill;
-	const defaultDecodeResource = { replica: 1, tensor: 1 } as Model_Decode;
-
-	let request = $state(defaults);
-	let requestPrefillResource = $state({ ...defaultPrefillResource });
-	let requestDecodeResource = $state({ ...defaultDecodeResource });
 	let isDisaggregationMode = $state(false);
 
-	function resetPrefillResources() {
-		requestPrefillResource = { ...defaultPrefillResource };
+	let requestPrefill = $state({} as Model_Prefill);
+	function initPrefill() {
+		requestPrefill = { replica: 1, tensor: 1, vgpumemPercentage: 50 } as Model_Prefill;
 	}
-	function resetDecodeResources() {
-		requestDecodeResource = { ...defaultDecodeResource };
+	let requestDecode = $state({} as Model_Decode);
+	function initDecode() {
+		requestDecode = { replica: 1, tensor: 1, vgpumemPercentage: 50 } as Model_Decode;
 	}
-
-	function reset() {
-		request = { ...defaults };
-		resetPrefillResources();
-		resetDecodeResources();
+	let request = $state({} as CreateModelRequest);
+	function init() {
+		request = {
+			scope: scope,
+			namespace: namespace,
+			sizeBytes: BigInt(100 * 1024 ** 3),
+			maxModelLength: 8192,
+			mode: Model_Mode.INTELLIGENT_INFERENCE_SCHEDULING
+		} as CreateModelRequest;
+		initPrefill();
+		initDecode();
 	}
 
 	function integrate() {
-		request.prefill = requestPrefillResource;
-		request.decode = requestDecodeResource;
+		request.prefill = requestPrefill;
+		request.decode = requestDecode;
 		request.mode = isDisaggregationMode
 			? Model_Mode.PREFILL_DECODE_DISAGGREGATION
 			: Model_Mode.INTELLIGENT_INFERENCE_SCHEDULING;
@@ -106,6 +97,9 @@
 	const invalid = $derived(
 		invalidity.name || invalidity.namespace || invalidity.modelName || invalidity.sizeBytes
 	);
+	$effect(() => {
+		invalidity.modelName = request.modelName && request.modelName !== '' ? false : true;
+	});
 
 	onMount(async () => {
 		try {
@@ -120,7 +114,7 @@
 	bind:open
 	onOpenChange={(isOpen) => {
 		if (isOpen) {
-			reset();
+			init();
 		}
 	}}
 >
@@ -180,14 +174,23 @@
 
 				<Form.Field>
 					<Form.Label>{m.model_name()}</Form.Label>
-					<ButtonGroup.Root class="w-full" aria-invalid={invalid}>
+					<ButtonGroup.Root
+						class={cn(
+							'w-full rounded-md',
+							invalidity.modelName ? 'ring-1 ring-destructive has-focus:ring-0' : ''
+						)}
+					>
 						<InputGroup.Root>
 							<InputGroup.Input
 								placeholder="Select from Artifacts or HuggingFace"
 								bind:value={request.modelName}
+								class={cn(invalidity.modelName ? 'placeholder:text-destructive/50' : '')}
 							/>
 							<InputGroup.Addon>
-								<Icon icon="ph:robot" />
+								<Icon
+									icon="ph:robot"
+									class={cn(invalidity.modelName ? 'text-destructive/50' : '')}
+								/>
 							</InputGroup.Addon>
 						</InputGroup.Root>
 						<SelectLocalModel
@@ -199,10 +202,6 @@
 						/>
 						<SelectCloudModel bind:value={request.modelName} />
 					</ButtonGroup.Root>
-
-					{#if invalidity.modelName}
-						<p class="text-sm text-destructive/50">{m.select_model_description()}</p>
-					{/if}
 				</Form.Field>
 
 				<Form.Field>
@@ -223,37 +222,7 @@
 
 				<Form.Field>
 					<Form.Label>{m.max_model_length()}</Form.Label>
-					<ButtonGroup.Root class="w-full">
-						<Input type="number" bind:value={request.maxModelLength} />
-						{#if request.modelName}
-							{#await fetch(`https://huggingface.co/${request.modelName}/resolve/main/config.json`) then response}
-								{#await response.text() then body}
-									<Popover.Root>
-										<Popover.Trigger class={buttonVariants({ variant: 'outline' })}>
-											<Icon icon="ph:gear-fine" />
-										</Popover.Trigger>
-										<Popover.Content
-											align="center"
-											side="left"
-											class="max-h-[50vh] w-fit max-w-[38vw] overflow-y-auto"
-										>
-											<Item.Root class="w-full">
-												<Item.Content class="flex flex-col items-start">
-													<Item.Title class="text-xl font-bold">
-														{m.configuration()}
-													</Item.Title>
-													<Item.Description class="text-muted-foreground">
-														{request.modelName}
-													</Item.Description>
-												</Item.Content>
-											</Item.Root>
-											<Code.Root lang="json" code={body} class="border-none" />
-										</Popover.Content>
-									</Popover.Root>
-								{/await}
-							{/await}
-						{/if}
-					</ButtonGroup.Root>
+					<SingleInput.General type="number" bind:value={request.maxModelLength} />
 				</Form.Field>
 			</Form.Fieldset>
 
@@ -272,21 +241,21 @@
 
 					<Form.Field>
 						<Form.Label>{m.replica()}</Form.Label>
-						<SingleInput.General type="number" bind:value={requestDecodeResource.replica} />
+						<SingleInput.General type="number" bind:value={requestDecode.replica} />
 					</Form.Field>
 
 					<Form.Field>
 						<Form.Label>{m.tensor()}</Form.Label>
-						<SingleInput.General type="number" bind:value={requestDecodeResource.tensor} />
+						<SingleInput.General type="number" bind:value={requestDecode.tensor} />
 					</Form.Field>
 
 					<Form.Field>
 						<Form.Label>{m.memory()}</Form.Label>
 						<div class="flex items-center gap-8">
-							<p class="w-6 whitespace-nowrap">{requestDecodeResource.vgpumemPercentage} %</p>
+							<p class="w-6 whitespace-nowrap">{requestDecode.vgpumemPercentage} %</p>
 							<Slider
 								type="single"
-								bind:value={requestDecodeResource.vgpumemPercentage}
+								bind:value={requestDecode.vgpumemPercentage}
 								min={1}
 								max={100}
 								step={1}
@@ -301,21 +270,21 @@
 						<Form.Legend>{m.prefill()}</Form.Legend>
 						<Form.Field>
 							<Form.Label>{m.replica()}</Form.Label>
-							<SingleInput.General type="number" bind:value={requestPrefillResource.replica} />
+							<SingleInput.General type="number" bind:value={requestPrefill.replica} />
 						</Form.Field>
 
 						<Form.Field>
 							<Form.Label>{m.tensor()}</Form.Label>
-							<SingleInput.General type="number" bind:value={requestPrefillResource.tensor} />
+							<SingleInput.General type="number" bind:value={requestPrefill.tensor} />
 						</Form.Field>
 
 						<Form.Field>
 							<Form.Label>{m.memory()}</Form.Label>
 							<div class="flex items-center gap-8">
-								<p class="w-6 whitespace-nowrap">{requestPrefillResource.vgpumemPercentage} %</p>
+								<p class="w-6 whitespace-nowrap">{requestPrefill.vgpumemPercentage} %</p>
 								<Slider
 									type="single"
-									bind:value={requestPrefillResource.vgpumemPercentage}
+									bind:value={requestPrefill.vgpumemPercentage}
 									min={1}
 									max={100}
 									step={1}
@@ -330,25 +299,21 @@
 
 						<Form.Field>
 							<Form.Label>{m.replica()}</Form.Label>
-							<SingleInput.General
-								type="number"
-								bind:value={requestDecodeResource.replica}
-								disabled
-							/>
+							<SingleInput.General type="number" bind:value={requestDecode.replica} disabled />
 						</Form.Field>
 
 						<Form.Field>
 							<Form.Label>{m.tensor()}</Form.Label>
-							<SingleInput.General type="number" bind:value={requestDecodeResource.tensor} />
+							<SingleInput.General type="number" bind:value={requestDecode.tensor} />
 						</Form.Field>
 
 						<Form.Field>
 							<Form.Label>{m.memory()}</Form.Label>
 							<div class="flex items-center gap-8">
-								<p class="w-6 whitespace-nowrap">{requestDecodeResource.vgpumemPercentage} %</p>
+								<p class="w-6 whitespace-nowrap">{requestDecode.vgpumemPercentage} %</p>
 								<Slider
 									type="single"
-									bind:value={requestDecodeResource.vgpumemPercentage}
+									bind:value={requestDecode.vgpumemPercentage}
 									min={1}
 									max={100}
 									step={1}
@@ -364,30 +329,35 @@
 			<Modal.Cancel>
 				{m.cancel()}
 			</Modal.Cancel>
-			<Modal.Action
-				disabled={invalid}
-				onclick={() => {
-					integrate();
-					toast.promise(() => modelClient.createModel(request), {
-						loading: `Creating ${request.modelName}...`,
-						success: () => {
-							reloadManager.force();
-							return `Create ${request.modelName} success`;
-						},
-						error: (error) => {
-							let message = `Fail to create ${request.modelName}`;
-							toast.error(message, {
-								description: (error as ConnectError).message.toString(),
-								duration: Number.POSITIVE_INFINITY
-							});
-							return message;
-						}
-					});
-					close();
-				}}
-			>
-				{m.confirm()}
-			</Modal.Action>
+			<div class="flex items-center gap-1">
+				{#if request.modelName}
+					<Reference modelName={request.modelName} />
+				{/if}
+				<Modal.Action
+					disabled={invalid}
+					onclick={() => {
+						integrate();
+						toast.promise(() => modelClient.createModel(request), {
+							loading: `Creating ${request.modelName}...`,
+							success: () => {
+								reloadManager.force();
+								return `Create ${request.modelName} success`;
+							},
+							error: (error) => {
+								let message = `Fail to create ${request.modelName}`;
+								toast.error(message, {
+									description: (error as ConnectError).message.toString(),
+									duration: Number.POSITIVE_INFINITY
+								});
+								return message;
+							}
+						});
+						close();
+					}}
+				>
+					{m.confirm()}
+				</Modal.Action>
+			</div>
 		</Modal.Footer>
 	</Modal.Content>
 </Modal.Root>

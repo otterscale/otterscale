@@ -36,7 +36,9 @@
 	const startTime = new Date(endTime.getTime() - TIME_RANGE_HOURS * 60 * 60 * 1000);
 
 	// Prometheus query
-	const query = `sum by (cpu) (rate(node_cpu_seconds_total{instance=~"${fqdn}", mode!="idle"}[5m])) * 100`;
+	const query = $derived(
+		`sum by (cpu) (rate(node_cpu_seconds_total{instance=~"${fqdn}", mode!="idle"}[5m])) * 100`
+	);
 
 	// Filter state
 	let topk = $state(10);
