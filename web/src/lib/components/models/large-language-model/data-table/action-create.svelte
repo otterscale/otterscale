@@ -13,24 +13,20 @@
 		type Model_Prefill,
 		ModelService
 	} from '$lib/api/model/v1/model_pb';
-	import * as Code from '$lib/components/custom/code';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { Booleanified } from '$lib/components/custom/modal/single-step/type';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { Single as SingleSelect } from '$lib/components/custom/select';
-	import { buttonVariants } from '$lib/components/ui/button';
 	import * as ButtonGroup from '$lib/components/ui/button-group/index.js';
 	import * as InputGroup from '$lib/components/ui/input-group/index.js';
-	import * as Item from '$lib/components/ui/item/index.js';
-	import * as Sheet from '$lib/components/ui/sheet';
 	import { Slider } from '$lib/components/ui/slider/index.js';
 	import Switch from '$lib/components/ui/switch/switch.svelte';
-	import * as Tabs from '$lib/components/ui/tabs';
 	import { m } from '$lib/paraglide/messages.js';
 	import { cn } from '$lib/utils';
 
+	import Reference from './util-reference.svelte';
 	import SelectCloudModel from './util-select-cloud-model.svelte';
 	import SelectLocalModel from './util-select-local-model.svelte';
 </script>
@@ -191,7 +187,10 @@
 								class={cn(invalidity.modelName ? 'placeholder:text-destructive/50' : '')}
 							/>
 							<InputGroup.Addon>
-								<Icon icon="ph:robot" />
+								<Icon
+									icon="ph:robot"
+									class={cn(invalidity.modelName ? 'text-destructive/50' : '')}
+								/>
 							</InputGroup.Addon>
 						</InputGroup.Root>
 						<SelectLocalModel
@@ -202,46 +201,6 @@
 							{namespace}
 						/>
 						<SelectCloudModel bind:value={request.modelName} />
-						{#if request.modelName}
-							<Sheet.Root>
-								<Sheet.Trigger class={buttonVariants({ variant: 'outline' })}>
-									<Icon icon="ph:gear-fine" />
-								</Sheet.Trigger>
-								<Sheet.Content class="min-w-[38vw]">
-									<Item.Root class="w-full">
-										<Item.Content class="flex flex-col items-start">
-											<Item.Title class="text-xl font-bold">
-												{request.modelName}
-											</Item.Title>
-										</Item.Content>
-									</Item.Root>
-									<Tabs.Root value="configuration">
-										<Tabs.List>
-											<Tabs.Trigger value="configuration">{m.configuration()}</Tabs.Trigger>
-											<Tabs.Trigger value="information">{m.information()}</Tabs.Trigger>
-										</Tabs.List>
-										<Tabs.Content value="configuration">
-											{#await fetch(`https://huggingface.co/${request.modelName}/resolve/main/config.json`) then response}
-												{#await response.text() then body}
-													<Code.Root lang="json" code={body} class="border-none" />
-												{/await}
-											{/await}
-										</Tabs.Content>
-										<Tabs.Content value="information">
-											{#await fetch(`https://huggingface.co/api/models/${request.modelName}`) then response}
-												{#await response.text() then body}
-													<Code.Root
-														lang="json"
-														code={JSON.stringify(JSON.parse(body), null, 2)}
-														class="border-none"
-													/>
-												{/await}
-											{/await}
-										</Tabs.Content>
-									</Tabs.Root>
-								</Sheet.Content>
-							</Sheet.Root>
-						{/if}
 					</ButtonGroup.Root>
 				</Form.Field>
 
@@ -370,30 +329,35 @@
 			<Modal.Cancel>
 				{m.cancel()}
 			</Modal.Cancel>
-			<Modal.Action
-				disabled={invalid}
-				onclick={() => {
-					integrate();
-					toast.promise(() => modelClient.createModel(request), {
-						loading: `Creating ${request.modelName}...`,
-						success: () => {
-							reloadManager.force();
-							return `Create ${request.modelName} success`;
-						},
-						error: (error) => {
-							let message = `Fail to create ${request.modelName}`;
-							toast.error(message, {
-								description: (error as ConnectError).message.toString(),
-								duration: Number.POSITIVE_INFINITY
-							});
-							return message;
-						}
-					});
-					close();
-				}}
-			>
-				{m.confirm()}
-			</Modal.Action>
+			<div class="flex items-center gap-1">
+				{#if request.modelName}
+					<Reference modelName={request.modelName} />
+				{/if}
+				<Modal.Action
+					disabled={invalid}
+					onclick={() => {
+						integrate();
+						toast.promise(() => modelClient.createModel(request), {
+							loading: `Creating ${request.modelName}...`,
+							success: () => {
+								reloadManager.force();
+								return `Create ${request.modelName} success`;
+							},
+							error: (error) => {
+								let message = `Fail to create ${request.modelName}`;
+								toast.error(message, {
+									description: (error as ConnectError).message.toString(),
+									duration: Number.POSITIVE_INFINITY
+								});
+								return message;
+							}
+						});
+						close();
+					}}
+				>
+					{m.confirm()}
+				</Modal.Action>
+			</div>
 		</Modal.Footer>
 	</Modal.Content>
 </Modal.Root>

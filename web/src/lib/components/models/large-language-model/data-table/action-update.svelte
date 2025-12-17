@@ -24,6 +24,8 @@
 	import Switch from '$lib/components/ui/switch/switch.svelte';
 	import { m } from '$lib/paraglide/messages.js';
 	import { cn } from '$lib/utils';
+
+	import Reference from './util-reference.svelte';
 </script>
 
 <script lang="ts">
@@ -296,30 +298,33 @@
 			<Modal.Cancel>
 				{m.cancel()}
 			</Modal.Cancel>
-			<Modal.Action
-				disabled={invalid}
-				onclick={() => {
-					integrate();
-					toast.promise(() => modelClient.updateModel(request), {
-						loading: `Updating ${request.name}...`,
-						success: () => {
-							reloadManager.force();
-							return `Update ${request.name} success`;
-						},
-						error: (error) => {
-							let message = `Fail to update ${request.name}`;
-							toast.error(message, {
-								description: (error as ConnectError).message.toString(),
-								duration: Number.POSITIVE_INFINITY
-							});
-							return message;
-						}
-					});
-					close();
-				}}
-			>
-				{m.confirm()}
-			</Modal.Action>
+			<div class="flex items-center gap-1">
+				<Reference modelName={model.id} />
+				<Modal.Action
+					disabled={invalid}
+					onclick={() => {
+						integrate();
+						toast.promise(() => modelClient.updateModel(request), {
+							loading: `Updating ${request.name}...`,
+							success: () => {
+								reloadManager.force();
+								return `Update ${request.name} success`;
+							},
+							error: (error) => {
+								let message = `Fail to update ${request.name}`;
+								toast.error(message, {
+									description: (error as ConnectError).message.toString(),
+									duration: Number.POSITIVE_INFINITY
+								});
+								return message;
+							}
+						});
+						close();
+					}}
+				>
+					{m.confirm()}
+				</Modal.Action>
+			</div>
 		</Modal.Footer>
 	</Modal.Content>
 </Modal.Root>

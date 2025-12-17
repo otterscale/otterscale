@@ -2,6 +2,7 @@
 	import type { Model } from '$lib/api/model/v1/model_pb';
 	import { Actions } from '$lib/components/custom/data-table/core';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
+	import { m } from '$lib/paraglide/messages';
 
 	import Delete from './action-delete.svelte';
 	import Update from './action-update.svelte';
@@ -25,6 +26,10 @@
 </script>
 
 <Actions.List bind:open>
+	<Actions.Label>
+		{m.actions()}
+	</Actions.Label>
+	<Actions.Separator />
 	<Actions.Item>
 		<Update {model} {scope} {reloadManager} closeActions={close} />
 	</Actions.Item>

@@ -1,3 +1,8 @@
+import {
+	Label as ActionLabel,
+	Separator as ActionSeparator
+} from '$lib/components/ui/dropdown-menu/index';
+
 import ActionItem from './data-table-action-item.svelte';
 import ActionList from './data-table-actions.svelte';
 import CellRowExpander from './data-table-cell-row-expander.svelte';
@@ -33,7 +38,9 @@ const Headers = {
 
 const Actions = {
 	List: ActionList,
-	Item: ActionItem
+	Item: ActionItem,
+	Label: ActionLabel,
+	Separator: ActionSeparator
 };
 
 export { Actions, Cells, Empty, Filters, Footer, getSortingFunction, Headers, Pagination, Sorter };
