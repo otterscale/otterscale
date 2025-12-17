@@ -1471,7 +1471,7 @@ EOF
 }
 
 generate_chart_values() {
-    local keycloak_realm="otters"
+    local keycloak_realm="otterscale"
 
     # Collect MAAS configuration
     local maas_endpoint="http://$OTTERSCALE_INTERFACE_IP:5240/MAAS"
@@ -1632,12 +1632,12 @@ keycloakx:
   extraVolumes: |
     - name: realm-import-volume
       secret:
-        secretName: '{{ .Release.Name }}-keycloakx-otters-realm'
+        secretName: '{{ .Release.Name }}-keycloakx-otterscale-realm'
 
   extraVolumeMounts: |
     - name: realm-import-volume
-      mountPath: "/opt/keycloak/data/import/otters-realm.json"
-      subPath: "otters-realm.json"
+      mountPath: "/opt/keycloak/data/import/otterscale-realm.json"
+      subPath: "otterscale-realm.json"
       readOnly: true
 
   secrets:
@@ -1646,12 +1646,13 @@ keycloakx:
         user: admin
         password: "$keycloak_admin_paswd"
 
-    otters-realm:
+    otterscale-realm:
       stringData:
-        otters-realm.json: |
+        otterscale-realm.json: |
           {
             "realm": "$keycloak_realm",
             "enabled": true,
+            "displayNameHtml": "<img src=\"https://upload.wikimedia.org/wikipedia/commons/6/61/Phison-logo.svg\" alt=\"Phison\">",
             "registrationAllowed": true,
             "rememberMe": true,
             "resetPasswordAllowed": true,
