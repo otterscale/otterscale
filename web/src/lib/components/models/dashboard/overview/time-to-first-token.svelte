@@ -36,7 +36,7 @@
 
 	async function fetchTimesToFirstToken(quantile: number) {
 		const response = await prometheusDriver.rangeQuery(
-			`histogram_quantile(${quantile}, sum by(le) (rate(vllm:time_to_first_token_seconds_bucket{juju_model="${scope}"}[2m])))`,
+			`histogram_quantile(${quantile}, sum by(le) (rate(vllm:time_to_first_token_seconds_bucket{juju_model="${scope}"}[5m])))`,
 			Date.now() - 24 * 60 * 60 * 1000,
 			Date.now(),
 			2 * 60
@@ -155,7 +155,7 @@
 									<div class="grid gap-1.5">
 										<span class="text-muted-foreground">{name}</span>
 									</div>
-									<p class="font-mono">{Number(value).toFixed(2)} {m.millisecond()}</p>
+									<p class="font-mono">{Number(value).toFixed(2)} {m.sec()}</p>
 								</div>
 							{/snippet}
 						</Chart.Tooltip>

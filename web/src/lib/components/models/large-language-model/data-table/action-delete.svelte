@@ -16,19 +16,24 @@
 	let {
 		model,
 		scope,
-		reloadManager
-	}: { model: Model; scope: string; reloadManager: ReloadManager } = $props();
+		reloadManager,
+		closeActions
+	}: {
+		model: Model;
+		scope: string;
+		reloadManager: ReloadManager;
+		closeActions: () => void;
+	} = $props();
 
 	const transport: Transport = getContext('transport');
 	const modelClient = createClient(ModelService, transport);
 
-	const defaults = {
-		scope: scope,
-		namespace: model.namespace
-	} as DeleteModelRequest;
-	let request = $state({ ...defaults });
-	function reset() {
-		request = { ...defaults };
+	let request = $state({} as DeleteModelRequest);
+	function init() {
+		request = {
+			scope: scope,
+			namespace: model.namespace
+		} as DeleteModelRequest;
 	}
 
 	let open = $state(false);
@@ -43,7 +48,12 @@
 	bind:open
 	onOpenChange={(isOpen) => {
 		if (isOpen) {
-			reset();
+			init();
+		}
+	}}
+	onOpenChangeComplete={(isOpen) => {
+		if (!isOpen) {
+			closeActions();
 		}
 	}}
 >

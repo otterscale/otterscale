@@ -47,14 +47,22 @@
 	async function fetchLatencies() {
 		try {
 			const response = await prometheusDriver.rangeQuery(
-				`histogram_quantile(0.95, sum by(le) (rate(vllm:e2e_request_latency_seconds_bucket{juju_model="${scope}"}[2m])))`,
-				Date.now() - 10 * 60 * 1000,
+				`histogram_quantile(0.95, sum by(le) (rate(vllm:e2e_request_latency_seconds_bucket{juju_model="${scope}"}[5m])))`,
+				Date.now() - 24 * 60 * 60 * 1000,
 				Date.now(),
 				2 * 60
 			);
 			const sampleValues: SampleValue[] = response.result[0]?.values ?? [];
-			const filtered = sampleValues.filter((sampleValue) => !isNaN(Number(sampleValue.value)));
-			latencies = filtered.length > 0 ? filtered : [];
+			latencies =
+				sampleValues.length > 0
+					? sampleValues.map(
+							(sampleValue) =>
+								({
+									time: sampleValue.time,
+									value: sampleValue && !isNaN(Number(sampleValue.value)) ? sampleValue.value : 0
+								}) as SampleValue
+						)
+					: [];
 		} catch (error) {
 			console.error(`Fail to fetch latencies in scope ${scope}:`, error);
 		}
