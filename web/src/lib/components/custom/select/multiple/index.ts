@@ -1,14 +1,4 @@
-import {
-	Close,
-	Content,
-	Empty,
-	Group,
-	Item,
-	ItemInformation,
-	List,
-	Options,
-	Shortcut
-} from '../single';
+import { Close, Content, Empty, Group, ItemInformation, List, Options, Shortcut } from '../single';
 import Root from './select.svelte';
 import Action from './select-action.svelte';
 import ActionAll from './select-action-all.svelte';
@@ -17,6 +7,7 @@ import Actions from './select-actions.svelte';
 import Check from './select-check.svelte';
 import Controller from './select-controller.svelte';
 import Input from './select-input.svelte';
+import Item from './select-item.svelte';
 import Trigger from './select-trigger.svelte';
 import Viewer from './select-viewer.svelte';
 import type { OptionType } from './types';
