@@ -20,7 +20,7 @@
 	let {
 		release,
 		scope,
-		releases = $bindable()
+		releases
 	}: {
 		release: Release;
 		scope: string;
@@ -30,24 +30,30 @@
 	const transport: Transport = getContext('transport');
 	const client = createClient(ApplicationService, transport);
 
-	const defaults = {
-		scope: scope,
-		namespace: release.namespace
-	} as RollbackReleaseRequest;
-	let request = $state(defaults);
-	function reset() {
-		request = { dryRun: false } as RollbackReleaseRequest;
+	let request = $state({} as RollbackReleaseRequest);
+	let invalid = $state(false);
+	let open = $state(false);
+
+	function init() {
+		request = {
+			scope: scope,
+			namespace: release.namespace
+		} as RollbackReleaseRequest;
 	}
 
-	let invalid = $state(false);
-
-	let open = $state(false);
 	function close() {
 		open = false;
 	}
 </script>
 
-<Modal.Root bind:open>
+<Modal.Root
+	bind:open
+	onOpenChange={(isOpen) => {
+		if (isOpen) {
+			init();
+		}
+	}}
+>
 	<Modal.Trigger variant="creative">
 		<Icon icon="ph:arrow-counter-clockwise" />
 		{m.rollback()}
@@ -76,11 +82,7 @@
 			</Form.Fieldset>
 		</Form.Root>
 		<Modal.Footer>
-			<Modal.Cancel
-				onclick={() => {
-					reset();
-				}}
-			>
+			<Modal.Cancel>
 				{m.cancel()}
 			</Modal.Cancel>
 			<Modal.Action
@@ -89,7 +91,7 @@
 					toast.promise(() => client.rollbackRelease(request), {
 						loading: 'Loading...',
 						success: () => {
-							client.listReleases({}).then((r) => {
+							client.listReleases({ scope: scope }).then((r) => {
 								releases.set(r.releases);
 							});
 							return `Rollback ${request.name}`;
@@ -103,8 +105,6 @@
 							return msg;
 						}
 					});
-
-					reset();
 					close();
 				}}
 			>
