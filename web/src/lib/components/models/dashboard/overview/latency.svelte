@@ -63,6 +63,7 @@
 								}) as SampleValue
 						)
 					: [];
+			console.log(latencies);
 		} catch (error) {
 			console.error(`Fail to fetch latencies in scope ${scope}:`, error);
 		}

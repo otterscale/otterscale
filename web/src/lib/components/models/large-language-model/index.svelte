@@ -53,7 +53,7 @@
 		const timeToFirstTokenSampleVectors = getMapInstanceToMetric(timeToFirstTokenResponse.result);
 
 		const requestLatencyResponse = await prometheusDriver.rangeQuery(
-			`histogram_quantile(0.95, sum by(juju_model, pod, le) (rate(vllm:e2e_request_latency_seconds_bucket{juju_model="${scope}"}[5m])))`,
+			`histogram_quantile(0.95, sum by(pod, le) (rate(vllm:e2e_request_latency_seconds_bucket{juju_model="${scope}"}[5m])))`,
 			Date.now() - 60 * 60 * 1000,
 			Date.now(),
 			10 * 60

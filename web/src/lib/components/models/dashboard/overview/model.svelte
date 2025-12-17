@@ -1,11 +1,13 @@
 <script lang="ts">
+	import { createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import { scaleUtc } from 'd3-scale';
 	import { curveLinear } from 'd3-shape';
 	import { LineChart } from 'layerchart';
 	import { PrometheusDriver, SampleValue } from 'prometheus-query';
-	import { onMount } from 'svelte';
+	import { getContext, onMount } from 'svelte';
 
+	import { ModelService } from '$lib/api/model/v1/model_pb';
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import { buttonVariants } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
@@ -20,32 +22,34 @@
 		isReloading = $bindable()
 	}: { prometheusDriver: PrometheusDriver; scope: string; isReloading: boolean } = $props();
 
-	let latestAvailableModels: number | undefined = $state(undefined);
-	let availableModels = $state([] as SampleValue[]);
-	const trend = $derived(
-		availableModels.length > 1 && availableModels[availableModels.length - 2].value !== 0
-			? (availableModels[availableModels.length - 1].value -
-					availableModels[availableModels.length - 2].value) /
-					availableModels[availableModels.length - 2].value
-			: 0
-	);
+	const transport: Transport = getContext('transport');
+	const modelClient = createClient(ModelService, transport);
 
 	const configuration = {
-		usage: { label: 'Models', color: 'var(--chart-1)' }
+		number: { label: 'Pods', color: 'var(--chart-1)' }
 	} satisfies Chart.ChartConfig;
 
-	async function fetchLatestAvailableModels() {
+	let latestModels: number | undefined = $state(undefined);
+	async function fetchLatestModels() {
 		try {
-			const response = await prometheusDriver.instantQuery(
-				`count by(endpoint) (vllm:cache_config_info{juju_model="${scope}"})`
-			);
-			latestAvailableModels = response.result[0]?.value?.value;
+			const response = await modelClient.listModels({
+				scope: scope
+			});
+			latestModels = response.models.length;
 		} catch (error) {
 			console.error(`Fail to fetch latest available models in scope ${scope}:`, error);
 		}
 	}
 
-	async function fetchAvailableModels() {
+	let availablePods = $state([] as SampleValue[]);
+	const trend = $derived(
+		availablePods.length > 1 && availablePods[availablePods.length - 2].value !== 0
+			? (availablePods[availablePods.length - 1].value -
+					availablePods[availablePods.length - 2].value) /
+					availablePods[availablePods.length - 2].value
+			: 0
+	);
+	async function fetchAvailablePods() {
 		try {
 			const response = await prometheusDriver.rangeQuery(
 				`count by(endpoint) (vllm:cache_config_info{juju_model="${scope}"})`,
@@ -53,15 +57,15 @@
 				Date.now(),
 				2 * 60
 			);
-			availableModels = response.result[0]?.values ?? [];
+			availablePods = response.result[0]?.values ?? [];
 		} catch (error) {
-			console.error(`Fail to fetch available models in scope ${scope}:`, error);
+			console.error(`Fail to fetch available pods in scope ${scope}:`, error);
 		}
 	}
 
 	async function fetch() {
 		try {
-			await Promise.all([fetchLatestAvailableModels(), fetchAvailableModels()]);
+			await Promise.all([fetchLatestModels(), fetchAvailablePods()]);
 		} catch (error) {
 			console.error(`Fail to fetch models data in scope ${scope}:`, error);
 		}
@@ -113,7 +117,7 @@
 				<Icon icon="svg-spinners:6-dots-rotate" class="size-10" />
 			</div>
 		</Card.Content>
-	{:else if latestAvailableModels == undefined}
+	{:else if latestModels == undefined}
 		<Card.Content>
 			<div class="flex h-full w-full flex-col items-center justify-center">
 				<Icon icon="ph:chart-bar-fill" class="size-6 animate-pulse text-muted-foreground" />
@@ -123,20 +127,20 @@
 	{:else}
 		<Card.Content class="flex flex-wrap items-center justify-between gap-6">
 			<div class="flex flex-col gap-0.5">
-				<div class="text-3xl font-bold">{latestAvailableModels}</div>
+				<div class="text-3xl font-bold">{latestModels}</div>
 				<p class="text-sm text-muted-foreground">{m.models()}</p>
 			</div>
 			<Chart.Container config={configuration} class="h-full w-20">
 				<LineChart
-					data={availableModels}
+					data={availablePods}
 					x="time"
 					xScale={scaleUtc()}
 					axis={false}
 					series={[
 						{
 							key: 'value',
-							label: configuration.usage.label,
-							color: configuration.usage.color
+							label: configuration.number.label,
+							color: configuration.number.color
 						}
 					]}
 					props={{
