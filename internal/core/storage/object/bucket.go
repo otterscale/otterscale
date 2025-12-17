@@ -73,40 +73,7 @@ func (uc *UseCase) CreateBucket(ctx context.Context, scope, bucket, owner, polic
 		return nil, err
 	}
 
-	if err := uc.bucket.UpdateOwner(ctx, scope, bucket, owner); err != nil {
-		return nil, err
-	}
-
-	if policy != "" {
-		if err := uc.bucket.UpdatePolicy(ctx, scope, bucket, policy); err != nil {
-			return nil, err
-		}
-	}
-
-	if err := uc.bucket.UpdateACL(ctx, scope, bucket, acl); err != nil {
-		return nil, err
-	}
-
-	b, err := uc.bucket.Get(ctx, scope, bucket)
-	if err != nil {
-		return nil, err
-	}
-
-	p, err := uc.bucket.GetPolicy(ctx, scope, bucket)
-	if err != nil {
-		return nil, err
-	}
-
-	a, err := uc.bucket.GetACL(ctx, scope, bucket)
-	if err != nil {
-		return nil, err
-	}
-
-	return &BucketData{
-		Bucket: b,
-		Policy: p,
-		Grants: a,
-	}, nil
+	return uc.UpdateBucket(ctx, scope, bucket, owner, policy, acl)
 }
 
 func (uc *UseCase) UpdateBucket(ctx context.Context, scope, bucket, owner, policy string, acl BucketCannedACL) (*BucketData, error) {
