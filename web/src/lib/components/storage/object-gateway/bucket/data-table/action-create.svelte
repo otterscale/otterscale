@@ -142,7 +142,7 @@
 						<Button
 							variant="outline"
 							size="sm"
-							href="https://awspolicygen.s3.amazonaws.com/policygen.html"
+							href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/example-bucket-policies.html?icmpid=docs_amazons3_console"
 							target="_blank"
 							class="flex items-center gap-1"
 						>
