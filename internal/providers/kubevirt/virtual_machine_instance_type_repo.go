@@ -2,6 +2,7 @@ package kubevirt
 
 import (
 	"context"
+	"slices"
 	"strings"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -21,36 +22,17 @@ func NewVirtualMachineInstanceTypeRepo(kubevirt *KubeVirt) vmi.VirtualMachineIns
 
 var _ vmi.VirtualMachineInstanceTypeRepo = (*virtualMachineInstanceTypeRepo)(nil)
 
-// filterOutInstanceType checks if an instance type should be filtered out
-// Returns true only if:
-// 1. The name starts with O, CX, M, N, or RT series, AND
-// 2. It has the label "instancetype.kubevirt.io/vendor=kubevirt.io"
-func filterOutInstanceType(name string, labels map[string]string) bool {
+func (r *virtualMachineInstanceTypeRepo) filterCluster(cits []vmi.VirtualMachineClusterInstanceType) []vmi.VirtualMachineClusterInstanceType {
 	excludedPrefixes := []string{"o", "cx", "m", "n", "rt"}
-	lowerName := strings.ToLower(name)
 
-	isTargetSeries := false
-	for _, prefix := range excludedPrefixes {
-		if strings.HasPrefix(lowerName, prefix) {
-			if len(lowerName) > len(prefix) {
-				nextChar := lowerName[len(prefix)]
-				if (nextChar >= '0' && nextChar <= '9') || nextChar == '.' || nextChar == '-' {
-					isTargetSeries = true
-					break
-				}
+	return slices.DeleteFunc(cits, func(cit vmi.VirtualMachineClusterInstanceType) bool {
+		for _, excludedPrefix := range excludedPrefixes {
+			if strings.HasPrefix(cit.Name, excludedPrefix) {
+				return true
 			}
 		}
-	}
-
-	if !isTargetSeries {
 		return false
-	}
-
-	if labels == nil {
-		return false
-	}
-	vendor, exists := labels["instancetype.kubevirt.io/vendor"]
-	return exists && vendor == "kubevirt.io"
+	})
 }
 
 func (r *virtualMachineInstanceTypeRepo) ListCluster(ctx context.Context, scope, selector string) ([]vmi.VirtualMachineClusterInstanceType, error) {
@@ -68,14 +50,7 @@ func (r *virtualMachineInstanceTypeRepo) ListCluster(ctx context.Context, scope,
 		return nil, err
 	}
 
-	filteredItems := make([]vmi.VirtualMachineClusterInstanceType, 0, len(list.Items))
-	for _, item := range list.Items {
-		if !filterOutInstanceType(item.Name, item.Labels) {
-			filteredItems = append(filteredItems, item)
-		}
-	}
-
-	return filteredItems, nil
+	return r.filterCluster(list.Items), nil
 }
 
 func (r *virtualMachineInstanceTypeRepo) GetCluster(ctx context.Context, scope, name string) (*vmi.VirtualMachineClusterInstanceType, error) {
@@ -104,14 +79,7 @@ func (r *virtualMachineInstanceTypeRepo) List(ctx context.Context, scope, namesp
 		return nil, err
 	}
 
-	filteredItems := make([]vmi.VirtualMachineInstanceType, 0, len(list.Items))
-	for _, item := range list.Items {
-		if !filterOutInstanceType(item.Name, item.Labels) {
-			filteredItems = append(filteredItems, item)
-		}
-	}
-
-	return filteredItems, nil
+	return list.Items, nil
 }
 
 func (r *virtualMachineInstanceTypeRepo) Get(ctx context.Context, scope, namespace, name string) (*vmi.VirtualMachineInstanceType, error) {
