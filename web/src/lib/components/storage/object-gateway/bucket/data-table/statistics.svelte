@@ -3,13 +3,21 @@
 	import { type Table } from '@tanstack/table-core';
 
 	import type { Bucket } from '$lib/api/storage/v1/storage_pb';
+	import Badge from '$lib/components/ui/badge/badge.svelte';
 	import * as Card from '$lib/components/ui/card';
 	import { formatCapacity } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
 
-	let { table }: { table: Table<Bucket> } = $props();
+	let { 
+		table,
+		serviceUri
+	 }: { 
+		table: Table<Bucket>;
+		serviceUri: string;
+	 } = $props();
 
 	const filteredBuckets = $derived(table.getFilteredRowModel().rows.map((row) => row.original));
+	const serviceIP = $derived(serviceUri.replace(/^https?:\/\//, ''));
 </script>
 
 <div class="grid w-full gap-3 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
@@ -27,6 +35,9 @@
 						<Icon icon={titleIcon} class="size-5" />
 					</div>
 					<p class="font-bold">{title}</p>
+					<Badge>
+						{serviceIP}
+					</Badge>
 				</Card.Title>
 			</Card.Header>
 			<Card.Content class="lg:max-[1100px]:flex-col lg:max-[1100px]:items-start">
