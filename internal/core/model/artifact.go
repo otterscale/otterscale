@@ -54,7 +54,8 @@ func (uc *UseCase) CreateModelArtifact(ctx context.Context, scope, namespace, na
 }
 
 func (uc *UseCase) DeleteModelArtifact(ctx context.Context, scope, namespace, name string) error {
-	return uc.persistentVolumeClaim.Delete(ctx, scope, namespace, name)
+	_, err := uc.release.Uninstall(ctx, scope, namespace, name, false)
+	return err
 }
 
 func (uc *UseCase) installModelArtifact(ctx context.Context, scope, namespace, name, modelName string, size int64) error {
