@@ -225,7 +225,7 @@ func (uc *UseCase) extractPodDevices(pod *workload.Pod, checkList map[string]str
 				devices = append(devices, PodDevice{
 					GPUID:           containerDevice.UUID,
 					UsedCores:       containerDevice.Usedcores,
-					UsedMemoryBytes: int64(containerDevice.Usedmem) * 1024, // gigabytes to bytes
+					UsedMemoryBytes: int64(containerDevice.Usedmem) * 1024 * 1024, // gigabytes to bytes
 				})
 			}
 		}
