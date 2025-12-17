@@ -30,6 +30,7 @@
 	"no_model_artifact": "No Model Artifact",
 	"no_model_artifact_guide": "No local models found. Please download a model artifact to continue.",
 	"model_artifact_setting_description": "Easily download model artifacts directly from Hugging Face for seamless integration and deployment. Access pre-trained models, manage versions, and streamline your workflow with secure, one-click downloads.",
+	"model_reference_hint": "View model configuration and information below",
 	"disaggregation_mode": "Disaggregation Mode",
 	"inference": "Inference",
 	"prefill": "Prefill",
