@@ -45,7 +45,7 @@
 	<Layout.ActionItem>
 		<Clone {virtualMachine} {scope} {reloadManager} />
 	</Layout.ActionItem>
-	<Layout.ActionItem disabled={true}>
+	<Layout.ActionItem>
 		<Migrate {virtualMachine} {scope} {reloadManager} />
 	</Layout.ActionItem>
 	<Layout.ActionItem>
