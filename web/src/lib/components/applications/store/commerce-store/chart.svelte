@@ -24,14 +24,12 @@
 		chart,
 		chartReleases,
 		scope,
-		charts = $bindable(),
-		releases = $bindable(),
+		releases,
 		children
 	}: {
 		chart: Chart;
 		chartReleases: Release[] | undefined;
 		scope: string;
-		charts: Writable<Chart[]>;
 		releases: Writable<Release[]>;
 		children: Snippet;
 	} = $props();
@@ -88,7 +86,7 @@
 						<span class="flex items-start gap-2">
 							<div class="flex flex-wrap gap-1 overflow-auto">
 								{chart.tags}
-								{#each chart.keywords as keyword}
+								{#each chart.keywords as keyword (keyword)}
 									<Badge variant="outline" class="text-xs">
 										{keyword}
 									</Badge>
@@ -126,7 +124,7 @@
 							</span>
 							<div class="flex max-h-[15vh] flex-col gap-1 overflow-auto pl-6 text-xs">
 								{#if !isDependanciesExpand}
-									{#each chart.dependencies.slice(0, 3) as dependency}
+									{#each chart.dependencies.slice(0, 3) as dependency (dependency.name)}
 										<span class="flex items-center gap-1">
 											{dependency.name}
 											{#if dependency.version}
@@ -143,7 +141,7 @@
 										</Badge>
 									{/if}
 								{:else}
-									{#each chart.dependencies as dependency}
+									{#each chart.dependencies as dependency (dependency.name)}
 										<span class="flex items-center gap-1">
 											{dependency.name}
 											{#if dependency.version}
@@ -204,7 +202,7 @@
 							</span>
 							<div class="flex max-h-[15vh] flex-col gap-1 overflow-auto pl-6 text-xs">
 								{#if !isSourcesExpand}
-									{#each chart.sources.slice(0, 3) as source}
+									{#each chart.sources.slice(0, 3) as source (source)}
 										<!-- eslint-disable svelte/no-navigation-without-resolve -->
 										<a
 											target="_blank"
@@ -221,7 +219,7 @@
 										</Badge>
 									{/if}
 								{:else}
-									{#each chart.sources as source}
+									{#each chart.sources as source (source)}
 										<!-- eslint-disable svelte/no-navigation-without-resolve -->
 										<a
 											target="_blank"
@@ -263,7 +261,7 @@
 							</span>
 							<div class="flex max-h-[15vh] flex-col flex-wrap gap-2 overflow-auto pl-6 text-xs">
 								{#if !isMaintainersExpand}
-									{#each chart.maintainers.slice(0, 3) as maintainer}
+									{#each chart.maintainers.slice(0, 3) as maintainer (maintainer.name)}
 										<p>{maintainer.name}</p>
 									{/each}
 									{#if chart.maintainers.length > 3}
@@ -272,7 +270,7 @@
 										</Badge>
 									{/if}
 								{:else}
-									{#each chart.maintainers as maintainer}
+									{#each chart.maintainers as maintainer (maintainer.name)}
 										<p>{maintainer.name}</p>
 									{/each}
 								{/if}
@@ -299,7 +297,7 @@
 					</Table.Header>
 					<Table.Body>
 						{#if chartReleases}
-							{#each chartReleases as release}
+							{#each chartReleases as release (release.name)}
 								<Table.Row>
 									<Table.Cell>
 										{release.name}
@@ -313,7 +311,7 @@
 										{release.revision}
 									</Table.Cell>
 									<Table.Cell>
-										<Actions {release} {scope} bind:releases />
+										<Actions {release} {scope} {releases} />
 									</Table.Cell>
 								</Table.Row>
 							{/each}
@@ -324,7 +322,7 @@
 		</Tabs.Root>
 
 		<Sheet.Footer class="p-4">
-			<Install {chart} {scope} />
+			<Install {chart} {scope} {releases} />
 		</Sheet.Footer>
 	</Sheet.Content>
 </Sheet.Root>

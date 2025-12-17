@@ -70,8 +70,7 @@
 				{chart}
 				chartReleases={releasesFromChartName.get(chart.name)}
 				{scope}
-				bind:charts
-				bind:releases
+				{releases}
 			>
 				<Thumbnail {chart} chartReleases={releasesFromChartName.get(chart.name)} />
 			</ChartComponent>
