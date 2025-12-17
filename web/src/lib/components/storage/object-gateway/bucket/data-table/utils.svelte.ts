@@ -31,14 +31,22 @@ function getAccessControlList(grants: Bucket_Grant[]): Bucket_ACL {
 		return Bucket_ACL.ACL_AUTHENTICATED_READ;
 	}
 
-	if (
-		grants.some((grant) => grant.uri.includes('AllUsers')) &&
-		grants.some((grant) => grant.permission.includes('WRITE'))
-	) {
-		return Bucket_ACL.ACL_PUBLIC_READ_WRITE;
+	let isPublicRead = false;
+	let isPublicWrite = false;
+	for (const grant of grants) {
+		if (grant.uri.includes('AllUsers')) {
+			isPublicRead = true;
+			if (grant.permission.includes('WRITE')) {
+				isPublicWrite = true;
+				break; // Found highest public permission, no need to check further.
+			}
+		}
 	}
 
-	if (grants.some((grant) => grant.uri.includes('AllUsers'))) {
+	if (isPublicWrite) {
+		return Bucket_ACL.ACL_PUBLIC_READ_WRITE;
+	}
+	if (isPublicRead) {
 		return Bucket_ACL.ACL_PUBLIC_READ;
 	}
 
