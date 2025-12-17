@@ -93,7 +93,13 @@ export async function GET(event: RequestEvent): Promise<Response> {
 	const existingUser = await getUser(claims.sub);
 	const user =
 		existingUser ??
-		(await createUser(claims.sub, claims.email ?? '', claims.name ?? '', claims.picture ?? ''));
+		(await createUser(
+			claims.sub,
+			(claims.preferred_username as string) ?? '',
+			claims.email ?? '',
+			claims.name ?? '',
+			claims.picture ?? ''
+		));
 
 	const sessionToken = generateSessionToken();
 	const session = await createSession(sessionToken, user.id);
