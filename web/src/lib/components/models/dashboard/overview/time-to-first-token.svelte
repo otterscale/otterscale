@@ -155,7 +155,7 @@
 									<div class="grid gap-1.5">
 										<span class="text-muted-foreground">{name}</span>
 									</div>
-									<p class="font-mono">{Number(value).toFixed(2)} {m.millisecond()}</p>
+									<p class="font-mono">{Number(value).toFixed(2)} {m.sec()}</p>
 								</div>
 							{/snippet}
 						</Chart.Tooltip>

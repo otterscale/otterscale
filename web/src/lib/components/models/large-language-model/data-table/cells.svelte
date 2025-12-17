@@ -6,13 +6,13 @@
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { ReloadManager } from '$lib/components/custom/reloader';
-	import Prompting from '$lib/components/prompting/index.svelte';
 	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
 	import { formatTimeAgo } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
 
 	import Actions from './cell-actions.svelte';
 	import GPURelation from './cell-gpu-relation.svelte';
+	import Test from './cell-test.svelte';
 
 	export const cells = {
 		row_expander,
@@ -145,19 +145,8 @@
 {/snippet}
 
 {#snippet test(data: { row: Row<Model>; serviceUri: string; scope: string })}
-	{@const readyPods = data.row.original.pods.filter((pod) => {
-		const match = pod.ready.match(/^(\d+)\/(\d+)$/);
-		if (!match) return false;
-		return Number(match[1]) / Number(match[2]) === 1;
-	})}
-	{@const isReady = readyPods.length > 0}
 	<Layout.Cell class="items-center">
-		<Prompting
-			serviceUri={data.serviceUri}
-			model={data.row.original}
-			scope={data.scope}
-			disabled={!isReady}
-		/>
+		<Test model={data.row.original} serviceUri={data.serviceUri} scope={data.scope} />
 	</Layout.Cell>
 {/snippet}
 

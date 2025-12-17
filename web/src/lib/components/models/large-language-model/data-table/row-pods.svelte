@@ -96,9 +96,8 @@
 						<Table.Head class="text-end">{m.ready()}</Table.Head>
 						<Table.Head class="text-end">{m.restarts()}</Table.Head>
 						<Table.Head class="text-start">{m.last_condition()}</Table.Head>
-						<Table.Head class="text-center">{m.kv_cache()}</Table.Head>
 						<Table.Head class="text-center">{m.time_to_first_token()}</Table.Head>
-						<Table.Head class="text-center">{m.requests()}</Table.Head>
+						<Table.Head class="text-center">{m.request_latency()}</Table.Head>
 						<Table.Head class="text-center">{m.log()}</Table.Head>
 						<Table.Head class="text-end">{m.create_time()}</Table.Head>
 					</Table.Row>
@@ -133,50 +132,6 @@
 												</Tooltip.Root>
 											</Tooltip.Provider>
 										</div>
-									{/if}
-								</Table.Cell>
-								<Table.Cell class="text-center">
-									{@const configuration = {
-										cache: { label: 'cache', color: 'var(--chart-2)' }
-									} satisfies Chart.ChartConfig}
-									{@const kvCaches: SampleValue[] = metrics.kvCache?.get(pod.name) ?? []}
-									{#if kvCaches.length > 0}
-										<Chart.Container config={configuration} class="h-10 w-full">
-											<LineChart
-												data={kvCaches}
-												x="time"
-												xScale={scaleUtc()}
-												axis={false}
-												series={[
-													{
-														key: 'value',
-														label: configuration.cache.label,
-														color: configuration.cache.color
-													}
-												]}
-												props={{
-													spline: {
-														strokeWidth: 2
-													}
-												}}
-												grid={false}
-											>
-												{#snippet tooltip()}
-													<Chart.Tooltip hideLabel>
-														{#snippet formatter({ item, name, value })}
-															<div
-																class="flex flex-1 shrink-0 items-center justify-start gap-1 font-mono text-xs leading-none"
-																style="--color-bg: {item.color}"
-															>
-																<Icon icon="ph:square-fill" class="text-(--color-bg)" />
-																<h1 class="font-semibold text-muted-foreground">{name}</h1>
-																<p class="ml-auto">{(Number(value) * 100).toFixed(2)} %</p>
-															</div>
-														{/snippet}
-													</Chart.Tooltip>
-												{/snippet}
-											</LineChart>
-										</Chart.Container>
 									{/if}
 								</Table.Cell>
 								<Table.Cell class="text-center">
@@ -227,7 +182,7 @@
 									{@const configuration = {
 										time: { label: 'time', color: 'var(--chart-1)' }
 									} satisfies Chart.ChartConfig}
-									{@const requestLatencies: SampleValue[] = metrics.requestLatency?.get(pod.name) ?? []}
+									{@const requestLatencies: SampleValue[] = (metrics.requestLatency?.get(pod.name) ?? []).map((sampleValue: SampleValue) => ({time: sampleValue.time, value: sampleValue.value && !isNaN(sampleValue.value) ? sampleValue.value : 0 } as SampleValue))}
 									<Chart.Container config={configuration} class="h-10 w-full">
 										<LineChart
 											data={requestLatencies}

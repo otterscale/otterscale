@@ -22,12 +22,12 @@
 	import { Single as SingleSelect } from '$lib/components/custom/select';
 	import { buttonVariants } from '$lib/components/ui/button';
 	import * as ButtonGroup from '$lib/components/ui/button-group/index.js';
-	import Input from '$lib/components/ui/input/input.svelte';
 	import * as InputGroup from '$lib/components/ui/input-group/index.js';
 	import * as Item from '$lib/components/ui/item/index.js';
-	import * as Popover from '$lib/components/ui/popover';
+	import * as Sheet from '$lib/components/ui/sheet';
 	import { Slider } from '$lib/components/ui/slider/index.js';
 	import Switch from '$lib/components/ui/switch/switch.svelte';
+	import * as Tabs from '$lib/components/ui/tabs';
 	import { m } from '$lib/paraglide/messages.js';
 	import { cn } from '$lib/utils';
 
@@ -51,11 +51,11 @@
 
 	let requestPrefill = $state({} as Model_Prefill);
 	function initPrefill() {
-		requestPrefill = { replica: 1, tensor: 1 } as Model_Prefill;
+		requestPrefill = { replica: 1, tensor: 1, vgpumemPercentage: 50 } as Model_Prefill;
 	}
 	let requestDecode = $state({} as Model_Decode);
 	function initDecode() {
-		requestDecode = { replica: 1, tensor: 1 } as Model_Decode;
+		requestDecode = { replica: 1, tensor: 1, vgpumemPercentage: 50 } as Model_Decode;
 	}
 	let request = $state({} as CreateModelRequest);
 	function init() {
@@ -183,7 +183,6 @@
 							'w-full rounded-md',
 							invalidity.modelName ? 'ring-1 ring-destructive has-focus:ring-0' : ''
 						)}
-						aria-invalid={invalid}
 					>
 						<InputGroup.Root>
 							<InputGroup.Input
@@ -203,6 +202,46 @@
 							{namespace}
 						/>
 						<SelectCloudModel bind:value={request.modelName} />
+						{#if request.modelName}
+							<Sheet.Root>
+								<Sheet.Trigger class={buttonVariants({ variant: 'outline' })}>
+									<Icon icon="ph:gear-fine" />
+								</Sheet.Trigger>
+								<Sheet.Content class="min-w-[38vw]">
+									<Item.Root class="w-full">
+										<Item.Content class="flex flex-col items-start">
+											<Item.Title class="text-xl font-bold">
+												{request.modelName}
+											</Item.Title>
+										</Item.Content>
+									</Item.Root>
+									<Tabs.Root value="configuration">
+										<Tabs.List>
+											<Tabs.Trigger value="configuration">{m.configuration()}</Tabs.Trigger>
+											<Tabs.Trigger value="information">{m.information()}</Tabs.Trigger>
+										</Tabs.List>
+										<Tabs.Content value="configuration">
+											{#await fetch(`https://huggingface.co/${request.modelName}/resolve/main/config.json`) then response}
+												{#await response.text() then body}
+													<Code.Root lang="json" code={body} class="border-none" />
+												{/await}
+											{/await}
+										</Tabs.Content>
+										<Tabs.Content value="information">
+											{#await fetch(`https://huggingface.co/api/models/${request.modelName}`) then response}
+												{#await response.text() then body}
+													<Code.Root
+														lang="json"
+														code={JSON.stringify(JSON.parse(body), null, 2)}
+														class="border-none"
+													/>
+												{/await}
+											{/await}
+										</Tabs.Content>
+									</Tabs.Root>
+								</Sheet.Content>
+							</Sheet.Root>
+						{/if}
 					</ButtonGroup.Root>
 				</Form.Field>
 
@@ -224,37 +263,7 @@
 
 				<Form.Field>
 					<Form.Label>{m.max_model_length()}</Form.Label>
-					<ButtonGroup.Root class="w-full">
-						<Input type="number" bind:value={request.maxModelLength} />
-						{#if request.modelName}
-							{#await fetch(`https://huggingface.co/${request.modelName}/resolve/main/config.json`) then response}
-								{#await response.text() then body}
-									<Popover.Root>
-										<Popover.Trigger class={buttonVariants({ variant: 'outline' })}>
-											<Icon icon="ph:gear-fine" />
-										</Popover.Trigger>
-										<Popover.Content
-											align="center"
-											side="left"
-											class="max-h-[50vh] w-fit max-w-[38vw] overflow-y-auto"
-										>
-											<Item.Root class="w-full">
-												<Item.Content class="flex flex-col items-start">
-													<Item.Title class="text-xl font-bold">
-														{m.configuration()}
-													</Item.Title>
-													<Item.Description class="text-muted-foreground">
-														{request.modelName}
-													</Item.Description>
-												</Item.Content>
-											</Item.Root>
-											<Code.Root lang="json" code={body} class="border-none" />
-										</Popover.Content>
-									</Popover.Root>
-								{/await}
-							{/await}
-						{/if}
-					</ButtonGroup.Root>
+					<SingleInput.General type="number" bind:value={request.maxModelLength} />
 				</Form.Field>
 			</Form.Fieldset>
 
