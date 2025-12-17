@@ -4,7 +4,7 @@ import (
 	"context"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	corev1 "kubevirt.io/api/core/v1"
+	kvcorev1 "kubevirt.io/api/core/v1"
 
 	"github.com/otterscale/otterscale/internal/core/instance/vmi"
 )
@@ -56,7 +56,7 @@ func (r *virtualMachineInstanceRepo) Pause(ctx context.Context, scope, namespace
 		return err
 	}
 
-	opts := &corev1.PauseOptions{}
+	opts := &kvcorev1.PauseOptions{}
 
 	return clientset.KubevirtV1().VirtualMachineInstances(namespace).Pause(ctx, name, opts)
 }
@@ -67,7 +67,7 @@ func (r *virtualMachineInstanceRepo) Resume(ctx context.Context, scope, namespac
 		return err
 	}
 
-	opts := &corev1.UnpauseOptions{}
+	opts := &kvcorev1.UnpauseOptions{}
 
 	return clientset.KubevirtV1().VirtualMachineInstances(namespace).Unpause(ctx, name, opts)
 }
