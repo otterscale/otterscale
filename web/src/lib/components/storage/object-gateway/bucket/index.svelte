@@ -23,12 +23,12 @@
 	const storageClient = createClient(StorageService, transport);
 
 	const buckets = writable([] as Bucket[]);
-	const serviceUri = writable('' as string);
+	let serviceUri = $state('');
 	async function fetch() {
 		try {
 			const response = await storageClient.listBuckets({ scope: scope });
 			buckets.set(response.buckets);
-			serviceUri.set(response.serviceUri);
+			serviceUri = response.serviceUri;
 		} catch (error) {
 			console.error('Error during initial data load:', error);
 		}
@@ -48,7 +48,7 @@
 <main class="space-y-4 py-4">
 	{#if isMounted}
 		{@render trigger()}
-		<DataTable {buckets} {scope} serviceUri={$serviceUri} {reloadManager} />
+		<DataTable {buckets} {scope} {serviceUri} {reloadManager} />
 	{:else}
 		<Loading.DataTables.Table />
 	{/if}

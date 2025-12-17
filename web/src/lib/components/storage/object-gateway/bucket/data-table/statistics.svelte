@@ -8,13 +8,13 @@
 	import { formatCapacity } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
 
-	let { 
+	let {
 		table,
 		serviceUri
-	 }: { 
+	}: {
 		table: Table<Bucket>;
 		serviceUri: string;
-	 } = $props();
+	} = $props();
 
 	const filteredBuckets = $derived(table.getFilteredRowModel().rows.map((row) => row.original));
 	const serviceIP = $derived(serviceUri.replace(/^https?:\/\//, ''));
