@@ -58,6 +58,9 @@
 					<Item.Title class="text-xl font-bold">
 						{modelName}
 					</Item.Title>
+					<Item.Description>
+						{m.model_reference_hint()}
+					</Item.Description>
 				</Item.Content>
 			</Item.Root>
 			<Tabs.Root value="configuration" class="h-full p-4">
