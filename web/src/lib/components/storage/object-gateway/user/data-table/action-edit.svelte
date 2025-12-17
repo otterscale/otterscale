@@ -57,7 +57,7 @@
 			<Form.Fieldset>
 				<Form.Field>
 					<Form.Label>{m.id()}</Form.Label>
-					<SingleInput.General required type="text" bind:value={request.userId} bind:invalid />
+					<SingleInput.General disabled required type="text" bind:value={request.userId} bind:invalid />
 				</Form.Field>
 
 				<Form.Field>
