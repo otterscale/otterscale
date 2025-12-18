@@ -9,12 +9,14 @@
 	let {
 		testResult,
 		scope,
-		reloadManager
+		reloadManager,
+		closeActions
 	}: {
 		testResult: TestResult;
 		scope: string;
 		reloadManager: ReloadManager;
+		closeActions: () => void;
 	} = $props();
 </script>
 
-<Test {testResult} {scope} {reloadManager} />
+<Test {testResult} {scope} {reloadManager} {closeActions} />

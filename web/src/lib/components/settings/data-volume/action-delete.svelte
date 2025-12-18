@@ -18,8 +18,14 @@
 	let {
 		dataVolume,
 		scope,
-		reloadManager
-	}: { dataVolume: DataVolume; scope: string; reloadManager: ReloadManager } = $props();
+		reloadManager,
+		closeActions
+	}: {
+		dataVolume: DataVolume;
+		scope: string;
+		reloadManager: ReloadManager;
+		closeActions: () => void;
+	} = $props();
 
 	// Context dependencies
 	const transport: Transport = getContext('transport');
@@ -53,7 +59,14 @@
 	}
 </script>
 
-<Modal.Root bind:open>
+<Modal.Root
+	bind:open
+	onOpenChangeComplete={(isOpen) => {
+		if (!isOpen) {
+			closeActions();
+		}
+	}}
+>
 	<Modal.Trigger variant="destructive">
 		<Icon icon="ph:trash" />
 		{m.delete()}

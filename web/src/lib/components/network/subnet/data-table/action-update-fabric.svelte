@@ -17,8 +17,11 @@
 </script>
 
 <script lang="ts">
-	let { fabric, reloadManager }: { fabric: Network_Fabric; reloadManager: ReloadManager } =
-		$props();
+	let {
+		fabric,
+		reloadManager,
+		closeActions
+	}: { fabric: Network_Fabric; reloadManager: ReloadManager; closeActions: () => void } = $props();
 
 	const transport: Transport = getContext('transport');
 
@@ -40,7 +43,14 @@
 	}
 </script>
 
-<Modal.Root bind:open>
+<Modal.Root
+	bind:open
+	onOpenChangeComplete={(isOpen) => {
+		if (!isOpen) {
+			closeActions();
+		}
+	}}
+>
 	<Modal.Trigger variant="creative">
 		<Icon icon="ph:pencil" />
 		{m.edit_fabric()}

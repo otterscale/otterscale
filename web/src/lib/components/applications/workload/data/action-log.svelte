@@ -11,7 +11,12 @@
 	import * as Sheet from '$lib/components/ui/sheet';
 	import { m } from '$lib/paraglide/messages';
 
-	let { pod, scope, namespace }: { pod: Application_Pod; scope: string; namespace: string } =
+	let {
+		pod,
+		scope,
+		namespace,
+		closeActions
+	}: { pod: Application_Pod; scope: string; namespace: string; closeActions: () => void } =
 		$props();
 
 	const msToString = (ms: number): string => String(ms);
@@ -111,7 +116,13 @@
 	});
 </script>
 
-<Sheet.Root>
+<Sheet.Root
+	onOpenChangeComplete={(isOpen) => {
+		if (!isOpen) {
+			closeActions();
+		}
+	}}
+>
 	<Sheet.Trigger>
 		<span class="flex items-center gap-1">
 			<Icon icon="ph:file-text" />

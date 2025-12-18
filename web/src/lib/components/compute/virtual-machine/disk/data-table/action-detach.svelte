@@ -19,11 +19,13 @@
 	let {
 		enhancedDisk,
 		scope,
-		reloadManager
+		reloadManager,
+		closeActions
 	}: {
 		enhancedDisk: EnhancedDisk;
 		scope: string;
 		reloadManager: ReloadManager;
+		closeActions: () => void;
 	} = $props();
 
 	// Context dependencies
@@ -59,7 +61,14 @@
 	}
 </script>
 
-<Modal.Root bind:open>
+<Modal.Root
+	bind:open
+	onOpenChangeComplete={(isOpen) => {
+		if (!isOpen) {
+			closeActions();
+		}
+	}}
+>
 	<Modal.Trigger variant="destructive">
 		<Icon icon="ph:plugs" />
 		{m.detach()}

@@ -13,7 +13,11 @@
 </script>
 
 <script lang="ts">
-	let { osd, scope }: { osd: ObjectStorageDaemon; scope: string } = $props();
+	let {
+		osd,
+		scope,
+		closeActions
+	}: { osd: ObjectStorageDaemon; scope: string; closeActions: () => void } = $props();
 
 	const transport: Transport = getContext('transport');
 	const storageClient = createClient(StorageService, transport);
@@ -48,7 +52,14 @@
 	});
 </script>
 
-<Modal.Root bind:open>
+<Modal.Root
+	bind:open
+	onOpenChangeComplete={(isOpen) => {
+		if (!isOpen) {
+			closeActions();
+		}
+	}}
+>
 	<Modal.Trigger variant="creative">
 		<Icon icon="ph:file" />
 		{m.do_smart()}
@@ -71,7 +82,7 @@
 			{/each}
 		{/if}
 		<Modal.Footer>
-			<Modal.Cancel>{m.cancel()}</Modal.Cancel>
+			<Modal.Cancel>{m.close()}</Modal.Cancel>
 		</Modal.Footer>
 	</Modal.Content>
 </Modal.Root>

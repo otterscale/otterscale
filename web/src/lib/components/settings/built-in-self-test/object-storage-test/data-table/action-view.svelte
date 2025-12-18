@@ -10,15 +10,24 @@
 
 <script lang="ts">
 	let {
-		testResult
+		testResult,
+		closeActions
 	}: {
 		testResult: TestResult;
+		closeActions: () => void;
 	} = $props();
 
 	let open = $state(false);
 </script>
 
-<Modal.Root bind:open>
+<Modal.Root
+	bind:open
+	onOpenChangeComplete={(isOpen) => {
+		if (!isOpen) {
+			closeActions();
+		}
+	}}
+>
 	<Modal.Trigger variant="creative">
 		<Icon icon="ph:eye" />
 		{m.view()}

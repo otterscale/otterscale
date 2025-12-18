@@ -20,8 +20,14 @@
 	let {
 		application,
 		scope,
-		reloadManager
-	}: { application: Application; scope: string; reloadManager: ReloadManager } = $props();
+		reloadManager,
+		closeActions
+	}: {
+		application: Application;
+		scope: string;
+		reloadManager: ReloadManager;
+		closeActions: () => void;
+	} = $props();
 
 	// Get required services from Svelte context
 	const transport: Transport = getContext('transport');
@@ -59,7 +65,14 @@
 </script>
 
 <!-- Modal component for application scaling -->
-<Modal.Root bind:open>
+<Modal.Root
+	bind:open
+	onOpenChangeComplete={(isOpen) => {
+		if (!isOpen) {
+			closeActions();
+		}
+	}}
+>
 	<Modal.Trigger variant="creative">
 		<Icon icon="ph:resize" />
 		{m.scale()}

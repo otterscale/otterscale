@@ -2,9 +2,10 @@
 	import Icon from '@iconify/svelte';
 
 	import type { Network_IPAddress } from '$lib/api/network/v1/network_pb';
-	import * as Table from '$lib/components/custom/table';
+	import { SubCell, SubHead } from '$lib/components/custom/table';
 	import { buttonVariants } from '$lib/components/ui/button';
 	import * as HoverCard from '$lib/components/ui/hover-card/index.js';
+	import * as Table from '$lib/components/ui/table';
 	import { m } from '$lib/paraglide/messages';
 </script>
 
@@ -23,17 +24,17 @@
 					<Table.Head></Table.Head>
 					<Table.Head>
 						{m.ip()}
-						<Table.SubHead>{m.system_id()}</Table.SubHead>
+						<SubHead>{m.system_id()}</SubHead>
 					</Table.Head>
 
 					<Table.Head>
 						{m.hostname()}
-						<Table.SubHead>{m.user()}</Table.SubHead>
+						<SubHead>{m.user()}</SubHead>
 					</Table.Head>
 
 					<Table.Head>
 						{m.type()}
-						<Table.SubHead>{m.node_type()}</Table.SubHead>
+						<SubHead>{m.node_type()}</SubHead>
 					</Table.Head>
 				</Table.Row>
 			</Table.Header>
@@ -46,27 +47,27 @@
 
 						<Table.Cell>
 							{ipAddress.ip}
-							<Table.SubCell>
+							<SubCell>
 								{ipAddress.machineId}
-							</Table.SubCell>
+							</SubCell>
 						</Table.Cell>
 
 						<Table.Cell>
 							{ipAddress.hostname}
-							<Table.SubCell>
+							<SubCell>
 								{ipAddress.user}
-							</Table.SubCell>
+							</SubCell>
 						</Table.Cell>
 
 						<Table.Cell>
 							{#if ipAddress.type}
 								{ipAddress.type}
 							{/if}
-							<Table.SubCell>
+							<SubCell>
 								{#if ipAddress.nodeType}
 									{ipAddress.nodeType}
 								{/if}
-							</Table.SubCell>
+							</SubCell>
 						</Table.Cell>
 					</Table.Row>
 				{/each}

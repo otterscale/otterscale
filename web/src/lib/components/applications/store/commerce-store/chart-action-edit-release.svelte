@@ -24,12 +24,14 @@
 		release,
 		scope,
 		valuesYaml = '',
-		releases
+		releases,
+		closeActions
 	}: {
 		release: Release;
 		scope: string;
 		valuesYaml?: string;
 		releases: Writable<Release[]>;
+		closeActions: () => void;
 	} = $props();
 
 	const transport: Transport = getContext('transport');
@@ -86,6 +88,11 @@
 	onOpenChange={(isOpen) => {
 		if (isOpen) {
 			init();
+		}
+	}}
+	onOpenChangeComplete={(isOpen) => {
+		if (!isOpen) {
+			closeActions();
 		}
 	}}
 >
