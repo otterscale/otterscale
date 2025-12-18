@@ -42,7 +42,7 @@
 		</Table.Row>
 	</Table.Header>
 	<Table.Body>
-		{#each $machine.networkInterfaces as networkInterface, index (index)}
+		{#each $machine.networkInterfaces as networkInterface (networkInterface.macAddress)}
 			<Table.Row>
 				<Table.Cell>
 					{networkInterface.name}
