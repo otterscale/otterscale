@@ -14,7 +14,6 @@
 </script>
 
 <script lang="ts">
-	// Component props - accepts a DataVolume object
 	let {
 		dataVolume,
 		scope,
@@ -27,35 +26,22 @@
 		closeActions: () => void;
 	} = $props();
 
-	// Get required services from Svelte context
 	const transport: Transport = getContext('transport');
-
-	// Create gRPC client for virtual machine operations
 	const virtualMachineClient = createClient(InstanceService, transport);
 
-	// Form validation state
+	let request = $state({} as ExtendDataVolumeRequest);
 	let invalid = $state(false);
-
-	// Default values for the extend data volume request
-	const defaults = {
-		scope: scope,
-		name: dataVolume.name,
-		namespace: dataVolume.namespace,
-		sizeBytes: dataVolume.sizeBytes
-	} as ExtendDataVolumeRequest;
-
-	// Current request state
-	let request = $state({ ...defaults });
-
-	// Reset form to default values
-	function reset() {
-		request = { ...defaults };
-	}
-
-	// Modal open/close state
 	let open = $state(false);
 
-	// Close modal function
+	function init() {
+		request = {
+			scope: scope,
+			name: dataVolume.name,
+			namespace: dataVolume.namespace,
+			sizeBytes: dataVolume.sizeBytes
+		} as ExtendDataVolumeRequest;
+	}
+
 	function close() {
 		open = false;
 	}
@@ -64,6 +50,11 @@
 <!-- Modal component for data volume extension -->
 <Modal.Root
 	bind:open
+	onOpenChange={(isOpen) => {
+		if (isOpen) {
+			init();
+		}
+	}}
 	onOpenChangeComplete={(isOpen) => {
 		if (!isOpen) {
 			closeActions();
@@ -96,11 +87,7 @@
 		<!-- Modal footer with action buttons -->
 		<Modal.Footer>
 			<!-- Cancel button -->
-			<Modal.Cancel
-				onclick={() => {
-					reset();
-				}}
-			>
+			<Modal.Cancel>
 				{m.cancel()}
 			</Modal.Cancel>
 
@@ -128,8 +115,6 @@
 								return message;
 							}
 						});
-						// Reset form and close modal
-						reset();
 						close();
 					}}
 				>

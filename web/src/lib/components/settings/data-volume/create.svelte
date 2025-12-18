@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
-	import { getContext, onMount } from 'svelte';
+	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
 
 	import type {
@@ -20,46 +20,37 @@
 
 	// Context dependencies
 	const transport: Transport = getContext('transport');
-
 	const virtualMachineClient = createClient(InstanceService, transport);
 
 	// ==================== State Variables ====================
-
-	// UI state
+	let request: CreateDataVolumeRequest = $state({} as CreateDataVolumeRequest);
+	let invalid: boolean | undefined = $state();
 	let open = $state(false);
 
-	// Form validation state
-	let invalid: boolean | undefined = $state();
-
-	// ==================== Default Values & Constants ====================
-	const DEFAULT_REQUEST = {
-		scope: scope,
-		name: '',
-		namespace: 'kubevirt',
-		source: { type: DataVolume_Source_Type.HTTP_URL, data: '' } as DataVolume_Source,
-		bootImage: true,
-		sizeBytes: BigInt(10 * 1024 ** 3)
-	} as CreateDataVolumeRequest;
-
-	// ==================== Form State ====================
-	let request: CreateDataVolumeRequest = $state({ ...DEFAULT_REQUEST });
-	// ==================== Utility Functions ====================
-	function reset() {
-		request = { ...DEFAULT_REQUEST };
+	function init() {
+		request = {
+			scope: scope,
+			name: '',
+			namespace: 'kubevirt',
+			source: { type: DataVolume_Source_Type.HTTP_URL, data: '' } as DataVolume_Source,
+			bootImage: true,
+			sizeBytes: BigInt(10 * 1024 ** 3)
+		} as CreateDataVolumeRequest;
 	}
 
 	function close() {
 		open = false;
 	}
-
-	// ==================== Lifecycle Hooks ====================
-	onMount(() => {
-		// Initialize form
-		reset();
-	});
 </script>
 
-<Modal.Root bind:open>
+<Modal.Root
+	bind:open
+	onOpenChange={(isOpen) => {
+		if (isOpen) {
+			init();
+		}
+	}}
+>
 	<Modal.Trigger variant="default">
 		<Icon icon="ph:plus" />
 		{m.create()}
@@ -118,11 +109,7 @@
 		</Form.Root>
 
 		<Modal.Footer>
-			<Modal.Cancel
-				onclick={() => {
-					reset();
-				}}
-			>
+			<Modal.Cancel>
 				{m.cancel()}
 			</Modal.Cancel>
 			<Modal.ActionsGroup>
@@ -144,7 +131,6 @@
 								return message;
 							}
 						});
-						reset();
 						close();
 					}}
 				>
