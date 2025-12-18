@@ -26,10 +26,10 @@
 	const transport: Transport = getContext('transport');
 	const client = createClient(ConfigurationService, transport);
 
-	let request = $state({} as UpdatePackageRepositoryRequest);
 	let open = $state(false);
 
-	function reset() {
+	let request = $state({} as UpdatePackageRepositoryRequest);
+	function init() {
 		request = {
 			id: packageRepository.id,
 			url: packageRepository.url
@@ -45,7 +45,7 @@
 	<Modal.Root
 		bind:open
 		onOpenChange={(isOpen) => {
-			if (isOpen) reset();
+			if (isOpen) init();
 		}}
 	>
 		<Modal.Trigger variant="creative">
