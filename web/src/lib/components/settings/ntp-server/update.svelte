@@ -22,12 +22,12 @@
 	const transport: Transport = getContext('transport');
 
 	const client = createClient(ConfigurationService, transport);
-	const defaults = {
-		addresses: $configuration.ntpServer?.addresses
-	} as UpdateNTPServerRequest;
-	let request = $state(defaults);
-	function reset() {
-		request = defaults;
+
+	let request = $state({} as UpdateNTPServerRequest);
+	function init() {
+		request = {
+			addresses: $configuration.ntpServer?.addresses
+		} as UpdateNTPServerRequest;
 	}
 
 	let open = $state(false);
@@ -36,7 +36,14 @@
 	}
 </script>
 
-<Modal.Root bind:open>
+<Modal.Root
+	bind:open
+	onOpenChange={(isOpen) => {
+		if (isOpen) {
+			init();
+		}
+	}}
+>
 	<Modal.Trigger variant="default">
 		<Icon icon="ph:pencil" />
 		{m.edit()}
@@ -58,11 +65,7 @@
 			</Form.Fieldset>
 		</Form.Root>
 		<Modal.Footer>
-			<Modal.Cancel
-				onclick={() => {
-					reset();
-				}}
-			>
+			<Modal.Cancel>
 				{m.cancel()}
 			</Modal.Cancel>
 			<Modal.ActionsGroup>
@@ -85,8 +88,6 @@
 								return message;
 							}
 						});
-
-						reset();
 						close();
 					}}
 				>

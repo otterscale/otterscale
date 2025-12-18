@@ -31,24 +31,23 @@
 	} = $props();
 
 	const transport: Transport = getContext('transport');
-
-	let invalid: boolean | undefined = $state();
-
 	const client = createClient(NetworkService, transport);
-	const defaults = {
-		fabricId: fabric.id,
-		vid: vlan.vid,
-		name: vlan.name,
-		mtu: vlan.mtu,
-		description: vlan.description,
-		dhcpOn: vlan.dhcpOn
-	} as UpdateVLANRequest;
-	let request = $state(defaults);
-	function reset() {
-		request = defaults;
+
+	let request = $state({} as UpdateVLANRequest);
+	let invalid: boolean | undefined = $state();
+	let open = $state(false);
+
+	function init() {
+		request = {
+			fabricId: fabric.id,
+			vid: vlan.vid,
+			name: vlan.name,
+			mtu: vlan.mtu,
+			description: vlan.description,
+			dhcpOn: vlan.dhcpOn
+		} as UpdateVLANRequest;
 	}
 
-	let open = $state(false);
 	function close() {
 		open = false;
 	}
@@ -56,6 +55,11 @@
 
 <Modal.Root
 	bind:open
+	onOpenChange={(isOpen) => {
+		if (isOpen) {
+			init();
+		}
+	}}
 	onOpenChangeComplete={(isOpen) => {
 		if (!isOpen) {
 			closeActions();
@@ -95,11 +99,7 @@
 			</Form.Fieldset>
 		</Form.Root>
 		<Modal.Footer>
-			<Modal.Cancel
-				onclick={() => {
-					reset();
-				}}
-			>
+			<Modal.Cancel>
 				{m.cancel()}
 			</Modal.Cancel>
 			<Modal.ActionsGroup>
@@ -121,8 +121,6 @@
 								return message;
 							}
 						});
-
-						reset();
 						close();
 					}}
 				>

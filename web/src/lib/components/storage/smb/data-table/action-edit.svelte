@@ -48,29 +48,20 @@
 	const transport: Transport = getContext('transport');
 	const storageClient = createClient(StorageService, transport);
 
-	const defaults = {
-		scope: scope,
-		name: smbShare.name,
-		port: Number(new URL(smbShare.uri).port),
-		sizeBytes: smbShare.sizeBytes,
-		browsable: smbShare.browsable,
-		guestOk: smbShare.guestOk,
-		readOnly: smbShare.readOnly,
-		validUsers: smbShare.validUsers,
-		commonConfig: { ...smbShare.commonConfig },
-		securityConfig: { ...smbShare.securityConfig }
-	} as UpdateSMBShareRequest;
-
-	let request = $state(defaults);
-	function resetSecurityConfigValues() {
-		if (request.securityConfig && smbShare.securityConfig) {
-			request.securityConfig.realm = smbShare.securityConfig.realm;
-			request.securityConfig.joinSource = smbShare.securityConfig.joinSource;
-			request.securityConfig.localUsers = smbShare.securityConfig.localUsers;
-		}
-	}
-	function reset() {
-		request = defaults;
+	let request = $state({} as UpdateSMBShareRequest);
+	function init() {
+		request = {
+			scope: scope,
+			name: smbShare.name,
+			port: Number(new URL(smbShare.uri).port),
+			sizeBytes: smbShare.sizeBytes,
+			browsable: smbShare.browsable,
+			guestOk: smbShare.guestOk,
+			readOnly: smbShare.readOnly,
+			validUsers: smbShare.validUsers,
+			commonConfig: { ...smbShare.commonConfig },
+			securityConfig: { ...smbShare.securityConfig }
+		} as UpdateSMBShareRequest;
 	}
 
 	let invaliditySMBShare = $state({} as Booleanified<CreateSMBShareRequest>);
@@ -87,6 +78,14 @@
 	let open = $state(false);
 	function close() {
 		open = false;
+	}
+
+	function resetSecurityConfigValues() {
+		if (request.securityConfig && smbShare.securityConfig) {
+			request.securityConfig.realm = smbShare.securityConfig.realm;
+			request.securityConfig.joinSource = smbShare.securityConfig.joinSource;
+			request.securityConfig.localUsers = smbShare.securityConfig.localUsers;
+		}
 	}
 
 	const securityModeOptions: Writable<SingleSelect.OptionType[]> = writable([
@@ -125,6 +124,11 @@
 
 <Modal.Root
 	bind:open
+	onOpenChange={(isOpen) => {
+		if (isOpen) {
+			init();
+		}
+	}}
 	onOpenChangeComplete={(isOpen) => {
 		if (!isOpen) {
 			closeActions();
@@ -146,6 +150,9 @@
 				</Form.Field>
 				<Form.Field>
 					<Form.Label>{m.port()}</Form.Label>
+					<Form.Help>
+						{m.smb_port_hint()}
+					</Form.Help>
 					<SingleInput.General type="number" bind:value={request.port} />
 				</Form.Field>
 				<Form.Field>
@@ -370,12 +377,7 @@
 			</Form.Fieldset>
 		</Form.Root>
 		<Modal.Footer>
-			<Modal.Cancel
-				onclick={() => {
-					reset();
-					close();
-				}}
-			>
+			<Modal.Cancel>
 				{m.cancel()}
 			</Modal.Cancel>
 			<Modal.Action
@@ -396,7 +398,6 @@
 							return message;
 						}
 					});
-					reset();
 					close();
 				}}
 			>

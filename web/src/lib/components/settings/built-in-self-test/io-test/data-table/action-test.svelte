@@ -62,59 +62,43 @@
 		closeActions?: () => void;
 	} = $props();
 
-	// Request
-	const DEFAULT_FIO_REQUEST = testResult
-		? ({
-				target: {
-					value: testResult.kind.value?.target.value,
-					case: testResult.kind.value?.target.case
-				}
-			} as FIO)
-		: ({ target: { value: {}, case: {} } } as FIO);
-	const DEFAULT_REQUEST = {
-		kind: { value: DEFAULT_FIO_REQUEST, case: 'fio' },
-		createdBy: page.data.user?.username ?? ''
-	} as CreateTestResultRequest;
-	const DEFAULT_CEPH_BLOCK_DEVICE =
-		testResult && testResult.kind.value?.target?.case === 'cephBlockDevice'
-			? (testResult.kind.value.target.value as CephBlockDevice)
-			: ({} as CephBlockDevice);
-	const DEFAULT_NETWORK_FILE_SYSTEM =
-		testResult && testResult.kind.value?.target?.case === 'networkFileSystem'
-			? (testResult.kind.value.target.value as NetworkFileSystem)
-			: ({} as NetworkFileSystem);
-	const DEFAULT_FIO_INPUT =
-		testResult && testResult.kind.value?.input
-			? (testResult.kind.value.input as FIO_Input)
-			: ({
-					jobCount: 32,
-					runTimeSeconds: 60,
-					blockSizeBytes: 4096,
-					fileSizeBytes: 1024 * 1024 * 1024,
-					ioDepth: 1
-				} as unknown as FIO_Input);
+	let request: CreateTestResultRequest = $state({} as CreateTestResultRequest);
+	let requestFio: FIO = $state({} as FIO);
+	let requestCephBlockDevice: CephBlockDevice = $state({} as CephBlockDevice);
+	let requestNetworkFileSystem: NetworkFileSystem = $state({} as NetworkFileSystem);
+	let fioInput = $state({} as FIO_Input);
 
-	let request: CreateTestResultRequest = $state(DEFAULT_REQUEST);
-	let requestFio: FIO = $state(DEFAULT_FIO_REQUEST);
-	let requestCephBlockDevice: CephBlockDevice = $state(DEFAULT_CEPH_BLOCK_DEVICE);
-	let requestNetworkFileSystem: NetworkFileSystem = $state(DEFAULT_NETWORK_FILE_SYSTEM);
-	let fioAccessMode = $state(DEFAULT_FIO_INPUT.accessMode);
-	let fioJobCount = $state(DEFAULT_FIO_INPUT.jobCount);
-	let fioRunTime = $state(DEFAULT_FIO_INPUT.runTimeSeconds);
-	let fioBlockSize = $state(DEFAULT_FIO_INPUT.blockSizeBytes);
-	let fioFileSize = $state(DEFAULT_FIO_INPUT.fileSizeBytes);
-	let fioIoDepth = $state(DEFAULT_FIO_INPUT.ioDepth);
-	function reset() {
-		request = DEFAULT_REQUEST;
-		requestFio = DEFAULT_FIO_REQUEST;
-		requestCephBlockDevice = DEFAULT_CEPH_BLOCK_DEVICE;
-		requestNetworkFileSystem = DEFAULT_NETWORK_FILE_SYSTEM;
-		fioAccessMode = DEFAULT_FIO_INPUT.accessMode;
-		fioJobCount = DEFAULT_FIO_INPUT.jobCount;
-		fioRunTime = DEFAULT_FIO_INPUT.runTimeSeconds;
-		fioBlockSize = DEFAULT_FIO_INPUT.blockSizeBytes;
-		fioFileSize = DEFAULT_FIO_INPUT.fileSizeBytes;
-		fioIoDepth = DEFAULT_FIO_INPUT.ioDepth;
+	function init() {
+		request = {
+			kind: { value: {} as FIO, case: 'fio' },
+			createdBy: page.data.user?.username ?? ''
+		} as CreateTestResultRequest;
+		requestFio = testResult
+			? ({
+					target: {
+						value: testResult.kind.value?.target.value,
+						case: testResult.kind.value?.target.case
+					}
+				} as FIO)
+			: ({ target: { value: {}, case: {} } } as FIO);
+		requestCephBlockDevice =
+			testResult && testResult.kind.value?.target?.case === 'cephBlockDevice'
+				? (testResult.kind.value.target.value as CephBlockDevice)
+				: ({} as CephBlockDevice);
+		requestNetworkFileSystem =
+			testResult && testResult.kind.value?.target?.case === 'networkFileSystem'
+				? (testResult.kind.value.target.value as NetworkFileSystem)
+				: ({} as NetworkFileSystem);
+		fioInput =
+			testResult && testResult.kind.value?.input
+				? (testResult.kind.value.input as FIO_Input)
+				: ({
+						jobCount: 32,
+						runTimeSeconds: 60,
+						blockSizeBytes: 4096,
+						fileSizeBytes: 1024 * 1024 * 1024,
+						ioDepth: 1
+					} as unknown as FIO_Input);
 	}
 
 	// Modal state
@@ -131,6 +115,11 @@
 <Modal.Root
 	bind:open
 	steps={3}
+	onOpenChange={(isOpen) => {
+		if (isOpen) {
+			init();
+		}
+	}}
 	onOpenChangeComplete={(isOpen) => {
 		if (closeActions && !isOpen) {
 			closeActions();
@@ -231,7 +220,11 @@
 							<!-- fioInputAccessMode -->
 							<Form.Field>
 								<Form.Label for="fio-access-mode">{m.access_mode()}</Form.Label>
-								<SingleSelect.Root options={fioInputAccessMode} required bind:value={fioAccessMode}>
+								<SingleSelect.Root
+									options={fioInputAccessMode}
+									required
+									bind:value={fioInput.accessMode}
+								>
 									<SingleSelect.Trigger />
 									<SingleSelect.Content>
 										<SingleSelect.Options>
@@ -258,13 +251,17 @@
 							<!-- jobCount -->
 							<Form.Field>
 								<Form.Label>{m.job_count()}</Form.Label>
-								<SingleInput.General type="number" placeholder="32" bind:value={fioJobCount} />
+								<SingleInput.General
+									type="number"
+									placeholder="32"
+									bind:value={fioInput.jobCount}
+								/>
 							</Form.Field>
 							<!-- runTime -->
 							<Form.Field>
 								<Form.Label>{m.run_time()}</Form.Label>
 								<SingleInput.Measurement
-									bind:value={fioRunTime}
+									bind:value={fioInput.runTimeSeconds}
 									units={[
 										{ value: 1, label: 's' } as SingleInput.UnitType,
 										{ value: 60, label: 'm' } as SingleInput.UnitType,
@@ -277,7 +274,7 @@
 							<Form.Field>
 								<Form.Label>{m.block_size()}</Form.Label>
 								<SingleInput.Measurement
-									bind:value={fioBlockSize}
+									bind:value={fioInput.blockSizeBytes}
 									units={[
 										{ value: Math.pow(2, 10 * 0), label: 'B' } as SingleInput.UnitType,
 										{ value: Math.pow(2, 10 * 1), label: 'KB' } as SingleInput.UnitType,
@@ -292,7 +289,7 @@
 							<Form.Field>
 								<Form.Label>{m.file_size()}</Form.Label>
 								<SingleInput.Measurement
-									bind:value={fioFileSize}
+									bind:value={fioInput.fileSizeBytes}
 									units={[
 										{ value: Math.pow(2, 10 * 0), label: 'B' } as SingleInput.UnitType,
 										{ value: Math.pow(2, 10 * 1), label: 'KB' } as SingleInput.UnitType,
@@ -306,7 +303,7 @@
 							<!-- ioDepth -->
 							<Form.Field>
 								<Form.Label>{m.io_depth()}</Form.Label>
-								<SingleInput.General type="number" placeholder="1" bind:value={fioIoDepth} />
+								<SingleInput.General type="number" placeholder="1" bind:value={fioInput.ioDepth} />
 							</Form.Field>
 						</Form.Fieldset>
 					</Form.Root>
@@ -329,20 +326,20 @@
 						</Form.Fieldset>
 						<!-- Step 2 -->
 						<Form.Fieldset>
-							{@const runTime = formatSecond(Number(fioRunTime))}
-							{@const blockSize = formatCapacity(Number(fioBlockSize))}
-							{@const fileSize = formatCapacity(Number(fioFileSize))}
+							{@const runTime = formatSecond(Number(fioInput.runTimeSeconds))}
+							{@const blockSize = formatCapacity(Number(fioInput.blockSizeBytes))}
+							{@const fileSize = formatCapacity(Number(fioInput.fileSizeBytes))}
 							<Form.Legend>{m.advance()}</Form.Legend>
 							<Form.Description
-								>{m.access_mode()}: {FIO_Input_AccessMode[fioAccessMode]}</Form.Description
+								>{m.access_mode()}: {FIO_Input_AccessMode[fioInput.accessMode]}</Form.Description
 							>
-							<Form.Description>{m.job_count()}: {fioJobCount}</Form.Description>
+							<Form.Description>{m.job_count()}: {fioInput.jobCount}</Form.Description>
 							<Form.Description>{m.run_time()}: {runTime.value} {runTime.unit}</Form.Description>
 							<Form.Description
 								>{m.block_size()}: {blockSize.value} {blockSize.unit}</Form.Description
 							>
 							<Form.Description>{m.file_size()}: {fileSize.value} {fileSize.unit}</Form.Description>
-							<Form.Description>{m.io_depth()}: {fioIoDepth}</Form.Description>
+							<Form.Description>{m.io_depth()}: {fioInput.ioDepth}</Form.Description>
 						</Form.Fieldset>
 					</Form.Root>
 				</Modal.Model>
@@ -350,11 +347,7 @@
 		</Modal.Stepper>
 
 		<Modal.Footer>
-			<Modal.Cancel
-				onclick={() => {
-					reset();
-				}}>{m.cancel()}</Modal.Cancel
-			>
+			<Modal.Cancel>{m.cancel()}</Modal.Cancel>
 			<Modal.Controllers>
 				<Modal.Back>{m.back()}</Modal.Back>
 				<Modal.Next>{m.next()}</Modal.Next>
@@ -368,12 +361,12 @@
 							requestFio.target.value = requestNetworkFileSystem;
 						}
 						requestFio.input = {
-							accessMode: fioAccessMode,
-							jobCount: BigInt(fioJobCount),
-							runTimeSeconds: BigInt(fioRunTime),
-							blockSizeBytes: BigInt(fioBlockSize),
-							fileSizeBytes: BigInt(fioFileSize),
-							ioDepth: BigInt(fioIoDepth)
+							accessMode: fioInput.accessMode,
+							jobCount: BigInt(fioInput.jobCount),
+							runTimeSeconds: BigInt(fioInput.runTimeSeconds),
+							blockSizeBytes: BigInt(fioInput.blockSizeBytes),
+							fileSizeBytes: BigInt(fioInput.fileSizeBytes),
+							ioDepth: BigInt(fioInput.ioDepth)
 						} as FIO_Input;
 						request.kind.value = requestFio;
 						// request
@@ -392,7 +385,6 @@
 								return message;
 							}
 						});
-						reset();
 						close();
 					}}
 				>

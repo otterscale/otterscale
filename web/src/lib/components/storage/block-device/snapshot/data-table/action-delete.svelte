@@ -36,14 +36,14 @@
 
 	let invalid = $state(false);
 	const storageClient = createClient(StorageService, transport);
-	const defaults = {
-		scope: scope,
-		imageName: image.name,
-		poolName: image.poolName
-	} as DeleteImageSnapshotRequest;
-	let request = $state(defaults);
-	function reset() {
-		request = defaults;
+
+	let request = $state({} as DeleteImageSnapshotRequest);
+	function init() {
+		request = {
+			scope: scope,
+			imageName: image.name,
+			poolName: image.poolName
+		} as DeleteImageSnapshotRequest;
 	}
 
 	let open = $state(false);
@@ -57,6 +57,11 @@
 	onOpenChangeComplete={(isOpen) => {
 		if (!isOpen) {
 			closeActions();
+		}
+	}}
+	onOpenChange={(isOpen) => {
+		if (isOpen) {
+			init();
 		}
 	}}
 >
@@ -82,11 +87,7 @@
 			</Form.Fieldset>
 		</Form.Root>
 		<Modal.Footer>
-			<Modal.Cancel
-				onclick={() => {
-					reset();
-				}}
-			>
+			<Modal.Cancel>
 				{m.cancel()}
 			</Modal.Cancel>
 			<Modal.ActionsGroup>
@@ -108,7 +109,6 @@
 								return message;
 							}
 						});
-						reset();
 						close();
 					}}
 				>

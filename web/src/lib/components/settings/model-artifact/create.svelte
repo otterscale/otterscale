@@ -34,6 +34,8 @@
 	const applicationClient = createClient(ApplicationService, transport);
 
 	const namespaceOptions: Writable<SingleSelect.OptionType[]> = writable([]);
+	const huggingFaceModelOptions: Writable<OptionType[]> = writable([]);
+
 	async function fetchNamespaceOptions() {
 		const response = await applicationClient.listNamespaces({ scope });
 		namespaceOptions.set(
@@ -43,23 +45,6 @@
 				icon: 'ph:cube'
 			}))
 		);
-	}
-
-	const huggingFaceModelOptions: Writable<OptionType[]> = writable([]);
-
-	const defaults = {
-		scope: scope,
-		namespace: 'llm-d',
-		size: BigInt(100 * 1024 ** 3)
-	} as CreateModelArtifactRequest;
-	let request = $state({ ...defaults });
-	function reset() {
-		request = { ...defaults };
-	}
-
-	let open = $state(false);
-	function close() {
-		open = false;
 	}
 
 	async function fetchModelOptions() {
@@ -80,6 +65,21 @@
 		}
 	}
 
+	let request = $state({} as CreateModelArtifactRequest);
+	let open = $state(false);
+
+	function init() {
+		request = {
+			scope: scope,
+			namespace: 'llm-d',
+			size: BigInt(100 * 1024 ** 3)
+		} as CreateModelArtifactRequest;
+	}
+
+	function close() {
+		open = false;
+	}
+
 	let invalidity = $state({} as Booleanified<CreateModelArtifactRequest>);
 	const invalid = $derived(
 		invalidity.name || invalidity.namespace || invalidity.modelName || invalidity.size
@@ -98,7 +98,7 @@
 	bind:open
 	onOpenChange={(isOpen) => {
 		if (isOpen) {
-			reset();
+			init();
 		}
 	}}
 >

@@ -27,33 +27,21 @@
 		closeActions: () => void;
 	} = $props();
 
-	// Context dependencies
 	const transport: Transport = getContext('transport');
-
 	const virtualMachineClient = createClient(InstanceService, transport);
 
-	// Form validation state
+	let request = $state({} as DeleteDataVolumeRequest);
 	let invalid = $state(false);
-
-	// Default values for the delete data volume request
-	const defaults = {
-		scope: scope,
-		namespace: dataVolume.namespace,
-		name: ''
-	} as DeleteDataVolumeRequest;
-
-	// Current request state
-	let request = $state({ ...defaults });
-
-	// Reset form to default values
-	function reset() {
-		request = { ...defaults };
-	}
-
-	// Modal open/close state
 	let open = $state(false);
 
-	// Close modal function
+	function init() {
+		request = {
+			scope: scope,
+			namespace: dataVolume.namespace,
+			name: ''
+		} as DeleteDataVolumeRequest;
+	}
+
 	function close() {
 		open = false;
 	}
@@ -61,6 +49,11 @@
 
 <Modal.Root
 	bind:open
+	onOpenChange={(isOpen) => {
+		if (isOpen) {
+			init();
+		}
+	}}
 	onOpenChangeComplete={(isOpen) => {
 		if (!isOpen) {
 			closeActions();
@@ -90,11 +83,7 @@
 			</Form.Fieldset>
 		</Form.Root>
 		<Modal.Footer>
-			<Modal.Cancel
-				onclick={() => {
-					reset();
-				}}
-			>
+			<Modal.Cancel>
 				{m.cancel()}
 			</Modal.Cancel>
 
@@ -117,7 +106,6 @@
 								return message;
 							}
 						});
-						reset();
 						close();
 					}}
 				>

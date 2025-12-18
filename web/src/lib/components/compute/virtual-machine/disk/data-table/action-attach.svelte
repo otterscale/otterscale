@@ -30,16 +30,7 @@
 
 	// Context dependencies
 	const transport: Transport = getContext('transport');
-
 	const virtualMachineClient = createClient(InstanceService, transport);
-
-	// ==================== State Variables ====================
-
-	// UI state
-	let open = $state(false);
-
-	// Form validation state
-	let invalid: boolean | undefined = $state();
 
 	// ==================== Local Dropdown Options ====================
 	const dataVolumes: Writable<SingleSelect.OptionType[]> = writable([]);
@@ -68,20 +59,18 @@
 		}
 	}
 
-	// ==================== Default Values & Constants ====================
-	const DEFAULT_REQUEST = {
-		scope: scope,
-		name: virtualMachine.name,
-		namespace: virtualMachine.namespace,
-		dataVolumeName: ''
-	} as AttachVirtualMachineDiskRequest;
+	// ==================== State Variables ====================
+	let request: AttachVirtualMachineDiskRequest = $state({} as AttachVirtualMachineDiskRequest);
+	let invalid: boolean | undefined = $state();
+	let open = $state(false);
 
-	// ==================== Form State ====================
-	let request: AttachVirtualMachineDiskRequest = $state({ ...DEFAULT_REQUEST });
-
-	// ==================== Utility Functions ====================
-	function reset() {
-		request = { ...DEFAULT_REQUEST };
+	function init() {
+		request = {
+			scope: scope,
+			name: virtualMachine.name,
+			namespace: virtualMachine.namespace,
+			dataVolumeName: ''
+		} as AttachVirtualMachineDiskRequest;
 	}
 
 	function close() {
@@ -94,7 +83,14 @@
 	});
 </script>
 
-<Modal.Root bind:open>
+<Modal.Root
+	bind:open
+	onOpenChange={(isOpen) => {
+		if (isOpen) {
+			init();
+		}
+	}}
+>
 	<Modal.Trigger variant="default">
 		<Icon icon="ph:plus" />
 		{m.attach()}
@@ -120,7 +116,7 @@
 								<SingleSelect.List>
 									<SingleSelect.Empty>{m.no_result()}</SingleSelect.Empty>
 									<SingleSelect.Group>
-										{#each $dataVolumes as dv}
+										{#each $dataVolumes as dv (dv.value)}
 											<SingleSelect.Item option={dv}>
 												<Icon
 													icon={dv.icon ? dv.icon : 'ph:empty'}
@@ -140,11 +136,7 @@
 		</Form.Root>
 
 		<Modal.Footer>
-			<Modal.Cancel
-				onclick={() => {
-					reset();
-				}}
-			>
+			<Modal.Cancel>
 				{m.cancel()}
 			</Modal.Cancel>
 			<Modal.ActionsGroup>
@@ -166,7 +158,6 @@
 								return message;
 							}
 						});
-						reset();
 						close();
 					}}
 				>

@@ -29,13 +29,12 @@
 
 	let invalid = $state(false);
 
-	const defaults = {
-		scope: scope,
-		volumeName: volume
-	} as CreateSubvolumeGroupRequest;
-	let request = $state(defaults);
-	function reset() {
-		request = defaults;
+	let request = $state({} as CreateSubvolumeGroupRequest);
+	function init() {
+		request = {
+			scope: scope,
+			volumeName: volume
+		} as CreateSubvolumeGroupRequest;
 	}
 
 	let open = $state(false);
@@ -44,7 +43,14 @@
 	}
 </script>
 
-<Modal.Root bind:open>
+<Modal.Root
+	bind:open
+	onOpenChange={(isOpen) => {
+		if (isOpen) {
+			init();
+		}
+	}}
+>
 	<Modal.Trigger class="default">
 		<Icon icon="ph:plus" />
 		{m.create()}
@@ -78,11 +84,7 @@
 			</Form.Fieldset>
 		</Form.Root>
 		<Modal.Footer>
-			<Modal.Cancel
-				onclick={() => {
-					reset();
-				}}
-			>
+			<Modal.Cancel>
 				{m.cancel()}
 			</Modal.Cancel>
 			<Modal.ActionsGroup>
@@ -104,7 +106,6 @@
 								return message;
 							}
 						});
-						reset();
 						close();
 					}}
 				>

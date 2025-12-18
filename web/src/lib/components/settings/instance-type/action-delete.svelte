@@ -27,31 +27,21 @@
 		closeActions: () => void;
 	} = $props();
 
-	// Context dependencies
 	const transport: Transport = getContext('transport');
 	const virtualMachineClient = createClient(InstanceService, transport);
 
-	// Form validation state
+	let request = $state({} as DeleteInstanceTypeRequest);
 	let invalid = $state(false);
+	let open = $state(false);
 
-	// Default values for the delete instance type request
-	const defaults = {
-		scope: scope,
-		namespace: instanceType.namespace,
-		name: ''
-	} as DeleteInstanceTypeRequest;
-
-	// Current request state
-	let request = $state({ ...defaults });
-
-	// Reset form to default values
-	function reset() {
-		request = { ...defaults };
+	function init() {
+		request = {
+			scope: scope,
+			namespace: instanceType.namespace,
+			name: ''
+		} as DeleteInstanceTypeRequest;
 	}
 
-	// Modal open/close state
-	// Close modal function
-	let open = $state(false);
 	function close() {
 		open = false;
 	}
@@ -59,6 +49,11 @@
 
 <Modal.Root
 	bind:open
+	onOpenChange={(isOpen) => {
+		if (isOpen) {
+			init();
+		}
+	}}
 	onOpenChangeComplete={(isOpen) => {
 		if (!isOpen) {
 			closeActions();
@@ -88,11 +83,7 @@
 			</Form.Fieldset>
 		</Form.Root>
 		<Modal.Footer>
-			<Modal.Cancel
-				onclick={() => {
-					reset();
-				}}
-			>
+			<Modal.Cancel>
 				{m.cancel()}
 			</Modal.Cancel>
 
@@ -115,7 +106,6 @@
 								return message;
 							}
 						});
-						reset();
 						close();
 					}}
 				>

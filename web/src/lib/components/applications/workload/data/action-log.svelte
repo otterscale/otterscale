@@ -145,7 +145,7 @@
 						<Select.Content>
 							<Select.Group>
 								<Select.Label>Duration</Select.Label>
-								{#each durations as duration}
+								{#each durations as duration (duration.label)}
 									<Select.Item value={duration.value}>
 										{duration.label}
 									</Select.Item>

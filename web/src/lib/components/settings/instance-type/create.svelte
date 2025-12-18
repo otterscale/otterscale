@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
-	import { getContext, onMount } from 'svelte';
+	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
 
 	import type { CreateInstanceTypeRequest } from '$lib/api/instance/v1/instance_pb';
@@ -14,50 +14,42 @@
 
 	let { scope, reloadManager }: { scope: string; reloadManager: ReloadManager } = $props();
 
-	// Context dependencies
 	const transport: Transport = getContext('transport');
 	const virtualMachineClient = createClient(InstanceService, transport);
 
-	// ==================== State Variables ====================
+	let request: CreateInstanceTypeRequest = $state({} as CreateInstanceTypeRequest);
 	let invalid: boolean | undefined = $state();
+	let open = $state(false);
 
-	// ==================== Default Values & Constants ====================
-
-	const DEFAULT_REQUEST = {
-		scope: scope,
-		name: '',
-		namespace: 'default',
-		cpuCores: 1,
-		memoryBytes: BigInt(1024 ** 3) // 1GB default
-	} as CreateInstanceTypeRequest;
-
-	// ==================== Form State ====================
-	let request: CreateInstanceTypeRequest = $state({ ...DEFAULT_REQUEST });
-
-	// ==================== Utility Functions ====================
-	function reset() {
-		request = { ...DEFAULT_REQUEST };
+	function init() {
+		request = {
+			scope: scope,
+			name: '',
+			namespace: 'kubevirt',
+			cpuCores: 1,
+			memoryBytes: BigInt(1024 ** 3) // 1GB default
+		} as CreateInstanceTypeRequest;
 	}
 
-	let open = $state(false);
 	function close() {
 		open = false;
 	}
-
-	// ==================== Lifecycle Hooks ====================
-	onMount(() => {
-		// Initialize form
-		reset();
-	});
 </script>
 
-<Modal.Root bind:open>
+<Modal.Root
+	bind:open
+	onOpenChange={(isOpen) => {
+		if (isOpen) {
+			init();
+		}
+	}}
+>
 	<Modal.Trigger variant="default">
 		<Icon icon="ph:plus" />
 		{m.create()}
 	</Modal.Trigger>
 	<Modal.Content>
-		<Modal.Header>{m.create_instance_type()}Create Instance Type</Modal.Header>
+		<Modal.Header>{m.create_instance_type()}</Modal.Header>
 		<Form.Root>
 			<!-- ==================== Basic Configuration ==================== -->
 			<Form.Fieldset>
@@ -73,7 +65,7 @@
 				</Form.Field>
 				<Form.Field>
 					<Form.Label>{m.namespace()}</Form.Label>
-					<SingleInput.General type="text" bind:value={request.namespace} />
+					<SingleInput.General disabled type="text" bind:value={request.namespace} />
 				</Form.Field>
 				<Form.Field>
 					<Form.Label>{m.cpu_cores()}</Form.Label>
@@ -91,11 +83,7 @@
 		</Form.Root>
 
 		<Modal.Footer>
-			<Modal.Cancel
-				onclick={() => {
-					reset();
-				}}
-			>
+			<Modal.Cancel>
 				{m.cancel()}
 			</Modal.Cancel>
 			<Modal.ActionsGroup>
@@ -117,7 +105,6 @@
 								return message;
 							}
 						});
-						reset();
 						close();
 					}}
 				>

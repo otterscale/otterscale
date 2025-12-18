@@ -29,15 +29,15 @@
 
 	let invalid = $state(false);
 	const storageClient = createClient(StorageService, transport);
-	const defaults = {
-		scope: scope,
-		poolName: image.poolName,
-		imageName: image.name,
-		quotaBytes: image.quotaBytes
-	} as UpdateImageRequest;
-	let request = $state(defaults);
-	function reset() {
-		request = defaults;
+
+	let request = $state({} as UpdateImageRequest);
+	function init() {
+		request = {
+			scope: scope,
+			poolName: image.poolName,
+			imageName: image.name,
+			quotaBytes: image.quotaBytes
+		} as UpdateImageRequest;
 	}
 
 	let open = $state(false);
@@ -51,6 +51,11 @@
 	onOpenChangeComplete={(isOpen) => {
 		if (!isOpen) {
 			closeActions();
+		}
+	}}
+	onOpenChange={(isOpen) => {
+		if (isOpen) {
+			init();
 		}
 	}}
 >
@@ -78,11 +83,7 @@
 			</Form.Fieldset>
 		</Form.Root>
 		<Modal.Footer>
-			<Modal.Cancel
-				onclick={() => {
-					reset();
-				}}
-			>
+			<Modal.Cancel>
 				{m.cancel()}
 			</Modal.Cancel>
 			<Modal.ActionsGroup>
@@ -104,7 +105,6 @@
 								return message;
 							}
 						});
-						reset();
 						close();
 					}}
 				>

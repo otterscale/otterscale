@@ -151,7 +151,7 @@
 					</Form.Description>
 				</Form.Fieldset>
 			{:else}
-				<Form.Description class="text-xs font-light">
+				<Form.Description class="mt-0 text-xs font-light">
 					<p>{m.no_data()}</p>
 				</Form.Description>
 			{/if}

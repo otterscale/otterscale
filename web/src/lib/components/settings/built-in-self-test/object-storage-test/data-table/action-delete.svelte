@@ -30,17 +30,16 @@
 	const transport: Transport = getContext('transport');
 	const client = createClient(ConfigurationService, transport);
 
+	let request = $state({} as DeleteTestResultRequest);
 	let invalid = $state(false);
+	let open = $state(false);
 
-	const defaults = {
-		name: ''
-	} as DeleteTestResultRequest;
-	let request = $state(defaults);
-	function reset() {
-		request = defaults;
+	function init() {
+		request = {
+			name: ''
+		} as DeleteTestResultRequest;
 	}
 
-	let open = $state(false);
 	function close() {
 		open = false;
 	}
@@ -48,6 +47,11 @@
 
 <Modal.Root
 	bind:open
+	onOpenChange={(isOpen) => {
+		if (isOpen) {
+			init();
+		}
+	}}
 	onOpenChangeComplete={(isOpen) => {
 		if (!isOpen) {
 			closeActions();
@@ -78,11 +82,7 @@
 			</Form.Fieldset>
 		</Form.Root>
 		<Modal.Footer>
-			<Modal.Cancel
-				onclick={() => {
-					reset();
-				}}
-			>
+			<Modal.Cancel>
 				{m.cancel()}
 			</Modal.Cancel>
 			<Modal.ActionsGroup>
@@ -104,7 +104,6 @@
 								return message;
 							}
 						});
-						reset();
 						close();
 					}}
 				>

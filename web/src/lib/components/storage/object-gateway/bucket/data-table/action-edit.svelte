@@ -39,16 +39,15 @@
 	let isMounted = $state(false);
 	let invalid = $state(false);
 
-	const defaults = {
-		scope: scope,
-		bucketName: bucket.name,
-		owner: bucket.owner,
-		policy: bucket.policy,
-		acl: getAccessControlList(bucket.grants)
-	} as UpdateBucketRequest;
-	let request = $state(defaults);
-	function reset() {
-		request = defaults;
+	let request = $state({} as UpdateBucketRequest);
+	function init() {
+		request = {
+			scope: scope,
+			bucketName: bucket.name,
+			owner: bucket.owner,
+			policy: bucket.policy,
+			acl: getAccessControlList(bucket.grants)
+		} as UpdateBucketRequest;
 	}
 
 	let open = $state(false);
@@ -78,6 +77,11 @@
 
 <Modal.Root
 	bind:open
+	onOpenChange={(isOpen) => {
+		if (isOpen) {
+			init();
+		}
+	}}
 	onOpenChangeComplete={(isOpen) => {
 		if (!isOpen) {
 			closeActions();
@@ -166,11 +170,7 @@
 			</Form.Fieldset>
 		</Form.Root>
 		<Modal.Footer>
-			<Modal.Cancel
-				onclick={() => {
-					reset();
-				}}
-			>
+			<Modal.Cancel>
 				{m.cancel()}
 			</Modal.Cancel>
 			<Modal.ActionsGroup>
@@ -192,7 +192,6 @@
 								return message;
 							}
 						});
-						reset();
 						close();
 					}}
 				>

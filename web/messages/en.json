@@ -76,6 +76,7 @@
 	"create_smb_share": "Create SMB Share",
 	"update_smb_share": "Update SMB Share",
 	"smb_share_name_constraint": "Must not start with a number and be at most 10 characters long.",
+	"smb_port_hint": "Set port to 445 on Windows",
 	"browsable": "Browsable",
 	"read_only": "Read Only",
 	"guest_accessible": "Guest Accessible",

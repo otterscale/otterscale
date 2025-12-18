@@ -23,8 +23,8 @@
 
 	const transport: Transport = getContext('transport');
 	const modelClient = createClient(ModelService, transport);
-
 	const modelArtifacts = writable<ModelArtifact[]>([]);
+
 	async function fetchModelArtifacts() {
 		const response = await modelClient.listModelArtifacts({
 			scope: scope
