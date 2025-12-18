@@ -21,9 +21,15 @@
 		pod,
 		scope,
 		namespace,
-		reloadManager
-	}: { pod: Application_Pod; scope: string; namespace: string; reloadManager: ReloadManager } =
-		$props();
+		reloadManager,
+		closeActions
+	}: {
+		pod: Application_Pod;
+		scope: string;
+		namespace: string;
+		reloadManager: ReloadManager;
+		closeActions: () => void;
+	} = $props();
 
 	const transport: Transport = getContext('transport');
 
@@ -46,7 +52,14 @@
 	}
 </script>
 
-<Modal.Root bind:open>
+<Modal.Root
+	bind:open
+	onOpenChangeComplete={(isOpen) => {
+		if (!isOpen) {
+			closeActions();
+		}
+	}}
+>
 	<Modal.Trigger variant="destructive">
 		<Icon icon="ph:trash" />
 		{m.delete()}
