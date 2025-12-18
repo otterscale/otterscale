@@ -21,31 +21,37 @@
 		$props();
 
 	const transport: Transport = getContext('transport');
-
-	let invalid: boolean | undefined = $state();
-
 	const client = createClient(NetworkService, transport);
-	const defaults = {
-		id: subnet.id,
-		name: subnet.name,
-		cidr: subnet.cidr,
-		gatewayIp: subnet.gatewayIp,
-		dnsServers: subnet.dnsServers,
-		description: subnet.description,
-		allowDnsResolution: subnet.allowDnsResolution
-	} as UpdateSubnetRequest;
-	let request = $state(defaults);
-	function reset() {
-		request = defaults;
+
+	let request = $state({} as UpdateSubnetRequest);
+	let invalid: boolean | undefined = $state();
+	let open = $state(false);
+
+	function init() {
+		request = {
+			id: subnet.id,
+			name: subnet.name,
+			cidr: subnet.cidr,
+			gatewayIp: subnet.gatewayIp,
+			dnsServers: subnet.dnsServers,
+			description: subnet.description,
+			allowDnsResolution: subnet.allowDnsResolution
+		} as UpdateSubnetRequest;
 	}
 
-	let open = $state(false);
 	function close() {
 		open = false;
 	}
 </script>
 
-<Modal.Root bind:open>
+<Modal.Root
+	bind:open
+	onOpenChange={(isOpen) => {
+		if (isOpen) {
+			init();
+		}
+	}}
+>
 	<Modal.Trigger variant="creative">
 		<Icon icon="ph:pencil" />
 		{m.edit_subnet()}
@@ -103,11 +109,7 @@
 			</Form.Fieldset>
 		</Form.Root>
 		<Modal.Footer>
-			<Modal.Cancel
-				onclick={() => {
-					reset();
-				}}>{m.cancel()}</Modal.Cancel
-			>
+			<Modal.Cancel>{m.cancel()}</Modal.Cancel>
 			<Modal.ActionsGroup>
 				<Modal.Action
 					disabled={invalid}
@@ -127,8 +129,6 @@
 								return message;
 							}
 						});
-
-						reset();
 						close();
 					}}
 				>

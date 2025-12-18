@@ -22,26 +22,33 @@
 		$props();
 
 	const transport: Transport = getContext('transport');
-
 	const client = createClient(NetworkService, transport);
-	const defaults = {
-		id: ipRange.id
-	} as DeleteIPRangeRequest;
-	let request = $state(defaults);
-	function reset() {
-		request = defaults;
+
+	let request = $state({} as DeleteIPRangeRequest);
+	let open = $state(false);
+
+	function init() {
+		request = {
+			id: ipRange.id
+		} as DeleteIPRangeRequest;
+	}
+
+	function close() {
+		open = false;
 	}
 
 	let invalidity = $state({} as Booleanified<Network_IPRange>);
 	const invalid = $derived(invalidity.startIp || invalidity.endIp);
-
-	let open = $state(false);
-	function close() {
-		open = false;
-	}
 </script>
 
-<Modal.Root bind:open>
+<Modal.Root
+	bind:open
+	onOpenChange={(isOpen) => {
+		if (isOpen) {
+			init();
+		}
+	}}
+>
 	<Modal.Trigger variant="destructive">
 		<Icon icon="ph:trash" />
 		{m.delete()}
@@ -68,11 +75,7 @@
 			</Form.Fieldset>
 		</Form.Root>
 		<Modal.Footer>
-			<Modal.Cancel
-				onclick={() => {
-					reset();
-				}}
-			>
+			<Modal.Cancel>
 				{m.cancel()}
 			</Modal.Cancel>
 			<Modal.ActionsGroup>
@@ -94,8 +97,6 @@
 								return message;
 							}
 						});
-
-						reset();
 						close();
 					}}
 				>
