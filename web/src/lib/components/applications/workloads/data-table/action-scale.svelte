@@ -23,34 +23,22 @@
 		reloadManager
 	}: { application: Application; scope: string; reloadManager: ReloadManager } = $props();
 
-	// Get required services from Svelte context
 	const transport: Transport = getContext('transport');
-
-	// Create gRPC client for application operations
 	const applicationClient = createClient(ApplicationService, transport);
 
-	// Form validation state
+	let request = $state({} as ScaleApplicationRequest);
 	let invalid = $state(false);
-
-	// Default values for the scale application request
-	const defaults = {
-		scope: scope,
-		name: application.name,
-		namespace: application.namespace,
-		type: application.type,
-		replicas: application.replicas
-	} as ScaleApplicationRequest;
-
-	// Current request state
-	let request = $state({ ...defaults });
-
-	// Reset form to default values
-	function reset() {
-		request = { ...defaults };
-	}
-
-	// Modal open/close state
 	let open = $state(false);
+
+	function init() {
+		request = {
+			scope: scope,
+			name: application.name,
+			namespace: application.namespace,
+			type: application.type,
+			replicas: application.replicas
+		} as ScaleApplicationRequest;
+	}
 
 	// Close modal function
 	function close() {
@@ -59,7 +47,14 @@
 </script>
 
 <!-- Modal component for application scaling -->
-<Modal.Root bind:open>
+<Modal.Root
+	bind:open
+	onOpenChange={(isOpen) => {
+		if (isOpen) {
+			init();
+		}
+	}}
+>
 	<Modal.Trigger variant="creative">
 		<Icon icon="ph:resize" />
 		{m.scale()}
@@ -87,11 +82,7 @@
 		<!-- Modal footer with action buttons -->
 		<Modal.Footer>
 			<!-- Cancel button -->
-			<Modal.Cancel
-				onclick={() => {
-					reset();
-				}}
-			>
+			<Modal.Cancel>
 				{m.cancel()}
 			</Modal.Cancel>
 
@@ -119,8 +110,6 @@
 								return message;
 							}
 						});
-						// Reset form and close modal
-						reset();
 						close();
 					}}
 				>
