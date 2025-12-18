@@ -156,7 +156,7 @@
 				</div>
 			</div>
 
-			<div bind:this={terminal} class="h-full flex-col overflow-auto p-4">
+			<div bind:this={terminal} class="max-h-[calc(95vh-48px)] flex-col overflow-auto p-4">
 				{#each messages as msg, i}
 					{@const isLastMessage = messages.length === i + 1}
 					{@const textClass = isLastMessage ? '' : 'text-green-500'}
