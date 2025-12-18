@@ -26,23 +26,30 @@
 	} = $props();
 
 	const transport: Transport = getContext('transport');
-
 	const client = createClient(NetworkService, transport);
-	const defaults = {
-		subnetId: subnet.id
-	} as CreateIPRangeRequest;
-	let request = $state(defaults);
-	function reset() {
-		request = defaults;
+
+	let request = $state({} as CreateIPRangeRequest);
+	let open = $state(false);
+
+	function init() {
+		request = {
+			subnetId: subnet.id
+		} as CreateIPRangeRequest;
 	}
 
-	let open = $state(false);
 	function close() {
 		open = false;
 	}
 </script>
 
-<Modal.Root bind:open>
+<Modal.Root
+	bind:open
+	onOpenChange={(isOpen) => {
+		if (isOpen) {
+			init();
+		}
+	}}
+>
 	<Modal.Trigger class="default">
 		<Icon icon="ph:plus" />
 		{m.create()}
@@ -68,11 +75,7 @@
 			</Form.Fieldset>
 		</Form.Root>
 		<Modal.Footer>
-			<Modal.Cancel
-				onclick={() => {
-					reset();
-				}}
-			>
+			<Modal.Cancel>
 				{m.cancel()}
 			</Modal.Cancel>
 			<Modal.Action
@@ -92,8 +95,6 @@
 							return message;
 						}
 					});
-
-					reset();
 					close();
 				}}
 			>
