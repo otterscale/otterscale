@@ -25,8 +25,13 @@
 	// Component props - accepts a BootImage object
 	let {
 		bootImage,
-		reloadManager
-	}: { bootImage: Configuration_BootImage; reloadManager: ReloadManager } = $props();
+		reloadManager,
+		closeActions
+	}: {
+		bootImage: Configuration_BootImage;
+		reloadManager: ReloadManager;
+		closeActions: () => void;
+	} = $props();
 
 	// Get required services from Svelte context
 	const transport: Transport = getContext('transport');
@@ -84,7 +89,14 @@
 </script>
 
 <!-- Modal component for boot image edit -->
-<Modal.Root bind:open>
+<Modal.Root
+	bind:open
+	onOpenChangeComplete={(isOpen) => {
+		if (!isOpen) {
+			closeActions();
+		}
+	}}
+>
 	<Modal.Trigger variant="creative">
 		<Icon icon="ph:pencil" />
 		{m.edit()}

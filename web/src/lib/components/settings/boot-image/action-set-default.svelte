@@ -20,10 +20,12 @@
 <script lang="ts">
 	let {
 		bootImage,
-		configuration
+		configuration,
+		closeActions
 	}: {
 		bootImage: Configuration_BootImage;
 		configuration: Writable<Configuration>;
+		closeActions: () => void;
 	} = $props();
 
 	const transport: Transport = getContext('transport');
@@ -43,59 +45,64 @@
 	}
 </script>
 
-<span>
-	<Modal.Root bind:open>
-		<Modal.Trigger variant="creative">
-			<Icon icon="ph:star" />
-			{m.set_as_default()}
-		</Modal.Trigger>
-		<Modal.Content>
-			<Modal.Header>{m.set_default_boot_image()}</Modal.Header>
-			<Form.Root>
-				<Form.Fieldset>
-					<Form.Field>
-						<Form.Label>{m.name()}</Form.Label>
-						<SingleInput.Confirm target={bootImage.name} />
-					</Form.Field>
-				</Form.Fieldset>
-			</Form.Root>
-			<Modal.Footer>
-				<Modal.Cancel
+<Modal.Root
+	bind:open
+	onOpenChangeComplete={(isOpen) => {
+		if (!isOpen) {
+			closeActions();
+		}
+	}}
+>
+	<Modal.Trigger variant="creative">
+		<Icon icon="ph:star" />
+		{m.set_as_default()}
+	</Modal.Trigger>
+	<Modal.Content>
+		<Modal.Header>{m.set_default_boot_image()}</Modal.Header>
+		<Form.Root>
+			<Form.Fieldset>
+				<Form.Field>
+					<Form.Label>{m.name()}</Form.Label>
+					<SingleInput.Confirm target={bootImage.name} />
+				</Form.Field>
+			</Form.Fieldset>
+		</Form.Root>
+		<Modal.Footer>
+			<Modal.Cancel
+				onclick={() => {
+					reset();
+				}}
+			>
+				{m.cancel()}
+			</Modal.Cancel>
+			<Modal.ActionsGroup>
+				<Modal.Action
 					onclick={() => {
+						toast.promise(() => client.setDefaultBootImage(request), {
+							loading: 'Loading...',
+							success: () => {
+								client.getConfiguration({}).then((response) => {
+									configuration.set(response);
+								});
+								return `Set ${request.distroSeries} as default`;
+							},
+							error: (error) => {
+								let message = `Fail to set ${request.distroSeries} as default`;
+								toast.error(message, {
+									description: (error as ConnectError).message.toString(),
+									duration: Number.POSITIVE_INFINITY
+								});
+								return message;
+							}
+						});
+
 						reset();
+						close();
 					}}
 				>
-					{m.cancel()}
-				</Modal.Cancel>
-				<Modal.ActionsGroup>
-					<Modal.Action
-						onclick={() => {
-							toast.promise(() => client.setDefaultBootImage(request), {
-								loading: 'Loading...',
-								success: () => {
-									client.getConfiguration({}).then((response) => {
-										configuration.set(response);
-									});
-									return `Set ${request.distroSeries} as default`;
-								},
-								error: (error) => {
-									let message = `Fail to set ${request.distroSeries} as default`;
-									toast.error(message, {
-										description: (error as ConnectError).message.toString(),
-										duration: Number.POSITIVE_INFINITY
-									});
-									return message;
-								}
-							});
-
-							reset();
-							close();
-						}}
-					>
-						{m.confirm()}
-					</Modal.Action>
-				</Modal.ActionsGroup>
-			</Modal.Footer>
-		</Modal.Content>
-	</Modal.Root>
-</span>
+					{m.confirm()}
+				</Modal.Action>
+			</Modal.ActionsGroup>
+		</Modal.Footer>
+	</Modal.Content>
+</Modal.Root>
