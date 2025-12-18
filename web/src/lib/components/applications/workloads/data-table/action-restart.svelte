@@ -21,7 +21,6 @@
 		application: Application;
 		scope: string;
 		reloadManager: ReloadManager;
-
 		closeActions: () => void;
 	} = $props();
 

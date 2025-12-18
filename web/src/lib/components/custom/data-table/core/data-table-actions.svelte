@@ -13,7 +13,7 @@
 		children,
 		...restProps
 	}: DropdownMenuPrimitive.ContentProps & {
-		open?: boolean;
+		open: boolean;
 		portalProps?: DropdownMenuPrimitive.PortalProps;
 	} = $props();
 </script>

@@ -9,7 +9,11 @@
 </script>
 
 <script lang="ts">
-	let { virtualMachine, scope }: { virtualMachine: VirtualMachine; scope: string } = $props();
+	let {
+		virtualMachine,
+		scope,
+		closeActions
+	}: { virtualMachine: VirtualMachine; scope: string; closeActions: () => void } = $props();
 
 	const transport: Transport = getContext('transport');
 	const virtualMachineClient = createClient(InstanceService, transport);
@@ -83,7 +87,10 @@
 
 <div class="flex items-center justify-end gap-1">
 	<button
-		onclick={handleClick}
+		onclick={async () => {
+			await handleClick();
+			closeActions();
+		}}
 		disabled={loading || isShutdown || (!isRunning && !isPaused)}
 		class="flex items-center gap-1 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
 	>

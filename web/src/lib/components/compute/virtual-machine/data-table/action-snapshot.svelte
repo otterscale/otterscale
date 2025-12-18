@@ -15,12 +15,24 @@
 	let {
 		virtualMachine,
 		scope,
-		reloadManager
-	}: { virtualMachine: VirtualMachine; scope: string; reloadManager: ReloadManager } = $props();
+		reloadManager,
+		closeActions
+	}: {
+		virtualMachine: VirtualMachine;
+		scope: string;
+		reloadManager: ReloadManager;
+		closeActions: () => void;
+	} = $props();
 </script>
 
 <div class="flex w-full items-center gap-1">
-	<Sheet.Root>
+	<Sheet.Root
+		onOpenChangeComplete={(isOpen) => {
+			if (!isOpen) {
+				closeActions();
+			}
+		}}
+	>
 		<!-- TODO: disabled until feature is implemented -->
 		<!-- <Sheet.Trigger class="flex items-center gap-1">
 			<Icon icon="ph:camera" />
