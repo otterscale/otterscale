@@ -63,12 +63,11 @@
 	const transport: Transport = getContext('transport');
 	const storageClient = createClient(StorageService, transport);
 
-	const defaults = {
-		scope: scope
-	} as CreatePoolRequest;
-	let request = $state(defaults);
-	function reset() {
-		request = defaults;
+	let request = $state({} as CreatePoolRequest);
+	function init() {
+		request = {
+			scope: scope
+		} as CreatePoolRequest;
 	}
 
 	let invalidity = $state({} as Booleanified<CreatePoolRequest>);
@@ -84,7 +83,14 @@
 	}
 </script>
 
-<Modal.Root bind:open>
+<Modal.Root
+	bind:open
+	onOpenChange={(isOpen) => {
+		if (isOpen) {
+			init();
+		}
+	}}
+>
 	<Modal.Trigger variant="default">
 		<Icon icon="ph:plus" />
 		{m.create()}
@@ -213,11 +219,7 @@
 			</Form.Fieldset>
 		</Form.Root>
 		<Modal.Footer>
-			<Modal.Cancel
-				onclick={() => {
-					reset();
-				}}
-			>
+			<Modal.Cancel>
 				{m.cancel()}
 			</Modal.Cancel>
 			<Modal.ActionsGroup>
@@ -239,7 +241,6 @@
 								return message;
 							}
 						});
-						reset();
 						close();
 					}}
 				>

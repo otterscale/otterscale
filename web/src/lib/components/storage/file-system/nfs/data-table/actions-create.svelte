@@ -35,19 +35,25 @@
 	let invalid = $state(false);
 	const storageClient = createClient(StorageService, transport);
 
-	const defaults = {
-		scope: scope,
-		volumeName: volume,
-		groupName: group,
-		export: true
-	} as CreateSubvolumeRequest;
-	let request = $state(defaults);
-	function reset() {
-		request = defaults;
+	let request = $state({} as CreateSubvolumeRequest);
+	function init() {
+		request = {
+			scope: scope,
+			volumeName: volume,
+			groupName: group,
+			export: true
+		} as CreateSubvolumeRequest;
 	}
 </script>
 
-<Modal.Root bind:open>
+<Modal.Root
+	bind:open
+	onOpenChange={(isOpen) => {
+		if (isOpen) {
+			init();
+		}
+	}}
+>
 	<Modal.Trigger class="default">
 		<Icon icon="ph:plus" />
 		{m.create()}
@@ -91,11 +97,7 @@
 			</Form.Fieldset>
 		</Form.Root>
 		<Modal.Footer>
-			<Modal.Cancel
-				onclick={() => {
-					reset();
-				}}
-			>
+			<Modal.Cancel>
 				{m.cancel()}
 			</Modal.Cancel>
 			<Modal.ActionsGroup>
@@ -117,7 +119,6 @@
 								return message;
 							}
 						});
-						reset();
 						close();
 					}}
 				>

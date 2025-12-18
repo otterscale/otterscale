@@ -36,13 +36,12 @@
 	let userOptions = $state(writable<SingleSelect.OptionType[]>([]));
 	let isMounted = $state(false);
 
-	const defaults = {
-		scope: scope,
-		policy: '{}'
-	} as CreateBucketRequest;
-	let request = $state(defaults);
-	function reset() {
-		request = defaults;
+	let request = $state({} as CreateBucketRequest);
+	function init() {
+		request = {
+			scope: scope,
+			policy: '{}'
+		} as CreateBucketRequest;
 	}
 
 	let invalidity = $state({} as Booleanified<CreateBucketRequest>);
@@ -73,7 +72,14 @@
 	});
 </script>
 
-<Modal.Root bind:open>
+<Modal.Root
+	bind:open
+	onOpenChange={(isOpen) => {
+		if (isOpen) {
+			init();
+		}
+	}}
+>
 	<Modal.Trigger class="default">
 		<Icon icon="ph:plus" />
 		{m.create()}
@@ -191,11 +197,7 @@
 			</Form.Fieldset>
 		</Form.Root>
 		<Modal.Footer>
-			<Modal.Cancel
-				onclick={() => {
-					reset();
-				}}
-			>
+			<Modal.Cancel>
 				{m.cancel()}
 			</Modal.Cancel>
 			<Modal.ActionsGroup>
@@ -217,7 +219,6 @@
 								return message;
 							}
 						});
-						reset();
 						close();
 					}}
 				>

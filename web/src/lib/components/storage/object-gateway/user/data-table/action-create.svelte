@@ -27,13 +27,12 @@
 
 	const storageClient = createClient(StorageService, transport);
 
-	const defaults = {
-		scope: scope,
-		suspended: true
-	} as CreateUserRequest;
-	let request = $state(defaults);
-	function reset() {
-		request = defaults;
+	let request = $state({} as CreateUserRequest);
+	function init() {
+		request = {
+			scope: scope,
+			suspended: false
+		} as CreateUserRequest;
 	}
 
 	let invalidity = $state({} as Booleanified<CreateUserRequest>);
@@ -45,7 +44,14 @@
 	}
 </script>
 
-<Modal.Root bind:open>
+<Modal.Root
+	bind:open
+	onOpenChange={(isOpen) => {
+		if (isOpen) {
+			init();
+		}
+	}}
+>
 	<Modal.Trigger class="default">
 		<Icon icon="ph:plus" />
 		{m.create()}
@@ -86,11 +92,7 @@
 			</Form.Fieldset>
 		</Form.Root>
 		<Modal.Footer>
-			<Modal.Cancel
-				onclick={() => {
-					reset();
-				}}
-			>
+			<Modal.Cancel>
 				{m.cancel()}
 			</Modal.Cancel>
 			<Modal.ActionsGroup>
@@ -112,7 +114,6 @@
 								return message;
 							}
 						});
-						reset();
 						close();
 					}}
 				>

@@ -38,25 +38,16 @@
 	const transport: Transport = getContext('transport');
 	const storageClient = createClient(StorageService, transport);
 
-	const defaults = {
-		scope: scope,
-		browsable: true,
-		guestOk: false,
-		readOnly: true,
-		commonConfig: { mapToGuest: SMBShare_CommonConfig_MapToGuest.NEVER } as SMBShare_CommonConfig,
-		securityConfig: { mode: SMBShare_SecurityConfig_Mode.USER }
-	} as CreateSMBShareRequest;
-
-	let request = $state(defaults);
-	function resetSecurityConfigValues() {
-		if (request.securityConfig) {
-			request.securityConfig.realm = '';
-			request.securityConfig.joinSource = {} as SMBShare_SecurityConfig_User;
-			request.securityConfig.localUsers = [] as SMBShare_SecurityConfig_User[];
-		}
-	}
-	function reset() {
-		request = defaults;
+	let request = $state({} as CreateSMBShareRequest);
+	function init() {
+		request = {
+			scope: scope,
+			browsable: true,
+			guestOk: false,
+			readOnly: false,
+			commonConfig: { mapToGuest: SMBShare_CommonConfig_MapToGuest.NEVER } as SMBShare_CommonConfig,
+			securityConfig: { mode: SMBShare_SecurityConfig_Mode.USER }
+		} as CreateSMBShareRequest;
 	}
 
 	let invaliditySMBShare = $state({} as Booleanified<CreateSMBShareRequest>);
@@ -74,6 +65,14 @@
 	let open = $state(false);
 	function close() {
 		open = false;
+	}
+
+	function resetSecurityConfigValues() {
+		if (request.securityConfig) {
+			request.securityConfig.realm = '';
+			request.securityConfig.joinSource = {} as SMBShare_SecurityConfig_User;
+			request.securityConfig.localUsers = [] as SMBShare_SecurityConfig_User[];
+		}
 	}
 
 	const securityModeOptions: Writable<SingleSelect.OptionType[]> = writable([
@@ -110,7 +109,14 @@
 	]);
 </script>
 
-<Modal.Root bind:open>
+<Modal.Root
+	bind:open
+	onOpenChange={(isOpen) => {
+		if (isOpen) {
+			init();
+		}
+	}}
+>
 	<Modal.Trigger variant="default">
 		<Icon icon="ph:plus" />
 		{m.create()}
@@ -132,6 +138,9 @@
 				</Form.Field>
 				<Form.Field>
 					<Form.Label>{m.port()}</Form.Label>
+					<Form.Help>
+						{m.smb_port_hint()}
+					</Form.Help>
 					<SingleInput.General type="number" bind:value={request.port} />
 				</Form.Field>
 				<Form.Field>
@@ -356,12 +365,7 @@
 			</Form.Fieldset>
 		</Form.Root>
 		<Modal.Footer>
-			<Modal.Cancel
-				onclick={() => {
-					reset();
-					close();
-				}}
-			>
+			<Modal.Cancel>
 				{m.cancel()}
 			</Modal.Cancel>
 			<Modal.Action
@@ -371,7 +375,7 @@
 						loading: `Creating ${request.name}...`,
 						success: () => {
 							reloadManager.force();
-							return `Create ${request.name} successfully`;
+							return `Creating ${request.name} has been queued`;
 						},
 						error: (error) => {
 							let message = `Fail to create ${request.name}`;
@@ -382,7 +386,6 @@
 							return message;
 						}
 					});
-					reset();
 					close();
 				}}
 			>

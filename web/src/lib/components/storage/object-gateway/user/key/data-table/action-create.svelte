@@ -9,7 +9,6 @@
 	import CopyButton from '$lib/components/custom/copy-button/copy-button.svelte';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
-	import Button from '$lib/components/ui/button/button.svelte';
 	import { m } from '$lib/paraglide/messages';
 </script>
 
@@ -31,40 +30,38 @@
 	let resultOpen = $state(false);
 </script>
 
-<Button
-	class="size-sm flex h-full w-full items-center gap-2 capitalize"
-	onclick={() => {
-		toast.promise(
-			() =>
-				storageClient.createUserKey({
-					scope: scope,
-					userId: user.id
-				}),
-			{
-				loading: `Creating access key...`,
-				success: (key) => {
-					reloadManager.force();
-					createdKey = key;
-					resultOpen = true;
-					return `Create access key`;
-				},
-				error: (error) => {
-					let message = `Fail to create access key`;
-					toast.error(message, {
-						description: (error as ConnectError).message.toString(),
-						duration: Number.POSITIVE_INFINITY
-					});
-					return message;
-				}
-			}
-		);
-	}}
->
-	<Icon icon="ph:plus" />
-	{m.create()}
-</Button>
-
 <Modal.Root bind:open={resultOpen}>
+	<Modal.Trigger
+		onclick={() => {
+			toast.promise(
+				() =>
+					storageClient.createUserKey({
+						scope: scope,
+						userId: user.id
+					}),
+				{
+					loading: `Creating access key...`,
+					success: (key) => {
+						reloadManager.force();
+						createdKey = key;
+						resultOpen = true;
+						return `Create access key`;
+					},
+					error: (error) => {
+						let message = `Fail to create access key`;
+						toast.error(message, {
+							description: (error as ConnectError).message.toString(),
+							duration: Number.POSITIVE_INFINITY
+						});
+						return message;
+					}
+				}
+			);
+		}}
+	>
+		<Icon icon="ph:plus" />
+		{m.create()}
+	</Modal.Trigger>
 	<Modal.Content>
 		<Modal.Header>{m.created_access_key()}</Modal.Header>
 		{#if createdKey}
