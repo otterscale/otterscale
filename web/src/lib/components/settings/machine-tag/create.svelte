@@ -16,21 +16,28 @@
 	let { tags }: { tags: Writable<Tag[]> } = $props();
 
 	const transport: Transport = getContext('transport');
-
 	const client = createClient(MachineService, transport);
-	const defaults = {} as CreateTagRequest;
-	let request = $state(defaults);
-	function reset() {
-		request = defaults;
+
+	let request = $state({} as CreateTagRequest);
+	let open = $state(false);
+
+	function init() {
+		request = {} as CreateTagRequest;
 	}
 
-	let open = $state(false);
 	function close() {
 		open = false;
 	}
 </script>
 
-<Modal.Root bind:open>
+<Modal.Root
+	bind:open
+	onOpenChange={(isOpen) => {
+		if (isOpen) {
+			init();
+		}
+	}}
+>
 	<Modal.Trigger class="default">
 		<Icon icon="ph:plus" />
 		{m.create()}
@@ -51,11 +58,7 @@
 			</Form.Fieldset>
 		</Form.Root>
 		<Modal.Footer>
-			<Modal.Cancel
-				onclick={() => {
-					reset();
-				}}
-			>
+			<Modal.Cancel>
 				{m.cancel()}
 			</Modal.Cancel>
 			<Modal.ActionsGroup>
@@ -78,8 +81,6 @@
 								return message;
 							}
 						});
-
-						reset();
 						close();
 					}}
 				>

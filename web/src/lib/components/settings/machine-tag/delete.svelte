@@ -16,26 +16,31 @@
 	let { tag, tags }: { tag: Tag; tags: Writable<Tag[]> } = $props();
 
 	const transport: Transport = getContext('transport');
-
 	const client = createClient(MachineService, transport);
+	const isDisabled = $derived(tag.comment.toLocaleLowerCase().includes('built-in'));
 
-	const defaults = {} as DeleteTagRequest;
-	let request = $state(defaults);
-	function reset() {
-		request = defaults;
+	let request = $state({} as DeleteTagRequest);
+	let invalid: boolean | undefined = $state();
+	let open = $state(false);
+
+	function init() {
+		request = {} as DeleteTagRequest;
 	}
 
-	let open = $state(false);
 	function close() {
 		open = false;
 	}
-	let invalid: boolean | undefined = $state();
-
-	const isDisabled = $derived(tag.comment.toLocaleLowerCase().includes('built-in'));
 </script>
 
 <span>
-	<Modal.Root bind:open>
+	<Modal.Root
+		bind:open
+		onOpenChange={(isOpen) => {
+			if (isOpen) {
+				init();
+			}
+		}}
+	>
 		<Modal.Trigger variant="destructive" disabled={isDisabled}>
 			<Icon icon="ph:trash" />
 			{m.delete()}
@@ -58,11 +63,7 @@
 				</Form.Fieldset>
 			</Form.Root>
 			<Modal.Footer>
-				<Modal.Cancel
-					onclick={() => {
-						reset();
-					}}
-				>
+				<Modal.Cancel>
 					{m.cancel()}
 				</Modal.Cancel>
 				<Modal.ActionsGroup>
@@ -86,8 +87,6 @@
 									return message;
 								}
 							});
-
-							reset();
 							close();
 						}}
 					>
