@@ -5725,8 +5725,8 @@ components:
       type: object
       properties:
         type:
-          type: string
           title: type
+          $ref: '#/components/schemas/otterscale.application.v1.Application.Type'
         name:
           type: string
           title: name
@@ -5909,6 +5909,14 @@ components:
           title: target_port
       title: Port
       additionalProperties: false
+    otterscale.application.v1.Application.Type:
+      type: string
+      title: Type
+      enum:
+        - TYPE_UNKNOWN
+        - TYPE_DEPLOYMENT
+        - TYPE_STATEFUL_SET
+        - TYPE_DAEMON_SET
     otterscale.application.v1.ConfigMap:
       type: object
       properties:
@@ -6275,8 +6283,8 @@ components:
           type: string
           title: name
         type:
-          type: string
           title: type
+          $ref: '#/components/schemas/otterscale.application.v1.Application.Type'
       title: RestartApplicationRequest
       additionalProperties: false
     otterscale.application.v1.RollbackReleaseRequest:
@@ -6309,8 +6317,8 @@ components:
           type: string
           title: name
         type:
-          type: string
           title: type
+          $ref: '#/components/schemas/otterscale.application.v1.Application.Type'
         replicas:
           type: integer
           title: replicas
@@ -8809,6 +8817,12 @@ components:
             - string
           title: size_bytes
           format: int64
+        fromPersistentVolumeClaim:
+          type: boolean
+          title: from_persistent_volume_claim
+        persistentVolumeClaimName:
+          type: string
+          title: persistent_volume_claim_name
         mode:
           title: mode
           $ref: '#/components/schemas/otterscale.model.v1.Model.Mode'
@@ -8944,6 +8958,12 @@ components:
           items:
             $ref: '#/components/schemas/otterscale.application.v1.Application.Pod'
           title: pods
+        fromPersistentVolumeClaim:
+          type: boolean
+          title: from_persistent_volume_claim
+        persistentVolumeClaimName:
+          type: string
+          title: persistent_volume_claim_name
       title: Model
       additionalProperties: false
     otterscale.model.v1.Model.Decode:
@@ -8973,6 +8993,9 @@ components:
         replica:
           type: integer
           title: replica
+        tensor:
+          type: integer
+          title: tensor
         vgpumemPercentage:
           type: integer
           title: vgpumem_percentage
@@ -10471,9 +10494,9 @@ components:
         poolName:
           type: string
           title: pool_name
-        poolType:
-          title: pool_type
-          $ref: '#/components/schemas/otterscale.storage.v1.PoolType'
+        type:
+          title: type
+          $ref: '#/components/schemas/otterscale.storage.v1.Pool.Type'
         ecOverwrites:
           type: boolean
           title: ec_overwrites
@@ -10500,9 +10523,8 @@ components:
         applications:
           type: array
           items:
-            type: string
+            $ref: '#/components/schemas/otterscale.storage.v1.Pool.Application'
           title: applications
-          description: cephfs, rbd, rgw
       title: CreatePoolRequest
       additionalProperties: false
     otterscale.storage.v1.CreateSMBShareRequest:
@@ -10938,6 +10960,9 @@ components:
           items:
             $ref: '#/components/schemas/otterscale.storage.v1.Bucket'
           title: buckets
+        serviceUri:
+          type: string
+          title: service_uri
       title: ListBucketsResponse
       additionalProperties: false
     otterscale.storage.v1.ListImagesRequest:
@@ -11001,8 +11026,8 @@ components:
           type: string
           title: scope
         application:
-          type: string
           title: application
+          $ref: '#/components/schemas/otterscale.storage.v1.Pool.Application'
       title: ListPoolsRequest
       additionalProperties: false
     otterscale.storage.v1.ListPoolsResponse:
@@ -11094,6 +11119,9 @@ components:
           items:
             $ref: '#/components/schemas/otterscale.storage.v1.User'
           title: users
+        serviceUri:
+          type: string
+          title: service_uri
       title: ListUsersResponse
       additionalProperties: false
     otterscale.storage.v1.ListVolumesRequest:
@@ -11210,9 +11238,9 @@ components:
         updating:
           type: boolean
           title: updating
-        poolType:
-          title: pool_type
-          $ref: '#/components/schemas/otterscale.storage.v1.PoolType'
+        type:
+          title: type
+          $ref: '#/components/schemas/otterscale.storage.v1.Pool.Type'
         ecOverwrites:
           type: boolean
           title: ec_overwrites
@@ -11289,10 +11317,18 @@ components:
         applications:
           type: array
           items:
-            type: string
+            $ref: '#/components/schemas/otterscale.storage.v1.Pool.Application'
           title: applications
       title: Pool
       additionalProperties: false
+    otterscale.storage.v1.Pool.Application:
+      type: string
+      title: Application
+      enum:
+        - APPLICATION_UNSPECIFIED
+        - APPLICATION_BLOCK
+        - APPLICATION_FILE
+        - APPLICATION_OBJECT
     otterscale.storage.v1.Pool.PlacementGroupStateEntry:
       type: object
       properties:
@@ -11307,13 +11343,13 @@ components:
           format: int64
       title: PlacementGroupStateEntry
       additionalProperties: false
-    otterscale.storage.v1.PoolType:
+    otterscale.storage.v1.Pool.Type:
       type: string
-      title: PoolType
+      title: Type
       enum:
-        - POOL_TYPE_UNSPECIFIED
-        - POOL_TYPE_ERASURE
-        - POOL_TYPE_REPLICATED
+        - TYPE_UNSPECIFIED
+        - TYPE_ERASURE
+        - TYPE_REPLICATED
     otterscale.storage.v1.ProtectImageSnapshotRequest:
       type: object
       properties:
@@ -11834,19 +11870,19 @@ components:
       scheme: basic
 security: []
 tags:
-  - name: ConfigurationService
-  - name: BootstrapService
-  - name: NetworkService
-  - name: ScopeService
   - name: StorageService
   - name: FacilityService
-  - name: MachineService
   - name: RegistryService
   - name: ApplicationService
-  - name: ModelService
   - name: InstanceService
-  - name: EnvironmentService
   - name: OrchestratorService
+  - name: BootstrapService
+  - name: NetworkService
+  - name: ConfigurationService
+  - name: MachineService
+  - name: ModelService
+  - name: ScopeService
+  - name: EnvironmentService
 externalDocs:
   description: Website
   url: https://otterscale.github.io
