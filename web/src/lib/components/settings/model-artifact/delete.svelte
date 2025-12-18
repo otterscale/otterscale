@@ -30,28 +30,27 @@
 	const transport: Transport = getContext('transport');
 	const modelClient = createClient(ModelService, transport);
 
-	const defaults = {
-		scope: scope,
-		namespace: modelArtifact.namespace
-	} as DeleteModelArtifactRequest;
-	let request = $state({ ...defaults });
-	function reset() {
-		request = { ...defaults };
+	let request = $state({} as DeleteModelArtifactRequest);
+	let invalid = $state(false);
+	let open = $state(false);
+
+	function init() {
+		request = {
+			scope: scope,
+			namespace: modelArtifact.namespace
+		} as DeleteModelArtifactRequest;
 	}
 
-	let open = $state(false);
 	function close() {
 		open = false;
 	}
-
-	let invalid = $state(false);
 </script>
 
 <Modal.Root
 	bind:open
 	onOpenChange={(isOpen) => {
 		if (isOpen) {
-			reset();
+			init();
 		}
 	}}
 >
