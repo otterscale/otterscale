@@ -15,10 +15,12 @@
 <script lang="ts">
 	let {
 		machine,
-		reloadManager
+		reloadManager,
+		closeActions
 	}: {
 		machine: Machine;
 		reloadManager: ReloadManager;
+		closeActions: () => void;
 	} = $props();
 
 	const transport: Transport = getContext('transport');
@@ -32,7 +34,14 @@
 	}
 </script>
 
-<Modal.Root bind:open>
+<Modal.Root
+	bind:open
+	onOpenChangeComplete={(isOpen) => {
+		if (!isOpen) {
+			closeActions();
+		}
+	}}
+>
 	<Modal.Trigger disabled={machine.powerState.toLowerCase() === 'off'} variant="creative">
 		<Icon icon="ph:power" />
 		{m.turn_off()}
