@@ -27,24 +27,31 @@
 	} = $props();
 
 	const transport: Transport = getContext('transport');
+	const client = createClient(ConfigurationService, transport);
 
-	const defaults = {
-		distroSeries: bootImage.distroSeries
-	} as SetDefaultBootImageRequest;
-	let request = $state(defaults);
-	function reset() {
-		request = defaults;
+	let request = $state({} as SetDefaultBootImageRequest);
+	let open = $state(false);
+
+	function init() {
+		request = {
+			distroSeries: bootImage.distroSeries
+		} as SetDefaultBootImageRequest;
 	}
 
-	const client = createClient(ConfigurationService, transport);
-	let open = $state(false);
 	function close() {
 		open = false;
 	}
 </script>
 
 <span>
-	<Modal.Root bind:open>
+	<Modal.Root
+		bind:open
+		onOpenChange={(isOpen) => {
+			if (isOpen) {
+				init();
+			}
+		}}
+	>
 		<Modal.Trigger variant="creative">
 			<Icon icon="ph:star" />
 			{m.set_as_default()}
@@ -60,11 +67,7 @@
 				</Form.Fieldset>
 			</Form.Root>
 			<Modal.Footer>
-				<Modal.Cancel
-					onclick={() => {
-						reset();
-					}}
-				>
+				<Modal.Cancel>
 					{m.cancel()}
 				</Modal.Cancel>
 				<Modal.ActionsGroup>
@@ -87,8 +90,6 @@
 									return message;
 								}
 							});
-
-							reset();
 							close();
 						}}
 					>
