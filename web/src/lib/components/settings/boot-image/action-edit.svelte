@@ -25,8 +25,13 @@
 	// Component props - accepts a BootImage object
 	let {
 		bootImage,
-		reloadManager
-	}: { bootImage: Configuration_BootImage; reloadManager: ReloadManager } = $props();
+		reloadManager,
+		closeActions
+	}: {
+		bootImage: Configuration_BootImage;
+		reloadManager: ReloadManager;
+		closeActions: () => void;
+	} = $props();
 
 	const transport: Transport = getContext('transport');
 	const client = createClient(ConfigurationService, transport);
@@ -76,6 +81,11 @@
 	onOpenChange={(isOpen) => {
 		if (isOpen) {
 			init();
+		}
+	}}
+	onOpenChangeComplete={(isOpen) => {
+		if (!isOpen) {
+			closeActions();
 		}
 	}}
 >

@@ -19,13 +19,15 @@
 		scope,
 		volume,
 		group,
-		reloadManager
+		reloadManager,
+		closeActions
 	}: {
 		subvolume: Subvolume;
 		scope: string;
 		volume: string;
 		group: string;
 		reloadManager: ReloadManager;
+		closeActions: () => void;
 	} = $props();
 
 	const transport: Transport = getContext('transport');
@@ -50,7 +52,14 @@
 	const storageClient = createClient(StorageService, transport);
 </script>
 
-<Modal.Root bind:open>
+<Modal.Root
+	bind:open
+	onOpenChangeComplete={(isOpen) => {
+		if (!isOpen) {
+			closeActions();
+		}
+	}}
+>
 	<Modal.Trigger variant="creative">
 		<Icon icon="ph:pencil" />
 		{m.edit()}

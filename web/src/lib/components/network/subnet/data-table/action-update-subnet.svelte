@@ -17,8 +17,11 @@
 </script>
 
 <script lang="ts">
-	let { subnet, reloadManager }: { subnet: Network_Subnet; reloadManager: ReloadManager } =
-		$props();
+	let {
+		subnet,
+		reloadManager,
+		closeActions
+	}: { subnet: Network_Subnet; reloadManager: ReloadManager; closeActions: () => void } = $props();
 
 	const transport: Transport = getContext('transport');
 	const client = createClient(NetworkService, transport);
@@ -49,6 +52,11 @@
 	onOpenChange={(isOpen) => {
 		if (isOpen) {
 			init();
+		}
+	}}
+	onOpenChangeComplete={(isOpen) => {
+		if (!isOpen) {
+			closeActions();
 		}
 	}}
 >

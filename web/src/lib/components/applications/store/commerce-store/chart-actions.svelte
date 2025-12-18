@@ -2,7 +2,7 @@
 	import type { Writable } from 'svelte/store';
 
 	import type { Release } from '$lib/api/application/v1/application_pb';
-	import * as Layout from '$lib/components/custom/data-table/layout';
+	import { Actions } from '$lib/components/custom/data-table/core';
 	import { m } from '$lib/paraglide/messages';
 
 	import Delete from './chart-action-delete-release.svelte';
@@ -20,21 +20,26 @@
 		scope: string;
 		releases: Writable<Release[]>;
 	} = $props();
+
+	let open = $state(false);
+	function close() {
+		open = false;
+	}
 </script>
 
-<Layout.Actions>
-	<Layout.ActionLabel>
+<Actions.List bind:open>
+	<Actions.Label>
 		{m.actions()}
-	</Layout.ActionLabel>
-	<Layout.ActionSeparator />
-	<Layout.ActionItem>
-		<Edit {release} {scope} {releases} />
-	</Layout.ActionItem>
-	<Layout.ActionItem>
-		<Rollback {release} {scope} {releases} />
-	</Layout.ActionItem>
-	<Layout.ActionSeparator />
-	<Layout.ActionItem>
-		<Delete {release} {scope} {releases} />
-	</Layout.ActionItem>
-</Layout.Actions>
+	</Actions.Label>
+	<Actions.Separator />
+	<Actions.Item>
+		<Edit {release} {scope} {releases} closeActions={close} />
+	</Actions.Item>
+	<Actions.Item>
+		<Rollback {release} {scope} {releases} closeActions={close} />
+	</Actions.Item>
+	<Actions.Separator />
+	<Actions.Item>
+		<Delete {release} {scope} {releases} closeActions={close} />
+	</Actions.Item>
+</Actions.List>

@@ -15,8 +15,14 @@
 	let {
 		application,
 		scope,
-		reloadManager
-	}: { application: Application; scope: string; reloadManager: ReloadManager } = $props();
+		reloadManager,
+		closeActions
+	}: {
+		application: Application;
+		scope: string;
+		reloadManager: ReloadManager;
+		closeActions: () => void;
+	} = $props();
 
 	const transport: Transport = getContext('transport');
 
@@ -62,7 +68,10 @@
 
 <div class="flex items-center justify-end gap-1">
 	<button
-		onclick={handleClick}
+		onclick={async () => {
+			await handleClick();
+			closeActions();
+		}}
 		disabled={loading}
 		class="flex items-center gap-1 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
 	>

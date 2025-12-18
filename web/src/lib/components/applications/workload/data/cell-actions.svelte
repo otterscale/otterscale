@@ -1,6 +1,6 @@
 <script lang="ts" module>
 	import type { Application_Pod } from '$lib/api/application/v1/application_pb';
-	import * as Layout from '$lib/components/custom/data-table/layout';
+	import { Actions } from '$lib/components/custom/data-table/core';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { m } from '$lib/paraglide/messages';
 
@@ -16,15 +16,22 @@
 		reloadManager
 	}: { pod: Application_Pod; scope: string; namespace: string; reloadManager: ReloadManager } =
 		$props();
+
+	let open = $state(false);
+	function close() {
+		open = false;
+	}
 </script>
 
-<Layout.Actions>
-	<Layout.ActionLabel>{m.actions()}</Layout.ActionLabel>
-	<Layout.ActionSeparator />
-	<Layout.ActionItem>
-		<Log {pod} {scope} {namespace} />
-	</Layout.ActionItem>
-	<Layout.ActionItem>
-		<Delete {pod} {scope} {namespace} {reloadManager} />
-	</Layout.ActionItem>
-</Layout.Actions>
+<Actions.List bind:open>
+	<Actions.Label>
+		{m.actions()}
+	</Actions.Label>
+	<Actions.Separator />
+	<Actions.Item>
+		<Log {pod} {scope} {namespace} closeActions={close} />
+	</Actions.Item>
+	<Actions.Item>
+		<Delete {pod} {scope} {namespace} {reloadManager} closeActions={close} />
+	</Actions.Item>
+</Actions.List>

@@ -18,7 +18,11 @@
 </script>
 
 <script lang="ts">
-	let { ipRange, reloadManager }: { ipRange: Network_IPRange; reloadManager: ReloadManager } =
+	let {
+		ipRange,
+		reloadManager,
+		closeActions
+	}: { ipRange: Network_IPRange; reloadManager: ReloadManager; closeActions: () => void } =
 		$props();
 
 	const transport: Transport = getContext('transport');
@@ -46,6 +50,11 @@
 	onOpenChange={(isOpen) => {
 		if (isOpen) {
 			init();
+		}
+	}}
+	onOpenChangeComplete={(isOpen) => {
+		if (!isOpen) {
+			closeActions();
 		}
 	}}
 >

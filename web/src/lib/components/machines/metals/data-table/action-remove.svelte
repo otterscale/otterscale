@@ -19,10 +19,12 @@
 <script lang="ts">
 	let {
 		machine,
-		reloadManager
+		reloadManager,
+		closeActions
 	}: {
 		machine: Machine;
 		reloadManager: ReloadManager;
+		closeActions: () => void;
 	} = $props();
 
 	const transport: Transport = getContext('transport');
@@ -50,6 +52,11 @@
 	onOpenChange={(isOpen) => {
 		if (isOpen) {
 			init();
+		}
+	}}
+	onOpenChangeComplete={(isOpen) => {
+		if (!isOpen) {
+			closeActions();
 		}
 	}}
 >

@@ -20,8 +20,14 @@
 	let {
 		virtualMachine,
 		scope,
-		reloadManager
-	}: { virtualMachine: VirtualMachine; scope: string; reloadManager: ReloadManager } = $props();
+		reloadManager,
+		closeActions
+	}: {
+		virtualMachine: VirtualMachine;
+		scope: string;
+		reloadManager: ReloadManager;
+		closeActions: () => void;
+	} = $props();
 
 	const transport: Transport = getContext('transport');
 	const virtualMachineClient = createClient(InstanceService, transport);
@@ -48,6 +54,11 @@
 	onOpenChange={(isOpen) => {
 		if (isOpen) {
 			init();
+		}
+	}}
+	onOpenChangeComplete={(isOpen) => {
+		if (!isOpen) {
+			closeActions();
 		}
 	}}
 >
