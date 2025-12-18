@@ -62,7 +62,8 @@
 			const queryResponse = await client.instantQuery(query);
 
 			if (queryResponse.result && queryResponse.result.length > 0) {
-				const days = parseFloat(queryResponse.result[0].value.value);
+				const seconds = parseFloat(queryResponse.result[0].value.value);
+				const days = seconds / (24 * 60 * 60);
 				response = formatTimeTillFull(days);
 			} else {
 				response = '∞ years';
