@@ -24,27 +24,33 @@
 	}: { virtualMachine: VirtualMachine; scope: string; reloadManager: ReloadManager } = $props();
 
 	const transport: Transport = getContext('transport');
-
 	const virtualMachineClient = createClient(InstanceService, transport);
-	let invalid = $state(false);
 
-	const defaults = {
-		scope: scope,
-		name: '',
-		namespace: virtualMachine.namespace
-	} as DeleteVirtualMachineRequest;
-	let request = $state({ ...defaults });
-	function reset() {
-		request = { ...defaults };
+	let request = $state({} as DeleteVirtualMachineRequest);
+	let invalid = $state(false);
+	let open = $state(false);
+
+	function init() {
+		request = {
+			scope: scope,
+			name: '',
+			namespace: virtualMachine.namespace
+		} as DeleteVirtualMachineRequest;
 	}
 
-	let open = $state(false);
 	function close() {
 		open = false;
 	}
 </script>
 
-<Modal.Root bind:open>
+<Modal.Root
+	bind:open
+	onOpenChange={(isOpen) => {
+		if (isOpen) {
+			init();
+		}
+	}}
+>
 	<Modal.Trigger variant="destructive">
 		<Icon icon="ph:trash" />
 		{m.delete()}
@@ -68,11 +74,7 @@
 			</Form.Fieldset>
 		</Form.Root>
 		<Modal.Footer>
-			<Modal.Cancel
-				onclick={() => {
-					reset();
-				}}
-			>
+			<Modal.Cancel>
 				{m.cancel()}
 			</Modal.Cancel>
 			<Modal.ActionsGroup>
@@ -94,7 +96,6 @@
 								return message;
 							}
 						});
-						reset();
 						close();
 					}}
 				>

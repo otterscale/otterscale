@@ -24,40 +24,36 @@
 
 	// Context dependencies
 	const transport: Transport = getContext('transport');
-
 	const virtualMachineClient = createClient(InstanceService, transport);
 
 	// ==================== State Variables ====================
-
-	// UI state
+	let request = $state({} as CreateVirtualMachineSnapshotRequest);
+	let invalid: boolean | undefined = $state();
 	let open = $state(false);
 
-	// Form validation state
-	let invalid: boolean | undefined = $state();
-
-	// ==================== Default Values & Constants ====================
-
-	// Default request structure for creating a virtual machine snapshot
-	const DEFAULT_REQUEST = {
-		scope: scope,
-		namespace: virtualMachine.namespace,
-		name: '',
-		virtualMachineName: virtualMachine.name
-	} as CreateVirtualMachineSnapshotRequest;
-
-	// ==================== Form State ====================
-	let request: CreateVirtualMachineSnapshotRequest = $state({ ...DEFAULT_REQUEST });
-
 	// ==================== Utility Functions ====================
-	function reset() {
-		request = { ...DEFAULT_REQUEST };
+	function init() {
+		request = {
+			scope: scope,
+			namespace: virtualMachine.namespace,
+			name: '',
+			virtualMachineName: virtualMachine.name
+		} as CreateVirtualMachineSnapshotRequest;
 	}
+
 	function close() {
 		open = false;
 	}
 </script>
 
-<Modal.Root bind:open>
+<Modal.Root
+	bind:open
+	onOpenChange={(isOpen) => {
+		if (isOpen) {
+			init();
+		}
+	}}
+>
 	<Modal.Trigger variant="default">
 		<Icon icon="ph:plus" />
 		{m.create()}
@@ -75,11 +71,7 @@
 		</Form.Root>
 
 		<Modal.Footer>
-			<Modal.Cancel
-				onclick={() => {
-					reset();
-				}}
-			>
+			<Modal.Cancel>
 				{m.cancel()}
 			</Modal.Cancel>
 			<Modal.ActionsGroup>
@@ -101,7 +93,6 @@
 								return message;
 							}
 						});
-						reset();
 						close();
 					}}
 				>

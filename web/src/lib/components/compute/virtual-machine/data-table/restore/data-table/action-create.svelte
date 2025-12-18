@@ -29,14 +29,10 @@
 	const virtualMachineClient = createClient(InstanceService, transport);
 
 	// ==================== State Variables ====================
-	// UI state
-	let open = $state(false);
 
-	// Form validation state
-	let invalid: boolean | undefined = $state();
-
-	// ==================== Form State ====================
 	let request = $state({} as CreateVirtualMachineRestoreRequest);
+	let invalid: boolean | undefined = $state();
+	let open = $state(false);
 
 	// ==================== Local Dropdown Options ====================
 	const snapshotOptions: Writable<SingleSelect.OptionType[]> = writable([]);
@@ -61,7 +57,7 @@
 	});
 
 	// ==================== Utility Functions ====================
-	function reset() {
+	function init() {
 		request = {
 			scope: scope,
 			namespace: virtualMachine.namespace,
@@ -70,12 +66,20 @@
 			snapshotName: ''
 		} as CreateVirtualMachineRestoreRequest;
 	}
+
 	function close() {
 		open = false;
 	}
 </script>
 
-<Modal.Root bind:open onOpenChange={(isOpen) => isOpen && reset()}>
+<Modal.Root
+	bind:open
+	onOpenChange={(isOpen) => {
+		if (isOpen) {
+			init();
+		}
+	}}
+>
 	<Modal.Trigger variant="default">
 		<Icon icon="ph:plus" />
 		{m.create()}
@@ -120,11 +124,7 @@
 		</Form.Root>
 
 		<Modal.Footer>
-			<Modal.Cancel
-				onclick={() => {
-					reset();
-				}}
-			>
+			<Modal.Cancel>
 				{m.cancel()}
 			</Modal.Cancel>
 			<Modal.ActionsGroup>
