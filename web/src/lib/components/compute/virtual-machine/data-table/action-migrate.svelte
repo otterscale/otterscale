@@ -10,6 +10,7 @@
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
+	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { m } from '$lib/paraglide/messages';
 </script>
 
@@ -43,10 +44,22 @@
 </script>
 
 <Modal.Root bind:open>
-	<Modal.Trigger variant="creative">
+	<!-- TODO: disabled until feature is implemented -->
+	<!-- <Modal.Trigger variant="creative">
 		<Icon icon="ph:arrows-clockwise" />
 		{m.migrate()}
-	</Modal.Trigger>
+	</Modal.Trigger> -->
+	<Tooltip.Provider>
+		<Tooltip.Root>
+			<Tooltip.Trigger class="w-full">
+				<Modal.Trigger variant="creative" disabled>
+					<Icon icon="ph:arrows-clockwise" />
+					{m.migrate()}
+				</Modal.Trigger>
+			</Tooltip.Trigger>
+			<Tooltip.Content>{m.under_development()}</Tooltip.Content>
+		</Tooltip.Root>
+	</Tooltip.Provider>
 	<Modal.Content>
 		<Modal.Header>{m.migrate_virtual_machine()}</Modal.Header>
 		<Form.Root>

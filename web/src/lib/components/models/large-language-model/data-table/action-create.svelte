@@ -13,24 +13,20 @@
 		type Model_Prefill,
 		ModelService
 	} from '$lib/api/model/v1/model_pb';
-	import * as Code from '$lib/components/custom/code';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { Booleanified } from '$lib/components/custom/modal/single-step/type';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { Single as SingleSelect } from '$lib/components/custom/select';
-	import { buttonVariants } from '$lib/components/ui/button';
 	import * as ButtonGroup from '$lib/components/ui/button-group/index.js';
-	import Input from '$lib/components/ui/input/input.svelte';
 	import * as InputGroup from '$lib/components/ui/input-group/index.js';
-	import * as Item from '$lib/components/ui/item/index.js';
-	import * as Popover from '$lib/components/ui/popover';
 	import { Slider } from '$lib/components/ui/slider/index.js';
 	import Switch from '$lib/components/ui/switch/switch.svelte';
 	import { m } from '$lib/paraglide/messages.js';
 	import { cn } from '$lib/utils';
 
+	import Reference from './util-reference.svelte';
 	import SelectCloudModel from './util-select-cloud-model.svelte';
 	import SelectLocalModel from './util-select-local-model.svelte';
 </script>
@@ -51,11 +47,11 @@
 
 	let requestPrefill = $state({} as Model_Prefill);
 	function initPrefill() {
-		requestPrefill = { replica: 1, tensor: 1 } as Model_Prefill;
+		requestPrefill = { replica: 1, tensor: 1, vgpumemPercentage: 50 } as Model_Prefill;
 	}
 	let requestDecode = $state({} as Model_Decode);
 	function initDecode() {
-		requestDecode = { replica: 1, tensor: 1 } as Model_Decode;
+		requestDecode = { replica: 1, tensor: 1, vgpumemPercentage: 50 } as Model_Decode;
 	}
 	let request = $state({} as CreateModelRequest);
 	function init() {
@@ -183,7 +179,6 @@
 							'w-full rounded-md',
 							invalidity.modelName ? 'ring-1 ring-destructive has-focus:ring-0' : ''
 						)}
-						aria-invalid={invalid}
 					>
 						<InputGroup.Root>
 							<InputGroup.Input
@@ -192,7 +187,10 @@
 								class={cn(invalidity.modelName ? 'placeholder:text-destructive/50' : '')}
 							/>
 							<InputGroup.Addon>
-								<Icon icon="ph:robot" />
+								<Icon
+									icon="ph:robot"
+									class={cn(invalidity.modelName ? 'text-destructive/50' : '')}
+								/>
 							</InputGroup.Addon>
 						</InputGroup.Root>
 						<SelectLocalModel
@@ -224,37 +222,7 @@
 
 				<Form.Field>
 					<Form.Label>{m.max_model_length()}</Form.Label>
-					<ButtonGroup.Root class="w-full">
-						<Input type="number" bind:value={request.maxModelLength} />
-						{#if request.modelName}
-							{#await fetch(`https://huggingface.co/${request.modelName}/resolve/main/config.json`) then response}
-								{#await response.text() then body}
-									<Popover.Root>
-										<Popover.Trigger class={buttonVariants({ variant: 'outline' })}>
-											<Icon icon="ph:gear-fine" />
-										</Popover.Trigger>
-										<Popover.Content
-											align="center"
-											side="left"
-											class="max-h-[50vh] w-fit max-w-[38vw] overflow-y-auto"
-										>
-											<Item.Root class="w-full">
-												<Item.Content class="flex flex-col items-start">
-													<Item.Title class="text-xl font-bold">
-														{m.configuration()}
-													</Item.Title>
-													<Item.Description class="text-muted-foreground">
-														{request.modelName}
-													</Item.Description>
-												</Item.Content>
-											</Item.Root>
-											<Code.Root lang="json" code={body} class="border-none" />
-										</Popover.Content>
-									</Popover.Root>
-								{/await}
-							{/await}
-						{/if}
-					</ButtonGroup.Root>
+					<SingleInput.General type="number" bind:value={request.maxModelLength} />
 				</Form.Field>
 			</Form.Fieldset>
 
@@ -361,30 +329,35 @@
 			<Modal.Cancel>
 				{m.cancel()}
 			</Modal.Cancel>
-			<Modal.Action
-				disabled={invalid}
-				onclick={() => {
-					integrate();
-					toast.promise(() => modelClient.createModel(request), {
-						loading: `Creating ${request.modelName}...`,
-						success: () => {
-							reloadManager.force();
-							return `Create ${request.modelName} success`;
-						},
-						error: (error) => {
-							let message = `Fail to create ${request.modelName}`;
-							toast.error(message, {
-								description: (error as ConnectError).message.toString(),
-								duration: Number.POSITIVE_INFINITY
-							});
-							return message;
-						}
-					});
-					close();
-				}}
-			>
-				{m.confirm()}
-			</Modal.Action>
+			<div class="flex items-center gap-1">
+				{#if request.modelName}
+					<Reference modelName={request.modelName} />
+				{/if}
+				<Modal.Action
+					disabled={invalid}
+					onclick={() => {
+						integrate();
+						toast.promise(() => modelClient.createModel(request), {
+							loading: `Creating ${request.modelName}...`,
+							success: () => {
+								reloadManager.force();
+								return `Create ${request.modelName} success`;
+							},
+							error: (error) => {
+								let message = `Fail to create ${request.modelName}`;
+								toast.error(message, {
+									description: (error as ConnectError).message.toString(),
+									duration: Number.POSITIVE_INFINITY
+								});
+								return message;
+							}
+						});
+						close();
+					}}
+				>
+					{m.confirm()}
+				</Modal.Action>
+			</div>
 		</Modal.Footer>
 	</Modal.Content>
 </Modal.Root>

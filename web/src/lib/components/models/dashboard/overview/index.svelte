@@ -33,9 +33,9 @@
 		<TimeToFirstToken {prometheusDriver} {scope} bind:isReloading />
 	</div>
 	<div class="col-span-4 row-start-2">
-		<Request {prometheusDriver} {scope} bind:isReloading />
+		<Throughput {prometheusDriver} {scope} bind:isReloading />
 	</div>
 	<div class="col-span-4 row-start-2">
-		<Throughput {prometheusDriver} {scope} bind:isReloading />
+		<Request {prometheusDriver} {scope} bind:isReloading />
 	</div>
 </div>

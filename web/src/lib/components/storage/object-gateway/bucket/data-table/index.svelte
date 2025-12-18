@@ -28,8 +28,14 @@
 	let {
 		buckets,
 		scope,
+		serviceUri,
 		reloadManager
-	}: { buckets: Writable<Bucket[]>; scope: string; reloadManager: ReloadManager } = $props();
+	}: {
+		buckets: Writable<Bucket[]>;
+		scope: string;
+		serviceUri: string;
+		reloadManager: ReloadManager;
+	} = $props();
 
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 8 });
 	let sorting = $state<SortingState>([]);
@@ -108,7 +114,7 @@
 
 <Layout.Root>
 	<Layout.Statistics>
-		<Statistics {table} />
+		<Statistics {table} {serviceUri} />
 	</Layout.Statistics>
 	<Layout.Controller>
 		<Layout.ControllerFilter>

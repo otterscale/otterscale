@@ -2,6 +2,8 @@ package kubevirt
 
 import (
 	"context"
+	"slices"
+	"strings"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
@@ -20,6 +22,19 @@ func NewVirtualMachineInstanceTypeRepo(kubevirt *KubeVirt) vmi.VirtualMachineIns
 
 var _ vmi.VirtualMachineInstanceTypeRepo = (*virtualMachineInstanceTypeRepo)(nil)
 
+func (r *virtualMachineInstanceTypeRepo) filterCluster(cits []vmi.VirtualMachineClusterInstanceType) []vmi.VirtualMachineClusterInstanceType {
+	excludedPrefixes := []string{"o", "cx", "m", "n", "rt"}
+
+	return slices.DeleteFunc(cits, func(cit vmi.VirtualMachineClusterInstanceType) bool {
+		for _, excludedPrefix := range excludedPrefixes {
+			if strings.HasPrefix(cit.Name, excludedPrefix) {
+				return true
+			}
+		}
+		return false
+	})
+}
+
 func (r *virtualMachineInstanceTypeRepo) ListCluster(ctx context.Context, scope, selector string) ([]vmi.VirtualMachineClusterInstanceType, error) {
 	clientset, err := r.kubevirt.clientset(scope)
 	if err != nil {
@@ -35,7 +50,7 @@ func (r *virtualMachineInstanceTypeRepo) ListCluster(ctx context.Context, scope,
 		return nil, err
 	}
 
-	return list.Items, nil
+	return r.filterCluster(list.Items), nil
 }
 
 func (r *virtualMachineInstanceTypeRepo) GetCluster(ctx context.Context, scope, name string) (*vmi.VirtualMachineClusterInstanceType, error) {

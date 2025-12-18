@@ -14,6 +14,7 @@
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { Booleanified } from '$lib/components/custom/modal/single-step/type';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
+	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { m } from '$lib/paraglide/messages';
 </script>
 
@@ -52,10 +53,21 @@
 </script>
 
 <Modal.Root bind:open>
-	<Modal.Trigger variant="creative">
+	<!-- <Modal.Trigger variant="creative">
 		<Icon icon="ph:copy" />
 		{m.clone()}
-	</Modal.Trigger>
+	</Modal.Trigger> -->
+	<Tooltip.Provider>
+		<Tooltip.Root>
+			<Tooltip.Trigger class="w-full">
+				<Modal.Trigger variant="creative" disabled>
+					<Icon icon="ph:copy" />
+					{m.clone()}
+				</Modal.Trigger>
+			</Tooltip.Trigger>
+			<Tooltip.Content>{m.under_development()}</Tooltip.Content>
+		</Tooltip.Root>
+	</Tooltip.Provider>
 	<Modal.Content>
 		<Modal.Header>{m.clone_virtual_machine()}</Modal.Header>
 		<Form.Root>

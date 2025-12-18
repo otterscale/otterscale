@@ -25,6 +25,10 @@
 </script>
 
 <Actions.List bind:open>
+	<Actions.Label>
+		{m.actions()}
+	</Actions.Label>
+	<Actions.Separator />
 	<Actions.Item>
 		<Update {model} {scope} {reloadManager} closeActions={close} />
 	</Actions.Item>

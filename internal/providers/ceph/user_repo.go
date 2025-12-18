@@ -151,5 +151,5 @@ func (r *userRepo) intPtr(b bool) *int {
 	if b {
 		return aws.Int(1)
 	}
-	return nil
+	return aws.Int(0)
 }

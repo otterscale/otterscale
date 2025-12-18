@@ -437,7 +437,7 @@ func (s *StorageService) CreateUserKey(ctx context.Context, req *pb.CreateUserKe
 		return nil, err
 	}
 
-	resp := toProtoUserKey(key)
+	resp := toProtoUserKey(key, false)
 	return resp, nil
 }
 
@@ -1056,16 +1056,21 @@ func toProtoUserKeys(uks []object.UserKey) []*pb.User_Key {
 	ret := []*pb.User_Key{}
 
 	for i := range uks {
-		ret = append(ret, toProtoUserKey(&uks[i]))
+		ret = append(ret, toProtoUserKey(&uks[i], true))
 	}
 
 	return ret
 }
 
 // ignore secret key in proto for security reason
-func toProtoUserKey(uk *object.UserKey) *pb.User_Key {
+func toProtoUserKey(uk *object.UserKey, ignore bool) *pb.User_Key {
 	ret := &pb.User_Key{}
 	ret.SetAccessKey(uk.AccessKey)
+
+	if !ignore {
+		ret.SetSecretKey(uk.SecretKey)
+	}
+
 	return ret
 }
 

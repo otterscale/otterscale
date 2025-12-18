@@ -44,34 +44,25 @@
 			});
 		}
 
-		const kvCacheResponse = await prometheusDriver.rangeQuery(
-			`vllm:kv_cache_usage_perc{juju_model="${scope}"}`,
-			Date.now() - 10 * 60 * 1000,
-			Date.now(),
-			2 * 60
-		);
-		const kvCacheSampleVectors = getMapInstanceToMetric(kvCacheResponse.result);
-
 		const timeToFirstTokenResponse = await prometheusDriver.rangeQuery(
 			`vllm:time_to_first_token_seconds_sum{juju_model="${scope}"}`,
-			Date.now() - 10 * 60 * 1000,
+			Date.now() - 24 * 60 * 60 * 1000,
 			Date.now(),
 			2 * 60
 		);
 		const timeToFirstTokenSampleVectors = getMapInstanceToMetric(timeToFirstTokenResponse.result);
 
 		const requestLatencyResponse = await prometheusDriver.rangeQuery(
-			`vllm:e2e_request_latency_seconds_sum{juju_model="${scope}"}`,
-			Date.now() - 10 * 60 * 1000,
+			`histogram_quantile(0.95, sum by(pod, le) (rate(vllm:e2e_request_latency_seconds_bucket{juju_model="${scope}"}[5m])))`,
+			Date.now() - 24 * 60 * 60 * 1000,
 			Date.now(),
 			2 * 60
 		);
 		const requestLatencySampleVectors = getMapInstanceToMetric(requestLatencyResponse.result);
 
 		metrics = {
-			kvCache: kvCacheSampleVectors,
-			requestLatency: requestLatencySampleVectors,
-			timeToFirstToken: timeToFirstTokenSampleVectors
+			timeToFirstToken: timeToFirstTokenSampleVectors,
+			requestLatency: requestLatencySampleVectors
 		};
 	}
 
