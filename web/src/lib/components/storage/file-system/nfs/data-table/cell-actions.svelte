@@ -1,6 +1,6 @@
 <script lang="ts" module>
 	import type { Subvolume } from '$lib/api/storage/v1/storage_pb';
-	import * as Layout from '$lib/components/custom/data-table/layout';
+	import { Actions } from '$lib/components/custom/data-table/core';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { m } from '$lib/paraglide/messages';
 
@@ -26,20 +26,28 @@
 	} = $props();
 
 	const exportedClients = $derived(subvolume?.export?.clients ?? []);
+
+	let open = $state(false);
+	function close() {
+		open = false;
+	}
 </script>
 
-<Layout.Actions>
-	<Layout.ActionLabel>{m.actions()}</Layout.ActionLabel>
-	<Layout.ActionItem>
-		<Grant {subvolume} {scope} {volume} {reloadManager} />
-	</Layout.ActionItem>
-	<Layout.ActionItem disabled={exportedClients.length <= 1}>
-		<Revoke {subvolume} {scope} {volume} {reloadManager} />
-	</Layout.ActionItem>
-	<Layout.ActionItem>
-		<Edit {subvolume} {scope} {volume} {group} {reloadManager} />
-	</Layout.ActionItem>
-	<Layout.ActionItem>
-		<Delete {subvolume} {scope} {volume} {group} {reloadManager} />
-	</Layout.ActionItem>
-</Layout.Actions>
+<Actions.List bind:open>
+	<Actions.Label>
+		{m.actions()}
+	</Actions.Label>
+	<Actions.Separator />
+	<Actions.Item>
+		<Grant {subvolume} {scope} {volume} {reloadManager} closeActions={close} />
+	</Actions.Item>
+	<Actions.Item disabled={exportedClients.length <= 1}>
+		<Revoke {subvolume} {scope} {volume} {reloadManager} closeActions={close} />
+	</Actions.Item>
+	<Actions.Item>
+		<Edit {subvolume} {scope} {volume} {group} {reloadManager} closeActions={close} />
+	</Actions.Item>
+	<Actions.Item>
+		<Delete {subvolume} {scope} {volume} {group} {reloadManager} closeActions={close} />
+	</Actions.Item>
+</Actions.List>

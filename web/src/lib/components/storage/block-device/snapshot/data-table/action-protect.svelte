@@ -19,12 +19,14 @@
 		snapshot,
 		image,
 		scope,
-		reloadManager
+		reloadManager,
+		closeActions
 	}: {
 		snapshot: Image_Snapshot;
 		image: Image;
 		scope: string;
 		reloadManager: ReloadManager;
+		closeActions: () => void;
 	} = $props();
 
 	const transport: Transport = getContext('transport');
@@ -58,6 +60,9 @@
 					duration: Number.POSITIVE_INFINITY
 				});
 				return message;
+			},
+			finally: () => {
+				closeActions();
 			}
 		});
 		reset();
