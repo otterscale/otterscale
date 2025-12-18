@@ -18,7 +18,11 @@
 </script>
 
 <script lang="ts">
-	let { ipRange, reloadManager }: { ipRange: Network_IPRange; reloadManager: ReloadManager } =
+	let {
+		ipRange,
+		reloadManager,
+		closeActions
+	}: { ipRange: Network_IPRange; reloadManager: ReloadManager; closeActions: () => void } =
 		$props();
 
 	const transport: Transport = getContext('transport');
@@ -44,7 +48,14 @@
 	}
 </script>
 
-<Modal.Root bind:open>
+<Modal.Root
+	bind:open
+	onOpenChangeComplete={(isOpen) => {
+		if (!isOpen) {
+			closeActions();
+		}
+	}}
+>
 	<Modal.Trigger variant="creative">
 		<Icon icon="ph:pencil" />
 		{m.edit()}
