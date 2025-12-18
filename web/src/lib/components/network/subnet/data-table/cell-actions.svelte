@@ -1,6 +1,6 @@
 <script lang="ts" module>
 	import type { Network } from '$lib/api/network/v1/network_pb';
-	import * as Layout from '$lib/components/custom/data-table/layout';
+	import { Actions } from '$lib/components/custom/data-table/core';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { m } from '$lib/paraglide/messages';
 
@@ -18,27 +18,37 @@
 		network: Network;
 		reloadManager: ReloadManager;
 	} = $props();
+
+	let open = $state(false);
+	function close() {
+		open = false;
+	}
 </script>
 
-<Layout.Actions>
-	<Layout.ActionLabel>{m.actions()}</Layout.ActionLabel>
-	<Layout.ActionSeparator />
+<Actions.List bind:open>
+	<Actions.Label>{m.actions()}</Actions.Label>
+	<Actions.Separator />
 	{#if network.fabric}
-		<Layout.ActionItem>
-			<UpdateFabric fabric={network.fabric} {reloadManager} />
-		</Layout.ActionItem>
+		<Actions.Item>
+			<UpdateFabric fabric={network.fabric} {reloadManager} closeActions={close} />
+		</Actions.Item>
 		{#if network.vlan}
-			<Layout.ActionItem>
-				<UpdateVLAN fabric={network.fabric} vlan={network.vlan} {reloadManager} />
-			</Layout.ActionItem>
+			<Actions.Item>
+				<UpdateVLAN
+					fabric={network.fabric}
+					vlan={network.vlan}
+					{reloadManager}
+					closeActions={close}
+				/>
+			</Actions.Item>
 		{/if}
 		{#if network.subnet}
-			<Layout.ActionItem>
-				<UpdateSubnet subnet={network.subnet} {reloadManager} />
-			</Layout.ActionItem>
+			<Actions.Item>
+				<UpdateSubnet subnet={network.subnet} {reloadManager} closeActions={close} />
+			</Actions.Item>
 		{/if}
-		<Layout.ActionItem>
-			<DeleteFabric fabric={network.fabric} {reloadManager} />
-		</Layout.ActionItem>
+		<Actions.Item>
+			<DeleteFabric fabric={network.fabric} {reloadManager} closeActions={close} />
+		</Actions.Item>
 	{/if}
-</Layout.Actions>
+</Actions.List>

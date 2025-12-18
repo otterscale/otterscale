@@ -21,8 +21,14 @@
 	let {
 		fabric,
 		vlan,
-		reloadManager
-	}: { fabric: Network_Fabric; vlan: Network_VLAN; reloadManager: ReloadManager } = $props();
+		reloadManager,
+		closeActions
+	}: {
+		fabric: Network_Fabric;
+		vlan: Network_VLAN;
+		reloadManager: ReloadManager;
+		closeActions: () => void;
+	} = $props();
 
 	const transport: Transport = getContext('transport');
 
@@ -48,7 +54,14 @@
 	}
 </script>
 
-<Modal.Root bind:open>
+<Modal.Root
+	bind:open
+	onOpenChangeComplete={(isOpen) => {
+		if (!isOpen) {
+			closeActions();
+		}
+	}}
+>
 	<Modal.Trigger variant="creative">
 		<Icon icon="ph:pencil" />
 		{m.edit_vlan()}

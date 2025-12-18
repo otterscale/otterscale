@@ -17,8 +17,11 @@
 </script>
 
 <script lang="ts">
-	let { subnet, reloadManager }: { subnet: Network_Subnet; reloadManager: ReloadManager } =
-		$props();
+	let {
+		subnet,
+		reloadManager,
+		closeActions
+	}: { subnet: Network_Subnet; reloadManager: ReloadManager; closeActions: () => void } = $props();
 
 	const transport: Transport = getContext('transport');
 
@@ -45,7 +48,14 @@
 	}
 </script>
 
-<Modal.Root bind:open>
+<Modal.Root
+	bind:open
+	onOpenChangeComplete={(isOpen) => {
+		if (!isOpen) {
+			closeActions();
+		}
+	}}
+>
 	<Modal.Trigger variant="creative">
 		<Icon icon="ph:pencil" />
 		{m.edit_subnet()}
