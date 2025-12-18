@@ -40,33 +40,9 @@
 
 	// Context dependencies
 	const transport: Transport = getContext('transport');
-
 	const virtualMachineClient = createClient(InstanceService, transport);
 
-	// ==================== State Variables ====================
-
-	// UI state
-	let open = $state(false);
-
 	// ==================== Default Values & Constants ====================
-	const DEFAULT_CREATE_REQUEST = {
-		scope: scope,
-		namespace: virtualMachine.namespace,
-		name: virtualMachine.name,
-		virtualMachineName: virtualMachine.name,
-		ports: [] as Application_Service_Port[]
-	} as CreateVirtualMachineServiceRequest;
-
-	const DEFAULT_UPDATE_REQUEST = {
-		scope: scope,
-		namespace: virtualMachine.namespace,
-		name:
-			virtualMachine.services.length > 0 ? virtualMachine.services[0].name : virtualMachine.name,
-		ports:
-			virtualMachine.services.length > 0
-				? [...virtualMachine.services[0].ports]
-				: ([] as Application_Service_Port[])
-	} as UpdateVirtualMachineServiceRequest;
 	const DEFAULT_PORT = {
 		port: undefined as number | undefined,
 		nodePort: undefined as number | undefined,
@@ -75,24 +51,35 @@
 	} as Application_Service_Port;
 
 	// ==================== Form State ====================
-	let request: CreateVirtualMachineServiceRequest | UpdateVirtualMachineServiceRequest = $state(
-		virtualMachine.services.length === 0
-			? { ...DEFAULT_CREATE_REQUEST }
-			: { ...DEFAULT_UPDATE_REQUEST }
+	let request = $state(
+		{} as CreateVirtualMachineServiceRequest | UpdateVirtualMachineServiceRequest
 	);
-
-	// New port configuration state
 	let newPort = $state(DEFAULT_PORT);
+	let open = $state(false);
 
 	// ==================== Utility Functions ====================
-	function reset() {
+	function init() {
 		if (virtualMachine.services.length === 0) {
-			request = { ...DEFAULT_CREATE_REQUEST, ports: [] };
+			request = {
+				scope: scope,
+				namespace: virtualMachine.namespace,
+				name: virtualMachine.name,
+				virtualMachineName: virtualMachine.name,
+				ports: [] as Application_Service_Port[]
+			} as CreateVirtualMachineServiceRequest;
 		} else {
 			request = {
-				...DEFAULT_UPDATE_REQUEST,
-				ports: [...virtualMachine.services[0].ports]
-			};
+				scope: scope,
+				namespace: virtualMachine.namespace,
+				name:
+					virtualMachine.services.length > 0
+						? virtualMachine.services[0].name
+						: virtualMachine.name,
+				ports:
+					virtualMachine.services.length > 0
+						? [...virtualMachine.services[0].ports]
+						: ([] as Application_Service_Port[])
+			} as UpdateVirtualMachineServiceRequest;
 		}
 		newPort = DEFAULT_PORT;
 	}
@@ -103,9 +90,25 @@
 
 	function addPort() {
 		if (newPort.port && newPort.port > 0) {
+			let portName = newPort.name;
+			if (!portName) {
+				let i = 1;
+				while (true) {
+					if (!request.ports.find((p) => p.name === `port${i}`)) {
+						portName = `port${i}`;
+						break;
+					}
+					i++;
+				}
+			}
+
 			request.ports = [
 				...request.ports,
-				{ ...newPort, targetPort: newPort.port.toString() } as Application_Service_Port
+				{
+					...newPort,
+					name: portName,
+					targetPort: newPort.port.toString()
+				} as Application_Service_Port
 			];
 			// Reset newPort to defaults
 			newPort = DEFAULT_PORT;
@@ -117,7 +120,14 @@
 	}
 </script>
 
-<Modal.Root bind:open>
+<Modal.Root
+	bind:open
+	onOpenChange={(isOpen) => {
+		if (isOpen) {
+			init();
+		}
+	}}
+>
 	<Modal.Trigger variant="default">
 		<Icon icon={virtualMachine.services.length === 0 ? 'ph:plus' : 'ph:arrows-clockwise'} />
 		{virtualMachine.services.length === 0 ? m.create() : m.update()}
@@ -141,7 +151,7 @@
 								<SingleSelect.List>
 									<SingleSelect.Empty>{m.no_result()}</SingleSelect.Empty>
 									<SingleSelect.Group>
-										{#each $protocolOptions as option}
+										{#each $protocolOptions as option (option.value)}
 											<SingleSelect.Item {option}>
 												<Icon
 													icon={option.icon ? option.icon : 'ph:empty'}
@@ -213,16 +223,15 @@
 					</Button>
 				</div>
 
-				<!-- Display Configured Ports -->
 				{#if request.ports.length > 0}
 					<div class="space-y-2">
 						<h4 class="font-medium">Configured Ports</h4>
-						{#each request.ports as port, index}
+						{#each request.ports as port, index (port.name)}
 							<div class="flex items-center justify-between rounded-md bg-muted px-3 py-2">
 								<div class="flex-1">
 									<div class="flex items-center gap-2">
 										<Icon icon="ph:network" class="size-4" />
-										<span class="font-medium">{port.name || `Port ${index + 1}`}</span>
+										<span class="font-medium">{port.name}</span>
 									</div>
 									<div class="text-sm text-muted-foreground">
 										{port.port}{#if port.nodePort && port.nodePort > 0}:{port.nodePort}{/if} ({port.protocol})
@@ -239,11 +248,7 @@
 		</Form.Root>
 
 		<Modal.Footer>
-			<Modal.Cancel
-				onclick={() => {
-					reset();
-				}}
-			>
+			<Modal.Cancel>
 				{m.cancel()}
 			</Modal.Cancel>
 			<Modal.ActionsGroup>
@@ -280,7 +285,6 @@
 								}
 							}
 						);
-						reset();
 						close();
 					}}
 				>

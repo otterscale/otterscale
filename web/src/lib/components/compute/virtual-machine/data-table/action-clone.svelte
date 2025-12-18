@@ -28,31 +28,36 @@
 	const transport: Transport = getContext('transport');
 	const virtualMachineClient = createClient(InstanceService, transport);
 
-	const defaults = {
-		scope: scope,
-		namespace: virtualMachine.namespace,
-		name: `clone-${virtualMachine.name}-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}`,
-		sourceVirtualMachineName: virtualMachine.name,
-		targetVirtualMachineName: ''
-	} as CreateVirtualMachineCloneRequest;
-
-	let request = $state({ ...defaults });
-	function reset() {
-		request = { ...defaults };
-	}
-
-	let open = $state(false);
-	function close() {
-		open = false;
-	}
-
 	let invalidity = $state({} as Booleanified<CreateVirtualMachineCloneRequest>);
 	const invalid = $derived(
 		invalidity.name || invalidity.namespace || invalidity.targetVirtualMachineName
 	);
+	let request = $state({} as CreateVirtualMachineCloneRequest);
+	let open = $state(false);
+
+	function init() {
+		request = {
+			scope: scope,
+			namespace: virtualMachine.namespace,
+			name: `clone-${virtualMachine.name}-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}`,
+			sourceVirtualMachineName: virtualMachine.name,
+			targetVirtualMachineName: ''
+		} as CreateVirtualMachineCloneRequest;
+	}
+
+	function close() {
+		open = false;
+	}
 </script>
 
-<Modal.Root bind:open>
+<Modal.Root
+	bind:open
+	onOpenChange={(isOpen) => {
+		if (isOpen) {
+			init();
+		}
+	}}
+>
 	<!-- <Modal.Trigger variant="creative">
 		<Icon icon="ph:copy" />
 		{m.clone()}
@@ -108,11 +113,7 @@
 			</Form.Fieldset>
 		</Form.Root>
 		<Modal.Footer>
-			<Modal.Cancel
-				onclick={() => {
-					reset();
-				}}
-			>
+			<Modal.Cancel>
 				{m.cancel()}
 			</Modal.Cancel>
 			<Modal.ActionsGroup>
@@ -134,7 +135,6 @@
 								return message;
 							}
 						});
-						reset();
 						close();
 					}}
 				>

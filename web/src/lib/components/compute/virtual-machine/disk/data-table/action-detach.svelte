@@ -28,38 +28,34 @@
 
 	// Context dependencies
 	const transport: Transport = getContext('transport');
-
 	const virtualMachineClient = createClient(InstanceService, transport);
 
-	// Form validation state
+	let request = $state({} as DetachVirtualMachineDiskRequest);
 	let invalid = $state(false);
-
-	// Default values for the detach disk request
-	const defaults = {
-		scope: scope,
-		namespace: enhancedDisk.namespace,
-		name: enhancedDisk.vmName,
-		dataVolumeName: ''
-	} as DetachVirtualMachineDiskRequest;
-
-	// Current request state
-	let request = $state({ ...defaults });
-
-	// Reset form to default values
-	function reset() {
-		request = { ...defaults };
-	}
-
-	// Modal open/close state
 	let open = $state(false);
 
-	// Close modal function
+	function init() {
+		request = {
+			scope: scope,
+			namespace: enhancedDisk.namespace,
+			name: enhancedDisk.vmName,
+			dataVolumeName: ''
+		} as DetachVirtualMachineDiskRequest;
+	}
+
 	function close() {
 		open = false;
 	}
 </script>
 
-<Modal.Root bind:open>
+<Modal.Root
+	bind:open
+	onOpenChange={(isOpen) => {
+		if (isOpen) {
+			init();
+		}
+	}}
+>
 	<Modal.Trigger variant="destructive">
 		<Icon icon="ph:plugs" />
 		{m.detach()}
@@ -83,11 +79,7 @@
 			</Form.Fieldset>
 		</Form.Root>
 		<Modal.Footer>
-			<Modal.Cancel
-				onclick={() => {
-					reset();
-				}}
-			>
+			<Modal.Cancel>
 				{m.cancel()}
 			</Modal.Cancel>
 
@@ -110,7 +102,6 @@
 								return message;
 							}
 						});
-						reset();
 						close();
 					}}
 				>
