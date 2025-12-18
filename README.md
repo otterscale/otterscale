@@ -119,11 +119,15 @@ make test
 
 ## 🗺️ Roadmap
 
-|                              Version                               | Topic                        | Status         |
-| :----------------------------------------------------------------: | ---------------------------- | -------------- |
-| **[v0.5.0](https://github.com/otterscale/otterscale/milestone/1)** | Infrastructure Core          | ✅ Complete    |
-| **[v0.6.0](https://github.com/otterscale/otterscale/milestone/2)** | Compute Resources & Policies | ⏳ In Progress |
-| **[v0.7.0](https://github.com/otterscale/otterscale/milestone/3)** | Developer Experience         | 📅 Planned     |
+|                               Version                               | Topic                                  | Status         |
+| :-----------------------------------------------------------------: | -------------------------------------- | -------------- |
+| **[v0.5.0](https://github.com/otterscale/otterscale/milestone/1)**  | Inception: Proof of Concept            | ✅ Complete    |
+| **[v0.6.0](https://github.com/otterscale/otterscale/milestone/2)**  | Foundation: Full-Stack Readiness       | ✅ Complete    |
+| **[v0.7.0](https://github.com/otterscale/otterscale/milestone/3)**  | Governance: Project-Centric Isolation  | ⏳ In Progress |
+| **[v0.8.0](https://github.com/otterscale/otterscale/milestone/4)**  | Storage+: Cloud-Native Data Fabric     | ⏳ In Progress |
+| **[v0.9.0](https://github.com/otterscale/otterscale/milestone/5)**  | Expansion: Hybrid Fleet Adoption       | ⏳ In Progress |
+| **[v0.10.0](https://github.com/otterscale/otterscale/milestone/6)** | Autonomy: Immutable Infrastructure     | 📅 Planned     |
+| **[v0.11.0](https://github.com/otterscale/otterscale/milestone/7)** | Orchestration: Async Lifecycle Control | 📅 Planned     |
 
 ## 🤝 Contributing
 
