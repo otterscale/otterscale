@@ -28,25 +28,31 @@
 	const transport: Transport = getContext('transport');
 	const machineClient = createClient(MachineService, transport);
 
+	let request = $state({} as DeleteMachineRequest);
 	let invalid: boolean | undefined = $state();
+	let open = $state(false);
 
-	const defaults = {
-		id: machine.id,
-		force: false,
-		purgeDisk: false
-	} as DeleteMachineRequest;
-	let request = $state(defaults);
-	function reset() {
-		request = defaults;
+	function init() {
+		request = {
+			id: machine.id,
+			force: false,
+			purgeDisk: false
+		} as DeleteMachineRequest;
 	}
 
-	let open = $state(false);
 	function close() {
 		open = false;
 	}
 </script>
 
-<Modal.Root bind:open>
+<Modal.Root
+	bind:open
+	onOpenChange={(isOpen) => {
+		if (isOpen) {
+			init();
+		}
+	}}
+>
 	<Modal.Trigger variant="destructive">
 		<Icon icon="ph:trash" />
 		{m.remove()}
@@ -71,11 +77,7 @@
 			</Form.Fieldset>
 		</Form.Root>
 		<Modal.Footer>
-			<Modal.Cancel
-				onclick={() => {
-					reset();
-				}}
-			>
+			<Modal.Cancel>
 				{m.cancel()}
 			</Modal.Cancel>
 			<Modal.ActionsGroup>
@@ -97,8 +99,6 @@
 								return message;
 							}
 						});
-
-						reset();
 						close();
 					}}
 				>
