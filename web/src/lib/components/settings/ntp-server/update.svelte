@@ -65,11 +65,7 @@
 			</Form.Fieldset>
 		</Form.Root>
 		<Modal.Footer>
-			<Modal.Cancel
-				onclick={() => {
-					init();
-				}}
-			>
+			<Modal.Cancel>
 				{m.cancel()}
 			</Modal.Cancel>
 			<Modal.ActionsGroup>
@@ -92,8 +88,6 @@
 								return message;
 							}
 						});
-
-						init();
 						close();
 					}}
 				>
