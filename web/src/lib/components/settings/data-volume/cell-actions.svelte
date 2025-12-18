@@ -1,7 +1,6 @@
 <script lang="ts" module>
 	import type { DataVolume } from '$lib/api/instance/v1/instance_pb';
 	import { Actions } from '$lib/components/custom/data-table/core';
-	import * as Layout from '$lib/components/custom/data-table/layout';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { m } from '$lib/paraglide/messages';
 
