@@ -25,7 +25,7 @@
 		request = {
 			scope: scope,
 			name: '',
-			namespace: 'default',
+			namespace: 'kubevirt',
 			cpuCores: 1,
 			memoryBytes: BigInt(1024 ** 3) // 1GB default
 		} as CreateInstanceTypeRequest;
@@ -49,7 +49,7 @@
 		{m.create()}
 	</Modal.Trigger>
 	<Modal.Content>
-		<Modal.Header>{m.create_instance_type()}Create Instance Type</Modal.Header>
+		<Modal.Header>{m.create_instance_type()}</Modal.Header>
 		<Form.Root>
 			<!-- ==================== Basic Configuration ==================== -->
 			<Form.Fieldset>
@@ -65,7 +65,7 @@
 				</Form.Field>
 				<Form.Field>
 					<Form.Label>{m.namespace()}</Form.Label>
-					<SingleInput.General type="text" bind:value={request.namespace} />
+					<SingleInput.General disabled type="text" bind:value={request.namespace} />
 				</Form.Field>
 				<Form.Field>
 					<Form.Label>{m.cpu_cores()}</Form.Label>
