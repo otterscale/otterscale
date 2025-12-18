@@ -1,6 +1,6 @@
 <script lang="ts" module>
 	import type { Image } from '$lib/api/storage/v1/storage_pb';
-	import * as Layout from '$lib/components/custom/data-table/layout';
+	import { Actions } from '$lib/components/custom/data-table/core';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { m } from '$lib/paraglide/messages';
 
@@ -18,14 +18,21 @@
 		scope: string;
 		reloadManager: ReloadManager;
 	} = $props();
+
+	let open = $state(false);
+	function close() {
+		open = false;
+	}
 </script>
 
-<Layout.Actions>
-	<Layout.ActionLabel>{m.actions()}</Layout.ActionLabel>
-	<Layout.ActionItem>
-		<Edit {image} {scope} {reloadManager} />
-	</Layout.ActionItem>
-	<Layout.ActionItem>
-		<Delete {image} {scope} {reloadManager} />
-	</Layout.ActionItem>
-</Layout.Actions>
+<Actions.List bind:open>
+	<Actions.Label>
+		{m.actions()}
+	</Actions.Label>
+	<Actions.Item>
+		<Edit {image} {scope} {reloadManager} closeActions={close} />
+	</Actions.Item>
+	<Actions.Item>
+		<Delete {image} {scope} {reloadManager} closeActions={close} />
+	</Actions.Item>
+</Actions.List>

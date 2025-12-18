@@ -56,11 +56,13 @@
 	let {
 		testResult,
 		scope,
-		reloadManager
+		reloadManager,
+		closeActions
 	}: {
 		testResult?: TestResult;
 		scope: string;
 		reloadManager: ReloadManager;
+		closeActions?: () => void;
 	} = $props();
 
 	// Request
@@ -140,7 +142,15 @@
 	);
 </script>
 
-<Modal.Root bind:open steps={3}>
+<Modal.Root
+	bind:open
+	steps={3}
+	onOpenChangeComplete={(isOpen) => {
+		if (closeActions && !isOpen) {
+			closeActions();
+		}
+	}}
+>
 	{#if testResult}
 		<Modal.Trigger variant="creative">
 			<Icon icon="ph:play" />

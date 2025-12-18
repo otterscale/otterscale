@@ -10,15 +10,24 @@
 
 <script lang="ts">
 	let {
-		testResult
+		testResult,
+		closeActions
 	}: {
 		testResult: TestResult;
+		closeActions: () => void;
 	} = $props();
 
 	let open = $state(false);
 </script>
 
-<AlertDialog.Root bind:open>
+<AlertDialog.Root
+	bind:open
+	onOpenChangeComplete={(isOpen) => {
+		if (!isOpen) {
+			closeActions();
+		}
+	}}
+>
 	<AlertDialog.Trigger class="flex h-full w-full items-center gap-2">
 		<Icon icon="ph:eye" />
 		{m.view()}

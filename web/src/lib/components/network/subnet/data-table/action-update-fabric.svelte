@@ -17,8 +17,11 @@
 </script>
 
 <script lang="ts">
-	let { fabric, reloadManager }: { fabric: Network_Fabric; reloadManager: ReloadManager } =
-		$props();
+	let {
+		fabric,
+		reloadManager,
+		closeActions
+	}: { fabric: Network_Fabric; reloadManager: ReloadManager; closeActions: () => void } = $props();
 
 	const transport: Transport = getContext('transport');
 	const client = createClient(NetworkService, transport);
@@ -44,6 +47,11 @@
 	onOpenChange={(isOpen) => {
 		if (isOpen) {
 			init();
+		}
+	}}
+	onOpenChangeComplete={(isOpen) => {
+		if (!isOpen) {
+			closeActions();
 		}
 	}}
 >

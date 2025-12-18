@@ -53,11 +53,13 @@
 	let {
 		testResult,
 		scope,
-		reloadManager
+		reloadManager,
+		closeActions
 	}: {
 		testResult?: TestResult;
 		scope: string;
 		reloadManager: ReloadManager;
+		closeActions?: () => void;
 	} = $props();
 
 	// Request
@@ -126,7 +128,15 @@
 	const configClient = createClient(ConfigurationService, transport);
 </script>
 
-<Modal.Root bind:open steps={3}>
+<Modal.Root
+	bind:open
+	steps={3}
+	onOpenChangeComplete={(isOpen) => {
+		if (closeActions && !isOpen) {
+			closeActions();
+		}
+	}}
+>
 	<!-- {@render trigger()} -->
 	{#if testResult}
 		<Modal.Trigger variant="creative">

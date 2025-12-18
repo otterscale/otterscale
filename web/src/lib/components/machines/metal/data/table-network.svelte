@@ -3,7 +3,8 @@
 	import { type Writable } from 'svelte/store';
 
 	import { type Machine } from '$lib/api/machine/v1/machine_pb';
-	import * as Table from '$lib/components/custom/table';
+	import { SubCell, SubHead } from '$lib/components/custom/table';
+	import * as Table from '$lib/components/ui/table';
 	import { m } from '$lib/paraglide/messages';
 </script>
 
@@ -20,19 +21,19 @@
 		<Table.Row>
 			<Table.Head>
 				{m.name()}
-				<Table.SubHead>{m.mac_address()}</Table.SubHead>
+				<SubHead>{m.mac_address()}</SubHead>
 			</Table.Head>
 			<Table.Head>
 				{m.ip_address()}
-				<Table.SubHead>{m.subnet()}</Table.SubHead>
+				<SubHead>{m.subnet()}</SubHead>
 			</Table.Head>
 			<Table.Head>
 				{m.link_speed()}
-				<Table.SubHead>{m.link_connected()}</Table.SubHead>
+				<SubHead>{m.link_connected()}</SubHead>
 			</Table.Head>
 			<Table.Head>
 				{m.fabric()}
-				<Table.SubHead>{m.vlan()}</Table.SubHead>
+				<SubHead>{m.vlan()}</SubHead>
 			</Table.Head>
 			<Table.Head>{m.type()}</Table.Head>
 			<Table.Head>{m.dhcp_on()}</Table.Head>
@@ -41,34 +42,34 @@
 		</Table.Row>
 	</Table.Header>
 	<Table.Body>
-		{#each $machine.networkInterfaces as networkInterface}
+		{#each $machine.networkInterfaces as networkInterface (networkInterface.macAddress)}
 			<Table.Row>
 				<Table.Cell>
 					{networkInterface.name}
-					<Table.SubCell>
+					<SubCell>
 						{networkInterface.macAddress}
-					</Table.SubCell>
+					</SubCell>
 				</Table.Cell>
 				<Table.Cell>
 					{networkInterface.ipAddress}
-					<Table.SubCell>
+					<SubCell>
 						{networkInterface.subnetName}
-					</Table.SubCell>
+					</SubCell>
 				</Table.Cell>
 				<Table.Cell>
 					{networkInterface.linkSpeed} Mbps
-					<Table.SubCell>
+					<SubCell>
 						<Icon
 							icon={networkInterface.linkConnected ? 'ph:check-circle' : 'ph:x-circle'}
 							class={networkInterface.linkConnected ? 'text-primary' : 'text-destructive'}
 						/>
-					</Table.SubCell>
+					</SubCell>
 				</Table.Cell>
 				<Table.Cell>
 					{networkInterface.fabricName}
-					<Table.SubCell>
+					<SubCell>
 						{networkInterface.vlanName}
-					</Table.SubCell>
+					</SubCell>
 				</Table.Cell>
 				<Table.Cell>{networkInterface.type}</Table.Cell>
 				<Table.Cell>

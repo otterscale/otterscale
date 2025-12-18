@@ -21,12 +21,14 @@
 		subvolume,
 		scope,
 		volume,
-		reloadManager
+		reloadManager,
+		closeActions
 	}: {
 		subvolume: Subvolume;
 		scope: string;
 		volume: string;
 		reloadManager: ReloadManager;
+		closeActions: () => void;
 	} = $props();
 
 	const transport: Transport = getContext('transport');
@@ -50,7 +52,14 @@
 	}
 </script>
 
-<Modal.Root bind:open>
+<Modal.Root
+	bind:open
+	onOpenChangeComplete={(isOpen) => {
+		if (!isOpen) {
+			closeActions();
+		}
+	}}
+>
 	<Modal.Trigger variant="creative">
 		<Icon icon="ph:shield" />
 		{m.grant()}

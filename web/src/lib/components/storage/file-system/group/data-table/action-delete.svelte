@@ -18,12 +18,14 @@
 		subvolumeGroup,
 		scope,
 		volume,
-		reloadManager
+		reloadManager,
+		closeActions
 	}: {
 		subvolumeGroup: SubvolumeGroup;
 		scope: string;
 		volume: string;
 		reloadManager: ReloadManager;
+		closeActions: () => void;
 	} = $props();
 
 	const transport: Transport = getContext('transport');
@@ -46,7 +48,14 @@
 	}
 </script>
 
-<Modal.Root bind:open>
+<Modal.Root
+	bind:open
+	onOpenChangeComplete={(isOpen) => {
+		if (!isOpen) {
+			closeActions();
+		}
+	}}
+>
 	<Modal.Trigger variant="destructive">
 		<Icon icon="ph:trash" />
 		{m.delete()}

@@ -21,8 +21,14 @@
 	let {
 		fabric,
 		vlan,
-		reloadManager
-	}: { fabric: Network_Fabric; vlan: Network_VLAN; reloadManager: ReloadManager } = $props();
+		reloadManager,
+		closeActions
+	}: {
+		fabric: Network_Fabric;
+		vlan: Network_VLAN;
+		reloadManager: ReloadManager;
+		closeActions: () => void;
+	} = $props();
 
 	const transport: Transport = getContext('transport');
 	const client = createClient(NetworkService, transport);
@@ -52,6 +58,11 @@
 	onOpenChange={(isOpen) => {
 		if (isOpen) {
 			init();
+		}
+	}}
+	onOpenChangeComplete={(isOpen) => {
+		if (!isOpen) {
+			closeActions();
 		}
 	}}
 >

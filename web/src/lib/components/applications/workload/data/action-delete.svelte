@@ -21,9 +21,15 @@
 		pod,
 		scope,
 		namespace,
-		reloadManager
-	}: { pod: Application_Pod; scope: string; namespace: string; reloadManager: ReloadManager } =
-		$props();
+		reloadManager,
+		closeActions
+	}: {
+		pod: Application_Pod;
+		scope: string;
+		namespace: string;
+		reloadManager: ReloadManager;
+		closeActions: () => void;
+	} = $props();
 
 	const transport: Transport = getContext('transport');
 	const applicationClient = createClient(ApplicationService, transport);
@@ -46,6 +52,11 @@
 	onOpenChange={(isOpen) => {
 		if (isOpen) {
 			init();
+		}
+	}}
+	onOpenChangeComplete={(isOpen) => {
+		if (!isOpen) {
+			closeActions();
 		}
 	}}
 >

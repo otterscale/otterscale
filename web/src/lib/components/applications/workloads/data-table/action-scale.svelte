@@ -20,8 +20,14 @@
 	let {
 		application,
 		scope,
-		reloadManager
-	}: { application: Application; scope: string; reloadManager: ReloadManager } = $props();
+		reloadManager,
+		closeActions
+	}: {
+		application: Application;
+		scope: string;
+		reloadManager: ReloadManager;
+		closeActions: () => void;
+	} = $props();
 
 	const transport: Transport = getContext('transport');
 	const applicationClient = createClient(ApplicationService, transport);
@@ -52,6 +58,11 @@
 	onOpenChange={(isOpen) => {
 		if (isOpen) {
 			init();
+		}
+	}}
+	onOpenChangeComplete={(isOpen) => {
+		if (!isOpen) {
+			closeActions();
 		}
 	}}
 >

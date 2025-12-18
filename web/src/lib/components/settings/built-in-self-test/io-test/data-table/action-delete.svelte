@@ -19,10 +19,12 @@
 <script lang="ts">
 	let {
 		testResult,
-		reloadManager
+		reloadManager,
+		closeActions
 	}: {
 		testResult: TestResult;
 		reloadManager: ReloadManager;
+		closeActions: () => void;
 	} = $props();
 
 	const transport: Transport = getContext('transport');
@@ -44,7 +46,14 @@
 	}
 </script>
 
-<Modal.Root bind:open>
+<Modal.Root
+	bind:open
+	onOpenChangeComplete={(isOpen) => {
+		if (!isOpen) {
+			closeActions();
+		}
+	}}
+>
 	<Modal.Trigger variant="destructive">
 		<Icon icon="ph:trash" />
 		{m.delete()}

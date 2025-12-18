@@ -1,6 +1,6 @@
 <script lang="ts" module>
 	import type { VirtualMachine } from '$lib/api/instance/v1/instance_pb';
-	import * as Layout from '$lib/components/custom/data-table/layout';
+	import { Actions } from '$lib/components/custom/data-table/core';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { m } from '$lib/paraglide/messages';
 
@@ -20,35 +20,40 @@
 		scope,
 		reloadManager
 	}: { virtualMachine: VirtualMachine; scope: string; reloadManager: ReloadManager } = $props();
+
+	let open = $state(false);
+	function close() {
+		open = false;
+	}
 </script>
 
-<Layout.Actions>
-	<Layout.ActionLabel>{m.actions()}</Layout.ActionLabel>
-	<Layout.ActionSeparator />
-	<Layout.ActionItem>
-		<PauseResume {virtualMachine} {scope} />
-	</Layout.ActionItem>
-	<Layout.ActionItem>
-		<StartStop {virtualMachine} {scope} />
-	</Layout.ActionItem>
-	<Layout.ActionItem>
-		<Restart {virtualMachine} {scope} />
-	</Layout.ActionItem>
-	<Layout.ActionSeparator />
-	<Layout.ActionItem>
-		<Snapshot {virtualMachine} {scope} {reloadManager} />
-	</Layout.ActionItem>
-	<Layout.ActionItem>
-		<Restore {virtualMachine} {scope} {reloadManager} />
-	</Layout.ActionItem>
-	<Layout.ActionSeparator />
-	<Layout.ActionItem>
-		<Clone {virtualMachine} {scope} {reloadManager} />
-	</Layout.ActionItem>
-	<Layout.ActionItem>
-		<Migrate {virtualMachine} {scope} {reloadManager} />
-	</Layout.ActionItem>
-	<Layout.ActionItem>
-		<Delete {virtualMachine} {scope} {reloadManager} />
-	</Layout.ActionItem>
-</Layout.Actions>
+<Actions.List bind:open>
+	<Actions.Label>{m.actions()}</Actions.Label>
+	<Actions.Separator />
+	<Actions.Item>
+		<PauseResume {virtualMachine} {scope} closeActions={close} />
+	</Actions.Item>
+	<Actions.Item>
+		<StartStop {virtualMachine} {scope} closeActions={close} />
+	</Actions.Item>
+	<Actions.Item>
+		<Restart {virtualMachine} {scope} closeActions={close} />
+	</Actions.Item>
+	<Actions.Separator />
+	<Actions.Item>
+		<Snapshot {virtualMachine} {scope} {reloadManager} closeActions={close} />
+	</Actions.Item>
+	<Actions.Item>
+		<Restore {virtualMachine} {scope} {reloadManager} closeActions={close} />
+	</Actions.Item>
+	<Actions.Separator />
+	<Actions.Item>
+		<Clone {virtualMachine} {scope} {reloadManager} closeActions={close} />
+	</Actions.Item>
+	<Actions.Item>
+		<Migrate {virtualMachine} {scope} {reloadManager} closeActions={close} />
+	</Actions.Item>
+	<Actions.Item>
+		<Delete {virtualMachine} {scope} {reloadManager} closeActions={close} />
+	</Actions.Item>
+</Actions.List>

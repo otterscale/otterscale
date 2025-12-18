@@ -20,11 +20,13 @@
 	let {
 		virtualMachineRestore,
 		scope,
-		reloadManager
+		reloadManager,
+		closeActions
 	}: {
 		virtualMachineRestore: VirtualMachine_Restore;
 		scope: string;
 		reloadManager: ReloadManager;
+		closeActions: () => void;
 	} = $props();
 
 	const transport: Transport = getContext('transport');
@@ -52,6 +54,11 @@
 	onOpenChange={(isOpen) => {
 		if (isOpen) {
 			init();
+		}
+	}}
+	onOpenChangeComplete={(isOpen) => {
+		if (!isOpen) {
+			closeActions();
 		}
 	}}
 >
