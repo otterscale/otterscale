@@ -2,7 +2,7 @@
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import { getContext } from 'svelte';
-	import { type Writable, writable, derived } from 'svelte/store';
+	import { type Writable, writable } from 'svelte/store';
 	import { toast } from 'svelte-sonner';
 
 	import type { CreatePoolRequest } from '$lib/api/storage/v1/storage_pb';
@@ -30,6 +30,7 @@
 		}
 	]);
 
+	// Fix as Block temperary
 	export const applications: Writable<SingleSelect.OptionType[]> = writable([
 		{
 			value: Pool_Application.FILE,
@@ -47,19 +48,9 @@
 			icon: 'ph:squares-four'
 		}
 	]);
-
-	export const createPoolApplications = derived(applications, ($apps) =>
-	$apps.filter(
-		(app) =>
-			app.value !== Pool_Application.FILE && 
-			app.value !== Pool_Application.OBJECT 
-	)
-);
 </script>
 
 <script lang="ts">
-	import { Root } from "$lib/components/ui/skeleton";
-
 	let {
 		scope,
 		reloadManager
@@ -77,21 +68,14 @@
 	}
 
 	let request = $state({} as CreatePoolRequest);
-
-	let selectedApplication = $state(Pool_Application.BLOCK);
 	function init() {
 		request = {
 			scope: scope,
 			applications: [Pool_Application.BLOCK]
 		} as CreatePoolRequest;
 
-		selectedApplication = Pool_Application.BLOCK;
-		isAdvancedOpen = false;
+		initAdvanced();
 	}
-
-	$effect(() => {
-		request.applications = [selectedApplication];
-	});
 
 	let invalidity = $state({} as Booleanified<CreatePoolRequest>);
 	const invalid = $derived(
@@ -147,7 +131,7 @@
 								<SingleSelect.List>
 									<SingleSelect.Empty>{m.no_result()}</SingleSelect.Empty>
 									<SingleSelect.Group>
-										{#each $types as type}
+										{#each $types as type (type.value)}
 											<SingleSelect.Item option={type}>
 												<Icon
 													icon={type.icon ? type.icon : 'ph:empty'}
@@ -187,36 +171,6 @@
 					</Form.Help>
 				{/if}
 				<Form.Field>
-					<Form.Label>{m.applications()}</Form.Label>
-					<SingleSelect.Root 
-						required
-						bind:value={selectedApplication} 
-						options={createPoolApplications} 
-					>
-						<SingleSelect.Trigger />
-						<SingleSelect.Content>
-							<SingleSelect.Options>
-								<SingleSelect.Input />
-								<SingleSelect.List>
-									<SingleSelect.Empty>{m.no_result()}</SingleSelect.Empty>
-										<SingleSelect.Group>
-											{#each $createPoolApplications as application}
-												<SingleSelect.Item option={application}>
-													<Icon
-														icon={application.icon ? application.icon : 'ph:empty'}
-														class={cn('size-5', application.icon ? 'visible' : 'invisible')}
-													/>
-													{application.label}
-													<SingleSelect.Check option={application} />
-												</SingleSelect.Item>
-											{/each}
-										</SingleSelect.Group>
-							 		</SingleSelect.List>
-							</SingleSelect.Options>
-						</SingleSelect.Content>
-					</SingleSelect.Root>
-				</Form.Field>
-				<Form.Field>
 					<Form.Label>{m.quota_size()}</Form.Label>
 					<Form.Help>
 						{m.pool_quota_objects_direction()}
@@ -233,11 +187,16 @@
 				<Form.Field>
 					<Collapsible.Root bind:open={isAdvancedOpen}>
 						<div class="flex items-center justify-between gap-2">
-							<p class={cn('text-base font-bold', isAdvancedOpen ? 'invisible' : 'visible')}>Advance</p>
+							<p class={cn('text-base font-bold', isAdvancedOpen ? 'invisible' : 'visible')}>
+								Advance
+							</p>
 							<Collapsible.Trigger class="rounded-full bg-muted p-1 ">
 								<Icon
 									icon="ph:caret-left"
-									class={cn('transition-all duration-300', isAdvancedOpen ? '-rotate-90' : 'rotate-0')}
+									class={cn(
+										'transition-all duration-300',
+										isAdvancedOpen ? '-rotate-90' : 'rotate-0'
+									)}
 								/>
 							</Collapsible.Trigger>
 						</div>
