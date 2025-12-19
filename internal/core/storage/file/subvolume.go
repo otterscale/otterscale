@@ -60,7 +60,7 @@ func (uc *UseCase) ListSubvolumes(ctx context.Context, scope, volume, group stri
 		subvolumes[i].Export = &SubvolumeExport{
 			IP:      vip,
 			Path:    subvolumes[i].Path,
-			Command: fmt.Sprintf("mount -t nfs4 %s:%s /mnt/%s", vip, subvolumes[i].Path, subvolumes[i].Name),
+			Command: fmt.Sprintf("mount -t nfs4 -o nfsvers=4.1 -v %s:%s /mnt/%s", vip, subvolumes[i].Path, subvolumes[i].Name),
 			Clients: clients[subvolumes[i].Path],
 		}
 	}
