@@ -891,8 +891,8 @@ func (b0 DataVolume_builder) Build() *DataVolume {
 type InstanceType struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Name        *string                `protobuf:"bytes,1,opt,name=name"`
-	xxx_hidden_CpuCores    uint32                 `protobuf:"varint,2,opt,name=cpu_cores,json=cpuCores"`
-	xxx_hidden_MemoryBytes int64                  `protobuf:"varint,3,opt,name=memory_bytes,json=memoryBytes"`
+	xxx_hidden_CpuCores    uint32                 `protobuf:"varint,3,opt,name=cpu_cores,json=cpuCores"`
+	xxx_hidden_MemoryBytes int64                  `protobuf:"varint,4,opt,name=memory_bytes,json=memoryBytes"`
 	xxx_hidden_ClusterWide bool                   `protobuf:"varint,11,opt,name=cluster_wide,json=clusterWide"`
 	xxx_hidden_CreatedAt   *timestamppb.Timestamp `protobuf:"bytes,21,opt,name=created_at,json=createdAt"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
@@ -5345,7 +5345,7 @@ func (b0 ListInstanceTypesResponse_builder) Build() *ListInstanceTypesResponse {
 type GetInstanceTypeRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Name        *string                `protobuf:"bytes,3,opt,name=name"`
+	xxx_hidden_Name        *string                `protobuf:"bytes,4,opt,name=name"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
 	unknownFields          protoimpl.UnknownFields
@@ -5457,8 +5457,8 @@ type CreateInstanceTypeRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
 	xxx_hidden_Name        *string                `protobuf:"bytes,11,opt,name=name"`
-	xxx_hidden_CpuCores    uint32                 `protobuf:"varint,12,opt,name=cpu_cores,json=cpuCores"`
-	xxx_hidden_MemoryBytes int64                  `protobuf:"varint,13,opt,name=memory_bytes,json=memoryBytes"`
+	xxx_hidden_CpuCores    uint32                 `protobuf:"varint,13,opt,name=cpu_cores,json=cpuCores"`
+	xxx_hidden_MemoryBytes int64                  `protobuf:"varint,14,opt,name=memory_bytes,json=memoryBytes"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
 	unknownFields          protoimpl.UnknownFields
@@ -5627,7 +5627,7 @@ func (b0 CreateInstanceTypeRequest_builder) Build() *CreateInstanceTypeRequest {
 type DeleteInstanceTypeRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Name        *string                `protobuf:"bytes,3,opt,name=name"`
+	xxx_hidden_Name        *string                `protobuf:"bytes,4,opt,name=name"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
 	unknownFields          protoimpl.UnknownFields
@@ -7824,14 +7824,14 @@ const file_api_instance_v1_instance_proto_rawDesc = "" +
 	"\x06reason\x18\x03 \x01(\tR\x06reason\x12\x18\n" +
 	"\amessage\x18\x04 \x01(\tR\amessage\x12>\n" +
 	"\fheartbeat_at\x18\xc9\x01 \x01(\v2\x1a.google.protobuf.TimestampR\vheartbeatAt\x12D\n" +
-	"\x0ftransitioned_at\x18\xca\x01 \x01(\v2\x1a.google.protobuf.TimestampR\x0etransitionedAt\"\xc0\x01\n" +
+	"\x0ftransitioned_at\x18\xca\x01 \x01(\v2\x1a.google.protobuf.TimestampR\x0etransitionedAt\"\xc6\x01\n" +
 	"\fInstanceType\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1b\n" +
-	"\tcpu_cores\x18\x02 \x01(\rR\bcpuCores\x12!\n" +
-	"\fmemory_bytes\x18\x03 \x01(\x03R\vmemoryBytes\x12!\n" +
+	"\tcpu_cores\x18\x03 \x01(\rR\bcpuCores\x12!\n" +
+	"\fmemory_bytes\x18\x04 \x01(\x03R\vmemoryBytes\x12!\n" +
 	"\fcluster_wide\x18\v \x01(\bR\vclusterWide\x129\n" +
 	"\n" +
-	"created_at\x18\x15 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\"V\n" +
+	"created_at\x18\x15 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAtJ\x04\b\x02\x10\x03\"V\n" +
 	"\x1aListVirtualMachinesRequest\x12\x14\n" +
 	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespaceJ\x04\b\x02\x10\x03\"p\n" +
@@ -7952,23 +7952,23 @@ const file_api_instance_v1_instance_proto_rawDesc = "" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
 	"\x04name\x18\x04 \x01(\tR\x04name\x12\x1d\n" +
 	"\n" +
-	"size_bytes\x18\v \x01(\x03R\tsizeBytesJ\x04\b\x02\x10\x03\"h\n" +
+	"size_bytes\x18\v \x01(\x03R\tsizeBytesJ\x04\b\x02\x10\x03\"n\n" +
 	"\x18ListInstanceTypesRequest\x12\x14\n" +
 	"\x05scope\x18\x01 \x01(\tR\x05scope\x120\n" +
-	"\x14include_cluster_wide\x18\v \x01(\bR\x12includeClusterWideJ\x04\b\x02\x10\x03\"h\n" +
+	"\x14include_cluster_wide\x18\v \x01(\bR\x12includeClusterWideJ\x04\b\x02\x10\x03J\x04\b\x03\x10\x04\"h\n" +
 	"\x19ListInstanceTypesResponse\x12K\n" +
-	"\x0einstance_types\x18\x01 \x03(\v2$.otterscale.instance.v1.InstanceTypeR\rinstanceTypes\"H\n" +
+	"\x0einstance_types\x18\x01 \x03(\v2$.otterscale.instance.v1.InstanceTypeR\rinstanceTypes\"N\n" +
 	"\x16GetInstanceTypeRequest\x12\x14\n" +
 	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x12\n" +
-	"\x04name\x18\x03 \x01(\tR\x04nameJ\x04\b\x02\x10\x03\"\x8b\x01\n" +
+	"\x04name\x18\x04 \x01(\tR\x04nameJ\x04\b\x02\x10\x03J\x04\b\x03\x10\x04\"\x91\x01\n" +
 	"\x19CreateInstanceTypeRequest\x12\x14\n" +
 	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x12\n" +
 	"\x04name\x18\v \x01(\tR\x04name\x12\x1b\n" +
-	"\tcpu_cores\x18\f \x01(\rR\bcpuCores\x12!\n" +
-	"\fmemory_bytes\x18\r \x01(\x03R\vmemoryBytesJ\x04\b\x02\x10\x03\"K\n" +
+	"\tcpu_cores\x18\r \x01(\rR\bcpuCores\x12!\n" +
+	"\fmemory_bytes\x18\x0e \x01(\x03R\vmemoryBytesJ\x04\b\x02\x10\x03J\x04\b\f\x10\r\"Q\n" +
 	"\x19DeleteInstanceTypeRequest\x12\x14\n" +
 	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x12\n" +
-	"\x04name\x18\x03 \x01(\tR\x04nameJ\x04\b\x02\x10\x03\"\xef\x01\n" +
+	"\x04name\x18\x04 \x01(\tR\x04nameJ\x04\b\x02\x10\x03J\x04\b\x03\x10\x04\"\xef\x01\n" +
 	"\"CreateVirtualMachineServiceRequest\x12\x14\n" +
 	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
