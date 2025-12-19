@@ -2,7 +2,7 @@
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import { getContext } from 'svelte';
-	import { type Writable, writable } from 'svelte/store';
+	import { type Writable, writable, derived } from 'svelte/store';
 	import { toast } from 'svelte-sonner';
 
 	import type { CreatePoolRequest } from '$lib/api/storage/v1/storage_pb';
@@ -12,10 +12,8 @@
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { Booleanified } from '$lib/components/custom/modal/single-step/type';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
-	import {
-		Multiple as MultipleSelect,
-		Single as SingleSelect
-	} from '$lib/components/custom/select';
+	import { Single as SingleSelect } from '$lib/components/custom/select';
+	import * as Collapsible from '$lib/components/ui/collapsible';
 	import { m } from '$lib/paraglide/messages';
 	import { cn } from '$lib/utils';
 
@@ -49,9 +47,19 @@
 			icon: 'ph:squares-four'
 		}
 	]);
+
+	export const createPoolApplications = derived(applications, ($apps) =>
+	$apps.filter(
+		(app) =>
+			app.value !== Pool_Application.FILE && 
+			app.value !== Pool_Application.OBJECT 
+	)
+);
 </script>
 
 <script lang="ts">
+	import { Root } from "$lib/components/ui/skeleton";
+
 	let {
 		scope,
 		reloadManager
@@ -63,12 +71,27 @@
 	const transport: Transport = getContext('transport');
 	const storageClient = createClient(StorageService, transport);
 
+	let isAdvancedOpen = $state(false);
+	function initAdvanced() {
+		isAdvancedOpen = false;
+	}
+
 	let request = $state({} as CreatePoolRequest);
+
+	let selectedApplication = $state(Pool_Application.BLOCK);
 	function init() {
 		request = {
-			scope: scope
+			scope: scope,
+			applications: [Pool_Application.BLOCK]
 		} as CreatePoolRequest;
+
+		selectedApplication = Pool_Application.BLOCK;
+		isAdvancedOpen = false;
 	}
+
+	$effect(() => {
+		request.applications = [selectedApplication];
+	});
 
 	let invalidity = $state({} as Booleanified<CreatePoolRequest>);
 	const invalid = $derived(
@@ -143,6 +166,7 @@
 				{#if request.type === Pool_Type.ERASURE}
 					<Form.Field>
 						<!-- <Form.Label>{m.ec_overwrite()}</Form.Label> -->
+						<Form.Help>{m.pool_erasure_limit_direction()}</Form.Help>
 						<SingleInput.Boolean
 							descriptor={() => m.ec_overwrite()}
 							bind:value={request.ecOverwrites}
@@ -164,36 +188,33 @@
 				{/if}
 				<Form.Field>
 					<Form.Label>{m.applications()}</Form.Label>
-					<MultipleSelect.Root bind:value={request.applications} options={applications}>
-						<MultipleSelect.Viewer />
-						<MultipleSelect.Controller>
-							<MultipleSelect.Trigger />
-							<MultipleSelect.Content>
-								<MultipleSelect.Options>
-									<MultipleSelect.Input />
-									<MultipleSelect.List>
-										<MultipleSelect.Empty>{m.no_result()}</MultipleSelect.Empty>
-										<MultipleSelect.Group>
-											{#each $applications as application}
-												<MultipleSelect.Item option={application}>
+					<SingleSelect.Root 
+						required
+						bind:value={selectedApplication} 
+						options={createPoolApplications} 
+					>
+						<SingleSelect.Trigger />
+						<SingleSelect.Content>
+							<SingleSelect.Options>
+								<SingleSelect.Input />
+								<SingleSelect.List>
+									<SingleSelect.Empty>{m.no_result()}</SingleSelect.Empty>
+										<SingleSelect.Group>
+											{#each $createPoolApplications as application}
+												<SingleSelect.Item option={application}>
 													<Icon
 														icon={application.icon ? application.icon : 'ph:empty'}
 														class={cn('size-5', application.icon ? 'visible' : 'invisible')}
 													/>
 													{application.label}
-													<MultipleSelect.Check option={application} />
-												</MultipleSelect.Item>
+													<SingleSelect.Check option={application} />
+												</SingleSelect.Item>
 											{/each}
-										</MultipleSelect.Group>
-									</MultipleSelect.List>
-									<MultipleSelect.Actions>
-										<MultipleSelect.ActionAll>{m.all()}</MultipleSelect.ActionAll>
-										<MultipleSelect.ActionClear>{m.clear()}</MultipleSelect.ActionClear>
-									</MultipleSelect.Actions>
-								</MultipleSelect.Options>
-							</MultipleSelect.Content>
-						</MultipleSelect.Controller>
-					</MultipleSelect.Root>
+										</SingleSelect.Group>
+							 		</SingleSelect.List>
+							</SingleSelect.Options>
+						</SingleSelect.Content>
+					</SingleSelect.Root>
 				</Form.Field>
 				<Form.Field>
 					<Form.Label>{m.quota_size()}</Form.Label>
@@ -210,11 +231,31 @@
 					/>
 				</Form.Field>
 				<Form.Field>
-					<Form.Label>{m.quota_objects()}</Form.Label>
-					<Form.Help>
-						{m.pool_quota_objects_direction()}
-					</Form.Help>
-					<SingleInput.General bind:value={request.quotaObjects} />
+					<Collapsible.Root bind:open={isAdvancedOpen}>
+						<div class="flex items-center justify-between gap-2">
+							<p class={cn('text-base font-bold', isAdvancedOpen ? 'invisible' : 'visible')}>Advance</p>
+							<Collapsible.Trigger class="rounded-full bg-muted p-1 ">
+								<Icon
+									icon="ph:caret-left"
+									class={cn('transition-all duration-300', isAdvancedOpen ? '-rotate-90' : 'rotate-0')}
+								/>
+							</Collapsible.Trigger>
+						</div>
+
+						<Collapsible.Content>
+							<Form.Fieldset>
+								<Form.Legend>{m.quota_objects()}</Form.Legend>
+
+								<Form.Field>
+									<Form.Label>{m.quota_objects()}</Form.Label>
+									<Form.Help>
+										{m.pool_quota_objects_direction()}
+									</Form.Help>
+									<SingleInput.General bind:value={request.quotaObjects} />
+								</Form.Field>
+							</Form.Fieldset>
+						</Collapsible.Content>
+					</Collapsible.Root>
 				</Form.Field>
 			</Form.Fieldset>
 		</Form.Root>
