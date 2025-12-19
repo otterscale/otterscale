@@ -8,7 +8,6 @@
 	import { Reloader, ReloadManager } from '$lib/components/custom/reloader';
 	import * as Table from '$lib/components/custom/table';
 	import * as Layout from '$lib/components/settings/layout';
-	import { Badge } from '$lib/components/ui/badge';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { formatCapacity, formatTimeAgo } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
