@@ -26,8 +26,8 @@
 	const transport: Transport = getContext('transport');
 	const distroSeriesOptions = writable<SingleSelect.OptionType[]>([]);
 	const client = createClient(ConfigurationService, transport);
-	const defaults = {} as CreateBootImageRequest;
-	let request = $state(defaults);
+
+	let request = $state({} as CreateBootImageRequest);
 	let distroSeriesArchitecturesMap: Record<string, Writable<SingleSelect.OptionType[]>> = {};
 	let open = $state(false);
 
@@ -75,15 +75,22 @@
 		}
 	});
 
-	function reset() {
-		request = defaults;
+	function init() {
+		request = {} as CreateBootImageRequest;
 	}
 	function close() {
 		open = false;
 	}
 </script>
 
-<Modal.Root bind:open>
+<Modal.Root
+	bind:open
+	onOpenChange={(isOpen) => {
+		if (isOpen) {
+			init();
+		}
+	}}
+>
 	<Modal.Trigger class="default">
 		<Icon icon="ph:plus" />
 		{m.create()}
@@ -157,11 +164,7 @@
 			</Form.Fieldset>
 		</Form.Root>
 		<Modal.Footer>
-			<Modal.Cancel
-				onclick={() => {
-					reset();
-				}}
-			>
+			<Modal.Cancel>
 				{m.cancel()}
 			</Modal.Cancel>
 			<Modal.ActionsGroup>
@@ -212,7 +215,6 @@
 								}
 							});
 						}
-						reset();
 						close();
 					}}
 				>

@@ -29,7 +29,7 @@
 					<SingleSelect.List>
 						<SingleSelect.Empty>{m.no_result()}</SingleSelect.Empty>
 						<SingleSelect.Group>
-							{#each $modes as option}
+							{#each $modes as option (option.value)}
 								<SingleSelect.Item {option}>
 									<Icon
 										icon={option.icon ? option.icon : 'ph:empty'}

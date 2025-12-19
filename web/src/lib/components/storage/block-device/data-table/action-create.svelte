@@ -29,24 +29,24 @@
 	} = $props();
 
 	const transport: Transport = getContext('transport');
-
-	let isAdvancedOpen = $state(false);
-	let isPoolsLoading = $state(true);
-
-	let poolOptions = $state(writable<SingleSelect.OptionType[]>([]));
 	const storageClient = createClient(StorageService, transport);
 
-	const defaults = {
-		scope: scope,
-		layering: true,
-		exclusiveLock: true,
-		objectMap: true,
-		fastDiff: true,
-		deepFlatten: true
-	} as CreateImageRequest;
-	let request = $state(defaults);
-	function reset() {
-		request = defaults;
+	let isAdvancedOpen = $state(false);
+	function initAdvanced() {
+		isAdvancedOpen = false;
+	}
+
+	let request = $state({} as CreateImageRequest);
+	function init() {
+		request = {
+			scope: scope,
+			layering: true,
+			exclusiveLock: true,
+			objectMap: true,
+			fastDiff: true,
+			deepFlatten: true
+		} as CreateImageRequest;
+		initAdvanced();
 	}
 
 	let open = $state(false);
@@ -57,6 +57,8 @@
 	let invalidity = $state({} as Booleanified<CreateImageRequest>);
 	const invalid = $derived(invalidity.poolName || invalidity.imageName);
 
+	let isPoolsLoading = $state(true);
+	let poolOptions = $state(writable<SingleSelect.OptionType[]>([]));
 	async function fetchVolumeOptions() {
 		try {
 			const response = await storageClient.listPools({
@@ -88,7 +90,14 @@
 	});
 </script>
 
-<Modal.Root bind:open>
+<Modal.Root
+	bind:open
+	onOpenChange={(isOpen) => {
+		if (isOpen) {
+			init();
+		}
+	}}
+>
 	<Modal.Trigger class="default">
 		<Icon icon="ph:plus" />
 		{m.create()}
@@ -247,11 +256,7 @@
 			</Collapsible.Root>
 		</Form.Root>
 		<Modal.Footer>
-			<Modal.Cancel
-				onclick={() => {
-					reset();
-				}}
-			>
+			<Modal.Cancel>
 				{m.cancel()}
 			</Modal.Cancel>
 			<Modal.ActionsGroup>
@@ -273,7 +278,6 @@
 								return message;
 							}
 						});
-						reset();
 						close();
 					}}
 				>

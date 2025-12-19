@@ -28,22 +28,21 @@
 	} = $props();
 
 	const transport: Transport = getContext('transport');
-
 	const virtualMachineClient = createClient(InstanceService, transport);
-	let invalid = $state(false);
 
-	const defaults = {
-		scope: scope,
-		namespace: virtualMachine.namespace,
-		name: virtualMachine.name,
-		hostname: ''
-	} as MigrateInstanceRequest;
-	let request = $state({ ...defaults });
-	function reset() {
-		request = { ...defaults };
+	let request = $state({} as MigrateInstanceRequest);
+	let invalid = $state(false);
+	let open = $state(false);
+
+	function init() {
+		request = {
+			scope: scope,
+			namespace: virtualMachine.namespace,
+			name: virtualMachine.name,
+			hostname: ''
+		} as MigrateInstanceRequest;
 	}
 
-	let open = $state(false);
 	function close() {
 		open = false;
 	}
@@ -51,6 +50,11 @@
 
 <Modal.Root
 	bind:open
+	onOpenChange={(isOpen) => {
+		if (isOpen) {
+			init();
+		}
+	}}
 	onOpenChangeComplete={(isOpen) => {
 		if (!isOpen) {
 			closeActions();
@@ -84,11 +88,7 @@
 			</Form.Fieldset>
 		</Form.Root>
 		<Modal.Footer>
-			<Modal.Cancel
-				onclick={() => {
-					reset();
-				}}
-			>
+			<Modal.Cancel>
 				{m.cancel()}
 			</Modal.Cancel>
 			<Modal.ActionsGroup>
@@ -110,7 +110,6 @@
 								return message;
 							}
 						});
-						reset();
 						close();
 					}}
 				>

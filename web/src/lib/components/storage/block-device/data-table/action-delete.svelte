@@ -30,12 +30,11 @@
 	const transport: Transport = getContext('transport');
 	const storageClient = createClient(StorageService, transport);
 
-	const defaults = {
-		scope: scope
-	} as DeleteImageRequest;
-	let request = $state(defaults);
-	function reset() {
-		request = defaults;
+	let request = $state({} as DeleteImageRequest);
+	function init() {
+		request = {
+			scope: scope
+		} as DeleteImageRequest;
 	}
 
 	let invalidity = $state({} as Booleanified<DeleteImageRequest>);
@@ -52,6 +51,11 @@
 	onOpenChangeComplete={(isOpen) => {
 		if (!isOpen) {
 			closeActions();
+		}
+	}}
+	onOpenChange={(isOpen) => {
+		if (isOpen) {
+			init();
 		}
 	}}
 >
@@ -90,11 +94,7 @@
 			</Form.Fieldset>
 		</Form.Root>
 		<Modal.Footer>
-			<Modal.Cancel
-				onclick={() => {
-					reset();
-				}}
-			>
+			<Modal.Cancel>
 				{m.cancel()}
 			</Modal.Cancel>
 			<Modal.ActionsGroup>
@@ -116,7 +116,6 @@
 								return message;
 							}
 						});
-						reset();
 						close();
 					}}
 				>

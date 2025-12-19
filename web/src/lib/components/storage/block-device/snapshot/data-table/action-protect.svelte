@@ -32,40 +32,38 @@
 	const transport: Transport = getContext('transport');
 
 	const storageClient = createClient(StorageService, transport);
-	const defaults = {
-		scope: scope,
-		imageName: image.name,
-		poolName: image.poolName,
-		snapshotName: snapshot.name
-	} as ProtectImageSnapshotRequest;
-	let request = $state(defaults);
-	function reset() {
-		request = defaults;
-	}
 </script>
 
 <button
 	class="flex h-full w-full items-center gap-2 capitalize"
 	onclick={() => {
-		toast.promise(() => storageClient.protectImageSnapshot(request), {
-			loading: `Protecting ${request.snapshotName}...`,
-			success: () => {
-				reloadManager.force();
-				return `Protect ${request.snapshotName}`;
-			},
-			error: (error) => {
-				let message = `Fail to protect ${request.snapshotName}`;
-				toast.error(message, {
-					description: (error as ConnectError).message.toString(),
-					duration: Number.POSITIVE_INFINITY
-				});
-				return message;
-			},
-			finally: () => {
-				closeActions();
+		toast.promise(
+			() =>
+				storageClient.protectImageSnapshot({
+					scope: scope,
+					imageName: image.name,
+					poolName: image.poolName,
+					snapshotName: snapshot.name
+				} as ProtectImageSnapshotRequest),
+			{
+				loading: `Protecting ${snapshot.name}...`,
+				success: () => {
+					reloadManager.force();
+					return `Protect ${snapshot.name}`;
+				},
+				error: (error) => {
+					let message = `Fail to protect ${snapshot.name}`;
+					toast.error(message, {
+						description: (error as ConnectError).message.toString(),
+						duration: Number.POSITIVE_INFINITY
+					});
+					return message;
+				},
+				finally: () => {
+					closeActions();
+				}
 			}
-		});
-		reset();
+		);
 	}}
 >
 	<Icon icon="ph:lock-open" />

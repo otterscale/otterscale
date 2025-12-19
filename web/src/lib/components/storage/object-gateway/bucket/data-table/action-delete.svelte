@@ -31,12 +31,11 @@
 	const storageClient = createClient(StorageService, transport);
 	let invalid = $state(false);
 
-	const defaults = {
-		scope: scope
-	} as DeleteBucketRequest;
-	let request = $state(defaults);
-	function reset() {
-		request = defaults;
+	let request = $state({} as DeleteBucketRequest);
+	function init() {
+		request = {
+			scope: scope
+		} as DeleteBucketRequest;
 	}
 
 	let open = $state(false);
@@ -47,6 +46,11 @@
 
 <Modal.Root
 	bind:open
+	onOpenChange={(isOpen) => {
+		if (isOpen) {
+			init();
+		}
+	}}
 	onOpenChangeComplete={(isOpen) => {
 		if (!isOpen) {
 			closeActions();
@@ -76,11 +80,7 @@
 			</Form.Fieldset>
 		</Form.Root>
 		<Modal.Footer>
-			<Modal.Cancel
-				onclick={() => {
-					reset();
-				}}
-			>
+			<Modal.Cancel>
 				{m.cancel()}
 			</Modal.Cancel>
 			<Modal.ActionsGroup>
@@ -102,7 +102,6 @@
 								return message;
 							}
 						});
-						reset();
 						close();
 					}}
 				>

@@ -54,7 +54,7 @@
 						</Table.Row>
 					</Table.Header>
 					<Table.Body>
-						{#each $tags as tag}
+						{#each $tags as tag (tag.name)}
 							<Table.Row>
 								<Table.Cell>{tag.name}</Table.Cell>
 								<Table.Cell>

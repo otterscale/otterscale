@@ -32,40 +32,38 @@
 	const transport: Transport = getContext('transport');
 
 	const storageClient = createClient(StorageService, transport);
-	const defaults = {
-		scope: scope,
-		imageName: image.name,
-		poolName: image.poolName,
-		snapshotName: snapshot.name
-	} as UnprotectImageSnapshotRequest;
-	let request = $state(defaults);
-	function reset() {
-		request = defaults;
-	}
 </script>
 
 <button
 	class="flex h-full w-full items-center gap-2 capitalize"
 	onclick={() => {
-		toast.promise(() => storageClient.unprotectImageSnapshot(request), {
-			loading: `Unprotecting ${request.snapshotName}...`,
-			success: () => {
-				reloadManager.force();
-				return `Unprotect ${request.snapshotName}`;
-			},
-			error: (error) => {
-				let message = `Fail to unprotect ${request.snapshotName}`;
-				toast.error(message, {
-					description: (error as ConnectError).message.toString(),
-					duration: Number.POSITIVE_INFINITY
-				});
-				return message;
-			},
-			finally: () => {
-				closeActions();
+		toast.promise(
+			() =>
+				storageClient.unprotectImageSnapshot({
+					scope: scope,
+					imageName: image.name,
+					poolName: image.poolName,
+					snapshotName: snapshot.name
+				} as UnprotectImageSnapshotRequest),
+			{
+				loading: `Unprotecting ${snapshot.name}...`,
+				success: () => {
+					reloadManager.force();
+					return `Unprotect ${snapshot.name}`;
+				},
+				error: (error) => {
+					let message = `Fail to unprotect ${snapshot.name}`;
+					toast.error(message, {
+						description: (error as ConnectError).message.toString(),
+						duration: Number.POSITIVE_INFINITY
+					});
+					return message;
+				},
+				finally: () => {
+					closeActions();
+				}
 			}
-		});
-		reset();
+		);
 	}}
 >
 	<Icon icon="ph:lock-open" />

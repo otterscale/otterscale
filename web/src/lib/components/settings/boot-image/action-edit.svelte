@@ -33,34 +33,21 @@
 		closeActions: () => void;
 	} = $props();
 
-	// Get required services from Svelte context
 	const transport: Transport = getContext('transport');
-
-	// Create gRPC client for configuration operations
 	const client = createClient(ConfigurationService, transport);
-
-	// Architecture options for the current distro series
 	const architecturesOptions = writable<SingleSelect.OptionType[]>([]);
 
-	// Default values for the update boot image request
-	const defaults = {
-		id: bootImage.id,
-		distroSeries: bootImage.distroSeries,
-		architectures: [...bootImage.architectures]
-	} as UpdateBootImageRequest;
-
-	// Current request state
-	let request = $state({ ...defaults });
-
-	// Reset form to default values
-	function reset() {
-		request = { ...defaults };
-	}
-
-	// Modal open/close state
+	let request = $state({} as UpdateBootImageRequest);
 	let open = $state(false);
 
-	// Close modal function
+	function init() {
+		request = {
+			id: bootImage.id,
+			distroSeries: bootImage.distroSeries,
+			architectures: [...bootImage.architectures]
+		} as UpdateBootImageRequest;
+	}
+
 	function close() {
 		open = false;
 	}
@@ -91,6 +78,11 @@
 <!-- Modal component for boot image edit -->
 <Modal.Root
 	bind:open
+	onOpenChange={(isOpen) => {
+		if (isOpen) {
+			init();
+		}
+	}}
 	onOpenChangeComplete={(isOpen) => {
 		if (!isOpen) {
 			closeActions();
@@ -146,11 +138,7 @@
 		<!-- Modal footer with action buttons -->
 		<Modal.Footer>
 			<!-- Cancel button -->
-			<Modal.Cancel
-				onclick={() => {
-					reset();
-				}}
-			>
+			<Modal.Cancel>
 				{m.cancel()}
 			</Modal.Cancel>
 
@@ -178,8 +166,6 @@
 								return message;
 							}
 						});
-						// Reset form and close modal
-						reset();
 						close();
 					}}
 				>

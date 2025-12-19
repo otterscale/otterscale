@@ -1756,7 +1756,7 @@ deploy_helm() {
     if [[ -z $(microk8s helm3 list -n $namespace -o json | jq ".[] | select(.name==\"$deploy_name\")") ]];then
         log "INFO" "Collecting configuration data for helm deployment" "HELM_CONFIG"
         generate_chart_values
-        install_helm_chart "$deploy_name" "$namespace" "otterscale-charts/otterscale" "--create-namespace -f $otterscale_helm_values --wait --timeout 10m --debug"
+        install_helm_chart "$deploy_name" "$namespace" "otterscale-charts/otterscale" "--create-namespace -f $otterscale_helm_values --wait --timeout 10m"
 
         log "INFO" "Cleanup ca cert file and $otterscale_helm_values" "OTTERSCALE"
         rm -f "$ca_cert_file"

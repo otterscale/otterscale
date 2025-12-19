@@ -26,30 +26,35 @@
 		$props();
 
 	const transport: Transport = getContext('transport');
-
-	let invalidity = $state({} as Booleanified<Network_IPRange>);
-	const invalid = $derived(invalidity.startIp || invalidity.endIp);
-
 	const client = createClient(NetworkService, transport);
-	const defaults = {
-		id: ipRange.id,
-		startIp: ipRange.startIp,
-		endIp: ipRange.endIp,
-		comment: ipRange.comment
-	} as UpdateIPRangeRequest;
-	let request = $state(defaults);
-	function reset() {
-		request = defaults;
+
+	let request = $state({} as UpdateIPRangeRequest);
+	let open = $state(false);
+
+	function init() {
+		request = {
+			id: ipRange.id,
+			startIp: ipRange.startIp,
+			endIp: ipRange.endIp,
+			comment: ipRange.comment
+		} as UpdateIPRangeRequest;
 	}
 
-	let open = $state(false);
 	function close() {
 		open = false;
 	}
+
+	let invalidity = $state({} as Booleanified<Network_IPRange>);
+	const invalid = $derived(invalidity.startIp || invalidity.endIp);
 </script>
 
 <Modal.Root
 	bind:open
+	onOpenChange={(isOpen) => {
+		if (isOpen) {
+			init();
+		}
+	}}
 	onOpenChangeComplete={(isOpen) => {
 		if (!isOpen) {
 			closeActions();
@@ -91,11 +96,7 @@
 			</Form.Fieldset>
 		</Form.Root>
 		<Modal.Footer>
-			<Modal.Cancel
-				onclick={() => {
-					reset();
-				}}
-			>
+			<Modal.Cancel>
 				{m.cancel()}
 			</Modal.Cancel>
 			<Modal.Action
@@ -116,8 +117,6 @@
 							return message;
 						}
 					});
-
-					reset();
 					close();
 				}}
 			>

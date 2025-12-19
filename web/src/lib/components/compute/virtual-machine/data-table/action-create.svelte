@@ -111,24 +111,21 @@
 		}
 	}
 
-	// ==================== Default Values & Constants ====================
-	const DEFAULT_REQUEST = {
-		scope: scope,
-		name: '',
-		namespace: DEFAULT_NAMESPACE,
-		instanceTypeName: '',
-		bootDataVolumeName: '',
-		startupScript: ''
-	} as CreateVirtualMachineRequest;
-
 	// ==================== Form State ====================
-	let request = $state(DEFAULT_REQUEST);
+	let request = $state({} as CreateVirtualMachineRequest);
 
-	// ==================== Utility Functions ====================
-	function reset() {
-		request = { ...DEFAULT_REQUEST };
+	function init() {
+		request = {
+			scope: scope,
+			name: '',
+			namespace: DEFAULT_NAMESPACE,
+			instanceTypeName: '',
+			bootDataVolumeName: '',
+			startupScript: ''
+		} as CreateVirtualMachineRequest;
 		isAdvancedOpen = false;
 	}
+
 	function close() {
 		open = false;
 	}
@@ -140,7 +137,14 @@
 	});
 </script>
 
-<Modal.Root bind:open>
+<Modal.Root
+	bind:open
+	onOpenChange={(isOpen) => {
+		if (isOpen) {
+			init();
+		}
+	}}
+>
 	<Modal.Trigger variant="default">
 		<Icon icon="ph:plus" />
 		{m.create()}
@@ -278,11 +282,7 @@
 		</Form.Root>
 
 		<Modal.Footer>
-			<Modal.Cancel
-				onclick={() => {
-					reset();
-				}}
-			>
+			<Modal.Cancel>
 				{m.cancel()}
 			</Modal.Cancel>
 			<Modal.ActionsGroup>
@@ -304,7 +304,6 @@
 								return message;
 							}
 						});
-						reset();
 						close();
 					}}
 				>

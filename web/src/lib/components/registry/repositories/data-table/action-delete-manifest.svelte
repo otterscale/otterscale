@@ -30,32 +30,35 @@
 	const transport: Transport = getContext('transport');
 	const registryClient = createClient(RegistryService, transport);
 
-	const defaults = {
-		scope: scope,
-		digest: manifest.digest,
-		repositoryName: manifest.repositoryName
-	} as DeleteManifestRequest;
-	let request = $state(defaults);
+	let request = $state({} as DeleteManifestRequest);
+	let verification = $state({ tag: '' });
+	let open = $state(false);
 
-	let verification = $state({
-		tag: ''
-	});
-
-	function reset() {
-		request = defaults;
+	function init() {
+		request = {
+			scope: scope,
+			digest: manifest.digest,
+			repositoryName: manifest.repositoryName
+		} as DeleteManifestRequest;
 		verification = { tag: '' };
+	}
+
+	function close() {
+		open = false;
 	}
 
 	let invalidity = $state({} as Booleanified<{ repositoryName: string; tag: string }>);
 	const invalid = $derived(invalidity.repositoryName || invalidity.tag);
-
-	let open = $state(false);
-	function close() {
-		open = false;
-	}
 </script>
 
-<Modal.Root bind:open>
+<Modal.Root
+	bind:open
+	onOpenChange={(isOpen) => {
+		if (isOpen) {
+			init();
+		}
+	}}
+>
 	<Modal.Trigger
 		variant="ghost"
 		class="group flex h-7 w-7 items-center justify-center text-destructive"
@@ -91,11 +94,7 @@
 			</Form.Fieldset>
 		</Form.Root>
 		<Modal.Footer>
-			<Modal.Cancel
-				onclick={() => {
-					reset();
-				}}
-			>
+			<Modal.Cancel>
 				{m.cancel()}
 			</Modal.Cancel>
 			<Modal.ActionsGroup>
@@ -120,7 +119,6 @@
 							}
 						});
 						close();
-						reset();
 					}}
 				>
 					{m.confirm()}

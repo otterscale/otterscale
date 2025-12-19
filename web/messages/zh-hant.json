@@ -76,6 +76,7 @@
 	"create_smb_share": "建立 SMB 共用",
 	"update_smb_share": "更新 SMB 共用",
 	"smb_share_name_constraint": "開頭不能是數字，且長度最多 10 個字元。",
+	"smb_port_hint": "在 Windows 上將連接埠設定為 445",
 	"browsable": "可瀏覽",
 	"read_only": "唯讀",
 	"guest_accessible": "訪客可存取",
