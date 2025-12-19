@@ -141,7 +141,24 @@
 					<Form.Help>
 						{m.smb_port_hint()}
 					</Form.Help>
-					<SingleInput.General type="number" bind:value={request.port} />
+					<SingleInput.General
+						type="number"
+						bind:value={request.port}
+						min="0"
+						max="65535"
+						placeholder="445"
+						oninput={(e) => {
+							const target = e.target as HTMLInputElement;
+							const value = parseInt(target.value);
+							if (!isNaN(value)) {
+								if (value < 0) {
+									request.port = 0;
+								} else if (value > 65535) {
+									request.port = 65535;
+								}
+							}
+						}}
+					/>
 				</Form.Field>
 				<Form.Field>
 					<Form.Label>{m.size()}</Form.Label>
