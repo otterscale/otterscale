@@ -97,4 +97,3 @@ func (uc *UseCase) toVirtualMachineInstanceTypes(vmcits []VirtualMachineClusterI
 
 	return ret
 }
-

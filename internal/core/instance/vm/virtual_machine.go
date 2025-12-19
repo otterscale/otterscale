@@ -636,4 +636,3 @@ func (uc *UseCase) buildVirtualMachine(namespace, name, instanceType, bootDataVo
 
 	return virtualMachine
 }
-

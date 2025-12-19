@@ -48,7 +48,7 @@ func (s *InstanceService) ListVirtualMachines(ctx context.Context, req *pb.ListV
 		return nil, err
 	}
 
-        its, err := s.virtualMachineInstance.ListInstanceTypes(ctx, req.GetScope())
+	its, err := s.virtualMachineInstance.ListInstanceTypes(ctx, req.GetScope())
 	if err != nil {
 		return nil, err
 	}
