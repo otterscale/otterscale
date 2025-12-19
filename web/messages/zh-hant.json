@@ -393,6 +393,7 @@
 	"edit": "編輯",
 	"actions": "動作",
 	"confirm": "確認",
+	"quota": "配額",
 	"quota_size": "配額大小",
 	"quota_objects": "配額物件數",
 	"quorum_status": "Quorum 狀態",

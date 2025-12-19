@@ -188,7 +188,7 @@
 					<Collapsible.Root bind:open={isAdvancedOpen}>
 						<div class="flex items-center justify-between gap-2">
 							<p class={cn('text-base font-bold', isAdvancedOpen ? 'invisible' : 'visible')}>
-								Advance
+								Advanced
 							</p>
 							<Collapsible.Trigger class="rounded-full bg-muted p-1 ">
 								<Icon
@@ -203,7 +203,7 @@
 
 						<Collapsible.Content>
 							<Form.Fieldset>
-								<Form.Legend>{m.quota_objects()}</Form.Legend>
+								<Form.Legend>{m.quota()}</Form.Legend>
 
 								<Form.Field>
 									<Form.Label>{m.quota_objects()}</Form.Label>

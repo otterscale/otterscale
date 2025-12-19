@@ -393,6 +393,7 @@
 	"edit": "Edit",
 	"actions": "Actions",
 	"confirm": "Confirm",
+	"quota": "Quota",
 	"quota_size": "Quota Size",
 	"quota_objects": "Quota Objects",
 	"quorum_status": "Quorum Status",
