@@ -300,9 +300,8 @@ message DataVolume {
 
 message InstanceType {
   string name = 1;
-  string namespace = 2;
-  uint32 cpu_cores = 3;
-  int64 memory_bytes = 4;
+  uint32 cpu_cores = 2;
+  int64 memory_bytes = 3;
   bool cluster_wide = 11;
   google.protobuf.Timestamp created_at = 21;
 }
@@ -504,7 +503,6 @@ message ExtendDataVolumeRequest {
 message ListInstanceTypesRequest {
   string scope = 1;
   reserved 2;
-  string namespace = 3;
   bool include_cluster_wide = 11;
 }
 
@@ -515,24 +513,21 @@ message ListInstanceTypesResponse {
 message GetInstanceTypeRequest {
   string scope = 1;
   reserved 2;
-  string namespace = 3;
-  string name = 4;
+  string name = 3;
 }
 
 message CreateInstanceTypeRequest {
   string scope = 1;
   reserved 2;
   string name = 11;
-  string namespace = 12;
-  uint32 cpu_cores = 13;
-  int64 memory_bytes = 14;
+  uint32 cpu_cores = 12;
+  int64 memory_bytes = 13;
 }
 
 message DeleteInstanceTypeRequest {
   string scope = 1;
   reserved 2;
-  string namespace = 3;
-  string name = 4;
+  string name = 3;
 }
 
 message CreateVirtualMachineServiceRequest {

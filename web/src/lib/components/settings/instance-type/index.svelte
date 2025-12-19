@@ -73,7 +73,6 @@
 					<Table.Header>
 						<Table.Row>
 							<Table.Head>{m.name()}</Table.Head>
-							<Table.Head>{m.namespace()}</Table.Head>
 							<Table.Head class="text-right">{m.cpu_cores()}</Table.Head>
 							<Table.Head class="text-right">{m.memory()}</Table.Head>
 							<Table.Head class="text-right">{m.create_time()}</Table.Head>
@@ -81,14 +80,9 @@
 						</Table.Row>
 					</Table.Header>
 					<Table.Body>
-						{#each $instanceTypes as instanceType (instanceType.name)}
+						{#each $instanceTypes as instanceType}
 							<Table.Row>
 								<Table.Cell>{instanceType.name}</Table.Cell>
-								<Table.Cell>
-									{#if instanceType.namespace}
-										<Badge variant="outline">{instanceType.namespace}</Badge>
-									{/if}
-								</Table.Cell>
 								<Table.Cell class="text-right">
 									<span>{instanceType.cpuCores}</span>
 								</Table.Cell>
@@ -121,3 +115,4 @@
 		</Layout.Viewer>
 	</Layout.Root>
 {/if}
+

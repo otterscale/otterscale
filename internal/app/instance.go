@@ -48,7 +48,7 @@ func (s *InstanceService) ListVirtualMachines(ctx context.Context, req *pb.ListV
 		return nil, err
 	}
 
-	its, err := s.virtualMachineInstance.ListInstanceTypes(ctx, req.GetScope(), req.GetNamespace(), true)
+        its, err := s.virtualMachineInstance.ListInstanceTypes(ctx, req.GetScope())
 	if err != nil {
 		return nil, err
 	}
@@ -64,7 +64,7 @@ func (s *InstanceService) GetVirtualMachine(ctx context.Context, req *pb.GetVirt
 		return nil, err
 	}
 
-	its, err := s.virtualMachineInstance.ListInstanceTypes(ctx, req.GetScope(), req.GetNamespace(), true)
+        its, err := s.virtualMachineInstance.ListInstanceTypes(ctx, req.GetScope())
 	if err != nil {
 		return nil, err
 	}
@@ -79,7 +79,7 @@ func (s *InstanceService) CreateVirtualMachine(ctx context.Context, req *pb.Crea
 		return nil, err
 	}
 
-	its, err := s.virtualMachineInstance.ListInstanceTypes(ctx, req.GetScope(), req.GetNamespace(), true)
+	its, err := s.virtualMachineInstance.ListInstanceTypes(ctx, req.GetScope())
 	if err != nil {
 		return nil, err
 	}
@@ -293,7 +293,7 @@ func (s *InstanceService) ExtendDataVolume(ctx context.Context, req *pb.ExtendDa
 }
 
 func (s *InstanceService) ListInstanceTypes(ctx context.Context, req *pb.ListInstanceTypesRequest) (*pb.ListInstanceTypesResponse, error) {
-	its, err := s.virtualMachineInstance.ListInstanceTypes(ctx, req.GetScope(), req.GetNamespace(), req.GetIncludeClusterWide())
+	its, err := s.virtualMachineInstance.ListInstanceTypes(ctx, req.GetScope())
 	if err != nil {
 		return nil, err
 	}
@@ -304,7 +304,7 @@ func (s *InstanceService) ListInstanceTypes(ctx context.Context, req *pb.ListIns
 }
 
 func (s *InstanceService) GetInstanceType(ctx context.Context, req *pb.GetInstanceTypeRequest) (*pb.InstanceType, error) {
-	it, err := s.virtualMachineInstance.GetInstanceType(ctx, req.GetScope(), req.GetNamespace(), req.GetName())
+	it, err := s.virtualMachineInstance.GetInstanceType(ctx, req.GetScope(), req.GetName())
 	if err != nil {
 		return nil, err
 	}
@@ -314,7 +314,7 @@ func (s *InstanceService) GetInstanceType(ctx context.Context, req *pb.GetInstan
 }
 
 func (s *InstanceService) CreateInstanceType(ctx context.Context, req *pb.CreateInstanceTypeRequest) (*pb.InstanceType, error) {
-	it, err := s.virtualMachineInstance.CreateInstanceType(ctx, req.GetScope(), req.GetNamespace(), req.GetName(), req.GetCpuCores(), req.GetMemoryBytes())
+	it, err := s.virtualMachineInstance.CreateInstanceType(ctx, req.GetScope(), req.GetName(), req.GetCpuCores(), req.GetMemoryBytes())
 	if err != nil {
 		return nil, err
 	}
@@ -324,7 +324,7 @@ func (s *InstanceService) CreateInstanceType(ctx context.Context, req *pb.Create
 }
 
 func (s *InstanceService) DeleteInstanceType(ctx context.Context, req *pb.DeleteInstanceTypeRequest) (*emptypb.Empty, error) {
-	if err := s.virtualMachineInstance.DeleteInstanceType(ctx, req.GetScope(), req.GetNamespace(), req.GetName()); err != nil {
+	if err := s.virtualMachineInstance.DeleteInstanceType(ctx, req.GetScope(), req.GetName()); err != nil {
 		return nil, err
 	}
 
@@ -782,7 +782,6 @@ func toProtoInstanceTypes(its []vmi.VirtualMachineInstanceTypeData) []*pb.Instan
 func toProtoInstanceType(it *vmi.VirtualMachineInstanceTypeData) *pb.InstanceType {
 	ret := &pb.InstanceType{}
 	ret.SetName(it.Type.Name)
-	ret.SetNamespace(it.Type.Namespace)
 	ret.SetCpuCores(it.Type.Spec.CPU.Guest)
 	ret.SetMemoryBytes(it.Type.Spec.Memory.Guest.Value())
 	ret.SetClusterWide(it.ClusterWide)
