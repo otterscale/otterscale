@@ -62,7 +62,7 @@
 	const facilities = writable<Facility[]>([]);
 
 	// State & Timer
-	let autoRefresh = $state(false);
+	let autoRefresh = $state(true);
 	let refreshInterval: NodeJS.Timeout | null = null;
 
 	async function fetchFacilities(scope: string) {
