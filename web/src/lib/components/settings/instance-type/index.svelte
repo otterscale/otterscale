@@ -80,7 +80,7 @@
 						</Table.Row>
 					</Table.Header>
 					<Table.Body>
-						{#each $instanceTypes as instanceType}
+						{#each $instanceTypes as instanceType (instanceType.name)}
 							<Table.Row>
 								<Table.Cell>{instanceType.name}</Table.Cell>
 								<Table.Cell class="text-right">
@@ -115,4 +115,3 @@
 		</Layout.Viewer>
 	</Layout.Root>
 {/if}
-
