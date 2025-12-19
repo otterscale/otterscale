@@ -12,10 +12,8 @@
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { Booleanified } from '$lib/components/custom/modal/single-step/type';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
-	import {
-		Multiple as MultipleSelect,
-		Single as SingleSelect
-	} from '$lib/components/custom/select';
+	import { Single as SingleSelect } from '$lib/components/custom/select';
+	import * as Collapsible from '$lib/components/ui/collapsible';
 	import { m } from '$lib/paraglide/messages';
 	import { cn } from '$lib/utils';
 
@@ -32,6 +30,7 @@
 		}
 	]);
 
+	// Fix as Block temperary
 	export const applications: Writable<SingleSelect.OptionType[]> = writable([
 		{
 			value: Pool_Application.FILE,
@@ -63,11 +62,19 @@
 	const transport: Transport = getContext('transport');
 	const storageClient = createClient(StorageService, transport);
 
+	let isAdvancedOpen = $state(false);
+	function initAdvanced() {
+		isAdvancedOpen = false;
+	}
+
 	let request = $state({} as CreatePoolRequest);
 	function init() {
 		request = {
-			scope: scope
+			scope: scope,
+			applications: [Pool_Application.BLOCK]
 		} as CreatePoolRequest;
+
+		initAdvanced();
 	}
 
 	let invalidity = $state({} as Booleanified<CreatePoolRequest>);
@@ -124,7 +131,7 @@
 								<SingleSelect.List>
 									<SingleSelect.Empty>{m.no_result()}</SingleSelect.Empty>
 									<SingleSelect.Group>
-										{#each $types as type}
+										{#each $types as type (type.value)}
 											<SingleSelect.Item option={type}>
 												<Icon
 													icon={type.icon ? type.icon : 'ph:empty'}
@@ -143,6 +150,7 @@
 				{#if request.type === Pool_Type.ERASURE}
 					<Form.Field>
 						<!-- <Form.Label>{m.ec_overwrite()}</Form.Label> -->
+						<Form.Help>{m.pool_erasure_limit_direction()}</Form.Help>
 						<SingleInput.Boolean
 							descriptor={() => m.ec_overwrite()}
 							bind:value={request.ecOverwrites}
@@ -163,39 +171,6 @@
 					</Form.Help>
 				{/if}
 				<Form.Field>
-					<Form.Label>{m.applications()}</Form.Label>
-					<MultipleSelect.Root bind:value={request.applications} options={applications}>
-						<MultipleSelect.Viewer />
-						<MultipleSelect.Controller>
-							<MultipleSelect.Trigger />
-							<MultipleSelect.Content>
-								<MultipleSelect.Options>
-									<MultipleSelect.Input />
-									<MultipleSelect.List>
-										<MultipleSelect.Empty>{m.no_result()}</MultipleSelect.Empty>
-										<MultipleSelect.Group>
-											{#each $applications as application}
-												<MultipleSelect.Item option={application}>
-													<Icon
-														icon={application.icon ? application.icon : 'ph:empty'}
-														class={cn('size-5', application.icon ? 'visible' : 'invisible')}
-													/>
-													{application.label}
-													<MultipleSelect.Check option={application} />
-												</MultipleSelect.Item>
-											{/each}
-										</MultipleSelect.Group>
-									</MultipleSelect.List>
-									<MultipleSelect.Actions>
-										<MultipleSelect.ActionAll>{m.all()}</MultipleSelect.ActionAll>
-										<MultipleSelect.ActionClear>{m.clear()}</MultipleSelect.ActionClear>
-									</MultipleSelect.Actions>
-								</MultipleSelect.Options>
-							</MultipleSelect.Content>
-						</MultipleSelect.Controller>
-					</MultipleSelect.Root>
-				</Form.Field>
-				<Form.Field>
 					<Form.Label>{m.quota_size()}</Form.Label>
 					<Form.Help>
 						{m.pool_quota_objects_direction()}
@@ -210,11 +185,36 @@
 					/>
 				</Form.Field>
 				<Form.Field>
-					<Form.Label>{m.quota_objects()}</Form.Label>
-					<Form.Help>
-						{m.pool_quota_objects_direction()}
-					</Form.Help>
-					<SingleInput.General bind:value={request.quotaObjects} />
+					<Collapsible.Root bind:open={isAdvancedOpen}>
+						<div class="flex items-center justify-between gap-2">
+							<p class={cn('text-base font-bold', isAdvancedOpen ? 'invisible' : 'visible')}>
+								Advanced
+							</p>
+							<Collapsible.Trigger class="rounded-full bg-muted p-1 ">
+								<Icon
+									icon="ph:caret-left"
+									class={cn(
+										'transition-all duration-300',
+										isAdvancedOpen ? '-rotate-90' : 'rotate-0'
+									)}
+								/>
+							</Collapsible.Trigger>
+						</div>
+
+						<Collapsible.Content>
+							<Form.Fieldset>
+								<Form.Legend>{m.quota()}</Form.Legend>
+
+								<Form.Field>
+									<Form.Label>{m.quota_objects()}</Form.Label>
+									<Form.Help>
+										{m.pool_quota_objects_direction()}
+									</Form.Help>
+									<SingleInput.General bind:value={request.quotaObjects} />
+								</Form.Field>
+							</Form.Fieldset>
+						</Collapsible.Content>
+					</Collapsible.Root>
 				</Form.Field>
 			</Form.Fieldset>
 		</Form.Root>
