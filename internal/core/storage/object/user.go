@@ -44,6 +44,8 @@ func (uc *UseCase) CreateUser(ctx context.Context, scope, id, name string, suspe
 		}
 	}
 
+	u.Keys = nil
+
 	return u, nil
 }
 
