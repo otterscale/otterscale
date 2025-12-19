@@ -327,6 +327,7 @@
 	"phase": "階段",
 	"restarts": "重啟次數",
 	"last_condition": "最後狀態",
+	"conditions": "歷史狀態",
 	"terminal": "終端機",
 	"aservices": "服務",
 	"cluster_ip": "Cluster IP",

@@ -43,14 +43,13 @@
 				<Table.Cell>
 					{service.clusterIp}
 				</Table.Cell>
-				<Table.Cell>
-					<div class="flex items-center">
-						{#each service.ports as port}
+				<Table.Cell class="space-y-1">
+					{#each service.ports as port}
+						<div class="flex items-center gap-1">
 							<Badge variant="outline">{port.protocol}</Badge>
 							{port.port}:{port.nodePort}
-							{port.targetPort}
-						{/each}
-					</div>
+						</div>
+					{/each}
 				</Table.Cell>
 			</Table.Row>
 		{/each}

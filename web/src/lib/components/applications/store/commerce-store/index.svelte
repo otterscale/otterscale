@@ -65,7 +65,7 @@
 	</div>
 
 	<div class="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-		{#each filterManager.filteredCharts.slice(paginationManager.activePage * paginationManager.perPage, (paginationManager.activePage + 1) * paginationManager.perPage) as chart (chart.name)}
+		{#each filterManager.filteredCharts.slice(paginationManager.activePage * paginationManager.perPage, (paginationManager.activePage + 1) * paginationManager.perPage) as chart, index (index)}
 			<ChartComponent
 				{chart}
 				chartReleases={releasesFromChartName.get(chart.name)}

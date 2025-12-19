@@ -116,22 +116,27 @@
 								<Table.Cell class="text-end">{pod.restarts}</Table.Cell>
 								<Table.Cell class="text-start">
 									{#if pod.lastCondition}
-										{pod.lastCondition.type}
-										<div class="flex items-center gap-1 text-destructive">
-											{pod.lastCondition.reason}
-											<Tooltip.Provider>
-												<Tooltip.Root>
-													<Tooltip.Trigger>
-														<p class="max-w-[100px] truncate">
-															{pod.lastCondition.message}
-														</p>
-													</Tooltip.Trigger>
-													<Tooltip.Content>
-														{pod.lastCondition.message}
-													</Tooltip.Content>
-												</Tooltip.Root>
-											</Tooltip.Provider>
-										</div>
+										{#if pod.lastCondition.status === 'True'}
+											{pod.lastCondition.type}
+										{:else}
+											<div class="space-y-1">
+												<h4 class="text-destructive">{pod.lastCondition.reason}</h4>
+												<div class="flex gap-1">
+													<Tooltip.Provider>
+														<Tooltip.Root>
+															<Tooltip.Trigger>
+																<p class="max-w-50 truncate text-muted-foreground">
+																	{pod.lastCondition.message}
+																</p>
+															</Tooltip.Trigger>
+															<Tooltip.Content>
+																{pod.lastCondition.message}
+															</Tooltip.Content>
+														</Tooltip.Root>
+													</Tooltip.Provider>
+												</div>
+											</div>
+										{/if}
 									{/if}
 								</Table.Cell>
 								<Table.Cell class="text-center">
@@ -225,9 +230,11 @@
 										</LineChart>
 									</Chart.Container>
 								</Table.Cell>
-								<Table.Cell class="flex items-center justify-center">
+								<Table.Cell>
 									{#if pod}
-										<Log {pod} {scope} {namespace} />
+										<div class="flex justify-center">
+											<Log {pod} {scope} {namespace} />
+										</div>
 									{/if}
 								</Table.Cell>
 								<Table.Cell class="text-end">
