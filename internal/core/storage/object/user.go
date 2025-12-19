@@ -37,16 +37,13 @@ func (uc *UseCase) CreateUser(ctx context.Context, scope, id, name string, suspe
 		return nil, err
 	}
 
-	if len(u.Keys) > 0 {
-		for _, k := range u.Keys {
-			err := uc.DeleteUserKey(ctx, scope, id, k.AccessKey)
-			if err != nil {
-				return nil, err
-			}
+	// remove default keys
+	for _, k := range u.Keys {
+		if err := uc.DeleteUserKey(ctx, scope, id, k.AccessKey); err != nil {
+			return nil, err
 		}
-
-		u.Keys = make([]UserKey, 0)
 	}
+
 	return u, nil
 }
 
