@@ -32,7 +32,22 @@ func (uc *UseCase) ListUsers(ctx context.Context, scope string) (users []User, u
 }
 
 func (uc *UseCase) CreateUser(ctx context.Context, scope, id, name string, suspended bool) (*User, error) {
-	return uc.user.Create(ctx, scope, id, name, suspended)
+	u, err := uc.user.Create(ctx, scope, id, name, suspended)
+	if err != nil {
+		return nil, err
+	}
+
+	if len(u.Keys) > 0 {
+		for _, k := range u.Keys {
+			err := uc.DeleteUserKey(ctx, scope, id, k.AccessKey)
+			if err != nil {
+				return nil, err
+			}
+		}
+
+		u.Keys = make([]UserKey, 0)
+	}
+	return u, nil
 }
 
 func (uc *UseCase) UpdateUser(ctx context.Context, scope, id, name string, suspended bool) (*User, error) {
