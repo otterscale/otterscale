@@ -78,9 +78,9 @@
 			prefill: model.prefill,
 			decode: model.decode
 		} as UpdateModelRequest;
-		initDisaggregationMode();
 		initPrefill();
 		initDecode();
+		initDisaggregationMode();
 	}
 
 	function integrate() {

@@ -44,6 +44,9 @@
 	const applicationClient = createClient(ApplicationService, transport);
 
 	let isDisaggregationMode = $state(false);
+	function initDisaggregationMode() {
+		isDisaggregationMode = false;
+	}
 
 	let requestPrefill = $state({} as Model_Prefill);
 	function initPrefill() {
@@ -64,6 +67,7 @@
 		} as CreateModelRequest;
 		initPrefill();
 		initDecode();
+		initDisaggregationMode();
 	}
 
 	function integrate() {
