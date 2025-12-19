@@ -72,22 +72,20 @@ type UseCase struct {
 	virtualMachineRestore  VirtualMachineRestoreRepo
 	virtualMachineSnapshot VirtualMachineSnapshotRepo
 
-	machine                    machine.MachineRepo
-	service                    service.ServiceRepo
-	virtualMachineInstance     vmi.VirtualMachineInstanceRepo
-	virtualMachineInstanceType vmi.VirtualMachineInstanceTypeRepo
+	machine                machine.MachineRepo
+	service                service.ServiceRepo
+	virtualMachineInstance vmi.VirtualMachineInstanceRepo
 }
 
-func NewUseCase(virtualMachine VirtualMachineRepo, virtualMachineClone VirtualMachineCloneRepo, virtualMachineRestore VirtualMachineRestoreRepo, virtualMachineSnapshot VirtualMachineSnapshotRepo, machine machine.MachineRepo, service service.ServiceRepo, virtualMachineInstance vmi.VirtualMachineInstanceRepo, virtualMachineInstanceType vmi.VirtualMachineInstanceTypeRepo) *UseCase {
+func NewUseCase(virtualMachine VirtualMachineRepo, virtualMachineClone VirtualMachineCloneRepo, virtualMachineRestore VirtualMachineRestoreRepo, virtualMachineSnapshot VirtualMachineSnapshotRepo, machine machine.MachineRepo, service service.ServiceRepo, virtualMachineInstance vmi.VirtualMachineInstanceRepo) *UseCase {
 	return &UseCase{
-		virtualMachine:             virtualMachine,
-		virtualMachineClone:        virtualMachineClone,
-		virtualMachineRestore:      virtualMachineRestore,
-		virtualMachineSnapshot:     virtualMachineSnapshot,
-		service:                    service,
-		machine:                    machine,
-		virtualMachineInstance:     virtualMachineInstance,
-		virtualMachineInstanceType: virtualMachineInstanceType,
+		virtualMachine:         virtualMachine,
+		virtualMachineClone:    virtualMachineClone,
+		virtualMachineRestore:  virtualMachineRestore,
+		virtualMachineSnapshot: virtualMachineSnapshot,
+		service:                service,
+		machine:                machine,
+		virtualMachineInstance: virtualMachineInstance,
 	}
 }
 
@@ -256,12 +254,7 @@ func (uc *UseCase) GetVirtualMachine(ctx context.Context, scope, namespace, name
 }
 
 func (uc *UseCase) CreateVirtualMachine(ctx context.Context, scope, namespace, name, instanceType, bootDataVolume, startupScript string) (*VirtualMachineData, error) {
-	instanceTypeMatcher, err := uc.findInstancetypeMatcher(ctx, scope, namespace, instanceType)
-	if err != nil {
-		return nil, err
-	}
-
-	virtualMachine, err := uc.virtualMachine.Create(ctx, scope, namespace, uc.buildVirtualMachine(namespace, name, instanceTypeMatcher, bootDataVolume, startupScript))
+	virtualMachine, err := uc.virtualMachine.Create(ctx, scope, namespace, uc.buildVirtualMachine(namespace, name, instanceType, bootDataVolume, startupScript))
 	if err != nil {
 		return nil, err
 	}
@@ -548,29 +541,7 @@ func (uc *UseCase) combineVirtualMachine(namespace, name string, virtualMachine 
 	}
 }
 
-func (uc *UseCase) findInstancetypeMatcher(ctx context.Context, scope, namespace, instanceType string) (*kvcorev1.InstancetypeMatcher, error) {
-	cit, err := uc.virtualMachineInstanceType.GetCluster(ctx, scope, instanceType)
-	if k8serrors.IsNotFound(err) {
-		it, err := uc.virtualMachineInstanceType.Get(ctx, scope, namespace, instanceType)
-		if err != nil {
-			return nil, err
-		}
-		return &kvcorev1.InstancetypeMatcher{
-			Name: it.Name,
-			Kind: it.Kind,
-		}, nil
-	}
-	if err != nil {
-		return nil, err
-	}
-
-	return &kvcorev1.InstancetypeMatcher{
-		Name: cit.Name,
-		Kind: cit.Kind,
-	}, nil
-}
-
-func (uc *UseCase) buildVirtualMachine(namespace, name string, instanceTypeMatcher *kvcorev1.InstancetypeMatcher, bootDataVolume, startupScript string) *VirtualMachine {
+func (uc *UseCase) buildVirtualMachine(namespace, name, instanceType, bootDataVolume, startupScript string) *VirtualMachine {
 	var (
 		runStrategy   = kvcorev1.RunStrategyHalted
 		enabled       = true
@@ -589,8 +560,10 @@ func (uc *UseCase) buildVirtualMachine(namespace, name string, instanceTypeMatch
 			},
 		},
 		Spec: kvcorev1.VirtualMachineSpec{
-			RunStrategy:  &runStrategy,
-			Instancetype: instanceTypeMatcher,
+			RunStrategy: &runStrategy,
+			Instancetype: &kvcorev1.InstancetypeMatcher{
+				Name: instanceType,
+			},
 			Template: &kvcorev1.VirtualMachineInstanceTemplateSpec{
 				Spec: kvcorev1.VirtualMachineInstanceSpec{
 					Domain: kvcorev1.DomainSpec{

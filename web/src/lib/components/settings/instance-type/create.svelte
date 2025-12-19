@@ -25,7 +25,6 @@
 		request = {
 			scope: scope,
 			name: '',
-			namespace: 'kubevirt',
 			cpuCores: 1,
 			memoryBytes: BigInt(1024 ** 3) // 1GB default
 		} as CreateInstanceTypeRequest;
@@ -62,10 +61,6 @@
 						bind:invalid
 						validateRule="rfc1123"
 					/>
-				</Form.Field>
-				<Form.Field>
-					<Form.Label>{m.namespace()}</Form.Label>
-					<SingleInput.General disabled type="text" bind:value={request.namespace} />
 				</Form.Field>
 				<Form.Field>
 					<Form.Label>{m.cpu_cores()}</Form.Label>

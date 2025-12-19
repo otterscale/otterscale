@@ -8,7 +8,6 @@
 	import { Reloader, ReloadManager } from '$lib/components/custom/reloader';
 	import * as Table from '$lib/components/custom/table';
 	import * as Layout from '$lib/components/settings/layout';
-	import { Badge } from '$lib/components/ui/badge';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { formatCapacity, formatTimeAgo } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
@@ -73,7 +72,6 @@
 					<Table.Header>
 						<Table.Row>
 							<Table.Head>{m.name()}</Table.Head>
-							<Table.Head>{m.namespace()}</Table.Head>
 							<Table.Head class="text-right">{m.cpu_cores()}</Table.Head>
 							<Table.Head class="text-right">{m.memory()}</Table.Head>
 							<Table.Head class="text-right">{m.create_time()}</Table.Head>
@@ -84,11 +82,6 @@
 						{#each $instanceTypes as instanceType (instanceType.name)}
 							<Table.Row>
 								<Table.Cell>{instanceType.name}</Table.Cell>
-								<Table.Cell>
-									{#if instanceType.namespace}
-										<Badge variant="outline">{instanceType.namespace}</Badge>
-									{/if}
-								</Table.Cell>
 								<Table.Cell class="text-right">
 									<span>{instanceType.cpuCores}</span>
 								</Table.Cell>

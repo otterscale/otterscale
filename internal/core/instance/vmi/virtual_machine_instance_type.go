@@ -3,7 +3,6 @@ package vmi
 import (
 	"context"
 
-	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	instancetypev1beta1 "kubevirt.io/api/instancetype/v1beta1"
@@ -23,54 +22,23 @@ type VirtualMachineInstanceTypeData struct {
 }
 
 type VirtualMachineInstanceTypeRepo interface {
-	ListCluster(ctx context.Context, scope, selector string) ([]VirtualMachineClusterInstanceType, error)
-	GetCluster(ctx context.Context, scope, name string) (*VirtualMachineClusterInstanceType, error)
-	List(ctx context.Context, scope, namespace, selector string) ([]VirtualMachineInstanceType, error)
-	Get(ctx context.Context, scope, namespace, name string) (*VirtualMachineInstanceType, error)
-	Create(ctx context.Context, scope, namespace string, vmit *VirtualMachineInstanceType) (*VirtualMachineInstanceType, error)
-	Delete(ctx context.Context, scope, namespace, name string) error
+	List(ctx context.Context, scope, selector string) ([]VirtualMachineClusterInstanceType, error)
+	Get(ctx context.Context, scope, name string) (*VirtualMachineClusterInstanceType, error)
+	Create(ctx context.Context, scope string, vmit *VirtualMachineClusterInstanceType) (*VirtualMachineClusterInstanceType, error)
+	Delete(ctx context.Context, scope, name string) error
 }
 
-func (uc *UseCase) ListInstanceTypes(ctx context.Context, scope, namespace string, includeClusterWide bool) ([]VirtualMachineInstanceTypeData, error) {
-	vmits, err := uc.virtualMachineInstanceType.List(ctx, scope, namespace, "")
+func (uc *UseCase) ListInstanceTypes(ctx context.Context, scope string) ([]VirtualMachineInstanceTypeData, error) {
+	vmcits, err := uc.virtualMachineInstanceType.List(ctx, scope, "")
 	if err != nil {
 		return nil, err
 	}
 
-	ret := make([]VirtualMachineInstanceTypeData, 0, len(vmits))
-
-	for i := range vmits {
-		ret = append(ret, VirtualMachineInstanceTypeData{
-			Type:        &vmits[i],
-			ClusterWide: false,
-		})
-	}
-
-	if includeClusterWide {
-		vmcits, err := uc.virtualMachineInstanceType.ListCluster(ctx, scope, "")
-		if err != nil {
-			return nil, err
-		}
-
-		ret = append(ret, uc.toVirtualMachineInstanceTypes(vmcits)...)
-	}
-
-	return ret, nil
+	return uc.toVirtualMachineInstanceTypes(vmcits), nil
 }
 
-func (uc *UseCase) GetInstanceType(ctx context.Context, scope, namespace, name string) (*VirtualMachineInstanceTypeData, error) {
-	vmcit, err := uc.virtualMachineInstanceType.GetCluster(ctx, scope, name)
-	if k8serrors.IsNotFound(err) {
-		vmit, err := uc.virtualMachineInstanceType.Get(ctx, scope, namespace, name)
-		if err != nil {
-			return nil, err
-		}
-
-		return &VirtualMachineInstanceTypeData{
-			Type:        vmit,
-			ClusterWide: false,
-		}, nil
-	}
+func (uc *UseCase) GetInstanceType(ctx context.Context, scope, name string) (*VirtualMachineInstanceTypeData, error) {
+	vmcit, err := uc.virtualMachineInstanceType.Get(ctx, scope, name)
 	if err != nil {
 		return nil, err
 	}
@@ -78,29 +46,25 @@ func (uc *UseCase) GetInstanceType(ctx context.Context, scope, namespace, name s
 	return uc.toVirtualMachineInstanceType(vmcit), nil
 }
 
-func (uc *UseCase) CreateInstanceType(ctx context.Context, scope, namespace, name string, cpu uint32, memory int64) (*VirtualMachineInstanceTypeData, error) {
-	vmit, err := uc.virtualMachineInstanceType.Create(ctx, scope, namespace, uc.buildVirtualMachineInstanceType(namespace, name, cpu, memory))
+func (uc *UseCase) CreateInstanceType(ctx context.Context, scope, name string, cpu uint32, memory int64) (*VirtualMachineInstanceTypeData, error) {
+	vmcit, err := uc.virtualMachineInstanceType.Create(ctx, scope, uc.buildVirtualMachineClusterInstanceType(name, cpu, memory))
 	if err != nil {
 		return nil, err
 	}
 
-	return &VirtualMachineInstanceTypeData{
-		Type:        vmit,
-		ClusterWide: false,
-	}, nil
+	return uc.toVirtualMachineInstanceType(vmcit), nil
 }
 
-func (uc *UseCase) DeleteInstanceType(ctx context.Context, scope, namespace, name string) error {
-	return uc.virtualMachineInstanceType.Delete(ctx, scope, namespace, name)
+func (uc *UseCase) DeleteInstanceType(ctx context.Context, scope, name string) error {
+	return uc.virtualMachineInstanceType.Delete(ctx, scope, name)
 }
 
-func (uc *UseCase) buildVirtualMachineInstanceType(namespace, name string, cpu uint32, memory int64) *VirtualMachineInstanceType {
+func (uc *UseCase) buildVirtualMachineClusterInstanceType(name string, cpu uint32, memory int64) *VirtualMachineClusterInstanceType {
 	memoryQuantity := resource.NewQuantity(memory, resource.BinarySI)
 
-	return &VirtualMachineInstanceType{
+	return &VirtualMachineClusterInstanceType{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      name,
-			Namespace: namespace,
+			Name: name,
 		},
 		Spec: instancetypev1beta1.VirtualMachineInstancetypeSpec{
 			CPU: instancetypev1beta1.CPUInstancetype{
