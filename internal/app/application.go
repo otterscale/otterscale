@@ -406,12 +406,9 @@ func toProtoPod(p *workload.Pod) *pb.Application_Pod {
 
 	conditions := p.Status.Conditions
 
-	for i := range conditions {
-		if conditions[i].Status == workload.ConditionTrue {
-			ret.SetLastCondition(toProtoApplicationCondition(&conditions[i]))
-
-			break
-		}
+	if len(conditions) > 0 {
+		index := len(conditions) - 1
+		ret.SetLastCondition(toProtoApplicationCondition(&conditions[index]))
 	}
 
 	ret.SetCreatedAt(timestamppb.New(p.CreationTimestamp.Time))

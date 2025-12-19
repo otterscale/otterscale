@@ -579,12 +579,9 @@ func toProtoVirtualMachineClone(c *vm.VirtualMachineClone) *pb.VirtualMachine_Cl
 
 	conditions := c.Status.Conditions
 
-	for i := range conditions {
-		if conditions[i].Status == workload.ConditionTrue {
-			ret.SetLastCondition(toProtoApplicationConditionFromClone(&c.Status.Conditions[i]))
-
-			break
-		}
+	if len(conditions) > 0 {
+		index := len(conditions) - 1
+		ret.SetLastCondition(toProtoApplicationConditionFromClone(&c.Status.Conditions[index]))
 	}
 
 	return ret
@@ -615,12 +612,9 @@ func toProtoVirtualMachineSnapshot(s *vm.VirtualMachineSnapshot) *pb.VirtualMach
 
 		conditions := s.Status.Conditions
 
-		for i := range conditions {
-			if conditions[i].Status == workload.ConditionTrue {
-				ret.SetLastCondition(toProtoApplicationConditionFromSnapshot(&s.Status.Conditions[i]))
-
-				break
-			}
+		if len(conditions) > 0 {
+			index := len(conditions) - 1
+			ret.SetLastCondition(toProtoApplicationConditionFromSnapshot(&s.Status.Conditions[index]))
 		}
 	}
 
@@ -650,12 +644,9 @@ func toProtoVirtualMachineRestore(r *vm.VirtualMachineRestore) *pb.VirtualMachin
 
 		conditions := r.Status.Conditions
 
-		for i := range conditions {
-			if conditions[i].Status == workload.ConditionTrue {
-				ret.SetLastCondition(toProtoApplicationConditionFromSnapshot(&r.Status.Conditions[i]))
-
-				break
-			}
+		if len(conditions) > 0 {
+			index := len(conditions) - 1
+			ret.SetLastCondition(toProtoApplicationConditionFromSnapshot(&r.Status.Conditions[index]))
 		}
 	}
 
@@ -758,12 +749,9 @@ func toProtoDataVolume(it *cdi.DataVolumePersistent) *pb.DataVolume {
 
 	conditions := it.Status.Conditions
 
-	for i := range conditions {
-		if conditions[i].Status == workload.ConditionTrue {
-			ret.SetLastCondition(toProtoDataVolumeCondition(&it.Status.Conditions[i]))
-
-			break
-		}
+	if len(conditions) > 0 {
+		index := len(conditions) - 1
+		ret.SetLastCondition(toProtoDataVolumeCondition(&it.Status.Conditions[index]))
 	}
 
 	return ret

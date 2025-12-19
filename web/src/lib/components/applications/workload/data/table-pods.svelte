@@ -11,9 +11,8 @@
 	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
 	import * as Table from '$lib/components/ui/table';
-	import * as Tooltip from '$lib/components/ui/tooltip';
+	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
 	import { m } from '$lib/paraglide/messages';
-	import { cn } from '$lib/utils';
 
 	import Actions from './cell-actions.svelte';
 </script>
@@ -91,7 +90,7 @@
 		</Table.Row>
 	</Table.Header>
 	<Table.Body>
-		{#each $application.pods as pod}
+		{#each $application.pods as pod, index (index)}
 			<Table.Row>
 				<Table.Cell>{pod.name}</Table.Cell>
 				<Table.Cell>
@@ -103,33 +102,26 @@
 				<Table.Cell>{pod.restarts}</Table.Cell>
 				<Table.Cell>
 					{#if pod.lastCondition}
-						{#if pod.lastCondition.reason || pod.lastCondition.message}
-							<div class="flex items-center gap-2 text-destructive">
-								<Badge
-									variant="destructive"
-									class={pod.lastCondition.reason ? 'visible' : 'hidden'}
-								>
-									{pod.lastCondition.reason}
-								</Badge>
-								<Tooltip.Provider>
-									<Tooltip.Root>
-										<Tooltip.Trigger>
-											<p
-												class={cn(pod.lastCondition.message ? 'max-w-[1000px] truncate' : 'hidden')}
-											>
-												{pod.lastCondition.message}
-											</p>
-										</Tooltip.Trigger>
-										<Tooltip.Content class="max-w-[77vw] overflow-auto">
-											{pod.lastCondition.message}
-										</Tooltip.Content>
-									</Tooltip.Root>
-								</Tooltip.Provider>
-							</div>
+						{#if pod.lastCondition.status === 'True'}
+							{pod.lastCondition.type}
 						{:else}
-							<Badge variant="outline">
-								{pod.lastCondition.type}
-							</Badge>
+							<div class="space-y-1">
+								<h4 class="text-destructive">{pod.lastCondition.reason}</h4>
+								<div class="flex gap-1">
+									<Tooltip.Provider>
+										<Tooltip.Root>
+											<Tooltip.Trigger>
+												<p class="max-w-50 truncate text-muted-foreground">
+													{pod.lastCondition.message}
+												</p>
+											</Tooltip.Trigger>
+											<Tooltip.Content>
+												{pod.lastCondition.message}
+											</Tooltip.Content>
+										</Tooltip.Root>
+									</Tooltip.Provider>
+								</div>
+							</div>
 						{/if}
 					{/if}
 				</Table.Cell>

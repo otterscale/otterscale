@@ -328,6 +328,7 @@
 	"phase": "Phase",
 	"restarts": "Restarts",
 	"last_condition": "Last Condition",
+	"conditions": "Conditions",
 	"terminal": "Terminal",
 	"aservices": "Services",
 	"cluster_ip": "Cluster IP",
