@@ -72,20 +72,20 @@ type UseCase struct {
 	virtualMachineRestore  VirtualMachineRestoreRepo
 	virtualMachineSnapshot VirtualMachineSnapshotRepo
 
-	machine                    machine.MachineRepo
-	service                    service.ServiceRepo
-	virtualMachineInstance     vmi.VirtualMachineInstanceRepo
+	machine                machine.MachineRepo
+	service                service.ServiceRepo
+	virtualMachineInstance vmi.VirtualMachineInstanceRepo
 }
 
 func NewUseCase(virtualMachine VirtualMachineRepo, virtualMachineClone VirtualMachineCloneRepo, virtualMachineRestore VirtualMachineRestoreRepo, virtualMachineSnapshot VirtualMachineSnapshotRepo, machine machine.MachineRepo, service service.ServiceRepo, virtualMachineInstance vmi.VirtualMachineInstanceRepo) *UseCase {
 	return &UseCase{
-		virtualMachine:             virtualMachine,
-		virtualMachineClone:        virtualMachineClone,
-		virtualMachineRestore:      virtualMachineRestore,
-		virtualMachineSnapshot:     virtualMachineSnapshot,
-		service:                    service,
-		machine:                    machine,
-		virtualMachineInstance:     virtualMachineInstance,
+		virtualMachine:         virtualMachine,
+		virtualMachineClone:    virtualMachineClone,
+		virtualMachineRestore:  virtualMachineRestore,
+		virtualMachineSnapshot: virtualMachineSnapshot,
+		service:                service,
+		machine:                machine,
+		virtualMachineInstance: virtualMachineInstance,
 	}
 }
 
@@ -254,7 +254,7 @@ func (uc *UseCase) GetVirtualMachine(ctx context.Context, scope, namespace, name
 }
 
 func (uc *UseCase) CreateVirtualMachine(ctx context.Context, scope, namespace, name, instanceType, bootDataVolume, startupScript string) (*VirtualMachineData, error) {
-	virtualMachine, err := uc.virtualMachine.Create(ctx, scope, namespace, uc.buildVirtualMachine(namespace, name, bootDataVolume, startupScript))
+	virtualMachine, err := uc.virtualMachine.Create(ctx, scope, namespace, uc.buildVirtualMachine(namespace, name, instanceType, bootDataVolume, startupScript))
 	if err != nil {
 		return nil, err
 	}
@@ -541,7 +541,7 @@ func (uc *UseCase) combineVirtualMachine(namespace, name string, virtualMachine 
 	}
 }
 
-func (uc *UseCase) buildVirtualMachine(namespace, name string, bootDataVolume, startupScript string) *VirtualMachine {
+func (uc *UseCase) buildVirtualMachine(namespace, name, instanceType, bootDataVolume, startupScript string) *VirtualMachine {
 	var (
 		runStrategy   = kvcorev1.RunStrategyHalted
 		enabled       = true
@@ -560,7 +560,7 @@ func (uc *UseCase) buildVirtualMachine(namespace, name string, bootDataVolume, s
 			},
 		},
 		Spec: kvcorev1.VirtualMachineSpec{
-			RunStrategy:  &runStrategy,
+			RunStrategy: &runStrategy,
 			Instancetype: &kvcorev1.InstancetypeMatcher{
 				Name: instanceType,
 			},
@@ -636,3 +636,4 @@ func (uc *UseCase) buildVirtualMachine(namespace, name string, bootDataVolume, s
 
 	return virtualMachine
 }
+

@@ -891,9 +891,8 @@ func (b0 DataVolume_builder) Build() *DataVolume {
 type InstanceType struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Name        *string                `protobuf:"bytes,1,opt,name=name"`
-	xxx_hidden_Namespace   *string                `protobuf:"bytes,2,opt,name=namespace"`
-	xxx_hidden_CpuCores    uint32                 `protobuf:"varint,3,opt,name=cpu_cores,json=cpuCores"`
-	xxx_hidden_MemoryBytes int64                  `protobuf:"varint,4,opt,name=memory_bytes,json=memoryBytes"`
+	xxx_hidden_CpuCores    uint32                 `protobuf:"varint,2,opt,name=cpu_cores,json=cpuCores"`
+	xxx_hidden_MemoryBytes int64                  `protobuf:"varint,3,opt,name=memory_bytes,json=memoryBytes"`
 	xxx_hidden_ClusterWide bool                   `protobuf:"varint,11,opt,name=cluster_wide,json=clusterWide"`
 	xxx_hidden_CreatedAt   *timestamppb.Timestamp `protobuf:"bytes,21,opt,name=created_at,json=createdAt"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
@@ -937,16 +936,6 @@ func (x *InstanceType) GetName() string {
 	return ""
 }
 
-func (x *InstanceType) GetNamespace() string {
-	if x != nil {
-		if x.xxx_hidden_Namespace != nil {
-			return *x.xxx_hidden_Namespace
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *InstanceType) GetCpuCores() uint32 {
 	if x != nil {
 		return x.xxx_hidden_CpuCores
@@ -977,27 +966,22 @@ func (x *InstanceType) GetCreatedAt() *timestamppb.Timestamp {
 
 func (x *InstanceType) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 6)
-}
-
-func (x *InstanceType) SetNamespace(v string) {
-	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
 }
 
 func (x *InstanceType) SetCpuCores(v uint32) {
 	x.xxx_hidden_CpuCores = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
 }
 
 func (x *InstanceType) SetMemoryBytes(v int64) {
 	x.xxx_hidden_MemoryBytes = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
 }
 
 func (x *InstanceType) SetClusterWide(v bool) {
 	x.xxx_hidden_ClusterWide = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
 }
 
 func (x *InstanceType) SetCreatedAt(v *timestamppb.Timestamp) {
@@ -1011,32 +995,25 @@ func (x *InstanceType) HasName() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *InstanceType) HasNamespace() bool {
+func (x *InstanceType) HasCpuCores() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *InstanceType) HasCpuCores() bool {
+func (x *InstanceType) HasMemoryBytes() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *InstanceType) HasMemoryBytes() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
-}
-
 func (x *InstanceType) HasClusterWide() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
 func (x *InstanceType) HasCreatedAt() bool {
@@ -1051,23 +1028,18 @@ func (x *InstanceType) ClearName() {
 	x.xxx_hidden_Name = nil
 }
 
-func (x *InstanceType) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Namespace = nil
-}
-
 func (x *InstanceType) ClearCpuCores() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_CpuCores = 0
 }
 
 func (x *InstanceType) ClearMemoryBytes() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_MemoryBytes = 0
 }
 
 func (x *InstanceType) ClearClusterWide() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_ClusterWide = false
 }
 
@@ -1079,7 +1051,6 @@ type InstanceType_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Name        *string
-	Namespace   *string
 	CpuCores    *uint32
 	MemoryBytes *int64
 	ClusterWide *bool
@@ -1091,23 +1062,19 @@ func (b0 InstanceType_builder) Build() *InstanceType {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
 		x.xxx_hidden_Name = b.Name
 	}
-	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 6)
-		x.xxx_hidden_Namespace = b.Namespace
-	}
 	if b.CpuCores != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
 		x.xxx_hidden_CpuCores = *b.CpuCores
 	}
 	if b.MemoryBytes != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
 		x.xxx_hidden_MemoryBytes = *b.MemoryBytes
 	}
 	if b.ClusterWide != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
 		x.xxx_hidden_ClusterWide = *b.ClusterWide
 	}
 	x.xxx_hidden_CreatedAt = b.CreatedAt
@@ -5211,7 +5178,6 @@ func (b0 ExtendDataVolumeRequest_builder) Build() *ExtendDataVolumeRequest {
 type ListInstanceTypesRequest struct {
 	state                         protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope              *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Namespace          *string                `protobuf:"bytes,3,opt,name=namespace"`
 	xxx_hidden_IncludeClusterWide bool                   `protobuf:"varint,11,opt,name=include_cluster_wide,json=includeClusterWide"`
 	XXX_raceDetectHookData        protoimpl.RaceDetectHookData
 	XXX_presence                  [1]uint32
@@ -5254,16 +5220,6 @@ func (x *ListInstanceTypesRequest) GetScope() string {
 	return ""
 }
 
-func (x *ListInstanceTypesRequest) GetNamespace() string {
-	if x != nil {
-		if x.xxx_hidden_Namespace != nil {
-			return *x.xxx_hidden_Namespace
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *ListInstanceTypesRequest) GetIncludeClusterWide() bool {
 	if x != nil {
 		return x.xxx_hidden_IncludeClusterWide
@@ -5273,17 +5229,12 @@ func (x *ListInstanceTypesRequest) GetIncludeClusterWide() bool {
 
 func (x *ListInstanceTypesRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
-}
-
-func (x *ListInstanceTypesRequest) SetNamespace(v string) {
-	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
 }
 
 func (x *ListInstanceTypesRequest) SetIncludeClusterWide(v bool) {
 	x.xxx_hidden_IncludeClusterWide = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
 }
 
 func (x *ListInstanceTypesRequest) HasScope() bool {
@@ -5293,18 +5244,11 @@ func (x *ListInstanceTypesRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *ListInstanceTypesRequest) HasNamespace() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
-}
-
 func (x *ListInstanceTypesRequest) HasIncludeClusterWide() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
 func (x *ListInstanceTypesRequest) ClearScope() {
@@ -5312,13 +5256,8 @@ func (x *ListInstanceTypesRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *ListInstanceTypesRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Namespace = nil
-}
-
 func (x *ListInstanceTypesRequest) ClearIncludeClusterWide() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_IncludeClusterWide = false
 }
 
@@ -5326,7 +5265,6 @@ type ListInstanceTypesRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Scope              *string
-	Namespace          *string
 	IncludeClusterWide *bool
 }
 
@@ -5335,15 +5273,11 @@ func (b0 ListInstanceTypesRequest_builder) Build() *ListInstanceTypesRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
-		x.xxx_hidden_Namespace = b.Namespace
-	}
 	if b.IncludeClusterWide != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
 		x.xxx_hidden_IncludeClusterWide = *b.IncludeClusterWide
 	}
 	return m0
@@ -5411,8 +5345,7 @@ func (b0 ListInstanceTypesResponse_builder) Build() *ListInstanceTypesResponse {
 type GetInstanceTypeRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Namespace   *string                `protobuf:"bytes,3,opt,name=namespace"`
-	xxx_hidden_Name        *string                `protobuf:"bytes,4,opt,name=name"`
+	xxx_hidden_Name        *string                `protobuf:"bytes,3,opt,name=name"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
 	unknownFields          protoimpl.UnknownFields
@@ -5454,16 +5387,6 @@ func (x *GetInstanceTypeRequest) GetScope() string {
 	return ""
 }
 
-func (x *GetInstanceTypeRequest) GetNamespace() string {
-	if x != nil {
-		if x.xxx_hidden_Namespace != nil {
-			return *x.xxx_hidden_Namespace
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *GetInstanceTypeRequest) GetName() string {
 	if x != nil {
 		if x.xxx_hidden_Name != nil {
@@ -5476,17 +5399,12 @@ func (x *GetInstanceTypeRequest) GetName() string {
 
 func (x *GetInstanceTypeRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
-}
-
-func (x *GetInstanceTypeRequest) SetNamespace(v string) {
-	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
 }
 
 func (x *GetInstanceTypeRequest) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
 }
 
 func (x *GetInstanceTypeRequest) HasScope() bool {
@@ -5496,18 +5414,11 @@ func (x *GetInstanceTypeRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *GetInstanceTypeRequest) HasNamespace() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
-}
-
 func (x *GetInstanceTypeRequest) HasName() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
 func (x *GetInstanceTypeRequest) ClearScope() {
@@ -5515,22 +5426,16 @@ func (x *GetInstanceTypeRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *GetInstanceTypeRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Namespace = nil
-}
-
 func (x *GetInstanceTypeRequest) ClearName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_Name = nil
 }
 
 type GetInstanceTypeRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Scope     *string
-	Namespace *string
-	Name      *string
+	Scope *string
+	Name  *string
 }
 
 func (b0 GetInstanceTypeRequest_builder) Build() *GetInstanceTypeRequest {
@@ -5538,15 +5443,11 @@ func (b0 GetInstanceTypeRequest_builder) Build() *GetInstanceTypeRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
-		x.xxx_hidden_Namespace = b.Namespace
-	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
 		x.xxx_hidden_Name = b.Name
 	}
 	return m0
@@ -5556,9 +5457,8 @@ type CreateInstanceTypeRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
 	xxx_hidden_Name        *string                `protobuf:"bytes,11,opt,name=name"`
-	xxx_hidden_Namespace   *string                `protobuf:"bytes,12,opt,name=namespace"`
-	xxx_hidden_CpuCores    uint32                 `protobuf:"varint,13,opt,name=cpu_cores,json=cpuCores"`
-	xxx_hidden_MemoryBytes int64                  `protobuf:"varint,14,opt,name=memory_bytes,json=memoryBytes"`
+	xxx_hidden_CpuCores    uint32                 `protobuf:"varint,12,opt,name=cpu_cores,json=cpuCores"`
+	xxx_hidden_MemoryBytes int64                  `protobuf:"varint,13,opt,name=memory_bytes,json=memoryBytes"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
 	unknownFields          protoimpl.UnknownFields
@@ -5610,16 +5510,6 @@ func (x *CreateInstanceTypeRequest) GetName() string {
 	return ""
 }
 
-func (x *CreateInstanceTypeRequest) GetNamespace() string {
-	if x != nil {
-		if x.xxx_hidden_Namespace != nil {
-			return *x.xxx_hidden_Namespace
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *CreateInstanceTypeRequest) GetCpuCores() uint32 {
 	if x != nil {
 		return x.xxx_hidden_CpuCores
@@ -5636,27 +5526,22 @@ func (x *CreateInstanceTypeRequest) GetMemoryBytes() int64 {
 
 func (x *CreateInstanceTypeRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
 }
 
 func (x *CreateInstanceTypeRequest) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
-}
-
-func (x *CreateInstanceTypeRequest) SetNamespace(v string) {
-	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
 }
 
 func (x *CreateInstanceTypeRequest) SetCpuCores(v uint32) {
 	x.xxx_hidden_CpuCores = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
 }
 
 func (x *CreateInstanceTypeRequest) SetMemoryBytes(v int64) {
 	x.xxx_hidden_MemoryBytes = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
 }
 
 func (x *CreateInstanceTypeRequest) HasScope() bool {
@@ -5673,25 +5558,18 @@ func (x *CreateInstanceTypeRequest) HasName() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *CreateInstanceTypeRequest) HasNamespace() bool {
+func (x *CreateInstanceTypeRequest) HasCpuCores() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *CreateInstanceTypeRequest) HasCpuCores() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
-}
-
 func (x *CreateInstanceTypeRequest) HasMemoryBytes() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
 func (x *CreateInstanceTypeRequest) ClearScope() {
@@ -5704,18 +5582,13 @@ func (x *CreateInstanceTypeRequest) ClearName() {
 	x.xxx_hidden_Name = nil
 }
 
-func (x *CreateInstanceTypeRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
-	x.xxx_hidden_Namespace = nil
-}
-
 func (x *CreateInstanceTypeRequest) ClearCpuCores() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_CpuCores = 0
 }
 
 func (x *CreateInstanceTypeRequest) ClearMemoryBytes() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_MemoryBytes = 0
 }
 
@@ -5724,7 +5597,6 @@ type CreateInstanceTypeRequest_builder struct {
 
 	Scope       *string
 	Name        *string
-	Namespace   *string
 	CpuCores    *uint32
 	MemoryBytes *int64
 }
@@ -5734,23 +5606,19 @@ func (b0 CreateInstanceTypeRequest_builder) Build() *CreateInstanceTypeRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
 		x.xxx_hidden_Scope = b.Scope
 	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
 		x.xxx_hidden_Name = b.Name
 	}
-	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
-		x.xxx_hidden_Namespace = b.Namespace
-	}
 	if b.CpuCores != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
 		x.xxx_hidden_CpuCores = *b.CpuCores
 	}
 	if b.MemoryBytes != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
 		x.xxx_hidden_MemoryBytes = *b.MemoryBytes
 	}
 	return m0
@@ -5759,8 +5627,7 @@ func (b0 CreateInstanceTypeRequest_builder) Build() *CreateInstanceTypeRequest {
 type DeleteInstanceTypeRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
-	xxx_hidden_Namespace   *string                `protobuf:"bytes,3,opt,name=namespace"`
-	xxx_hidden_Name        *string                `protobuf:"bytes,4,opt,name=name"`
+	xxx_hidden_Name        *string                `protobuf:"bytes,3,opt,name=name"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
 	unknownFields          protoimpl.UnknownFields
@@ -5802,16 +5669,6 @@ func (x *DeleteInstanceTypeRequest) GetScope() string {
 	return ""
 }
 
-func (x *DeleteInstanceTypeRequest) GetNamespace() string {
-	if x != nil {
-		if x.xxx_hidden_Namespace != nil {
-			return *x.xxx_hidden_Namespace
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *DeleteInstanceTypeRequest) GetName() string {
 	if x != nil {
 		if x.xxx_hidden_Name != nil {
@@ -5824,17 +5681,12 @@ func (x *DeleteInstanceTypeRequest) GetName() string {
 
 func (x *DeleteInstanceTypeRequest) SetScope(v string) {
 	x.xxx_hidden_Scope = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
-}
-
-func (x *DeleteInstanceTypeRequest) SetNamespace(v string) {
-	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
 }
 
 func (x *DeleteInstanceTypeRequest) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
 }
 
 func (x *DeleteInstanceTypeRequest) HasScope() bool {
@@ -5844,18 +5696,11 @@ func (x *DeleteInstanceTypeRequest) HasScope() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *DeleteInstanceTypeRequest) HasNamespace() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
-}
-
 func (x *DeleteInstanceTypeRequest) HasName() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
 func (x *DeleteInstanceTypeRequest) ClearScope() {
@@ -5863,22 +5708,16 @@ func (x *DeleteInstanceTypeRequest) ClearScope() {
 	x.xxx_hidden_Scope = nil
 }
 
-func (x *DeleteInstanceTypeRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Namespace = nil
-}
-
 func (x *DeleteInstanceTypeRequest) ClearName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_Name = nil
 }
 
 type DeleteInstanceTypeRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Scope     *string
-	Namespace *string
-	Name      *string
+	Scope *string
+	Name  *string
 }
 
 func (b0 DeleteInstanceTypeRequest_builder) Build() *DeleteInstanceTypeRequest {
@@ -5886,15 +5725,11 @@ func (b0 DeleteInstanceTypeRequest_builder) Build() *DeleteInstanceTypeRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Scope != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
 		x.xxx_hidden_Scope = b.Scope
 	}
-	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
-		x.xxx_hidden_Namespace = b.Namespace
-	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
 		x.xxx_hidden_Name = b.Name
 	}
 	return m0
@@ -7989,12 +7824,11 @@ const file_api_instance_v1_instance_proto_rawDesc = "" +
 	"\x06reason\x18\x03 \x01(\tR\x06reason\x12\x18\n" +
 	"\amessage\x18\x04 \x01(\tR\amessage\x12>\n" +
 	"\fheartbeat_at\x18\xc9\x01 \x01(\v2\x1a.google.protobuf.TimestampR\vheartbeatAt\x12D\n" +
-	"\x0ftransitioned_at\x18\xca\x01 \x01(\v2\x1a.google.protobuf.TimestampR\x0etransitionedAt\"\xde\x01\n" +
+	"\x0ftransitioned_at\x18\xca\x01 \x01(\v2\x1a.google.protobuf.TimestampR\x0etransitionedAt\"\xc0\x01\n" +
 	"\fInstanceType\x12\x12\n" +
-	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1c\n" +
-	"\tnamespace\x18\x02 \x01(\tR\tnamespace\x12\x1b\n" +
-	"\tcpu_cores\x18\x03 \x01(\rR\bcpuCores\x12!\n" +
-	"\fmemory_bytes\x18\x04 \x01(\x03R\vmemoryBytes\x12!\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1b\n" +
+	"\tcpu_cores\x18\x02 \x01(\rR\bcpuCores\x12!\n" +
+	"\fmemory_bytes\x18\x03 \x01(\x03R\vmemoryBytes\x12!\n" +
 	"\fcluster_wide\x18\v \x01(\bR\vclusterWide\x129\n" +
 	"\n" +
 	"created_at\x18\x15 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\"V\n" +
@@ -8118,27 +7952,23 @@ const file_api_instance_v1_instance_proto_rawDesc = "" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
 	"\x04name\x18\x04 \x01(\tR\x04name\x12\x1d\n" +
 	"\n" +
-	"size_bytes\x18\v \x01(\x03R\tsizeBytesJ\x04\b\x02\x10\x03\"\x86\x01\n" +
+	"size_bytes\x18\v \x01(\x03R\tsizeBytesJ\x04\b\x02\x10\x03\"h\n" +
 	"\x18ListInstanceTypesRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
-	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x120\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x120\n" +
 	"\x14include_cluster_wide\x18\v \x01(\bR\x12includeClusterWideJ\x04\b\x02\x10\x03\"h\n" +
 	"\x19ListInstanceTypesResponse\x12K\n" +
-	"\x0einstance_types\x18\x01 \x03(\v2$.otterscale.instance.v1.InstanceTypeR\rinstanceTypes\"f\n" +
+	"\x0einstance_types\x18\x01 \x03(\v2$.otterscale.instance.v1.InstanceTypeR\rinstanceTypes\"H\n" +
 	"\x16GetInstanceTypeRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
-	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
-	"\x04name\x18\x04 \x01(\tR\x04nameJ\x04\b\x02\x10\x03\"\xa9\x01\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x12\n" +
+	"\x04name\x18\x03 \x01(\tR\x04nameJ\x04\b\x02\x10\x03\"\x8b\x01\n" +
 	"\x19CreateInstanceTypeRequest\x12\x14\n" +
 	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x12\n" +
-	"\x04name\x18\v \x01(\tR\x04name\x12\x1c\n" +
-	"\tnamespace\x18\f \x01(\tR\tnamespace\x12\x1b\n" +
-	"\tcpu_cores\x18\r \x01(\rR\bcpuCores\x12!\n" +
-	"\fmemory_bytes\x18\x0e \x01(\x03R\vmemoryBytesJ\x04\b\x02\x10\x03\"i\n" +
+	"\x04name\x18\v \x01(\tR\x04name\x12\x1b\n" +
+	"\tcpu_cores\x18\f \x01(\rR\bcpuCores\x12!\n" +
+	"\fmemory_bytes\x18\r \x01(\x03R\vmemoryBytesJ\x04\b\x02\x10\x03\"K\n" +
 	"\x19DeleteInstanceTypeRequest\x12\x14\n" +
-	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
-	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
-	"\x04name\x18\x04 \x01(\tR\x04nameJ\x04\b\x02\x10\x03\"\xef\x01\n" +
+	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x12\n" +
+	"\x04name\x18\x03 \x01(\tR\x04nameJ\x04\b\x02\x10\x03\"\xef\x01\n" +
 	"\"CreateVirtualMachineServiceRequest\x12\x14\n" +
 	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
