@@ -174,7 +174,7 @@
 						required
 						bind:value={newPort.port}
 						min="1"
-						max="32767"
+						max="65535"
 						placeholder="8080"
 						oninput={(e) => {
 							const target = e.target as HTMLInputElement;
@@ -182,8 +182,8 @@
 							if (!isNaN(value)) {
 								if (value < 1) {
 									newPort.port = 1;
-								} else if (value > 32767) {
-									newPort.port = 32767;
+								} else if (value > 65535) {
+									newPort.port = 65535;
 								}
 							}
 						}}
@@ -195,7 +195,7 @@
 						type="number"
 						bind:value={newPort.nodePort}
 						min="0"
-						max="32767"
+						max="65535"
 						placeholder="30080"
 						oninput={(e) => {
 							const target = e.target as HTMLInputElement;
@@ -203,8 +203,8 @@
 							if (!isNaN(value)) {
 								if (value < 0) {
 									newPort.nodePort = 0;
-								} else if (value > 32767) {
-									newPort.nodePort = 32767;
+								} else if (value > 65535) {
+									newPort.nodePort = 65535;
 								}
 							}
 						}}
