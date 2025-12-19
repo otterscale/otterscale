@@ -10,6 +10,6 @@
 <g out:fade|global>
 	<BezierEdge
 		{...restProps}
-		style={cn('stroke-dasharray: none;', selected ? 'stroke-width: 1px' : 'stroke-width: 0.5px')}
+		style={cn('stroke-dasharray: none;', selected ? 'stroke-width: 2.5px' : 'stroke-width: 2px')}
 	/>
 </g>
