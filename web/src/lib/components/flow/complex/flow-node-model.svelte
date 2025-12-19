@@ -25,13 +25,13 @@
 		<div
 			class={cn(
 				'relative flex h-[150px] w-[300px] rounded-lg border bg-card p-2 hover:shadow',
-				selected ? 'bg-primary-foreground ring-1 ring-primary' : 'bg-card ring-0'
+				selected ? 'border-primary bg-primary-foreground ring-1 ring-primary' : 'bg-card ring-0'
 			)}
 		>
 			<div
 				class={cn(
 					'absolute top-1 right-1 translate-x-1/2 -translate-y-1/2 rounded-full border bg-card p-2 shadow hover:cursor-default hover:bg-muted',
-					selected ? 'bg-primary-foreground ring-1 ring-primary' : 'bg-card ring-0'
+					selected ? 'border-primary bg-primary-foreground ring-1 ring-primary' : 'bg-card ring-0'
 				)}
 			>
 				<Icon
@@ -49,8 +49,8 @@
 			</div>
 			<div class="flex items-center justify-center p-4">
 				<div class="flex gap-2">
-					<div class="size-fit rounded-full bg-muted-foreground/50 p-2">
-						<Icon icon="ph:robot" class="size-5" />
+					<div class="size-fit rounded-full border-2 bg-muted/50 p-2">
+						<Icon icon="ph:robot" class="size-6" />
 					</div>
 					<div class="flex flex-col items-start justify-start">
 						<p class="max-w-[200px] truncate text-base text-nowrap whitespace-nowrap">
