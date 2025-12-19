@@ -60,7 +60,6 @@
 			// Request both namespace-specific and cluster-wide instance types
 			const response = await virtualMachineClient.listInstanceTypes({
 				scope: scope,
-				namespace: request.namespace,
 				includeClusterWide: true
 			});
 

@@ -37,7 +37,6 @@
 	function init() {
 		request = {
 			scope: scope,
-			namespace: instanceType.namespace,
 			name: ''
 		} as DeleteInstanceTypeRequest;
 	}

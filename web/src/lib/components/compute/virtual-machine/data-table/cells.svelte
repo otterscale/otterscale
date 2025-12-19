@@ -122,12 +122,6 @@
 										</Table.Cell>
 									</Table.Row>
 								{/if}
-								{#if row.original.instanceType.namespace}
-									<Table.Row>
-										<Table.Head class="text-left">Namespace</Table.Head>
-										<Table.Cell>{row.original.instanceType.namespace}</Table.Cell>
-									</Table.Row>
-								{/if}
 								{#if row.original.instanceType.cpuCores}
 									<Table.Row>
 										<Table.Head class="text-left">CPU Cores</Table.Head>
