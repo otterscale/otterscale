@@ -85,4 +85,3 @@ func (r *virtualMachineInstanceTypeRepo) Delete(ctx context.Context, scope, name
 
 	return clientset.InstancetypeV1beta1().VirtualMachineClusterInstancetypes().Delete(ctx, name, opts)
 }
-
