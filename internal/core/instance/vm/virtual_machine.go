@@ -7,7 +7,6 @@ import (
 	"golang.org/x/sync/errgroup"
 	corev1 "k8s.io/api/core/v1"
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
-	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	kvcorev1 "kubevirt.io/api/core/v1"
 	cdiv1beta1 "kubevirt.io/containerized-data-importer-api/pkg/apis/core/v1beta1"
@@ -267,7 +266,7 @@ func (uc *UseCase) CreateVirtualMachine(ctx context.Context, scope, namespace, n
 		return nil, fmt.Errorf("failed to get source DataVolume %s: %w", bootDataVolume, err)
 	}
 
-	if dvPersistent.Persistent == nil || dvPersistent.Persistent.PersistentVolumeClaim == nil {
+	if dvPersistent.Persistent.PersistentVolumeClaim == nil {
 		return nil, fmt.Errorf("source DataVolume %s has no PVC", bootDataVolume)
 	}
 
@@ -276,19 +275,11 @@ func (uc *UseCase) CreateVirtualMachine(ctx context.Context, scope, namespace, n
 		return nil, fmt.Errorf("source DataVolume %s PVC has no resource requests", bootDataVolume)
 	}
 
-	var volumeMode string
-	if pvc.Spec.VolumeMode != nil {
-		volumeMode = string(*pvc.Spec.VolumeMode)
-	} else {
-		volumeMode = string(corev1.PersistentVolumeFilesystem)
-	}
+	volumeMode := pvc.Spec.VolumeMode
+	accessModes := pvc.Spec.AccessModes
+	storageSize := pvc.Spec.Resources.Requests
 
-	storageSize, ok := pvc.Spec.Resources.Requests[corev1.ResourceStorage]
-	if !ok {
-		return nil, fmt.Errorf("source DataVolume %s PVC has no storage size", bootDataVolume)
-	}
-
-	virtualMachine, err := uc.virtualMachine.Create(ctx, scope, namespace, uc.buildVirtualMachine(namespace, name, instanceType, bootDataVolume, volumeMode, storageSize, startupScript))
+	virtualMachine, err := uc.virtualMachine.Create(ctx, scope, namespace, uc.buildVirtualMachine(namespace, name, instanceType, bootDataVolume, volumeMode, accessModes, storageSize, startupScript))
 	if err != nil {
 		return nil, err
 	}
@@ -575,7 +566,7 @@ func (uc *UseCase) combineVirtualMachine(namespace, name string, virtualMachine 
 	}
 }
 
-func (uc *UseCase) buildVirtualMachine(namespace, name, instanceType, bootDataVolume, volumeMode string, storageSize resource.Quantity, startupScript string) *VirtualMachine {
+func (uc *UseCase) buildVirtualMachine(namespace, name, instanceType, bootDataVolume string, volumeMode *corev1.PersistentVolumeMode, accessModes []corev1.PersistentVolumeAccessMode, storageSize corev1.ResourceList, startupScript string) *VirtualMachine {
 	var (
 		runStrategy    = kvcorev1.RunStrategyHalted
 		enabled        = true
@@ -585,6 +576,15 @@ func (uc *UseCase) buildVirtualMachine(namespace, name, instanceType, bootDataVo
 		nic1           = "nic1"
 		dataVolumeName = name
 	)
+
+	if volumeMode == nil {
+		defaultMode := corev1.PersistentVolumeFilesystem
+		volumeMode = &defaultMode
+	}
+
+	if accessModes == nil {
+		accessModes = []corev1.PersistentVolumeAccessMode{corev1.ReadWriteOnce}
+	}
 
 	virtualMachine := &kvcorev1.VirtualMachine{
 		ObjectMeta: metav1.ObjectMeta{
@@ -612,12 +612,10 @@ func (uc *UseCase) buildVirtualMachine(namespace, name, instanceType, bootDataVo
 							},
 						},
 						PVC: &corev1.PersistentVolumeClaimSpec{
-							AccessModes: []corev1.PersistentVolumeAccessMode{corev1.ReadWriteOnce},
-							VolumeMode:  &[]corev1.PersistentVolumeMode{corev1.PersistentVolumeMode(volumeMode)}[0],
+							AccessModes: accessModes,
+							VolumeMode:  volumeMode,
 							Resources: corev1.VolumeResourceRequirements{
-								Requests: corev1.ResourceList{
-									corev1.ResourceStorage: storageSize,
-								},
+								Requests: storageSize,
 							},
 						},
 					},
