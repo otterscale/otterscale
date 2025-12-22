@@ -1,8 +1,6 @@
 <script lang="ts">
 	import '@xyflow/svelte/dist/style.css';
 
-	import { onMount } from 'svelte';
-
 	import type { Model } from '$lib/api/model/v1/model_pb';
 	import Prompting from '$lib/components/prompting/index.svelte';
 
@@ -16,15 +14,6 @@
 		})
 	);
 	const isReady = $derived(readyPods.length > 0);
-
-	let tags = $state([] as string[]);
-	onMount(async () => {
-		const response = await fetch(`https://huggingface.co/api/models/${model.id}`);
-		const body = await response.json();
-		tags = body.tags;
-	});
 </script>
 
-{#if tags.includes('text-generation')}
-	<Prompting {serviceUri} {model} {scope} disabled={!isReady} />
-{/if}
+<Prompting {serviceUri} {model} {scope} disabled={!isReady} />
