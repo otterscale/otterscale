@@ -67,7 +67,7 @@ func NewUseCase(dataVolume DataVolumeRepo, persistentVolumeClaim persistent.Pers
 	}
 }
 
-func (uc *UseCase) ListDataVolumes(ctx context.Context, scope, namespace string, bootImage bool) ([]DataVolumePersistent, error) {
+func (uc *UseCase) ListDataVolumes(ctx context.Context, scope, namespace string, bootImage *bool) ([]DataVolumePersistent, error) {
 	var (
 		dataVolumes            []DataVolume
 		persistentVolumeClaims []persistent.PersistentVolumeClaim
@@ -77,7 +77,10 @@ func (uc *UseCase) ListDataVolumes(ctx context.Context, scope, namespace string,
 	eg, egctx := errgroup.WithContext(ctx)
 
 	eg.Go(func() error {
-		selector := bootImageLabel + "=" + strconv.FormatBool(bootImage)
+		var selector string
+		if bootImage != nil {
+			selector = bootImageLabel + "=" + strconv.FormatBool(*bootImage)
+		}
 
 		v, err := uc.dataVolume.List(egctx, scope, namespace, selector)
 		if err == nil {

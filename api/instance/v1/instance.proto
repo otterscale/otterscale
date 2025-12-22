@@ -458,11 +458,17 @@ message VNCInstanceResponse {
   string session_id = 1;
 }
 
+enum DataVolumeFilter {
+  ALL = 0;
+  BOOTABLE = 1;
+  NON_BOOTABLE = 2;
+}
+
 message ListDataVolumesRequest {
   string scope = 1;
   reserved 2;
   string namespace = 3;
-  bool boot_image = 4;
+  DataVolumeFilter filter = 4;
 }
 
 message ListDataVolumesResponse {

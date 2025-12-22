@@ -239,7 +239,21 @@ func (s *InstanceService) VNCInstance(_ context.Context, req *pb.VNCInstanceRequ
 }
 
 func (s *InstanceService) ListDataVolumes(ctx context.Context, req *pb.ListDataVolumesRequest) (*pb.ListDataVolumesResponse, error) {
-	its, err := s.dataVolume.ListDataVolumes(ctx, req.GetScope(), req.GetNamespace(), req.GetBootImage())
+	var bootImage *bool
+	switch req.GetFilter() {
+	case pb.DataVolumeFilter_BOOTABLE:
+		val := true
+		bootImage = &val
+	case pb.DataVolumeFilter_NON_BOOTABLE:
+		val := false
+		bootImage = &val
+	case pb.DataVolumeFilter_ALL:
+		bootImage = nil
+	default:
+		bootImage = nil
+	}
+
+	its, err := s.dataVolume.ListDataVolumes(ctx, req.GetScope(), req.GetNamespace(), bootImage)
 	if err != nil {
 		return nil, err
 	}

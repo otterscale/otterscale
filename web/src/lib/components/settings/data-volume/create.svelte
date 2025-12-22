@@ -32,8 +32,8 @@
 			scope: scope,
 			name: '',
 			namespace: 'kubevirt',
-			source: { type: DataVolume_Source_Type.HTTP_URL, data: '' } as DataVolume_Source,
-			bootImage: true,
+			source: { type: DataVolume_Source_Type.BLANK_IMAGE, data: '' } as DataVolume_Source,
+			bootImage: false,
 			sizeBytes: BigInt(10 * 1024 ** 3)
 		} as CreateDataVolumeRequest;
 	}
@@ -85,7 +85,26 @@
 						]}
 					/>
 				</Form.Field>
-				{#if request.source}
+				<Form.Field>
+					<div class="flex items-center justify-between">
+						<Form.Label class="whitespace-nowrap">{m.boot_image()}</Form.Label>
+						<SingleInput.Boolean
+							bind:value={request.bootImage}
+							descriptor={() => ''}
+							onCheckedChange={(checked) => {
+								if (request.source) {
+									request.source.type = checked
+										? DataVolume_Source_Type.HTTP_URL
+										: DataVolume_Source_Type.BLANK_IMAGE;
+									if (!checked) {
+										request.source.data = '';
+									}
+								}
+							}}
+						/>
+					</div>
+				</Form.Field>
+				{#if request.bootImage && request.source}
 					<Form.Label>{m.source()}</Form.Label>
 					<SingleInput.General
 						type="text"

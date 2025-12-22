@@ -24,6 +24,50 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type DataVolumeFilter int32
+
+const (
+	DataVolumeFilter_ALL          DataVolumeFilter = 0
+	DataVolumeFilter_BOOTABLE     DataVolumeFilter = 1
+	DataVolumeFilter_NON_BOOTABLE DataVolumeFilter = 2
+)
+
+// Enum value maps for DataVolumeFilter.
+var (
+	DataVolumeFilter_name = map[int32]string{
+		0: "ALL",
+		1: "BOOTABLE",
+		2: "NON_BOOTABLE",
+	}
+	DataVolumeFilter_value = map[string]int32{
+		"ALL":          0,
+		"BOOTABLE":     1,
+		"NON_BOOTABLE": 2,
+	}
+)
+
+func (x DataVolumeFilter) Enum() *DataVolumeFilter {
+	p := new(DataVolumeFilter)
+	*p = x
+	return p
+}
+
+func (x DataVolumeFilter) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (DataVolumeFilter) Descriptor() protoreflect.EnumDescriptor {
+	return file_api_instance_v1_instance_proto_enumTypes[0].Descriptor()
+}
+
+func (DataVolumeFilter) Type() protoreflect.EnumType {
+	return &file_api_instance_v1_instance_proto_enumTypes[0]
+}
+
+func (x DataVolumeFilter) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
 type VirtualMachine_Disk_Bus int32
 
 const (
@@ -60,11 +104,11 @@ func (x VirtualMachine_Disk_Bus) String() string {
 }
 
 func (VirtualMachine_Disk_Bus) Descriptor() protoreflect.EnumDescriptor {
-	return file_api_instance_v1_instance_proto_enumTypes[0].Descriptor()
+	return file_api_instance_v1_instance_proto_enumTypes[1].Descriptor()
 }
 
 func (VirtualMachine_Disk_Bus) Type() protoreflect.EnumType {
-	return &file_api_instance_v1_instance_proto_enumTypes[0]
+	return &file_api_instance_v1_instance_proto_enumTypes[1]
 }
 
 func (x VirtualMachine_Disk_Bus) Number() protoreflect.EnumNumber {
@@ -104,11 +148,11 @@ func (x VirtualMachine_Disk_Volume_Source_Type) String() string {
 }
 
 func (VirtualMachine_Disk_Volume_Source_Type) Descriptor() protoreflect.EnumDescriptor {
-	return file_api_instance_v1_instance_proto_enumTypes[1].Descriptor()
+	return file_api_instance_v1_instance_proto_enumTypes[2].Descriptor()
 }
 
 func (VirtualMachine_Disk_Volume_Source_Type) Type() protoreflect.EnumType {
-	return &file_api_instance_v1_instance_proto_enumTypes[1]
+	return &file_api_instance_v1_instance_proto_enumTypes[2]
 }
 
 func (x VirtualMachine_Disk_Volume_Source_Type) Number() protoreflect.EnumNumber {
@@ -148,11 +192,11 @@ func (x DataVolume_Source_Type) String() string {
 }
 
 func (DataVolume_Source_Type) Descriptor() protoreflect.EnumDescriptor {
-	return file_api_instance_v1_instance_proto_enumTypes[2].Descriptor()
+	return file_api_instance_v1_instance_proto_enumTypes[3].Descriptor()
 }
 
 func (DataVolume_Source_Type) Type() protoreflect.EnumType {
-	return &file_api_instance_v1_instance_proto_enumTypes[2]
+	return &file_api_instance_v1_instance_proto_enumTypes[3]
 }
 
 func (x DataVolume_Source_Type) Number() protoreflect.EnumNumber {
@@ -4288,7 +4332,7 @@ type ListDataVolumesRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Scope       *string                `protobuf:"bytes,1,opt,name=scope"`
 	xxx_hidden_Namespace   *string                `protobuf:"bytes,3,opt,name=namespace"`
-	xxx_hidden_BootImage   bool                   `protobuf:"varint,4,opt,name=boot_image,json=bootImage"`
+	xxx_hidden_Filter      DataVolumeFilter       `protobuf:"varint,4,opt,name=filter,enum=otterscale.instance.v1.DataVolumeFilter"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
 	unknownFields          protoimpl.UnknownFields
@@ -4340,11 +4384,13 @@ func (x *ListDataVolumesRequest) GetNamespace() string {
 	return ""
 }
 
-func (x *ListDataVolumesRequest) GetBootImage() bool {
+func (x *ListDataVolumesRequest) GetFilter() DataVolumeFilter {
 	if x != nil {
-		return x.xxx_hidden_BootImage
+		if protoimpl.X.Present(&(x.XXX_presence[0]), 2) {
+			return x.xxx_hidden_Filter
+		}
 	}
-	return false
+	return DataVolumeFilter_ALL
 }
 
 func (x *ListDataVolumesRequest) SetScope(v string) {
@@ -4357,8 +4403,8 @@ func (x *ListDataVolumesRequest) SetNamespace(v string) {
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
 }
 
-func (x *ListDataVolumesRequest) SetBootImage(v bool) {
-	x.xxx_hidden_BootImage = v
+func (x *ListDataVolumesRequest) SetFilter(v DataVolumeFilter) {
+	x.xxx_hidden_Filter = v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
 }
 
@@ -4376,7 +4422,7 @@ func (x *ListDataVolumesRequest) HasNamespace() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *ListDataVolumesRequest) HasBootImage() bool {
+func (x *ListDataVolumesRequest) HasFilter() bool {
 	if x == nil {
 		return false
 	}
@@ -4393,9 +4439,9 @@ func (x *ListDataVolumesRequest) ClearNamespace() {
 	x.xxx_hidden_Namespace = nil
 }
 
-func (x *ListDataVolumesRequest) ClearBootImage() {
+func (x *ListDataVolumesRequest) ClearFilter() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
-	x.xxx_hidden_BootImage = false
+	x.xxx_hidden_Filter = DataVolumeFilter_ALL
 }
 
 type ListDataVolumesRequest_builder struct {
@@ -4403,7 +4449,7 @@ type ListDataVolumesRequest_builder struct {
 
 	Scope     *string
 	Namespace *string
-	BootImage *bool
+	Filter    *DataVolumeFilter
 }
 
 func (b0 ListDataVolumesRequest_builder) Build() *ListDataVolumesRequest {
@@ -4418,9 +4464,9 @@ func (b0 ListDataVolumesRequest_builder) Build() *ListDataVolumesRequest {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
-	if b.BootImage != nil {
+	if b.Filter != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
-		x.xxx_hidden_BootImage = *b.BootImage
+		x.xxx_hidden_Filter = *b.Filter
 	}
 	return m0
 }
@@ -7922,12 +7968,11 @@ const file_api_instance_v1_instance_proto_rawDesc = "" +
 	"\x04name\x18\x04 \x01(\tR\x04nameJ\x04\b\x02\x10\x03\"4\n" +
 	"\x13VNCInstanceResponse\x12\x1d\n" +
 	"\n" +
-	"session_id\x18\x01 \x01(\tR\tsessionId\"q\n" +
+	"session_id\x18\x01 \x01(\tR\tsessionId\"\x94\x01\n" +
 	"\x16ListDataVolumesRequest\x12\x14\n" +
 	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
-	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x1d\n" +
-	"\n" +
-	"boot_image\x18\x04 \x01(\bR\tbootImageJ\x04\b\x02\x10\x03\"`\n" +
+	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12@\n" +
+	"\x06filter\x18\x04 \x01(\x0e2(.otterscale.instance.v1.DataVolumeFilterR\x06filterJ\x04\b\x02\x10\x03\"`\n" +
 	"\x17ListDataVolumesResponse\x12E\n" +
 	"\fdata_volumes\x18\x01 \x03(\v2\".otterscale.instance.v1.DataVolumeR\vdataVolumes\"d\n" +
 	"\x14GetDataVolumeRequest\x12\x14\n" +
@@ -7983,7 +8028,11 @@ const file_api_instance_v1_instance_proto_rawDesc = "" +
 	"\"DeleteVirtualMachineServiceRequest\x12\x14\n" +
 	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x1c\n" +
 	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x12\n" +
-	"\x04name\x18\x04 \x01(\tR\x04nameJ\x04\b\x02\x10\x032\x8a#\n" +
+	"\x04name\x18\x04 \x01(\tR\x04nameJ\x04\b\x02\x10\x03*;\n" +
+	"\x10DataVolumeFilter\x12\a\n" +
+	"\x03ALL\x10\x00\x12\f\n" +
+	"\bBOOTABLE\x10\x01\x12\x10\n" +
+	"\fNON_BOOTABLE\x10\x022\x8a#\n" +
 	"\x0fInstanceService\x12\x9e\x01\n" +
 	"\x13ListVirtualMachines\x122.otterscale.instance.v1.ListVirtualMachinesRequest\x1a3.otterscale.instance.v1.ListVirtualMachinesResponse\"\x1e\x8a\xdf\xd5\x1d\x19\n" +
 	"\x17virtual-machine-enabled\x12\x8d\x01\n" +
@@ -8048,163 +8097,165 @@ const file_api_instance_v1_instance_proto_rawDesc = "" +
 	"\x1bDeleteVirtualMachineService\x12:.otterscale.instance.v1.DeleteVirtualMachineServiceRequest\x1a\x16.google.protobuf.Empty\"\x1e\x8a\xdf\xd5\x1d\x19\n" +
 	"\x17virtual-machine-enabledB5Z3github.com/otterscale/otterscale/api/instance/v1;pbb\beditionsp\xe8\a"
 
-var file_api_instance_v1_instance_proto_enumTypes = make([]protoimpl.EnumInfo, 3)
+var file_api_instance_v1_instance_proto_enumTypes = make([]protoimpl.EnumInfo, 4)
 var file_api_instance_v1_instance_proto_msgTypes = make([]protoimpl.MessageInfo, 46)
 var file_api_instance_v1_instance_proto_goTypes = []any{
-	(VirtualMachine_Disk_Bus)(0),                 // 0: otterscale.instance.v1.VirtualMachine.Disk.Bus
-	(VirtualMachine_Disk_Volume_Source_Type)(0),  // 1: otterscale.instance.v1.VirtualMachine.Disk.Volume.Source.Type
-	(DataVolume_Source_Type)(0),                  // 2: otterscale.instance.v1.DataVolume.Source.Type
-	(*VirtualMachine)(nil),                       // 3: otterscale.instance.v1.VirtualMachine
-	(*DataVolume)(nil),                           // 4: otterscale.instance.v1.DataVolume
-	(*InstanceType)(nil),                         // 5: otterscale.instance.v1.InstanceType
-	(*ListVirtualMachinesRequest)(nil),           // 6: otterscale.instance.v1.ListVirtualMachinesRequest
-	(*ListVirtualMachinesResponse)(nil),          // 7: otterscale.instance.v1.ListVirtualMachinesResponse
-	(*GetVirtualMachineRequest)(nil),             // 8: otterscale.instance.v1.GetVirtualMachineRequest
-	(*CreateVirtualMachineRequest)(nil),          // 9: otterscale.instance.v1.CreateVirtualMachineRequest
-	(*DeleteVirtualMachineRequest)(nil),          // 10: otterscale.instance.v1.DeleteVirtualMachineRequest
-	(*AttachVirtualMachineDiskRequest)(nil),      // 11: otterscale.instance.v1.AttachVirtualMachineDiskRequest
-	(*DetachVirtualMachineDiskRequest)(nil),      // 12: otterscale.instance.v1.DetachVirtualMachineDiskRequest
-	(*CreateVirtualMachineCloneRequest)(nil),     // 13: otterscale.instance.v1.CreateVirtualMachineCloneRequest
-	(*DeleteVirtualMachineCloneRequest)(nil),     // 14: otterscale.instance.v1.DeleteVirtualMachineCloneRequest
-	(*CreateVirtualMachineSnapshotRequest)(nil),  // 15: otterscale.instance.v1.CreateVirtualMachineSnapshotRequest
-	(*DeleteVirtualMachineSnapshotRequest)(nil),  // 16: otterscale.instance.v1.DeleteVirtualMachineSnapshotRequest
-	(*CreateVirtualMachineRestoreRequest)(nil),   // 17: otterscale.instance.v1.CreateVirtualMachineRestoreRequest
-	(*DeleteVirtualMachineRestoreRequest)(nil),   // 18: otterscale.instance.v1.DeleteVirtualMachineRestoreRequest
-	(*StartVirtualMachineRequest)(nil),           // 19: otterscale.instance.v1.StartVirtualMachineRequest
-	(*StopVirtualMachineRequest)(nil),            // 20: otterscale.instance.v1.StopVirtualMachineRequest
-	(*RestartVirtualMachineRequest)(nil),         // 21: otterscale.instance.v1.RestartVirtualMachineRequest
-	(*PauseInstanceRequest)(nil),                 // 22: otterscale.instance.v1.PauseInstanceRequest
-	(*ResumeInstanceRequest)(nil),                // 23: otterscale.instance.v1.ResumeInstanceRequest
-	(*MigrateInstanceRequest)(nil),               // 24: otterscale.instance.v1.MigrateInstanceRequest
-	(*VNCInstanceRequest)(nil),                   // 25: otterscale.instance.v1.VNCInstanceRequest
-	(*VNCInstanceResponse)(nil),                  // 26: otterscale.instance.v1.VNCInstanceResponse
-	(*ListDataVolumesRequest)(nil),               // 27: otterscale.instance.v1.ListDataVolumesRequest
-	(*ListDataVolumesResponse)(nil),              // 28: otterscale.instance.v1.ListDataVolumesResponse
-	(*GetDataVolumeRequest)(nil),                 // 29: otterscale.instance.v1.GetDataVolumeRequest
-	(*CreateDataVolumeRequest)(nil),              // 30: otterscale.instance.v1.CreateDataVolumeRequest
-	(*DeleteDataVolumeRequest)(nil),              // 31: otterscale.instance.v1.DeleteDataVolumeRequest
-	(*ExtendDataVolumeRequest)(nil),              // 32: otterscale.instance.v1.ExtendDataVolumeRequest
-	(*ListInstanceTypesRequest)(nil),             // 33: otterscale.instance.v1.ListInstanceTypesRequest
-	(*ListInstanceTypesResponse)(nil),            // 34: otterscale.instance.v1.ListInstanceTypesResponse
-	(*GetInstanceTypeRequest)(nil),               // 35: otterscale.instance.v1.GetInstanceTypeRequest
-	(*CreateInstanceTypeRequest)(nil),            // 36: otterscale.instance.v1.CreateInstanceTypeRequest
-	(*DeleteInstanceTypeRequest)(nil),            // 37: otterscale.instance.v1.DeleteInstanceTypeRequest
-	(*CreateVirtualMachineServiceRequest)(nil),   // 38: otterscale.instance.v1.CreateVirtualMachineServiceRequest
-	(*UpdateVirtualMachineServiceRequest)(nil),   // 39: otterscale.instance.v1.UpdateVirtualMachineServiceRequest
-	(*DeleteVirtualMachineServiceRequest)(nil),   // 40: otterscale.instance.v1.DeleteVirtualMachineServiceRequest
-	(*VirtualMachine_Clone)(nil),                 // 41: otterscale.instance.v1.VirtualMachine.Clone
-	(*VirtualMachine_Snapshot)(nil),              // 42: otterscale.instance.v1.VirtualMachine.Snapshot
-	(*VirtualMachine_Restore)(nil),               // 43: otterscale.instance.v1.VirtualMachine.Restore
-	(*VirtualMachine_Disk)(nil),                  // 44: otterscale.instance.v1.VirtualMachine.Disk
-	(*VirtualMachine_Disk_Volume)(nil),           // 45: otterscale.instance.v1.VirtualMachine.Disk.Volume
-	(*VirtualMachine_Disk_Volume_Source)(nil),    // 46: otterscale.instance.v1.VirtualMachine.Disk.Volume.Source
-	(*DataVolume_Source)(nil),                    // 47: otterscale.instance.v1.DataVolume.Source
-	(*DataVolume_Condition)(nil),                 // 48: otterscale.instance.v1.DataVolume.Condition
-	(*timestamppb.Timestamp)(nil),                // 49: google.protobuf.Timestamp
-	(*v1.Application_Service)(nil),               // 50: otterscale.application.v1.Application.Service
-	(*v1.Application_PersistentVolumeClaim)(nil), // 51: otterscale.application.v1.Application.PersistentVolumeClaim
-	(*v1.Application_Service_Port)(nil),          // 52: otterscale.application.v1.Application.Service.Port
-	(*v1.Application_Condition)(nil),             // 53: otterscale.application.v1.Application.Condition
-	(*emptypb.Empty)(nil),                        // 54: google.protobuf.Empty
+	(DataVolumeFilter)(0),                        // 0: otterscale.instance.v1.DataVolumeFilter
+	(VirtualMachine_Disk_Bus)(0),                 // 1: otterscale.instance.v1.VirtualMachine.Disk.Bus
+	(VirtualMachine_Disk_Volume_Source_Type)(0),  // 2: otterscale.instance.v1.VirtualMachine.Disk.Volume.Source.Type
+	(DataVolume_Source_Type)(0),                  // 3: otterscale.instance.v1.DataVolume.Source.Type
+	(*VirtualMachine)(nil),                       // 4: otterscale.instance.v1.VirtualMachine
+	(*DataVolume)(nil),                           // 5: otterscale.instance.v1.DataVolume
+	(*InstanceType)(nil),                         // 6: otterscale.instance.v1.InstanceType
+	(*ListVirtualMachinesRequest)(nil),           // 7: otterscale.instance.v1.ListVirtualMachinesRequest
+	(*ListVirtualMachinesResponse)(nil),          // 8: otterscale.instance.v1.ListVirtualMachinesResponse
+	(*GetVirtualMachineRequest)(nil),             // 9: otterscale.instance.v1.GetVirtualMachineRequest
+	(*CreateVirtualMachineRequest)(nil),          // 10: otterscale.instance.v1.CreateVirtualMachineRequest
+	(*DeleteVirtualMachineRequest)(nil),          // 11: otterscale.instance.v1.DeleteVirtualMachineRequest
+	(*AttachVirtualMachineDiskRequest)(nil),      // 12: otterscale.instance.v1.AttachVirtualMachineDiskRequest
+	(*DetachVirtualMachineDiskRequest)(nil),      // 13: otterscale.instance.v1.DetachVirtualMachineDiskRequest
+	(*CreateVirtualMachineCloneRequest)(nil),     // 14: otterscale.instance.v1.CreateVirtualMachineCloneRequest
+	(*DeleteVirtualMachineCloneRequest)(nil),     // 15: otterscale.instance.v1.DeleteVirtualMachineCloneRequest
+	(*CreateVirtualMachineSnapshotRequest)(nil),  // 16: otterscale.instance.v1.CreateVirtualMachineSnapshotRequest
+	(*DeleteVirtualMachineSnapshotRequest)(nil),  // 17: otterscale.instance.v1.DeleteVirtualMachineSnapshotRequest
+	(*CreateVirtualMachineRestoreRequest)(nil),   // 18: otterscale.instance.v1.CreateVirtualMachineRestoreRequest
+	(*DeleteVirtualMachineRestoreRequest)(nil),   // 19: otterscale.instance.v1.DeleteVirtualMachineRestoreRequest
+	(*StartVirtualMachineRequest)(nil),           // 20: otterscale.instance.v1.StartVirtualMachineRequest
+	(*StopVirtualMachineRequest)(nil),            // 21: otterscale.instance.v1.StopVirtualMachineRequest
+	(*RestartVirtualMachineRequest)(nil),         // 22: otterscale.instance.v1.RestartVirtualMachineRequest
+	(*PauseInstanceRequest)(nil),                 // 23: otterscale.instance.v1.PauseInstanceRequest
+	(*ResumeInstanceRequest)(nil),                // 24: otterscale.instance.v1.ResumeInstanceRequest
+	(*MigrateInstanceRequest)(nil),               // 25: otterscale.instance.v1.MigrateInstanceRequest
+	(*VNCInstanceRequest)(nil),                   // 26: otterscale.instance.v1.VNCInstanceRequest
+	(*VNCInstanceResponse)(nil),                  // 27: otterscale.instance.v1.VNCInstanceResponse
+	(*ListDataVolumesRequest)(nil),               // 28: otterscale.instance.v1.ListDataVolumesRequest
+	(*ListDataVolumesResponse)(nil),              // 29: otterscale.instance.v1.ListDataVolumesResponse
+	(*GetDataVolumeRequest)(nil),                 // 30: otterscale.instance.v1.GetDataVolumeRequest
+	(*CreateDataVolumeRequest)(nil),              // 31: otterscale.instance.v1.CreateDataVolumeRequest
+	(*DeleteDataVolumeRequest)(nil),              // 32: otterscale.instance.v1.DeleteDataVolumeRequest
+	(*ExtendDataVolumeRequest)(nil),              // 33: otterscale.instance.v1.ExtendDataVolumeRequest
+	(*ListInstanceTypesRequest)(nil),             // 34: otterscale.instance.v1.ListInstanceTypesRequest
+	(*ListInstanceTypesResponse)(nil),            // 35: otterscale.instance.v1.ListInstanceTypesResponse
+	(*GetInstanceTypeRequest)(nil),               // 36: otterscale.instance.v1.GetInstanceTypeRequest
+	(*CreateInstanceTypeRequest)(nil),            // 37: otterscale.instance.v1.CreateInstanceTypeRequest
+	(*DeleteInstanceTypeRequest)(nil),            // 38: otterscale.instance.v1.DeleteInstanceTypeRequest
+	(*CreateVirtualMachineServiceRequest)(nil),   // 39: otterscale.instance.v1.CreateVirtualMachineServiceRequest
+	(*UpdateVirtualMachineServiceRequest)(nil),   // 40: otterscale.instance.v1.UpdateVirtualMachineServiceRequest
+	(*DeleteVirtualMachineServiceRequest)(nil),   // 41: otterscale.instance.v1.DeleteVirtualMachineServiceRequest
+	(*VirtualMachine_Clone)(nil),                 // 42: otterscale.instance.v1.VirtualMachine.Clone
+	(*VirtualMachine_Snapshot)(nil),              // 43: otterscale.instance.v1.VirtualMachine.Snapshot
+	(*VirtualMachine_Restore)(nil),               // 44: otterscale.instance.v1.VirtualMachine.Restore
+	(*VirtualMachine_Disk)(nil),                  // 45: otterscale.instance.v1.VirtualMachine.Disk
+	(*VirtualMachine_Disk_Volume)(nil),           // 46: otterscale.instance.v1.VirtualMachine.Disk.Volume
+	(*VirtualMachine_Disk_Volume_Source)(nil),    // 47: otterscale.instance.v1.VirtualMachine.Disk.Volume.Source
+	(*DataVolume_Source)(nil),                    // 48: otterscale.instance.v1.DataVolume.Source
+	(*DataVolume_Condition)(nil),                 // 49: otterscale.instance.v1.DataVolume.Condition
+	(*timestamppb.Timestamp)(nil),                // 50: google.protobuf.Timestamp
+	(*v1.Application_Service)(nil),               // 51: otterscale.application.v1.Application.Service
+	(*v1.Application_PersistentVolumeClaim)(nil), // 52: otterscale.application.v1.Application.PersistentVolumeClaim
+	(*v1.Application_Service_Port)(nil),          // 53: otterscale.application.v1.Application.Service.Port
+	(*v1.Application_Condition)(nil),             // 54: otterscale.application.v1.Application.Condition
+	(*emptypb.Empty)(nil),                        // 55: google.protobuf.Empty
 }
 var file_api_instance_v1_instance_proto_depIdxs = []int32{
-	49, // 0: otterscale.instance.v1.VirtualMachine.created_at:type_name -> google.protobuf.Timestamp
-	50, // 1: otterscale.instance.v1.VirtualMachine.services:type_name -> otterscale.application.v1.Application.Service
-	5,  // 2: otterscale.instance.v1.VirtualMachine.instance_type:type_name -> otterscale.instance.v1.InstanceType
-	44, // 3: otterscale.instance.v1.VirtualMachine.disks:type_name -> otterscale.instance.v1.VirtualMachine.Disk
-	41, // 4: otterscale.instance.v1.VirtualMachine.clones:type_name -> otterscale.instance.v1.VirtualMachine.Clone
-	42, // 5: otterscale.instance.v1.VirtualMachine.snapshots:type_name -> otterscale.instance.v1.VirtualMachine.Snapshot
-	43, // 6: otterscale.instance.v1.VirtualMachine.restores:type_name -> otterscale.instance.v1.VirtualMachine.Restore
-	47, // 7: otterscale.instance.v1.DataVolume.source:type_name -> otterscale.instance.v1.DataVolume.Source
-	51, // 8: otterscale.instance.v1.DataVolume.persistent_volume_claim:type_name -> otterscale.application.v1.Application.PersistentVolumeClaim
-	48, // 9: otterscale.instance.v1.DataVolume.last_condition:type_name -> otterscale.instance.v1.DataVolume.Condition
-	49, // 10: otterscale.instance.v1.InstanceType.created_at:type_name -> google.protobuf.Timestamp
-	3,  // 11: otterscale.instance.v1.ListVirtualMachinesResponse.virtual_machines:type_name -> otterscale.instance.v1.VirtualMachine
-	4,  // 12: otterscale.instance.v1.ListDataVolumesResponse.data_volumes:type_name -> otterscale.instance.v1.DataVolume
-	47, // 13: otterscale.instance.v1.CreateDataVolumeRequest.source:type_name -> otterscale.instance.v1.DataVolume.Source
-	5,  // 14: otterscale.instance.v1.ListInstanceTypesResponse.instance_types:type_name -> otterscale.instance.v1.InstanceType
-	52, // 15: otterscale.instance.v1.CreateVirtualMachineServiceRequest.ports:type_name -> otterscale.application.v1.Application.Service.Port
-	52, // 16: otterscale.instance.v1.UpdateVirtualMachineServiceRequest.ports:type_name -> otterscale.application.v1.Application.Service.Port
-	49, // 17: otterscale.instance.v1.VirtualMachine.Clone.created_at:type_name -> google.protobuf.Timestamp
-	53, // 18: otterscale.instance.v1.VirtualMachine.Clone.last_condition:type_name -> otterscale.application.v1.Application.Condition
-	49, // 19: otterscale.instance.v1.VirtualMachine.Snapshot.created_at:type_name -> google.protobuf.Timestamp
-	53, // 20: otterscale.instance.v1.VirtualMachine.Snapshot.last_condition:type_name -> otterscale.application.v1.Application.Condition
-	49, // 21: otterscale.instance.v1.VirtualMachine.Restore.created_at:type_name -> google.protobuf.Timestamp
-	53, // 22: otterscale.instance.v1.VirtualMachine.Restore.last_condition:type_name -> otterscale.application.v1.Application.Condition
-	0,  // 23: otterscale.instance.v1.VirtualMachine.Disk.bus:type_name -> otterscale.instance.v1.VirtualMachine.Disk.Bus
-	45, // 24: otterscale.instance.v1.VirtualMachine.Disk.volume:type_name -> otterscale.instance.v1.VirtualMachine.Disk.Volume
-	46, // 25: otterscale.instance.v1.VirtualMachine.Disk.Volume.source:type_name -> otterscale.instance.v1.VirtualMachine.Disk.Volume.Source
-	1,  // 26: otterscale.instance.v1.VirtualMachine.Disk.Volume.Source.type:type_name -> otterscale.instance.v1.VirtualMachine.Disk.Volume.Source.Type
-	2,  // 27: otterscale.instance.v1.DataVolume.Source.type:type_name -> otterscale.instance.v1.DataVolume.Source.Type
-	49, // 28: otterscale.instance.v1.DataVolume.Condition.heartbeat_at:type_name -> google.protobuf.Timestamp
-	49, // 29: otterscale.instance.v1.DataVolume.Condition.transitioned_at:type_name -> google.protobuf.Timestamp
-	6,  // 30: otterscale.instance.v1.InstanceService.ListVirtualMachines:input_type -> otterscale.instance.v1.ListVirtualMachinesRequest
-	8,  // 31: otterscale.instance.v1.InstanceService.GetVirtualMachine:input_type -> otterscale.instance.v1.GetVirtualMachineRequest
-	9,  // 32: otterscale.instance.v1.InstanceService.CreateVirtualMachine:input_type -> otterscale.instance.v1.CreateVirtualMachineRequest
-	10, // 33: otterscale.instance.v1.InstanceService.DeleteVirtualMachine:input_type -> otterscale.instance.v1.DeleteVirtualMachineRequest
-	11, // 34: otterscale.instance.v1.InstanceService.AttachVirtualMachineDisk:input_type -> otterscale.instance.v1.AttachVirtualMachineDiskRequest
-	12, // 35: otterscale.instance.v1.InstanceService.DetachVirtualMachineDisk:input_type -> otterscale.instance.v1.DetachVirtualMachineDiskRequest
-	13, // 36: otterscale.instance.v1.InstanceService.CreateVirtualMachineClone:input_type -> otterscale.instance.v1.CreateVirtualMachineCloneRequest
-	14, // 37: otterscale.instance.v1.InstanceService.DeleteVirtualMachineClone:input_type -> otterscale.instance.v1.DeleteVirtualMachineCloneRequest
-	15, // 38: otterscale.instance.v1.InstanceService.CreateVirtualMachineSnapshot:input_type -> otterscale.instance.v1.CreateVirtualMachineSnapshotRequest
-	16, // 39: otterscale.instance.v1.InstanceService.DeleteVirtualMachineSnapshot:input_type -> otterscale.instance.v1.DeleteVirtualMachineSnapshotRequest
-	17, // 40: otterscale.instance.v1.InstanceService.CreateVirtualMachineRestore:input_type -> otterscale.instance.v1.CreateVirtualMachineRestoreRequest
-	18, // 41: otterscale.instance.v1.InstanceService.DeleteVirtualMachineRestore:input_type -> otterscale.instance.v1.DeleteVirtualMachineRestoreRequest
-	19, // 42: otterscale.instance.v1.InstanceService.StartVirtualMachine:input_type -> otterscale.instance.v1.StartVirtualMachineRequest
-	20, // 43: otterscale.instance.v1.InstanceService.StopVirtualMachine:input_type -> otterscale.instance.v1.StopVirtualMachineRequest
-	21, // 44: otterscale.instance.v1.InstanceService.RestartVirtualMachine:input_type -> otterscale.instance.v1.RestartVirtualMachineRequest
-	22, // 45: otterscale.instance.v1.InstanceService.PauseInstance:input_type -> otterscale.instance.v1.PauseInstanceRequest
-	23, // 46: otterscale.instance.v1.InstanceService.ResumeInstance:input_type -> otterscale.instance.v1.ResumeInstanceRequest
-	24, // 47: otterscale.instance.v1.InstanceService.MigrateInstance:input_type -> otterscale.instance.v1.MigrateInstanceRequest
-	25, // 48: otterscale.instance.v1.InstanceService.VNCInstance:input_type -> otterscale.instance.v1.VNCInstanceRequest
-	27, // 49: otterscale.instance.v1.InstanceService.ListDataVolumes:input_type -> otterscale.instance.v1.ListDataVolumesRequest
-	29, // 50: otterscale.instance.v1.InstanceService.GetDataVolume:input_type -> otterscale.instance.v1.GetDataVolumeRequest
-	30, // 51: otterscale.instance.v1.InstanceService.CreateDataVolume:input_type -> otterscale.instance.v1.CreateDataVolumeRequest
-	31, // 52: otterscale.instance.v1.InstanceService.DeleteDataVolume:input_type -> otterscale.instance.v1.DeleteDataVolumeRequest
-	32, // 53: otterscale.instance.v1.InstanceService.ExtendDataVolume:input_type -> otterscale.instance.v1.ExtendDataVolumeRequest
-	33, // 54: otterscale.instance.v1.InstanceService.ListInstanceTypes:input_type -> otterscale.instance.v1.ListInstanceTypesRequest
-	35, // 55: otterscale.instance.v1.InstanceService.GetInstanceType:input_type -> otterscale.instance.v1.GetInstanceTypeRequest
-	36, // 56: otterscale.instance.v1.InstanceService.CreateInstanceType:input_type -> otterscale.instance.v1.CreateInstanceTypeRequest
-	37, // 57: otterscale.instance.v1.InstanceService.DeleteInstanceType:input_type -> otterscale.instance.v1.DeleteInstanceTypeRequest
-	38, // 58: otterscale.instance.v1.InstanceService.CreateVirtualMachineService:input_type -> otterscale.instance.v1.CreateVirtualMachineServiceRequest
-	39, // 59: otterscale.instance.v1.InstanceService.UpdateVirtualMachineService:input_type -> otterscale.instance.v1.UpdateVirtualMachineServiceRequest
-	40, // 60: otterscale.instance.v1.InstanceService.DeleteVirtualMachineService:input_type -> otterscale.instance.v1.DeleteVirtualMachineServiceRequest
-	7,  // 61: otterscale.instance.v1.InstanceService.ListVirtualMachines:output_type -> otterscale.instance.v1.ListVirtualMachinesResponse
-	3,  // 62: otterscale.instance.v1.InstanceService.GetVirtualMachine:output_type -> otterscale.instance.v1.VirtualMachine
-	3,  // 63: otterscale.instance.v1.InstanceService.CreateVirtualMachine:output_type -> otterscale.instance.v1.VirtualMachine
-	54, // 64: otterscale.instance.v1.InstanceService.DeleteVirtualMachine:output_type -> google.protobuf.Empty
-	44, // 65: otterscale.instance.v1.InstanceService.AttachVirtualMachineDisk:output_type -> otterscale.instance.v1.VirtualMachine.Disk
-	54, // 66: otterscale.instance.v1.InstanceService.DetachVirtualMachineDisk:output_type -> google.protobuf.Empty
-	41, // 67: otterscale.instance.v1.InstanceService.CreateVirtualMachineClone:output_type -> otterscale.instance.v1.VirtualMachine.Clone
-	54, // 68: otterscale.instance.v1.InstanceService.DeleteVirtualMachineClone:output_type -> google.protobuf.Empty
-	42, // 69: otterscale.instance.v1.InstanceService.CreateVirtualMachineSnapshot:output_type -> otterscale.instance.v1.VirtualMachine.Snapshot
-	54, // 70: otterscale.instance.v1.InstanceService.DeleteVirtualMachineSnapshot:output_type -> google.protobuf.Empty
-	43, // 71: otterscale.instance.v1.InstanceService.CreateVirtualMachineRestore:output_type -> otterscale.instance.v1.VirtualMachine.Restore
-	54, // 72: otterscale.instance.v1.InstanceService.DeleteVirtualMachineRestore:output_type -> google.protobuf.Empty
-	54, // 73: otterscale.instance.v1.InstanceService.StartVirtualMachine:output_type -> google.protobuf.Empty
-	54, // 74: otterscale.instance.v1.InstanceService.StopVirtualMachine:output_type -> google.protobuf.Empty
-	54, // 75: otterscale.instance.v1.InstanceService.RestartVirtualMachine:output_type -> google.protobuf.Empty
-	54, // 76: otterscale.instance.v1.InstanceService.PauseInstance:output_type -> google.protobuf.Empty
-	54, // 77: otterscale.instance.v1.InstanceService.ResumeInstance:output_type -> google.protobuf.Empty
-	54, // 78: otterscale.instance.v1.InstanceService.MigrateInstance:output_type -> google.protobuf.Empty
-	26, // 79: otterscale.instance.v1.InstanceService.VNCInstance:output_type -> otterscale.instance.v1.VNCInstanceResponse
-	28, // 80: otterscale.instance.v1.InstanceService.ListDataVolumes:output_type -> otterscale.instance.v1.ListDataVolumesResponse
-	4,  // 81: otterscale.instance.v1.InstanceService.GetDataVolume:output_type -> otterscale.instance.v1.DataVolume
-	4,  // 82: otterscale.instance.v1.InstanceService.CreateDataVolume:output_type -> otterscale.instance.v1.DataVolume
-	54, // 83: otterscale.instance.v1.InstanceService.DeleteDataVolume:output_type -> google.protobuf.Empty
-	54, // 84: otterscale.instance.v1.InstanceService.ExtendDataVolume:output_type -> google.protobuf.Empty
-	34, // 85: otterscale.instance.v1.InstanceService.ListInstanceTypes:output_type -> otterscale.instance.v1.ListInstanceTypesResponse
-	5,  // 86: otterscale.instance.v1.InstanceService.GetInstanceType:output_type -> otterscale.instance.v1.InstanceType
-	5,  // 87: otterscale.instance.v1.InstanceService.CreateInstanceType:output_type -> otterscale.instance.v1.InstanceType
-	54, // 88: otterscale.instance.v1.InstanceService.DeleteInstanceType:output_type -> google.protobuf.Empty
-	50, // 89: otterscale.instance.v1.InstanceService.CreateVirtualMachineService:output_type -> otterscale.application.v1.Application.Service
-	50, // 90: otterscale.instance.v1.InstanceService.UpdateVirtualMachineService:output_type -> otterscale.application.v1.Application.Service
-	54, // 91: otterscale.instance.v1.InstanceService.DeleteVirtualMachineService:output_type -> google.protobuf.Empty
-	61, // [61:92] is the sub-list for method output_type
-	30, // [30:61] is the sub-list for method input_type
-	30, // [30:30] is the sub-list for extension type_name
-	30, // [30:30] is the sub-list for extension extendee
-	0,  // [0:30] is the sub-list for field type_name
+	50, // 0: otterscale.instance.v1.VirtualMachine.created_at:type_name -> google.protobuf.Timestamp
+	51, // 1: otterscale.instance.v1.VirtualMachine.services:type_name -> otterscale.application.v1.Application.Service
+	6,  // 2: otterscale.instance.v1.VirtualMachine.instance_type:type_name -> otterscale.instance.v1.InstanceType
+	45, // 3: otterscale.instance.v1.VirtualMachine.disks:type_name -> otterscale.instance.v1.VirtualMachine.Disk
+	42, // 4: otterscale.instance.v1.VirtualMachine.clones:type_name -> otterscale.instance.v1.VirtualMachine.Clone
+	43, // 5: otterscale.instance.v1.VirtualMachine.snapshots:type_name -> otterscale.instance.v1.VirtualMachine.Snapshot
+	44, // 6: otterscale.instance.v1.VirtualMachine.restores:type_name -> otterscale.instance.v1.VirtualMachine.Restore
+	48, // 7: otterscale.instance.v1.DataVolume.source:type_name -> otterscale.instance.v1.DataVolume.Source
+	52, // 8: otterscale.instance.v1.DataVolume.persistent_volume_claim:type_name -> otterscale.application.v1.Application.PersistentVolumeClaim
+	49, // 9: otterscale.instance.v1.DataVolume.last_condition:type_name -> otterscale.instance.v1.DataVolume.Condition
+	50, // 10: otterscale.instance.v1.InstanceType.created_at:type_name -> google.protobuf.Timestamp
+	4,  // 11: otterscale.instance.v1.ListVirtualMachinesResponse.virtual_machines:type_name -> otterscale.instance.v1.VirtualMachine
+	0,  // 12: otterscale.instance.v1.ListDataVolumesRequest.filter:type_name -> otterscale.instance.v1.DataVolumeFilter
+	5,  // 13: otterscale.instance.v1.ListDataVolumesResponse.data_volumes:type_name -> otterscale.instance.v1.DataVolume
+	48, // 14: otterscale.instance.v1.CreateDataVolumeRequest.source:type_name -> otterscale.instance.v1.DataVolume.Source
+	6,  // 15: otterscale.instance.v1.ListInstanceTypesResponse.instance_types:type_name -> otterscale.instance.v1.InstanceType
+	53, // 16: otterscale.instance.v1.CreateVirtualMachineServiceRequest.ports:type_name -> otterscale.application.v1.Application.Service.Port
+	53, // 17: otterscale.instance.v1.UpdateVirtualMachineServiceRequest.ports:type_name -> otterscale.application.v1.Application.Service.Port
+	50, // 18: otterscale.instance.v1.VirtualMachine.Clone.created_at:type_name -> google.protobuf.Timestamp
+	54, // 19: otterscale.instance.v1.VirtualMachine.Clone.last_condition:type_name -> otterscale.application.v1.Application.Condition
+	50, // 20: otterscale.instance.v1.VirtualMachine.Snapshot.created_at:type_name -> google.protobuf.Timestamp
+	54, // 21: otterscale.instance.v1.VirtualMachine.Snapshot.last_condition:type_name -> otterscale.application.v1.Application.Condition
+	50, // 22: otterscale.instance.v1.VirtualMachine.Restore.created_at:type_name -> google.protobuf.Timestamp
+	54, // 23: otterscale.instance.v1.VirtualMachine.Restore.last_condition:type_name -> otterscale.application.v1.Application.Condition
+	1,  // 24: otterscale.instance.v1.VirtualMachine.Disk.bus:type_name -> otterscale.instance.v1.VirtualMachine.Disk.Bus
+	46, // 25: otterscale.instance.v1.VirtualMachine.Disk.volume:type_name -> otterscale.instance.v1.VirtualMachine.Disk.Volume
+	47, // 26: otterscale.instance.v1.VirtualMachine.Disk.Volume.source:type_name -> otterscale.instance.v1.VirtualMachine.Disk.Volume.Source
+	2,  // 27: otterscale.instance.v1.VirtualMachine.Disk.Volume.Source.type:type_name -> otterscale.instance.v1.VirtualMachine.Disk.Volume.Source.Type
+	3,  // 28: otterscale.instance.v1.DataVolume.Source.type:type_name -> otterscale.instance.v1.DataVolume.Source.Type
+	50, // 29: otterscale.instance.v1.DataVolume.Condition.heartbeat_at:type_name -> google.protobuf.Timestamp
+	50, // 30: otterscale.instance.v1.DataVolume.Condition.transitioned_at:type_name -> google.protobuf.Timestamp
+	7,  // 31: otterscale.instance.v1.InstanceService.ListVirtualMachines:input_type -> otterscale.instance.v1.ListVirtualMachinesRequest
+	9,  // 32: otterscale.instance.v1.InstanceService.GetVirtualMachine:input_type -> otterscale.instance.v1.GetVirtualMachineRequest
+	10, // 33: otterscale.instance.v1.InstanceService.CreateVirtualMachine:input_type -> otterscale.instance.v1.CreateVirtualMachineRequest
+	11, // 34: otterscale.instance.v1.InstanceService.DeleteVirtualMachine:input_type -> otterscale.instance.v1.DeleteVirtualMachineRequest
+	12, // 35: otterscale.instance.v1.InstanceService.AttachVirtualMachineDisk:input_type -> otterscale.instance.v1.AttachVirtualMachineDiskRequest
+	13, // 36: otterscale.instance.v1.InstanceService.DetachVirtualMachineDisk:input_type -> otterscale.instance.v1.DetachVirtualMachineDiskRequest
+	14, // 37: otterscale.instance.v1.InstanceService.CreateVirtualMachineClone:input_type -> otterscale.instance.v1.CreateVirtualMachineCloneRequest
+	15, // 38: otterscale.instance.v1.InstanceService.DeleteVirtualMachineClone:input_type -> otterscale.instance.v1.DeleteVirtualMachineCloneRequest
+	16, // 39: otterscale.instance.v1.InstanceService.CreateVirtualMachineSnapshot:input_type -> otterscale.instance.v1.CreateVirtualMachineSnapshotRequest
+	17, // 40: otterscale.instance.v1.InstanceService.DeleteVirtualMachineSnapshot:input_type -> otterscale.instance.v1.DeleteVirtualMachineSnapshotRequest
+	18, // 41: otterscale.instance.v1.InstanceService.CreateVirtualMachineRestore:input_type -> otterscale.instance.v1.CreateVirtualMachineRestoreRequest
+	19, // 42: otterscale.instance.v1.InstanceService.DeleteVirtualMachineRestore:input_type -> otterscale.instance.v1.DeleteVirtualMachineRestoreRequest
+	20, // 43: otterscale.instance.v1.InstanceService.StartVirtualMachine:input_type -> otterscale.instance.v1.StartVirtualMachineRequest
+	21, // 44: otterscale.instance.v1.InstanceService.StopVirtualMachine:input_type -> otterscale.instance.v1.StopVirtualMachineRequest
+	22, // 45: otterscale.instance.v1.InstanceService.RestartVirtualMachine:input_type -> otterscale.instance.v1.RestartVirtualMachineRequest
+	23, // 46: otterscale.instance.v1.InstanceService.PauseInstance:input_type -> otterscale.instance.v1.PauseInstanceRequest
+	24, // 47: otterscale.instance.v1.InstanceService.ResumeInstance:input_type -> otterscale.instance.v1.ResumeInstanceRequest
+	25, // 48: otterscale.instance.v1.InstanceService.MigrateInstance:input_type -> otterscale.instance.v1.MigrateInstanceRequest
+	26, // 49: otterscale.instance.v1.InstanceService.VNCInstance:input_type -> otterscale.instance.v1.VNCInstanceRequest
+	28, // 50: otterscale.instance.v1.InstanceService.ListDataVolumes:input_type -> otterscale.instance.v1.ListDataVolumesRequest
+	30, // 51: otterscale.instance.v1.InstanceService.GetDataVolume:input_type -> otterscale.instance.v1.GetDataVolumeRequest
+	31, // 52: otterscale.instance.v1.InstanceService.CreateDataVolume:input_type -> otterscale.instance.v1.CreateDataVolumeRequest
+	32, // 53: otterscale.instance.v1.InstanceService.DeleteDataVolume:input_type -> otterscale.instance.v1.DeleteDataVolumeRequest
+	33, // 54: otterscale.instance.v1.InstanceService.ExtendDataVolume:input_type -> otterscale.instance.v1.ExtendDataVolumeRequest
+	34, // 55: otterscale.instance.v1.InstanceService.ListInstanceTypes:input_type -> otterscale.instance.v1.ListInstanceTypesRequest
+	36, // 56: otterscale.instance.v1.InstanceService.GetInstanceType:input_type -> otterscale.instance.v1.GetInstanceTypeRequest
+	37, // 57: otterscale.instance.v1.InstanceService.CreateInstanceType:input_type -> otterscale.instance.v1.CreateInstanceTypeRequest
+	38, // 58: otterscale.instance.v1.InstanceService.DeleteInstanceType:input_type -> otterscale.instance.v1.DeleteInstanceTypeRequest
+	39, // 59: otterscale.instance.v1.InstanceService.CreateVirtualMachineService:input_type -> otterscale.instance.v1.CreateVirtualMachineServiceRequest
+	40, // 60: otterscale.instance.v1.InstanceService.UpdateVirtualMachineService:input_type -> otterscale.instance.v1.UpdateVirtualMachineServiceRequest
+	41, // 61: otterscale.instance.v1.InstanceService.DeleteVirtualMachineService:input_type -> otterscale.instance.v1.DeleteVirtualMachineServiceRequest
+	8,  // 62: otterscale.instance.v1.InstanceService.ListVirtualMachines:output_type -> otterscale.instance.v1.ListVirtualMachinesResponse
+	4,  // 63: otterscale.instance.v1.InstanceService.GetVirtualMachine:output_type -> otterscale.instance.v1.VirtualMachine
+	4,  // 64: otterscale.instance.v1.InstanceService.CreateVirtualMachine:output_type -> otterscale.instance.v1.VirtualMachine
+	55, // 65: otterscale.instance.v1.InstanceService.DeleteVirtualMachine:output_type -> google.protobuf.Empty
+	45, // 66: otterscale.instance.v1.InstanceService.AttachVirtualMachineDisk:output_type -> otterscale.instance.v1.VirtualMachine.Disk
+	55, // 67: otterscale.instance.v1.InstanceService.DetachVirtualMachineDisk:output_type -> google.protobuf.Empty
+	42, // 68: otterscale.instance.v1.InstanceService.CreateVirtualMachineClone:output_type -> otterscale.instance.v1.VirtualMachine.Clone
+	55, // 69: otterscale.instance.v1.InstanceService.DeleteVirtualMachineClone:output_type -> google.protobuf.Empty
+	43, // 70: otterscale.instance.v1.InstanceService.CreateVirtualMachineSnapshot:output_type -> otterscale.instance.v1.VirtualMachine.Snapshot
+	55, // 71: otterscale.instance.v1.InstanceService.DeleteVirtualMachineSnapshot:output_type -> google.protobuf.Empty
+	44, // 72: otterscale.instance.v1.InstanceService.CreateVirtualMachineRestore:output_type -> otterscale.instance.v1.VirtualMachine.Restore
+	55, // 73: otterscale.instance.v1.InstanceService.DeleteVirtualMachineRestore:output_type -> google.protobuf.Empty
+	55, // 74: otterscale.instance.v1.InstanceService.StartVirtualMachine:output_type -> google.protobuf.Empty
+	55, // 75: otterscale.instance.v1.InstanceService.StopVirtualMachine:output_type -> google.protobuf.Empty
+	55, // 76: otterscale.instance.v1.InstanceService.RestartVirtualMachine:output_type -> google.protobuf.Empty
+	55, // 77: otterscale.instance.v1.InstanceService.PauseInstance:output_type -> google.protobuf.Empty
+	55, // 78: otterscale.instance.v1.InstanceService.ResumeInstance:output_type -> google.protobuf.Empty
+	55, // 79: otterscale.instance.v1.InstanceService.MigrateInstance:output_type -> google.protobuf.Empty
+	27, // 80: otterscale.instance.v1.InstanceService.VNCInstance:output_type -> otterscale.instance.v1.VNCInstanceResponse
+	29, // 81: otterscale.instance.v1.InstanceService.ListDataVolumes:output_type -> otterscale.instance.v1.ListDataVolumesResponse
+	5,  // 82: otterscale.instance.v1.InstanceService.GetDataVolume:output_type -> otterscale.instance.v1.DataVolume
+	5,  // 83: otterscale.instance.v1.InstanceService.CreateDataVolume:output_type -> otterscale.instance.v1.DataVolume
+	55, // 84: otterscale.instance.v1.InstanceService.DeleteDataVolume:output_type -> google.protobuf.Empty
+	55, // 85: otterscale.instance.v1.InstanceService.ExtendDataVolume:output_type -> google.protobuf.Empty
+	35, // 86: otterscale.instance.v1.InstanceService.ListInstanceTypes:output_type -> otterscale.instance.v1.ListInstanceTypesResponse
+	6,  // 87: otterscale.instance.v1.InstanceService.GetInstanceType:output_type -> otterscale.instance.v1.InstanceType
+	6,  // 88: otterscale.instance.v1.InstanceService.CreateInstanceType:output_type -> otterscale.instance.v1.InstanceType
+	55, // 89: otterscale.instance.v1.InstanceService.DeleteInstanceType:output_type -> google.protobuf.Empty
+	51, // 90: otterscale.instance.v1.InstanceService.CreateVirtualMachineService:output_type -> otterscale.application.v1.Application.Service
+	51, // 91: otterscale.instance.v1.InstanceService.UpdateVirtualMachineService:output_type -> otterscale.application.v1.Application.Service
+	55, // 92: otterscale.instance.v1.InstanceService.DeleteVirtualMachineService:output_type -> google.protobuf.Empty
+	62, // [62:93] is the sub-list for method output_type
+	31, // [31:62] is the sub-list for method input_type
+	31, // [31:31] is the sub-list for extension type_name
+	31, // [31:31] is the sub-list for extension extendee
+	0,  // [0:31] is the sub-list for field type_name
 }
 
 func init() { file_api_instance_v1_instance_proto_init() }
@@ -8217,7 +8268,7 @@ func file_api_instance_v1_instance_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_api_instance_v1_instance_proto_rawDesc), len(file_api_instance_v1_instance_proto_rawDesc)),
-			NumEnums:      3,
+			NumEnums:      4,
 			NumMessages:   46,
 			NumExtensions: 0,
 			NumServices:   1,

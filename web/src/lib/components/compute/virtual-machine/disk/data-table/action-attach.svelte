@@ -5,10 +5,11 @@
 	import { type Writable, writable } from 'svelte/store';
 	import { toast } from 'svelte-sonner';
 
-	import type {
-		AttachVirtualMachineDiskRequest,
-		DataVolume,
-		VirtualMachine
+	import {
+		DataVolumeFilter,
+		type AttachVirtualMachineDiskRequest,
+		type DataVolume,
+		type VirtualMachine
 	} from '$lib/api/instance/v1/instance_pb';
 	import { InstanceService } from '$lib/api/instance/v1/instance_pb';
 	import * as Form from '$lib/components/custom/form';
@@ -38,11 +39,10 @@
 	// ==================== API Functions ====================
 	async function loadDataVolumes() {
 		try {
-			if (!request.namespace) return;
-
 			const response = await virtualMachineClient.listDataVolumes({
 				scope: scope,
-				namespace: request.namespace
+				namespace: virtualMachine.namespace,
+				filter: DataVolumeFilter.NON_BOOTABLE
 			});
 
 			const dvOptions: SingleSelect.OptionType[] = response.dataVolumes.map((dv: DataVolume) => ({
