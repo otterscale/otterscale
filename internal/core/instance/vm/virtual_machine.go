@@ -276,10 +276,6 @@ func (uc *UseCase) CreateVirtualMachine(ctx context.Context, scope, namespace, n
 	}
 
 	storageSize := pvc.Spec.Resources.Requests
-	if storageSize == nil {
-		return nil, fmt.Errorf("source DataVolume %s PVC has no resource requests storagesize", bootDataVolume)
-	}
-
 	volumeMode := pvc.Spec.VolumeMode
 	if volumeMode == nil {
 		defaultMode := corev1.PersistentVolumeFilesystem
