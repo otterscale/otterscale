@@ -23,10 +23,8 @@ type JobRepo interface {
 	Delete(ctx context.Context, scope, namespace, name string) error
 }
 
-func (uc *UseCase) ListJobs(ctx context.Context, scope string, namespace string) (jobs []Job, err error) {
-	var (
-		ret []Job
-	)
+func (uc *UseCase) ListJobs(ctx context.Context, scope, namespace string) (jobs []Job, err error) {
+	var ret []Job
 
 	eg, egctx := errgroup.WithContext(ctx)
 
