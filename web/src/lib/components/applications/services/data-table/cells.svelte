@@ -96,11 +96,22 @@
 {#snippet endpoints(row: Row<Service>)}
 	{#if row.original.type === 'NodePort'}
 		<Layout.Cell class="items-start">
-			<div class="flex gap-3">
-				{#each row.original.ports as port}
+			<div class="flex gap-2">
+				{#each row.original.ports as port (port.nodePort)}
 					<Badge variant="outline" class="flex items-center gap-1 hover:underline">
-						<Icon icon="ph:network" />
-						<a href={`http://${row.original.hostname}:${port.nodePort}`}>{port.nodePort}</a>
+						<Icon icon="ph:network" class="opacity-60" />
+						<a
+							href={`http://${row.original.hostname}:${port.nodePort}`}
+							class="flex items-baseline"
+						>
+							{#if port.name}
+								<span class="text-[10px] font-medium uppercase opacity-60">
+									{port.name}
+								</span>
+								&nbsp;
+							{/if}
+							<span class="text-[10px] font-bold">{port.nodePort}</span>
+						</a>
 					</Badge>
 				{/each}
 			</div>
