@@ -276,6 +276,10 @@ func (uc *UseCase) CreateVirtualMachine(ctx context.Context, scope, namespace, n
 	}
 
 	storageSize := pvc.Spec.Resources.Requests
+	if storageSize == nil {
+		return nil, fmt.Errorf("source DataVolume %s PVC has no resource requests storagesize", bootDataVolume)
+	}
+
 	volumeMode := pvc.Spec.VolumeMode
 	if volumeMode == nil {
 		defaultMode := corev1.PersistentVolumeFilesystem
@@ -575,15 +579,8 @@ func (uc *UseCase) combineVirtualMachine(namespace, name string, virtualMachine 
 }
 
 func (uc *UseCase) buildVirtualMachine(namespace, name, instanceType, bootDataVolume string, volumeMode *corev1.PersistentVolumeMode, accessModes []corev1.PersistentVolumeAccessMode, storageSize corev1.ResourceList, startupScript string) *VirtualMachine {
-	var (
-		runStrategy    = kvcorev1.RunStrategyHalted
-		enabled        = true
-		bootOrder      = uint(1)
-		osDisk         = "os-disk"
-		cloudInitDisk  = "cloud-init-disk"
-		nic1           = "nic1"
-		dataVolumeName = name
-	)
+	runStrategy := kvcorev1.RunStrategyHalted
+	dataVolumeName := name
 
 	virtualMachine := &kvcorev1.VirtualMachine{
 		ObjectMeta: metav1.ObjectMeta{
@@ -599,96 +596,124 @@ func (uc *UseCase) buildVirtualMachine(namespace, name, instanceType, bootDataVo
 				Name: instanceType,
 			},
 			DataVolumeTemplates: []kvcorev1.DataVolumeTemplateSpec{
-				{
-					ObjectMeta: metav1.ObjectMeta{
-						Name: dataVolumeName,
+				uc.buildDataVolumeTemplate(namespace, dataVolumeName, bootDataVolume, volumeMode, accessModes, storageSize),
+			},
+			Template: uc.buildVMInstanceTemplate(dataVolumeName),
+		},
+	}
+
+	if startupScript != "" {
+		uc.addCloudInitDisk(virtualMachine, startupScript)
+	}
+
+	return virtualMachine
+}
+
+func (uc *UseCase) buildDataVolumeTemplate(namespace, dataVolumeName, bootDataVolume string, volumeMode *corev1.PersistentVolumeMode, accessModes []corev1.PersistentVolumeAccessMode, storageSize corev1.ResourceList) kvcorev1.DataVolumeTemplateSpec {
+	return kvcorev1.DataVolumeTemplateSpec{
+		ObjectMeta: metav1.ObjectMeta{
+			Name: dataVolumeName,
+		},
+		Spec: cdiv1beta1.DataVolumeSpec{
+			Source: &cdiv1beta1.DataVolumeSource{
+				PVC: &cdiv1beta1.DataVolumeSourcePVC{
+					Namespace: namespace,
+					Name:      bootDataVolume,
+				},
+			},
+			PVC: &corev1.PersistentVolumeClaimSpec{
+				AccessModes: accessModes,
+				VolumeMode:  volumeMode,
+				Resources: corev1.VolumeResourceRequirements{
+					Requests: storageSize,
+				},
+			},
+		},
+	}
+}
+
+func (uc *UseCase) buildVMInstanceTemplate(dataVolumeName string) *kvcorev1.VirtualMachineInstanceTemplateSpec {
+	var (
+		enabled   = true
+		bootOrder = uint(1)
+		osDisk    = "os-disk"
+		nic1      = "nic1"
+	)
+
+	return &kvcorev1.VirtualMachineInstanceTemplateSpec{
+		Spec: kvcorev1.VirtualMachineInstanceSpec{
+			Domain: kvcorev1.DomainSpec{
+				Devices: kvcorev1.Devices{
+					Disks: []kvcorev1.Disk{
+						{
+							Name: osDisk,
+							DiskDevice: kvcorev1.DiskDevice{
+								Disk: &kvcorev1.DiskTarget{
+									Bus: kvcorev1.DiskBusVirtio,
+								},
+							},
+							BootOrder: &bootOrder,
+						},
 					},
-					Spec: cdiv1beta1.DataVolumeSpec{
-						Source: &cdiv1beta1.DataVolumeSource{
-							PVC: &cdiv1beta1.DataVolumeSourcePVC{
-								Namespace: namespace,
-								Name:      bootDataVolume,
+					Interfaces: []kvcorev1.Interface{
+						{
+							Name: nic1,
+							InterfaceBindingMethod: kvcorev1.InterfaceBindingMethod{
+								Bridge: &kvcorev1.InterfaceBridge{},
 							},
 						},
-						PVC: &corev1.PersistentVolumeClaimSpec{
-							AccessModes: accessModes,
-							VolumeMode:  volumeMode,
-							Resources: corev1.VolumeResourceRequirements{
-								Requests: storageSize,
-							},
-						},
+					},
+					TPM: &kvcorev1.TPMDevice{
+						Enabled: &enabled,
 					},
 				},
 			},
-			Template: &kvcorev1.VirtualMachineInstanceTemplateSpec{
-				Spec: kvcorev1.VirtualMachineInstanceSpec{
-					Domain: kvcorev1.DomainSpec{
-						Devices: kvcorev1.Devices{
-							Disks: []kvcorev1.Disk{
-								{
-									Name: osDisk,
-									DiskDevice: kvcorev1.DiskDevice{
-										Disk: &kvcorev1.DiskTarget{
-											Bus: kvcorev1.DiskBusVirtio,
-										},
-									},
-									BootOrder: &bootOrder,
-								},
-							},
-							Interfaces: []kvcorev1.Interface{
-								{
-									Name: nic1,
-									InterfaceBindingMethod: kvcorev1.InterfaceBindingMethod{
-										Bridge: &kvcorev1.InterfaceBridge{},
-									},
-								},
-							},
-							TPM: &kvcorev1.TPMDevice{
-								Enabled: &enabled,
-							},
-						},
+			Networks: []kvcorev1.Network{
+				{
+					Name: nic1,
+					NetworkSource: kvcorev1.NetworkSource{
+						Pod: &kvcorev1.PodNetwork{},
 					},
-					Networks: []kvcorev1.Network{
-						{
-							Name: nic1,
-							NetworkSource: kvcorev1.NetworkSource{
-								Pod: &kvcorev1.PodNetwork{},
-							},
-						},
-					},
-					Volumes: []kvcorev1.Volume{
-						{
-							Name: osDisk,
-							VolumeSource: kvcorev1.VolumeSource{
-								DataVolume: &kvcorev1.DataVolumeSource{
-									Name: dataVolumeName,
-								},
-							},
+				},
+			},
+			Volumes: []kvcorev1.Volume{
+				{
+					Name: osDisk,
+					VolumeSource: kvcorev1.VolumeSource{
+						DataVolume: &kvcorev1.DataVolumeSource{
+							Name: dataVolumeName,
 						},
 					},
 				},
 			},
 		},
 	}
+}
 
-	if startupScript != "" {
-		virtualMachine.Spec.Template.Spec.Domain.Devices.Disks = append(virtualMachine.Spec.Template.Spec.Domain.Devices.Disks, kvcorev1.Disk{
+func (uc *UseCase) addCloudInitDisk(virtualMachine *kvcorev1.VirtualMachine, startupScript string) {
+	cloudInitDisk := "cloud-init-disk"
+
+	virtualMachine.Spec.Template.Spec.Domain.Devices.Disks = append(
+		virtualMachine.Spec.Template.Spec.Domain.Devices.Disks,
+		kvcorev1.Disk{
 			Name: cloudInitDisk,
 			DiskDevice: kvcorev1.DiskDevice{
 				Disk: &kvcorev1.DiskTarget{
 					Bus: kvcorev1.DiskBusVirtio,
 				},
 			},
-		})
-		virtualMachine.Spec.Template.Spec.Volumes = append(virtualMachine.Spec.Template.Spec.Volumes, kvcorev1.Volume{
+		},
+	)
+
+	virtualMachine.Spec.Template.Spec.Volumes = append(
+		virtualMachine.Spec.Template.Spec.Volumes,
+		kvcorev1.Volume{
 			Name: cloudInitDisk,
 			VolumeSource: kvcorev1.VolumeSource{
 				CloudInitNoCloud: &kvcorev1.CloudInitNoCloudSource{
 					UserData: startupScript,
 				},
 			},
-		})
-	}
-
-	return virtualMachine
+		},
+	)
 }
