@@ -5,7 +5,7 @@
 	import { curveLinear } from 'd3-shape';
 	import { LineChart } from 'layerchart';
 	import { PrometheusDriver, SampleValue } from 'prometheus-query';
-	import { getContext, onMount } from 'svelte';
+	import { getContext, onDestroy, onMount } from 'svelte';
 
 	import { ModelService } from '$lib/api/model/v1/model_pb';
 	import { ReloadManager } from '$lib/components/custom/reloader';
@@ -81,6 +81,9 @@
 		} catch (error) {
 			console.error(`Fail to fetch data in scope ${scope}:`, error);
 		}
+	});
+	onDestroy(() => {
+		reloadManager.stop();
 	});
 
 	$effect(() => {
