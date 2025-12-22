@@ -7,6 +7,7 @@
 	import type { VirtualMachine } from '$lib/api/instance/v1/instance_pb';
 	import type { DataVolume } from '$lib/api/instance/v1/instance_pb';
 	import {
+		DataVolumeFilter,
 		InstanceService,
 		VirtualMachine_Disk_Volume_Source_Type
 	} from '$lib/api/instance/v1/instance_pb';
@@ -39,7 +40,7 @@
 			const dataVolumesResponse = await virtualMachineClient.listDataVolumes({
 				scope: scope,
 				namespace: virtualMachine.namespace,
-				bootImage: false // Set to true if you only want boot images
+				filter: DataVolumeFilter.NON_BOOTABLE
 			});
 
 			// Create a map of data volumes by name for quick lookup
