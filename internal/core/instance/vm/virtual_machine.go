@@ -266,11 +266,11 @@ func (uc *UseCase) CreateVirtualMachine(ctx context.Context, scope, namespace, n
 		return nil, fmt.Errorf("failed to get source DataVolume %s: %w", bootDataVolume, err)
 	}
 
-	if dvPersistent.Persistent.PersistentVolumeClaim == nil {
+	if dvPersistent.PersistentVolumeClaim == nil {
 		return nil, fmt.Errorf("source DataVolume %s has no PVC", bootDataVolume)
 	}
 
-	pvc := dvPersistent.Persistent.PersistentVolumeClaim
+	pvc := dvPersistent.PersistentVolumeClaim
 	if pvc.Spec.Resources.Requests == nil {
 		return nil, fmt.Errorf("source DataVolume %s PVC has no resource requests", bootDataVolume)
 	}
@@ -693,4 +693,3 @@ func (uc *UseCase) buildVirtualMachine(namespace, name, instanceType, bootDataVo
 
 	return virtualMachine
 }
-
