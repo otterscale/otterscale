@@ -116,7 +116,7 @@
 									{#if dataVolume.source}
 										<div class="flex items-center gap-1">
 											{#if !dataVolume.source.data}
-												<Badge variant="secondary">
+												<Badge variant="outline">
 													<Icon icon="ph:file" class="mr-1" />
 													BLANK
 												</Badge>
