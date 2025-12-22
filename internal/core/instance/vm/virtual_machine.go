@@ -582,7 +582,7 @@ func (uc *UseCase) buildVirtualMachine(namespace, name, instanceType, bootDataVo
 		volumeMode = &defaultMode
 	}
 
-	if accessModes == nil {
+	if len(accessModes) == 0 {
 		accessModes = []corev1.PersistentVolumeAccessMode{corev1.ReadWriteOnce}
 	}
 
