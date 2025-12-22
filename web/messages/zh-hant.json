@@ -797,6 +797,7 @@
 	"scheduling": "排程中",
 	"scheduled": "已排程",
 	"succeeded": "成功",
+	"succeeded_or_failed": "成功/失敗",
 	"waiting_for_sync": "等待同步",
 	"extend": "擴充",
 	"extend_data_volume": "擴充資料磁碟區",
@@ -900,5 +901,7 @@
 	"validate_alphanum_dash_start_alpha": "必須由字母、數字或 '-' 組成，並以字母開頭。",
 	"validate_lower_alphanum_dash_start_alpha": "必須由小寫字母、數字或 '-' 組成，並以字母開頭。",
 	"validate_lower_alphanum_dash_dot": "必須由小寫字母、數字、'-' 或 '.' 組成，可以 '.' 開頭。",
-	"validate_max_length": "必須少於 {max} 個字元。"
+	"validate_max_length": "必須少於 {max} 個字元。",
+	"jobs": "Jobs",
+	"active": "Active"
 }

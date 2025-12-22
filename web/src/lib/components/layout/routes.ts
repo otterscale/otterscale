@@ -43,6 +43,10 @@ const platformRoutes = (scope: string): Route[] => [
 		},
 		items: [
 			{
+				title: m.jobs(),
+				url: resolve('/(auth)/scope/[scope]/applications/jobs', { scope: scope })
+			},
+			{
 				title: m.workloads(),
 				url: resolve('/(auth)/scope/[scope]/applications/workloads', { scope: scope })
 			},

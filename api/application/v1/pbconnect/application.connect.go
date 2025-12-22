@@ -49,6 +49,9 @@ const (
 	// ApplicationServiceDeleteApplicationPodProcedure is the fully-qualified name of the
 	// ApplicationService's DeleteApplicationPod RPC.
 	ApplicationServiceDeleteApplicationPodProcedure = "/otterscale.application.v1.ApplicationService/DeleteApplicationPod"
+	// ApplicationServiceListJobsProcedure is the fully-qualified name of the ApplicationService's
+	// ListJobs RPC.
+	ApplicationServiceListJobsProcedure = "/otterscale.application.v1.ApplicationService/ListJobs"
 	// ApplicationServiceWatchLogsProcedure is the fully-qualified name of the ApplicationService's
 	// WatchLogs RPC.
 	ApplicationServiceWatchLogsProcedure = "/otterscale.application.v1.ApplicationService/WatchLogs"
@@ -95,6 +98,7 @@ type ApplicationServiceClient interface {
 	RestartApplication(context.Context, *v1.RestartApplicationRequest) (*emptypb.Empty, error)
 	ScaleApplication(context.Context, *v1.ScaleApplicationRequest) (*emptypb.Empty, error)
 	DeleteApplicationPod(context.Context, *v1.DeleteApplicationPodRequest) (*emptypb.Empty, error)
+	ListJobs(context.Context, *v1.ListJobsRequest) (*v1.ListJobsResponse, error)
 	WatchLogs(context.Context, *v1.WatchLogsRequest) (*connect.ServerStreamForClient[v1.WatchLogsResponse], error)
 	// Due to browser limitations, bidirectional streaming cannot be used.
 	ExecuteTTY(context.Context, *v1.ExecuteTTYRequest) (*connect.ServerStreamForClient[v1.ExecuteTTYResponse], error)
@@ -150,6 +154,12 @@ func NewApplicationServiceClient(httpClient connect.HTTPClient, baseURL string, 
 			httpClient,
 			baseURL+ApplicationServiceDeleteApplicationPodProcedure,
 			connect.WithSchema(applicationServiceMethods.ByName("DeleteApplicationPod")),
+			connect.WithClientOptions(opts...),
+		),
+		listJobs: connect.NewClient[v1.ListJobsRequest, v1.ListJobsResponse](
+			httpClient,
+			baseURL+ApplicationServiceListJobsProcedure,
+			connect.WithSchema(applicationServiceMethods.ByName("ListJobs")),
 			connect.WithClientOptions(opts...),
 		),
 		watchLogs: connect.NewClient[v1.WatchLogsRequest, v1.WatchLogsResponse](
@@ -234,6 +244,7 @@ type applicationServiceClient struct {
 	restartApplication   *connect.Client[v1.RestartApplicationRequest, emptypb.Empty]
 	scaleApplication     *connect.Client[v1.ScaleApplicationRequest, emptypb.Empty]
 	deleteApplicationPod *connect.Client[v1.DeleteApplicationPodRequest, emptypb.Empty]
+	listJobs             *connect.Client[v1.ListJobsRequest, v1.ListJobsResponse]
 	watchLogs            *connect.Client[v1.WatchLogsRequest, v1.WatchLogsResponse]
 	executeTTY           *connect.Client[v1.ExecuteTTYRequest, v1.ExecuteTTYResponse]
 	writeTTY             *connect.Client[v1.WriteTTYRequest, emptypb.Empty]
@@ -287,6 +298,15 @@ func (c *applicationServiceClient) ScaleApplication(ctx context.Context, req *v1
 // DeleteApplicationPod calls otterscale.application.v1.ApplicationService.DeleteApplicationPod.
 func (c *applicationServiceClient) DeleteApplicationPod(ctx context.Context, req *v1.DeleteApplicationPodRequest) (*emptypb.Empty, error) {
 	response, err := c.deleteApplicationPod.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
+}
+
+// ListJobs calls otterscale.application.v1.ApplicationService.ListJobs.
+func (c *applicationServiceClient) ListJobs(ctx context.Context, req *v1.ListJobsRequest) (*v1.ListJobsResponse, error) {
+	response, err := c.listJobs.CallUnary(ctx, connect.NewRequest(req))
 	if response != nil {
 		return response.Msg, err
 	}
@@ -401,6 +421,7 @@ type ApplicationServiceHandler interface {
 	RestartApplication(context.Context, *v1.RestartApplicationRequest) (*emptypb.Empty, error)
 	ScaleApplication(context.Context, *v1.ScaleApplicationRequest) (*emptypb.Empty, error)
 	DeleteApplicationPod(context.Context, *v1.DeleteApplicationPodRequest) (*emptypb.Empty, error)
+	ListJobs(context.Context, *v1.ListJobsRequest) (*v1.ListJobsResponse, error)
 	WatchLogs(context.Context, *v1.WatchLogsRequest, *connect.ServerStream[v1.WatchLogsResponse]) error
 	// Due to browser limitations, bidirectional streaming cannot be used.
 	ExecuteTTY(context.Context, *v1.ExecuteTTYRequest, *connect.ServerStream[v1.ExecuteTTYResponse]) error
@@ -451,6 +472,12 @@ func NewApplicationServiceHandler(svc ApplicationServiceHandler, opts ...connect
 		ApplicationServiceDeleteApplicationPodProcedure,
 		svc.DeleteApplicationPod,
 		connect.WithSchema(applicationServiceMethods.ByName("DeleteApplicationPod")),
+		connect.WithHandlerOptions(opts...),
+	)
+	applicationServiceListJobsHandler := connect.NewUnaryHandlerSimple(
+		ApplicationServiceListJobsProcedure,
+		svc.ListJobs,
+		connect.WithSchema(applicationServiceMethods.ByName("ListJobs")),
 		connect.WithHandlerOptions(opts...),
 	)
 	applicationServiceWatchLogsHandler := connect.NewServerStreamHandlerSimple(
@@ -537,6 +564,8 @@ func NewApplicationServiceHandler(svc ApplicationServiceHandler, opts ...connect
 			applicationServiceScaleApplicationHandler.ServeHTTP(w, r)
 		case ApplicationServiceDeleteApplicationPodProcedure:
 			applicationServiceDeleteApplicationPodHandler.ServeHTTP(w, r)
+		case ApplicationServiceListJobsProcedure:
+			applicationServiceListJobsHandler.ServeHTTP(w, r)
 		case ApplicationServiceWatchLogsProcedure:
 			applicationServiceWatchLogsHandler.ServeHTTP(w, r)
 		case ApplicationServiceExecuteTTYProcedure:
@@ -588,6 +617,10 @@ func (UnimplementedApplicationServiceHandler) ScaleApplication(context.Context, 
 
 func (UnimplementedApplicationServiceHandler) DeleteApplicationPod(context.Context, *v1.DeleteApplicationPodRequest) (*emptypb.Empty, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.application.v1.ApplicationService.DeleteApplicationPod is not implemented"))
+}
+
+func (UnimplementedApplicationServiceHandler) ListJobs(context.Context, *v1.ListJobsRequest) (*v1.ListJobsResponse, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.application.v1.ApplicationService.ListJobs is not implemented"))
 }
 
 func (UnimplementedApplicationServiceHandler) WatchLogs(context.Context, *v1.WatchLogsRequest, *connect.ServerStream[v1.WatchLogsResponse]) error {

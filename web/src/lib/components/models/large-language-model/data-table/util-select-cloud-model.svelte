@@ -22,6 +22,7 @@
 	import Label from '$lib/components/ui/label/label.svelte';
 	import * as Popover from '$lib/components/ui/popover';
 	import Separator from '$lib/components/ui/separator/separator.svelte';
+	import { Skeleton } from '$lib/components/ui/skeleton/index.js';
 	import { formatBigNumber, formatTimeAgo } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
 	import { cn } from '$lib/utils';
@@ -37,9 +38,13 @@
 	const defaultSort = 'downloads' as SortType;
 	let sort = $state<SortType>(defaultSort);
 
-	let huggingFaceModels = $state([] as HuggingFaceModel[]);
 	let isHuggingFaceModelsLoaded = $state(false);
+	function initHuggingFaceModelsLoaded() {
+		isHuggingFaceModelsLoaded = false;
+	}
+	let huggingFaceModels = $state([] as HuggingFaceModel[]);
 	async function fetch() {
+		initHuggingFaceModelsLoaded();
 		const response = await fetchHuggingFaceModels(
 			'RedHatAI',
 			modelTags.map((tag) => tag.id),
@@ -123,7 +128,7 @@
 		open = false;
 	}
 
-	function resetFilter() {
+	function initFilter() {
 		selectedLicenseTags = defaultLicenseTags;
 		selectedLibraryTags = defaultLibraryTags;
 		selectedPipelineTags = defaultPipelineTags;
@@ -131,8 +136,13 @@
 		sort = defaultSort;
 		search = '';
 	}
-	function resetModel() {
+	function initModel() {
 		selectedModel = null;
+	}
+	async function init() {
+		initModel();
+		initFilter();
+		await fetch();
 	}
 
 	onMount(async () => {
@@ -145,10 +155,9 @@
 
 <Dialog.Root
 	bind:open
-	onOpenChange={(isOpen) => {
+	onOpenChange={async (isOpen) => {
 		if (isOpen) {
-			resetModel();
-			resetFilter();
+			await init();
 		}
 	}}
 >
@@ -416,7 +425,58 @@
 					</Button>
 				{/if}
 			</div>
-			{#if huggingFaceModels.length > 0}
+			{#if !isHuggingFaceModelsLoaded}
+				<div class="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+					{#each Array(9)}
+						<Card.Root class="h-40">
+							<Card.Content>
+								<div class="flex items-center gap-2">
+									<span class="h-fit w-fit rounded-full p-4">
+										<Skeleton class="size-12 rounded-full" />
+									</span>
+									<div class="space-y-2">
+										<Skeleton class="h-10 w-70" />
+										<div class="ml-auto flex items-center gap-4">
+											{#each Array(3)}
+												<Skeleton class="h-4 w-10" />
+											{/each}
+										</div>
+									</div>
+								</div>
+							</Card.Content>
+							<Card.Footer class="mt-auto">
+								<span class="flex items-center gap-4 px-4">
+									{#each Array(3)}
+										<Skeleton class="h-4 w-20" />
+									{/each}
+								</span>
+							</Card.Footer>
+						</Card.Root>
+					{/each}
+				</div>
+			{:else if huggingFaceModels.length === 0}
+				<!-- Empty -->
+				<div class="space-y-8 p-8">
+					<div class="text-center">
+						<h3 class="text-lg font-semibold">{m.no_models_found()}</h3>
+						<p class="text-sm text-muted-foreground">
+							{m.no_models_matching_filters()}
+						</p>
+					</div>
+					<div class="flex flex-col items-center justify-center gap-4">
+						<Icon icon="ph:robot-fill" class="size-32 animate-pulse text-muted-foreground/50" />
+						<Button
+							variant="destructive"
+							onclick={() => {
+								initFilter();
+								fetch();
+							}}
+						>
+							{m.reset()}
+						</Button>
+					</div>
+				</div>
+			{:else if huggingFaceModels.length > 0}
 				<!-- Models -->
 				<div class="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
 					{#each huggingFaceModels as model (model.id)}
@@ -472,28 +532,6 @@
 							</Card.Footer>
 						</Card.Root>
 					{/each}
-				</div>
-			{:else if isHuggingFaceModelsLoaded}
-				<!-- Empty -->
-				<div class="space-y-8 p-8">
-					<div class="text-center">
-						<h3 class="text-lg font-semibold">{m.no_models_found()}</h3>
-						<p class="text-sm text-muted-foreground">
-							{m.no_models_matching_filters()}
-						</p>
-					</div>
-					<div class="flex flex-col items-center justify-center gap-4">
-						<Icon icon="ph:robot-fill" class="size-32 animate-pulse text-muted-foreground/50" />
-						<Button
-							variant="destructive"
-							onclick={() => {
-								resetFilter();
-								fetch();
-							}}
-						>
-							{m.reset()}
-						</Button>
-					</div>
 				</div>
 			{/if}
 		</div>
