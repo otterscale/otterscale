@@ -5,11 +5,15 @@ import (
 	"fmt"
 
 	"golang.org/x/sync/errgroup"
+	corev1 "k8s.io/api/core/v1"
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
+	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	kvcorev1 "kubevirt.io/api/core/v1"
+	cdiv1beta1 "kubevirt.io/containerized-data-importer-api/pkg/apis/core/v1beta1"
 
 	"github.com/otterscale/otterscale/internal/core/application/service"
+	"github.com/otterscale/otterscale/internal/core/instance/cdi"
 	"github.com/otterscale/otterscale/internal/core/instance/vmi"
 	"github.com/otterscale/otterscale/internal/core/machine"
 )
@@ -75,9 +79,11 @@ type UseCase struct {
 	machine                machine.MachineRepo
 	service                service.ServiceRepo
 	virtualMachineInstance vmi.VirtualMachineInstanceRepo
+	dataVolume             cdi.DataVolumeRepo
+	cdiUseCase             *cdi.UseCase
 }
 
-func NewUseCase(virtualMachine VirtualMachineRepo, virtualMachineClone VirtualMachineCloneRepo, virtualMachineRestore VirtualMachineRestoreRepo, virtualMachineSnapshot VirtualMachineSnapshotRepo, machine machine.MachineRepo, service service.ServiceRepo, virtualMachineInstance vmi.VirtualMachineInstanceRepo) *UseCase {
+func NewUseCase(virtualMachine VirtualMachineRepo, virtualMachineClone VirtualMachineCloneRepo, virtualMachineRestore VirtualMachineRestoreRepo, virtualMachineSnapshot VirtualMachineSnapshotRepo, machine machine.MachineRepo, service service.ServiceRepo, virtualMachineInstance vmi.VirtualMachineInstanceRepo, dataVolume cdi.DataVolumeRepo, cdiUseCase *cdi.UseCase) *UseCase {
 	return &UseCase{
 		virtualMachine:         virtualMachine,
 		virtualMachineClone:    virtualMachineClone,
@@ -86,6 +92,8 @@ func NewUseCase(virtualMachine VirtualMachineRepo, virtualMachineClone VirtualMa
 		service:                service,
 		machine:                machine,
 		virtualMachineInstance: virtualMachineInstance,
+		dataVolume:             dataVolume,
+		cdiUseCase:             cdiUseCase,
 	}
 }
 
@@ -254,7 +262,33 @@ func (uc *UseCase) GetVirtualMachine(ctx context.Context, scope, namespace, name
 }
 
 func (uc *UseCase) CreateVirtualMachine(ctx context.Context, scope, namespace, name, instanceType, bootDataVolume, startupScript string) (*VirtualMachineData, error) {
-	virtualMachine, err := uc.virtualMachine.Create(ctx, scope, namespace, uc.buildVirtualMachine(namespace, name, instanceType, bootDataVolume, startupScript))
+	dvPersistent, err := uc.cdiUseCase.GetDataVolume(ctx, scope, namespace, bootDataVolume)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get source DataVolume %s: %w", bootDataVolume, err)
+	}
+
+	if dvPersistent.Persistent == nil || dvPersistent.Persistent.PersistentVolumeClaim == nil {
+		return nil, fmt.Errorf("source DataVolume %s has no PVC", bootDataVolume)
+	}
+
+	pvc := dvPersistent.Persistent.PersistentVolumeClaim
+	if pvc.Spec.Resources.Requests == nil {
+		return nil, fmt.Errorf("source DataVolume %s PVC has no resource requests", bootDataVolume)
+	}
+
+	var volumeMode string
+	if pvc.Spec.VolumeMode != nil {
+		volumeMode = string(*pvc.Spec.VolumeMode)
+	} else {
+		volumeMode = string(corev1.PersistentVolumeFilesystem)
+	}
+
+	storageSize, ok := pvc.Spec.Resources.Requests[corev1.ResourceStorage]
+	if !ok {
+		return nil, fmt.Errorf("source DataVolume %s PVC has no storage size", bootDataVolume)
+	}
+
+	virtualMachine, err := uc.virtualMachine.Create(ctx, scope, namespace, uc.buildVirtualMachine(namespace, name, instanceType, bootDataVolume, volumeMode, storageSize, startupScript))
 	if err != nil {
 		return nil, err
 	}
@@ -541,14 +575,15 @@ func (uc *UseCase) combineVirtualMachine(namespace, name string, virtualMachine 
 	}
 }
 
-func (uc *UseCase) buildVirtualMachine(namespace, name, instanceType, bootDataVolume, startupScript string) *VirtualMachine {
+func (uc *UseCase) buildVirtualMachine(namespace, name, instanceType, bootDataVolume, volumeMode string, storageSize resource.Quantity, startupScript string) *VirtualMachine {
 	var (
-		runStrategy   = kvcorev1.RunStrategyHalted
-		enabled       = true
-		bootOrder     = uint(1)
-		osDisk        = "os-disk"
-		cloudInitDisk = "cloud-init-disk"
-		nic1          = "nic1"
+		runStrategy    = kvcorev1.RunStrategyHalted
+		enabled        = true
+		bootOrder      = uint(1)
+		osDisk         = "os-disk"
+		cloudInitDisk  = "cloud-init-disk"
+		nic1           = "nic1"
+		dataVolumeName = name
 	)
 
 	virtualMachine := &kvcorev1.VirtualMachine{
@@ -563,6 +598,30 @@ func (uc *UseCase) buildVirtualMachine(namespace, name, instanceType, bootDataVo
 			RunStrategy: &runStrategy,
 			Instancetype: &kvcorev1.InstancetypeMatcher{
 				Name: instanceType,
+			},
+			DataVolumeTemplates: []kvcorev1.DataVolumeTemplateSpec{
+				{
+					ObjectMeta: metav1.ObjectMeta{
+						Name: dataVolumeName,
+					},
+					Spec: cdiv1beta1.DataVolumeSpec{
+						Source: &cdiv1beta1.DataVolumeSource{
+							PVC: &cdiv1beta1.DataVolumeSourcePVC{
+								Namespace: namespace,
+								Name:      bootDataVolume,
+							},
+						},
+						PVC: &corev1.PersistentVolumeClaimSpec{
+							AccessModes: []corev1.PersistentVolumeAccessMode{corev1.ReadWriteOnce},
+							VolumeMode:  &[]corev1.PersistentVolumeMode{corev1.PersistentVolumeMode(volumeMode)}[0],
+							Resources: corev1.VolumeResourceRequirements{
+								Requests: corev1.ResourceList{
+									corev1.ResourceStorage: storageSize,
+								},
+							},
+						},
+					},
+				},
 			},
 			Template: &kvcorev1.VirtualMachineInstanceTemplateSpec{
 				Spec: kvcorev1.VirtualMachineInstanceSpec{
@@ -605,7 +664,7 @@ func (uc *UseCase) buildVirtualMachine(namespace, name, instanceType, bootDataVo
 							Name: osDisk,
 							VolumeSource: kvcorev1.VolumeSource{
 								DataVolume: &kvcorev1.DataVolumeSource{
-									Name: bootDataVolume,
+									Name: dataVolumeName,
 								},
 							},
 						},
@@ -636,3 +695,4 @@ func (uc *UseCase) buildVirtualMachine(namespace, name, instanceType, bootDataVo
 
 	return virtualMachine
 }
+
