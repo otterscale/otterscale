@@ -113,15 +113,15 @@
 									</Tooltip.Provider>
 								</Table.Cell>
 								<Table.Cell class="items-start">
-								{#if dataVolume.source}
-									<div class="flex items-center gap-1">
-										{#if !dataVolume.source.data}
-											<Badge variant="secondary">
-												<Icon icon="ph:file" class="mr-1" />
-												BLANK
-											</Badge>
-										{:else}
-											<HoverCard.Root>
+									{#if dataVolume.source}
+										<div class="flex items-center gap-1">
+											{#if !dataVolume.source.data}
+												<Badge variant="secondary">
+													<Icon icon="ph:file" class="mr-1" />
+													BLANK
+												</Badge>
+											{:else}
+												<HoverCard.Root>
 													<HoverCard.Trigger>
 														<!-- <Icon icon="ph:info" /> -->
 														<Badge variant="outline">
