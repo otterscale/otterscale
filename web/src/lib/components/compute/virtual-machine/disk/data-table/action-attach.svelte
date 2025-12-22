@@ -6,12 +6,12 @@
 	import { toast } from 'svelte-sonner';
 
 	import {
-		DataVolumeFilter,
 		type AttachVirtualMachineDiskRequest,
 		type DataVolume,
+		DataVolumeFilter,
+		InstanceService,
 		type VirtualMachine
 	} from '$lib/api/instance/v1/instance_pb';
-	import { InstanceService } from '$lib/api/instance/v1/instance_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
