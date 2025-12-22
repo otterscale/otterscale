@@ -4,7 +4,7 @@
 	import { curveLinear } from 'd3-shape';
 	import { LineChart } from 'layerchart';
 	import { PrometheusDriver, SampleValue } from 'prometheus-query';
-	import { onMount } from 'svelte';
+	import { onDestroy, onMount } from 'svelte';
 
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import { buttonVariants } from '$lib/components/ui/button';
@@ -86,6 +86,9 @@
 		} catch (error) {
 			console.error(`Fail to fetch data in scope ${scope}:`, error);
 		}
+	});
+	onDestroy(() => {
+		reloadManager.stop();
 	});
 
 	$effect(() => {
