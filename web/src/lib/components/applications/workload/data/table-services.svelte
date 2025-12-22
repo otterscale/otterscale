@@ -34,7 +34,7 @@
 		</Table.Row>
 	</Table.Header>
 	<Table.Body>
-		{#each $application.services as service}
+		{#each $application.services as service (service.name)}
 			<Table.Row>
 				<Table.Cell>{service.name}</Table.Cell>
 				<Table.Cell>
@@ -44,12 +44,28 @@
 					{service.clusterIp}
 				</Table.Cell>
 				<Table.Cell class="space-y-1">
-					{#each service.ports as port}
-						<div class="flex items-center gap-1">
-							<Badge variant="outline">{port.protocol}</Badge>
-							{port.port}:{port.nodePort}
-						</div>
-					{/each}
+					<div class="flex flex-col gap-1.5">
+						{#each service.ports as port (port.port)}
+							<div class="flex items-center gap-2">
+								<Badge variant="outline" class="uppercase">
+									{port.protocol}
+								</Badge>
+								<div class="flex items-center">
+									<span>{port.port}</span>
+									{#if port.nodePort > 0}
+										<span class="text-muted-foreground">:{port.nodePort}</span>
+									{/if}
+									<span class="mx-1.5 text-muted-foreground/60">→</span>
+									<span class="text-blue-500/80">{port.targetPort}</span>
+								</div>
+								{#if port.name}
+									<span class="rounded bg-muted px-1 text-xs text-muted-foreground uppercase">
+										{port.name}
+									</span>
+								{/if}
+							</div>
+						{/each}
+					</div>
 				</Table.Cell>
 			</Table.Row>
 		{/each}
