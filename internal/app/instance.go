@@ -381,6 +381,8 @@ func filterToBootImagePointer(filter pb.DataVolumeFilter) *bool {
 		return &val
 	case pb.DataVolumeFilter_ALL:
 		return nil
+	default:
+		return nil
 	}
 }
 
