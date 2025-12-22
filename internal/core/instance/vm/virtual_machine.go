@@ -11,7 +11,6 @@ import (
 	kvcorev1 "kubevirt.io/api/core/v1"
 	cdiv1beta1 "kubevirt.io/containerized-data-importer-api/pkg/apis/core/v1beta1"
 
-	"github.com/otterscale/otterscale/internal/core/application/persistent"
 	"github.com/otterscale/otterscale/internal/core/application/service"
 	"github.com/otterscale/otterscale/internal/core/instance/cdi"
 	"github.com/otterscale/otterscale/internal/core/instance/vmi"
@@ -276,7 +275,19 @@ func (uc *UseCase) CreateVirtualMachine(ctx context.Context, scope, namespace, n
 		return nil, fmt.Errorf("source DataVolume %s PVC has no resource requests", bootDataVolume)
 	}
 
-	virtualMachine, err := uc.virtualMachine.Create(ctx, scope, namespace, uc.buildVirtualMachine(namespace, name, instanceType, bootDataVolume, pvc, startupScript))
+	storageSize := pvc.Spec.Resources.Requests
+	volumeMode := pvc.Spec.VolumeMode
+	if volumeMode == nil {
+		defaultMode := corev1.PersistentVolumeFilesystem
+		volumeMode = &defaultMode
+	}
+
+	accessModes := pvc.Spec.AccessModes
+	if len(accessModes) == 0 {
+		accessModes = []corev1.PersistentVolumeAccessMode{corev1.ReadWriteOnce}
+	}
+
+	virtualMachine, err := uc.virtualMachine.Create(ctx, scope, namespace, uc.buildVirtualMachine(namespace, name, instanceType, bootDataVolume, volumeMode, accessModes, storageSize, startupScript))
 	if err != nil {
 		return nil, err
 	}
@@ -563,9 +574,7 @@ func (uc *UseCase) combineVirtualMachine(namespace, name string, virtualMachine 
 	}
 }
 
-var pvc *persistent.PersistentVolumeClaim
-
-func (uc *UseCase) buildVirtualMachine(namespace, name, instanceType, bootDataVolume string, pvc *corev1.PersistentVolumeClaim, startupScript string) *VirtualMachine {
+func (uc *UseCase) buildVirtualMachine(namespace, name, instanceType, bootDataVolume string, volumeMode *corev1.PersistentVolumeMode, accessModes []corev1.PersistentVolumeAccessMode, storageSize corev1.ResourceList, startupScript string) *VirtualMachine {
 	var (
 		runStrategy    = kvcorev1.RunStrategyHalted
 		enabled        = true
@@ -575,18 +584,6 @@ func (uc *UseCase) buildVirtualMachine(namespace, name, instanceType, bootDataVo
 		nic1           = "nic1"
 		dataVolumeName = name
 	)
-
-	storageSize := pvc.Spec.Resources.Requests
-	volumeMode := pvc.Spec.VolumeMode
-	if volumeMode == nil {
-		defaultMode := corev1.PersistentVolumeFilesystem
-		volumeMode = &defaultMode
-	}
-
-	accessModes := pvc.Spec.AccessModes
-	if len(accessModes) == 0 {
-		accessModes = []corev1.PersistentVolumeAccessMode{corev1.ReadWriteOnce}
-	}
 
 	virtualMachine := &kvcorev1.VirtualMachine{
 		ObjectMeta: metav1.ObjectMeta{
