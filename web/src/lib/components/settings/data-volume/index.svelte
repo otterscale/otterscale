@@ -7,6 +7,7 @@
 	import {
 		type DataVolume,
 		DataVolume_Source_Type,
+		DataVolumeFilter,
 		InstanceService
 	} from '$lib/api/instance/v1/instance_pb';
 	import { Reloader, ReloadManager } from '$lib/components/custom/reloader';
@@ -34,7 +35,7 @@
 			const response = await virtualMachineClient.listDataVolumes({
 				scope: scope,
 				namespace: '',
-				bootImage: true
+				filter: DataVolumeFilter.ALL
 			});
 			dataVolumes.set(response.dataVolumes);
 		} catch (error) {
@@ -114,15 +115,17 @@
 								<Table.Cell class="items-start">
 									{#if dataVolume.source}
 										<div class="flex items-center gap-1">
-											{#if dataVolume.source.data}
+											{#if dataVolume.source.type === DataVolume_Source_Type.BLANK_IMAGE}
+												<Badge variant="outline">
+													<Icon icon="ph:file" class="mr-1" />
+													BLANK
+												</Badge>
+											{:else}
 												<HoverCard.Root>
 													<HoverCard.Trigger>
 														<!-- <Icon icon="ph:info" /> -->
 														<Badge variant="outline">
-															{#if dataVolume.source.type === DataVolume_Source_Type.BLANK_IMAGE}
-																<Icon icon="ph:file-blank" class="mr-1" />
-																BLANK IMAGE
-															{:else if dataVolume.source.type === DataVolume_Source_Type.HTTP_URL}
+															{#if dataVolume.source.type === DataVolume_Source_Type.HTTP_URL}
 																<Icon icon="ph:file-cloud" class="mr-1" />
 																HTTP URL
 															{:else if dataVolume.source.type === DataVolume_Source_Type.EXISTING_PERSISTENT_VOLUME_CLAIM}

@@ -239,7 +239,9 @@ func (s *InstanceService) VNCInstance(_ context.Context, req *pb.VNCInstanceRequ
 }
 
 func (s *InstanceService) ListDataVolumes(ctx context.Context, req *pb.ListDataVolumesRequest) (*pb.ListDataVolumesResponse, error) {
-	its, err := s.dataVolume.ListDataVolumes(ctx, req.GetScope(), req.GetNamespace(), req.GetBootImage())
+	bootImage := filterToBootImagePointer(req.GetFilter())
+
+	its, err := s.dataVolume.ListDataVolumes(ctx, req.GetScope(), req.GetNamespace(), bootImage)
 	if err != nil {
 		return nil, err
 	}
@@ -367,6 +369,21 @@ func (s *InstanceService) VNCPathPrefix() string {
 
 func (s *InstanceService) VNCHandler() http.HandlerFunc {
 	return s.vnc.VNCHandler
+}
+
+func filterToBootImagePointer(filter pb.DataVolumeFilter) *bool {
+	switch filter {
+	case pb.DataVolumeFilter_BOOTABLE:
+		val := true
+		return &val
+	case pb.DataVolumeFilter_NON_BOOTABLE:
+		val := false
+		return &val
+	case pb.DataVolumeFilter_ALL:
+		return nil
+	default:
+		return nil
+	}
 }
 
 func toPorts(ps []*apppb.Application_Service_Port) []service.Port {

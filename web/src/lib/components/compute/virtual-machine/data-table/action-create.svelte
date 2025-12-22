@@ -6,7 +6,7 @@
 	import { toast } from 'svelte-sonner';
 
 	import type { CreateVirtualMachineRequest, DataVolume } from '$lib/api/instance/v1/instance_pb';
-	import { InstanceService } from '$lib/api/instance/v1/instance_pb';
+	import { DataVolumeFilter, InstanceService } from '$lib/api/instance/v1/instance_pb';
 	import * as Code from '$lib/components/custom/code';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
@@ -89,7 +89,7 @@
 			const response = await virtualMachineClient.listDataVolumes({
 				scope: scope,
 				namespace: DEFAULT_NAMESPACE,
-				bootImage: true
+				filter: DataVolumeFilter.BOOTABLE
 			});
 
 			const dvOptions: BootDataVolumesOption[] = response.dataVolumes
