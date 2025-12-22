@@ -443,13 +443,24 @@ func toProtoJob(j *workload.Job) *pb.Job {
 	ret.SetName(j.Name)
 	ret.SetNamespace(j.Namespace)
 	ret.SetActive(j.Status.Active)
-	ret.SetReady(*j.Status.Ready)
+
+	ready := j.Status.Ready
+	if ready != nil {
+		ret.SetReady(*j.Status.Ready)
+	}
+
 	ret.SetSucceeded(j.Status.Succeeded)
 	ret.SetFailed(j.Status.Failed)
 	ret.SetTerminating(*j.Status.Terminating)
-	ret.SetStartedAt(timestamppb.New(j.Status.StartTime.Time))
-	if j.Status.CompletionTime != nil {
-		ret.SetCompletedAt(timestamppb.New(j.Status.CompletionTime.Time))
+
+	StartTime := j.Status.StartTime
+	if StartTime != nil {
+		ret.SetCompletedAt(timestamppb.New(StartTime.Time))
+	}
+
+	completionTime := j.Status.CompletionTime
+	if completionTime != nil {
+		ret.SetCompletedAt(timestamppb.New(completionTime.Time))
 	}
 
 	conditions := j.Status.Conditions

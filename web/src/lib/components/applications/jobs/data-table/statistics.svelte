@@ -44,9 +44,7 @@
 		{@const title = m.failed()}
 		{@const titleIcon = 'ph:chart-bar-bold'}
 		{@const backgroundIcon = 'ph:cube'}
-		{@const completedJobs = new Set([
-			...filteredJobs.map((job) => job.lastCondition?.type === 'Failed')
-		])}
+		{@const failedJobs = filteredJobs.filter((job) => job.failed > 0)}
 		<Card.Root class="relative overflow-hidden">
 			<Card.Header class="gap-3">
 				<Card.Title class="flex items-center gap-2 font-medium">
@@ -59,7 +57,7 @@
 				</Card.Title>
 			</Card.Header>
 			<Card.Content class="lg:max-[1100px]:flex-col lg:max-[1100px]:items-start">
-				<p class="text-7xl font-semibold">{filteredJobs.length - completedJobs.size}</p>
+				<p class="text-7xl font-semibold">{failedJobs.length}</p>
 			</Card.Content>
 			<div
 				class="absolute top-0 -right-16 text-8xl tracking-tight text-nowrap text-primary/5 uppercase group-hover:hidden"

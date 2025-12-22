@@ -144,8 +144,8 @@
 		selectedModel = null;
 	}
 	async function init() {
-		await initModel();
-		await initFilter();
+		initModel();
+		initFilter();
 		await fetch();
 	}
 

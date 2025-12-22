@@ -13,7 +13,7 @@
 			url: resolve('/(auth)/scope/[scope]/applications', { scope: page.params.scope! })
 		},
 		{
-			title: m.secrets(),
+			title: m.jobs(),
 			url: resolve('/(auth)/scope/[scope]/applications/jobs', { scope: page.params.scope! })
 		}
 	]);

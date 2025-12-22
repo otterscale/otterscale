@@ -128,7 +128,7 @@
 		open = false;
 	}
 
-	async function initFilter() {
+	function initFilter() {
 		selectedLicenseTags = defaultLicenseTags;
 		selectedLibraryTags = defaultLibraryTags;
 		selectedPipelineTags = defaultPipelineTags;
@@ -136,12 +136,12 @@
 		sort = defaultSort;
 		search = '';
 	}
-	async function initModel() {
+	function initModel() {
 		selectedModel = null;
 	}
 	async function init() {
-		await initModel();
-		await initFilter();
+		initModel();
+		initFilter();
 		await fetch();
 	}
 
