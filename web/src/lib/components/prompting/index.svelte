@@ -55,9 +55,10 @@
 	);
 
 	// Completion
-	let isModelLoaded = $state(false);
+	let isModelLoaded = $state(true);
 	let hasError = $state(false);
 	let userMessage = $state('');
+	let currentAbortController = $state({} as AbortController);
 	async function onsubmit() {
 		isModelLoaded = false;
 
@@ -98,49 +99,61 @@
 			});
 		}
 
-		messages = [
-			...messages,
-			{
-				message: '',
-				senderId: receiverIdentifier,
-				sentAt: new Date().toLocaleTimeString('en-US', {
-					hour: 'numeric',
-					minute: '2-digit'
-				})
-			}
-		];
-
 		if (response.body) {
 			const reader = response.body.getReader();
 			const decoder = new TextDecoder();
 			let buffer = '';
 
-			while (true) {
-				const { done, value } = await reader.read();
-				if (done) break;
+			const abortController = new AbortController();
+			currentAbortController = abortController;
 
-				buffer += decoder.decode(value, { stream: true });
-				const lines = buffer.split('\n');
-				buffer = lines.pop() || '';
+			messages = [
+				...messages,
+				{
+					message: '',
+					senderId: receiverIdentifier,
+					sentAt: new Date().toLocaleTimeString('en-US', {
+						hour: 'numeric',
+						minute: '2-digit'
+					})
+				}
+			];
+			try {
+				while (true) {
+					if (abortController.signal.aborted) break;
 
-				for (const line of lines) {
-					if (line.startsWith('data: ')) {
-						const jsonString = line.slice(6);
-						if (jsonString === '[DONE]') {
-							continue;
-						}
-						try {
-							const data = JSON.parse(jsonString);
-							if (data.choices?.[0]?.text) {
-								messages[latestModelResponseIndex].message += data.choices[0].text;
+					const { done, value } = await reader.read();
+					if (done) break;
+
+					buffer += decoder.decode(value, { stream: true });
+					const lines = buffer.split('\n');
+					buffer = lines.pop() || '';
+
+					for (const line of lines) {
+						if (line.startsWith('data: ')) {
+							const jsonString = line.slice(6);
+							if (jsonString === '[DONE]') {
+								continue;
 							}
-						} catch (error) {
-							console.error(error);
-						}
+							try {
+								const data = JSON.parse(jsonString);
+								if (data.choices?.[0]?.text) {
+									messages[latestModelResponseIndex].message += data.choices[0].text;
+								}
+							} catch (error) {
+								console.error(error);
+							}
 
-						scrollToBottom();
+							scrollToBottom();
+						}
 					}
 				}
+			} catch (error) {
+				if (error instanceof Error && error.name !== 'AbortError') {
+					console.error(error);
+				}
+			} finally {
+				reader.releaseLock();
 			}
 		}
 
@@ -148,7 +161,7 @@
 		isModelLoaded = true;
 	}
 
-	function reset() {
+	function init() {
 		max_tokens = defaults.max_tokens;
 		temperature = defaults.temperature;
 		userMessage = '';
@@ -162,7 +175,7 @@
 				})
 			}
 		] as Message[];
-		isModelLoaded = false;
+		isModelLoaded = true;
 		hasError = false;
 	}
 
@@ -173,11 +186,7 @@
 	}
 </script>
 
-<Dialog.Root
-	onOpenChangeComplete={() => {
-		reset();
-	}}
->
+<Dialog.Root onOpenChangeComplete={init}>
 	<Dialog.Trigger class={buttonVariants({ variant: 'ghost' })} {...restProps}>
 		<Icon icon="ph:robot" />
 	</Dialog.Trigger>
@@ -253,7 +262,7 @@
 						size="icon"
 						class="rounded-full"
 						onclick={() => {
-							reset();
+							init();
 						}}
 					>
 						<Icon icon="ph:arrows-clockwise-bold" class="size-5" />
@@ -321,6 +330,7 @@
 				<InputGroup.Button
 					variant="outline"
 					class="text-muted-foreground hover:text-primary"
+					disabled={hasError}
 					onclick={() => {
 						userMessage = m.health_check_statment();
 						onsubmit();
@@ -329,17 +339,32 @@
 					<Icon icon="ph:heartbeat" />
 					<p class="text-xs">{m.health_check()}</p>
 				</InputGroup.Button>
-				<Button
-					variant="default"
-					class="ml-auto rounded-full"
-					size="icon-sm"
-					disabled={userMessage === ''}
-					onclick={() => {
-						onsubmit();
-					}}
-				>
-					<SendIcon />
-				</Button>
+
+				{#if isModelLoaded}
+					<Button
+						variant="default"
+						class="ml-auto rounded-full"
+						size="icon-sm"
+						disabled={hasError || userMessage === ''}
+						onclick={() => {
+							onsubmit();
+						}}
+					>
+						<SendIcon />
+					</Button>
+				{:else}
+					<Button
+						variant="default"
+						class="ml-auto rounded-full"
+						size="icon-sm"
+						disabled={hasError}
+						onclick={() => {
+							currentAbortController.abort();
+						}}
+					>
+						<Icon icon="ph:stop" />
+					</Button>
+				{/if}
 			</InputGroup.Addon>
 		</InputGroup.Root>
 	</Dialog.Content>

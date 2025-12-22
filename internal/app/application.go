@@ -98,6 +98,17 @@ func (s *ApplicationService) DeleteApplicationPod(ctx context.Context, req *pb.D
 	return resp, nil
 }
 
+func (s *ApplicationService) ListJobs(ctx context.Context, req *pb.ListJobsRequest) (*pb.ListJobsResponse, error) {
+	jobs, err := s.workload.ListJobs(ctx, req.GetScope(), req.GetNamespace())
+	if err != nil {
+		return nil, err
+	}
+
+	resp := &pb.ListJobsResponse{}
+	resp.SetJobs(toProtoJobs(jobs))
+	return resp, nil
+}
+
 func (s *ApplicationService) WatchLogs(ctx context.Context, req *pb.WatchLogsRequest, stream *connect.ServerStream[pb.WatchLogsResponse]) error {
 	logs, err := s.workload.StreamLogs(ctx, req.GetScope(), req.GetNamespace(), req.GetPodName(), req.GetContainerName(), req.GetDuration().AsDuration())
 	if err != nil {
@@ -416,6 +427,41 @@ func toProtoPod(p *workload.Pod) *pb.Application_Pod {
 	return ret
 }
 
+func toProtoJobs(js []workload.Job) []*pb.Job {
+	ret := []*pb.Job{}
+
+	for i := range js {
+		ret = append(ret, toProtoJob(&js[i]))
+	}
+
+	return ret
+}
+
+func toProtoJob(j *workload.Job) *pb.Job {
+	ret := &pb.Job{}
+
+	ret.SetName(j.Name)
+	ret.SetNamespace(j.Namespace)
+	ret.SetActive(j.Status.Active)
+	ret.SetReady(*j.Status.Ready)
+	ret.SetSucceeded(j.Status.Succeeded)
+	ret.SetFailed(j.Status.Failed)
+	ret.SetTerminating(*j.Status.Terminating)
+	ret.SetStartedAt(timestamppb.New(j.Status.StartTime.Time))
+	if j.Status.CompletionTime != nil {
+		ret.SetCompletedAt(timestamppb.New(j.Status.CompletionTime.Time))
+	}
+
+	conditions := j.Status.Conditions
+
+	if len(conditions) > 0 {
+		index := len(conditions) - 1
+		ret.SetLastCondition(toProtoJobCondition(&conditions[index]))
+	}
+
+	return ret
+}
+
 func toProtoApplicationCondition(c *workload.PodCondition) *pb.Application_Condition {
 	ret := &pb.Application_Condition{}
 	ret.SetType(string(c.Type))
@@ -483,6 +529,28 @@ func toProtoRelease(r *release.Release) *pb.Release {
 	chart := r.Chart
 	if chart != nil {
 		ret.SetChart(toProtoChart(chart.Metadata, ""))
+	}
+
+	return ret
+}
+
+func toProtoJobCondition(c *workload.JobCondition) *pb.Job_Condition {
+	ret := &pb.Job_Condition{}
+	ret.SetType(string(c.Type))
+	ret.SetStatus(string(c.Status))
+	ret.SetReason((c.Reason))
+	ret.SetMessage((c.Message))
+
+	probedAt := c.LastProbeTime.Time
+
+	if !probedAt.IsZero() {
+		ret.SetProbedAt(timestamppb.New(probedAt))
+	}
+
+	transitionedAt := c.LastTransitionTime.Time
+
+	if !transitionedAt.IsZero() {
+		ret.SetTransitionedAt(timestamppb.New(transitionedAt))
 	}
 
 	return ret

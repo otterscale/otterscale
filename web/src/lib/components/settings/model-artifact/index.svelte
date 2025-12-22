@@ -1,30 +1,30 @@
-<script lang="ts" module>
+<script lang="ts">
 	import { timestampDate } from '@bufbuild/protobuf/wkt';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { getContext, onDestroy, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
+	import { ApplicationService, type Job } from '$lib/api/application/v1/application_pb';
 	import type { ModelArtifact } from '$lib/api/model/v1/model_pb';
 	import { ModelService } from '$lib/api/model/v1/model_pb';
+	import { getJobStatus } from '$lib/components/applications/jobs/data-table/cells.svelte';
 	import { Reloader, ReloadManager } from '$lib/components/custom/reloader';
 	import * as Table from '$lib/components/custom/table';
 	import * as Layout from '$lib/components/settings/layout';
-	import { Badge } from '$lib/components/ui/badge';
 	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
 	import { formatCapacity, formatTimeAgo } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
 
 	import Create from './create.svelte';
 	import Delete from './delete.svelte';
-</script>
 
-<script lang="ts">
 	let { scope }: { scope: string } = $props();
 
 	const transport: Transport = getContext('transport');
 	const modelClient = createClient(ModelService, transport);
-	const modelArtifacts = writable<ModelArtifact[]>([]);
+	const applicationClient = createClient(ApplicationService, transport);
 
+	const modelArtifacts = writable<ModelArtifact[]>([]);
 	async function fetchModelArtifacts() {
 		const response = await modelClient.listModelArtifacts({
 			scope: scope
@@ -32,9 +32,19 @@
 		modelArtifacts.set(response.modelArtifacts);
 	}
 
+	let jobs = $state([] as Job[]);
+	async function fetchJobs() {
+		const response = await applicationClient.listJobs({
+			scope: scope,
+			namespace: 'llm-d'
+		});
+		jobs = response.jobs;
+	}
+	const jobMap = $derived(new Map(jobs.map((job) => [job.name, job])));
+
 	async function fetch() {
 		try {
-			await fetchModelArtifacts();
+			await Promise.all([fetchModelArtifacts(), fetchJobs()]);
 		} catch (error) {
 			console.error('Failed to fetch model artifacts and namespaces:', error);
 		}
@@ -80,6 +90,7 @@
 							<Table.Head>{m.name()}</Table.Head>
 							<Table.Head>{m.namespace()}</Table.Head>
 							<Table.Head>{m.model_name()}</Table.Head>
+							<Table.Head>{m.status()}</Table.Head>
 							<Table.Head>{m.phase()}</Table.Head>
 							<Table.Head class="text-right">{m.size()}</Table.Head>
 							<Table.Head>{m.volume()}</Table.Head>
@@ -91,16 +102,54 @@
 						{#each $modelArtifacts as modelArtifact (modelArtifact.name)}
 							<Table.Row>
 								<Table.Cell>{modelArtifact.name}</Table.Cell>
-								<Table.Cell><Badge variant="outline">{modelArtifact.namespace}</Badge></Table.Cell>
+								<Table.Cell>{modelArtifact.namespace}</Table.Cell>
 								<Table.Cell>{modelArtifact.modelName}</Table.Cell>
-								<Table.Cell><Badge variant="outline">{modelArtifact.phase}</Badge></Table.Cell>
+								<Table.Cell>
+									{@const downloadModelArtifactJob = jobMap.get(modelArtifact.name)}
+									{#if downloadModelArtifactJob}
+										{#if downloadModelArtifactJob.lastCondition && downloadModelArtifactJob.lastCondition.type === 'Failed'}
+											<div class="space-y-1">
+												<h4 class="text-destructive">
+													{getJobStatus(downloadModelArtifactJob)}:
+													{downloadModelArtifactJob.lastCondition.reason}
+												</h4>
+												<div class="flex gap-1">
+													<Tooltip.Provider>
+														<Tooltip.Root>
+															<Tooltip.Trigger>
+																<p class="max-w-50 truncate text-muted-foreground">
+																	{downloadModelArtifactJob.lastCondition.message}
+																</p>
+															</Tooltip.Trigger>
+															<Tooltip.Content>
+																{downloadModelArtifactJob.lastCondition.message}
+															</Tooltip.Content>
+														</Tooltip.Root>
+													</Tooltip.Provider>
+												</div>
+											</div>
+										{:else}
+											{getJobStatus(downloadModelArtifactJob)}
+										{/if}
+									{/if}
+								</Table.Cell>
+								<Table.Cell>{modelArtifact.phase}</Table.Cell>
 								<Table.Cell class="text-right">
 									{@const { value, unit } = formatCapacity(modelArtifact.size)}
 									{value}
 									{unit}
 								</Table.Cell>
 								<Table.Cell>
-									{modelArtifact.volumeName}
+									<Tooltip.Provider>
+										<Tooltip.Root>
+											<Tooltip.Trigger>
+												<p class="max-w-30 truncate">{modelArtifact.volumeName}</p>
+											</Tooltip.Trigger>
+											<Tooltip.Content>
+												{modelArtifact.volumeName}
+											</Tooltip.Content>
+										</Tooltip.Root>
+									</Tooltip.Provider>
 								</Table.Cell>
 								<Table.Cell>
 									<div class="flex justify-end">

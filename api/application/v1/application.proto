@@ -41,6 +41,12 @@ service ApplicationService {
     };
   };
 
+  rpc ListJobs(ListJobsRequest) returns (ListJobsResponse) {
+    option (otterscale.api.feature) = {
+      name: "application-enabled"
+    };
+  };
+
   rpc WatchLogs(WatchLogsRequest) returns (stream WatchLogsResponse) {
     option (otterscale.api.feature) = {
       name: "application-enabled"
@@ -118,6 +124,27 @@ message Namespace {
   string name = 1;
   map<string, string> labels = 2;
   google.protobuf.Timestamp created_at = 11;
+}
+
+message Job {
+  message Condition {
+    string type = 1;
+    string status = 2;
+    string reason = 3;
+    string message = 4;
+    google.protobuf.Timestamp probed_at = 201;
+    google.protobuf.Timestamp transitioned_at = 202;
+  }
+  string name = 1;
+  string namespace = 2;
+  int32 active = 3;
+  int32 ready = 4;
+  int32 succeeded = 5;
+  int32 failed = 6;
+  int32 terminating = 7;
+  Condition last_condition = 11;
+  google.protobuf.Timestamp started_at = 201;
+  google.protobuf.Timestamp completed_at = 202;
 }
 
 message Application {
@@ -252,6 +279,15 @@ message DeleteApplicationPodRequest {
   reserved 2;
   string namespace = 3;
   string name = 4;
+}
+
+message ListJobsRequest {
+  string scope = 1;
+  string namespace = 2;
+}
+
+message ListJobsResponse {
+  repeated Job jobs = 1;
 }
 
 message WatchLogsRequest {
