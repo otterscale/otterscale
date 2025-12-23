@@ -81,7 +81,7 @@
 				{m.restarts()}
 			</Table.Head>
 			<Table.Head>
-				{m.last_condition()}
+				{m.conditions()}
 			</Table.Head>
 			<Table.Head>
 				{m.terminal()}
@@ -101,28 +101,34 @@
 				</Table.Cell>
 				<Table.Cell>{pod.restarts}</Table.Cell>
 				<Table.Cell>
-					{#if pod.lastCondition}
-						{#if pod.lastCondition.status === 'True'}
-							{pod.lastCondition.type}
-						{:else}
-							<div class="space-y-1">
-								<h4 class="text-destructive">{pod.lastCondition.reason}</h4>
-								<div class="flex gap-1">
-									<Tooltip.Provider>
-										<Tooltip.Root>
-											<Tooltip.Trigger>
-												<p class="max-w-50 truncate text-muted-foreground">
-													{pod.lastCondition.message}
-												</p>
-											</Tooltip.Trigger>
-											<Tooltip.Content>
-												{pod.lastCondition.message}
-											</Tooltip.Content>
-										</Tooltip.Root>
-									</Tooltip.Provider>
-								</div>
-							</div>
-						{/if}
+					{#if pod.conditions}
+						{@const trueConditions = pod.conditions.filter(
+							(condition) => condition.status === 'True'
+						)}
+						<div class="flex flex-wrap gap-1">
+							{#each trueConditions as trueCondition, index (index)}
+								<Tooltip.Provider>
+									<Tooltip.Root>
+										<Tooltip.Trigger>
+											<Badge
+												variant={['Failed', 'FailureTarget'].includes(trueCondition.type)
+													? 'destructive'
+													: 'outline'}
+											>
+												{trueCondition.type}
+											</Badge>
+										</Tooltip.Trigger>
+										<Tooltip.Content>
+											{#if trueCondition.message}
+												{trueCondition.message}
+											{:else}
+												{trueCondition.type}
+											{/if}
+										</Tooltip.Content>
+									</Tooltip.Root>
+								</Tooltip.Provider>
+							{/each}
+						</div>
 					{/if}
 				</Table.Cell>
 				<Table.Cell>

@@ -414,14 +414,7 @@ func toProtoPod(p *workload.Pod) *pb.Application_Pod {
 	ret.SetPhase(string(p.Status.Phase))
 	ret.SetReady(containerStatusesReadyString(p.Status.ContainerStatuses))
 	ret.SetRestarts(containerStatusesRestartString(p.Status.ContainerStatuses))
-
-	conditions := p.Status.Conditions
-
-	if len(conditions) > 0 {
-		index := len(conditions) - 1
-		ret.SetLastCondition(toProtoApplicationCondition(&conditions[index]))
-	}
-
+	ret.SetConditions(toProtoApplicationConditions(p.Status.Conditions))
 	ret.SetCreatedAt(timestamppb.New(p.CreationTimestamp.Time))
 
 	return ret
@@ -455,7 +448,7 @@ func toProtoJob(j *workload.Job) *pb.Job {
 
 	StartTime := j.Status.StartTime
 	if StartTime != nil {
-		ret.SetCompletedAt(timestamppb.New(StartTime.Time))
+		ret.SetStartedAt(timestamppb.New(StartTime.Time))
 	}
 
 	completionTime := j.Status.CompletionTime
@@ -463,11 +456,23 @@ func toProtoJob(j *workload.Job) *pb.Job {
 		ret.SetCompletedAt(timestamppb.New(completionTime.Time))
 	}
 
-	conditions := j.Status.Conditions
+	ret.SetCreatedAt(timestamppb.New(j.ObjectMeta.CreationTimestamp.Time))
 
-	if len(conditions) > 0 {
-		index := len(conditions) - 1
-		ret.SetLastCondition(toProtoJobCondition(&conditions[index]))
+	deletionTimestamp := j.ObjectMeta.DeletionTimestamp
+	if deletionTimestamp != nil {
+		ret.SetDeletedAt(timestamppb.New(deletionTimestamp.Time))
+	}
+
+	ret.SetConditions(toProtoJobConditions(j.Status.Conditions))
+
+	return ret
+}
+
+func toProtoApplicationConditions(cs []workload.PodCondition) []*pb.Application_Condition {
+	ret := []*pb.Application_Condition{}
+
+	for i := range cs {
+		ret = append(ret, toProtoApplicationCondition(&cs[i]))
 	}
 
 	return ret
@@ -540,6 +545,16 @@ func toProtoRelease(r *release.Release) *pb.Release {
 	chart := r.Chart
 	if chart != nil {
 		ret.SetChart(toProtoChart(chart.Metadata, ""))
+	}
+
+	return ret
+}
+
+func toProtoJobConditions(cs []workload.JobCondition) []*pb.Job_Condition {
+	ret := []*pb.Job_Condition{}
+
+	for i := range cs {
+		ret = append(ret, toProtoJobCondition(&cs[i]))
 	}
 
 	return ret

@@ -139,9 +139,9 @@ export type VirtualMachine_Clone = Message<"otterscale.instance.v1.VirtualMachin
   createdAt?: Timestamp;
 
   /**
-   * @generated from field: otterscale.application.v1.Application.Condition last_condition = 31;
+   * @generated from field: repeated otterscale.application.v1.Application.Condition conditions = 32;
    */
-  lastCondition?: Application_Condition;
+  conditions: Application_Condition[];
 };
 
 /**
@@ -186,9 +186,9 @@ export type VirtualMachine_Snapshot = Message<"otterscale.instance.v1.VirtualMac
   createdAt?: Timestamp;
 
   /**
-   * @generated from field: otterscale.application.v1.Application.Condition last_condition = 31;
+   * @generated from field: repeated otterscale.application.v1.Application.Condition conditions = 32;
    */
-  lastCondition?: Application_Condition;
+  conditions: Application_Condition[];
 };
 
 /**
@@ -233,9 +233,9 @@ export type VirtualMachine_Restore = Message<"otterscale.instance.v1.VirtualMach
   createdAt?: Timestamp;
 
   /**
-   * @generated from field: otterscale.application.v1.Application.Condition last_condition = 31;
+   * @generated from field: repeated otterscale.application.v1.Application.Condition conditions = 31;
    */
-  lastCondition?: Application_Condition;
+  conditions: Application_Condition[];
 };
 
 /**
@@ -425,9 +425,9 @@ export type DataVolume = Message<"otterscale.instance.v1.DataVolume"> & {
   persistentVolumeClaim?: Application_PersistentVolumeClaim;
 
   /**
-   * @generated from field: otterscale.instance.v1.DataVolume.Condition last_condition = 41;
+   * @generated from field: repeated otterscale.instance.v1.DataVolume.Condition conditions = 41;
    */
-  lastCondition?: DataVolume_Condition;
+  conditions: DataVolume_Condition[];
 };
 
 /**

@@ -539,6 +539,16 @@ func toProtoVirtualMachine(vmd *vm.VirtualMachineData, its []vmi.VirtualMachineI
 	return ret
 }
 
+func toProtoApplicationConditionFromClones(cs []vm.VirtualMachineCloneCondition) []*apppb.Application_Condition {
+	ret := []*apppb.Application_Condition{}
+
+	for i := range cs {
+		ret = append(ret, toProtoApplicationConditionFromClone(&cs[i]))
+	}
+
+	return ret
+}
+
 func toProtoApplicationConditionFromClone(c *vm.VirtualMachineCloneCondition) *apppb.Application_Condition {
 	ret := &apppb.Application_Condition{}
 	ret.SetType(string(c.Type))
@@ -552,6 +562,16 @@ func toProtoApplicationConditionFromClone(c *vm.VirtualMachineCloneCondition) *a
 
 	if !c.LastTransitionTime.IsZero() {
 		ret.SetTransitionedAt(timestamppb.New(c.LastTransitionTime.Time))
+	}
+
+	return ret
+}
+
+func toProtoApplicationConditionFromSnapshots(cs []vm.VirtualMachineSnapshotCondition) []*apppb.Application_Condition {
+	ret := []*apppb.Application_Condition{}
+
+	for i := range cs {
+		ret = append(ret, toProtoApplicationConditionFromSnapshot(&cs[i]))
 	}
 
 	return ret
@@ -593,13 +613,7 @@ func toProtoVirtualMachineClone(c *vm.VirtualMachineClone) *pb.VirtualMachine_Cl
 	ret.SetTargetName(c.Spec.Target.Name)
 	ret.SetPhase(string(c.Status.Phase))
 	ret.SetCreatedAt(timestamppb.New(c.CreationTimestamp.Time))
-
-	conditions := c.Status.Conditions
-
-	if len(conditions) > 0 {
-		index := len(conditions) - 1
-		ret.SetLastCondition(toProtoApplicationConditionFromClone(&c.Status.Conditions[index]))
-	}
+	ret.SetConditions(toProtoApplicationConditionFromClones(c.Status.Conditions))
 
 	return ret
 }
@@ -627,12 +641,7 @@ func toProtoVirtualMachineSnapshot(s *vm.VirtualMachineSnapshot) *pb.VirtualMach
 			ret.SetReadyToUse(*s.Status.ReadyToUse)
 		}
 
-		conditions := s.Status.Conditions
-
-		if len(conditions) > 0 {
-			index := len(conditions) - 1
-			ret.SetLastCondition(toProtoApplicationConditionFromSnapshot(&s.Status.Conditions[index]))
-		}
+		ret.SetConditions(toProtoApplicationConditionFromSnapshots(s.Status.Conditions))
 	}
 
 	ret.SetCreatedAt(timestamppb.New(s.CreationTimestamp.Time))
@@ -658,13 +667,7 @@ func toProtoVirtualMachineRestore(r *vm.VirtualMachineRestore) *pb.VirtualMachin
 
 	if r.Status != nil && r.Status.Complete != nil {
 		ret.SetComplete(*r.Status.Complete)
-
-		conditions := r.Status.Conditions
-
-		if len(conditions) > 0 {
-			index := len(conditions) - 1
-			ret.SetLastCondition(toProtoApplicationConditionFromSnapshot(&r.Status.Conditions[index]))
-		}
+		ret.SetConditions(toProtoApplicationConditionFromSnapshots(r.Status.Conditions))
 	}
 
 	ret.SetCreatedAt(timestamppb.New(r.CreationTimestamp.Time))
@@ -722,6 +725,16 @@ func toProtoDataVolumeSource(s *cdi.DataVolumeSource) *pb.DataVolume_Source {
 	return ret
 }
 
+func toProtoDataVolumeConditions(cs []cdi.DataVolumeCondition) []*pb.DataVolume_Condition {
+	ret := []*pb.DataVolume_Condition{}
+
+	for i := range cs {
+		ret = append(ret, toProtoDataVolumeCondition(&cs[i]))
+	}
+
+	return ret
+}
+
 func toProtoDataVolumeCondition(c *cdi.DataVolumeCondition) *pb.DataVolume_Condition {
 	ret := &pb.DataVolume_Condition{}
 	ret.SetType(string(c.Type))
@@ -764,12 +777,7 @@ func toProtoDataVolume(it *cdi.DataVolumePersistent) *pb.DataVolume {
 		ret.SetPersistentVolumeClaim(toProtoPersistentVolumeClaim(it.Persistent))
 	}
 
-	conditions := it.Status.Conditions
-
-	if len(conditions) > 0 {
-		index := len(conditions) - 1
-		ret.SetLastCondition(toProtoDataVolumeCondition(&it.Status.Conditions[index]))
-	}
+	ret.SetConditions(toProtoDataVolumeConditions(it.Status.Conditions))
 
 	return ret
 }

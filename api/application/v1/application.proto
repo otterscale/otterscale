@@ -142,9 +142,12 @@ message Job {
   int32 succeeded = 5;
   int32 failed = 6;
   int32 terminating = 7;
-  Condition last_condition = 11;
+  reserved 11;
+  repeated Condition conditions = 12;
   google.protobuf.Timestamp started_at = 201;
   google.protobuf.Timestamp completed_at = 202;
+  google.protobuf.Timestamp created_at = 203;
+  google.protobuf.Timestamp deleted_at = 204;
 }
 
 message Application {
@@ -185,7 +188,8 @@ message Application {
     string phase = 2;
     string ready = 3;
     string restarts = 4;
-    Condition last_condition = 11;
+    reserved 11;
+    repeated Condition conditions = 12;
     google.protobuf.Timestamp created_at = 201;
   }
   message PersistentVolumeClaim {

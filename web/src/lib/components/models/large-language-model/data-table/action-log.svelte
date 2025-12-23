@@ -88,7 +88,10 @@
 
 	function scrollToBottom() {
 		if (terminal) {
-			terminal.scrollTop = terminal.scrollHeight;
+			const isAtBottom = terminal.scrollHeight - terminal.scrollTop - terminal.clientHeight < 50;
+			if (isAtBottom) {
+				terminal.scrollTop = terminal.scrollHeight;
+			}
 		}
 	}
 
