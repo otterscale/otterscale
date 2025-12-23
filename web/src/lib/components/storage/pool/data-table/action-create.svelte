@@ -162,6 +162,7 @@
 						<Form.Label>{m.replicated_size()}</Form.Label>
 						<SingleInput.General
 							required
+							type="number"
 							bind:value={request.replicatedSize}
 							bind:invalid={invalidity.replicatedSize}
 						/>
@@ -210,7 +211,7 @@
 									<Form.Help>
 										{m.pool_quota_objects_direction()}
 									</Form.Help>
-									<SingleInput.General bind:value={request.quotaObjects} />
+									<SingleInput.General type="number" bind:value={request.quotaObjects} />
 								</Form.Field>
 							</Form.Fieldset>
 						</Collapsible.Content>
