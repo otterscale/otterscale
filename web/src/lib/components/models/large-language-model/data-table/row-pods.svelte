@@ -37,6 +37,8 @@
 
 	const total = $derived(pods.length);
 	const running = $derived(pods.filter((pod) => pod.phase === 'Running').length);
+	const succeeded = $derived(pods.filter((pod) => pod.phase === 'Succeeded').length);
+	const failed = $derived(pods.filter((pod) => pod.phase === 'Failed').length);
 	const phases = $derived(
 		pods.reduce(
 			(a, pod) => {
@@ -46,7 +48,6 @@
 			{} as Record<string, number>
 		)
 	);
-	const failed = $derived(pods.filter((pod) => pod?.lastCondition?.status !== 'True').length);
 </script>
 
 <Table.Row class="hover:[&,&>svelte-css-wrapper]:[&>th,td]:bg-transparent">
@@ -73,14 +74,21 @@
 						</div>
 					</div>
 					<div class="flex items-center gap-1">
-						<Icon icon="ph:check-circle-duotone" class="size-6 text-chart-2" />
+						<Icon icon="ph:play-circle-duotone" class="size-6 text-chart-4" />
 						<div>
 							<h6 class="text-xs text-muted-foreground">{m.running()}</h6>
 							<p class="text-base">{running}</p>
 						</div>
 					</div>
 					<div class="flex items-center gap-1">
-						<Icon icon="ph:pause-circle-duotone" class="size-6 text-chart-1" />
+						<Icon icon="ph:check-circle-duotone" class="size-6 text-chart-2" />
+						<div>
+							<h6 class="text-xs text-muted-foreground">{m.succeeded()}</h6>
+							<p class="text-base">{succeeded}</p>
+						</div>
+					</div>
+					<div class="flex items-center gap-1">
+						<Icon icon="ph:x-circle-duotone" class="size-6 text-chart-1" />
 						<div>
 							<h6 class="text-xs text-muted-foreground">{m.failed()}</h6>
 							<p class="text-base">{failed}</p>
@@ -95,7 +103,7 @@
 						<Table.Head>{m.phase()}</Table.Head>
 						<Table.Head class="text-end">{m.ready()}</Table.Head>
 						<Table.Head class="text-end">{m.restarts()}</Table.Head>
-						<Table.Head class="text-start">{m.last_condition()}</Table.Head>
+						<Table.Head class="text-start">{m.conditions()}</Table.Head>
 						<Table.Head class="text-center">{m.time_to_first_token()}</Table.Head>
 						<Table.Head class="text-center">{m.request_latency()}</Table.Head>
 						<Table.Head class="text-center">{m.log()}</Table.Head>
@@ -115,28 +123,28 @@
 								</Table.Cell>
 								<Table.Cell class="text-end">{pod.restarts}</Table.Cell>
 								<Table.Cell class="text-start">
-									{#if pod.lastCondition}
-										{#if pod.lastCondition.status === 'True'}
-											{pod.lastCondition.type}
-										{:else}
-											<div class="space-y-1">
-												<h4 class="text-destructive">{pod.lastCondition.reason}</h4>
-												<div class="flex gap-1">
-													<Tooltip.Provider>
-														<Tooltip.Root>
-															<Tooltip.Trigger>
-																<p class="max-w-50 truncate text-muted-foreground">
-																	{pod.lastCondition.message}
-																</p>
-															</Tooltip.Trigger>
-															<Tooltip.Content>
-																{pod.lastCondition.message}
-															</Tooltip.Content>
-														</Tooltip.Root>
-													</Tooltip.Provider>
-												</div>
-											</div>
-										{/if}
+									{#if pod.conditions}
+										{@const trueConditions = pod.conditions.filter(
+											(condition) => condition.status === 'True'
+										)}
+										<div class="flex flex-wrap gap-1">
+											{#each trueConditions as trueCondition, index (index)}
+												<Tooltip.Provider>
+													<Tooltip.Root>
+														<Tooltip.Trigger>
+															<Badge variant="outline">{trueCondition.type}</Badge>
+														</Tooltip.Trigger>
+														<Tooltip.Content>
+															{#if trueCondition.message}
+																{trueCondition.message}
+															{:else}
+																{trueCondition.type}
+															{/if}
+														</Tooltip.Content>
+													</Tooltip.Root>
+												</Tooltip.Provider>
+											{/each}
+										</div>
 									{/if}
 								</Table.Cell>
 								<Table.Cell class="text-center">

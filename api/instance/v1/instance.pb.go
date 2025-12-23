@@ -630,7 +630,7 @@ type DataVolume struct {
 	xxx_hidden_Progress              *string                               `protobuf:"bytes,22,opt,name=progress"`
 	xxx_hidden_SizeBytes             int64                                 `protobuf:"varint,31,opt,name=size_bytes,json=sizeBytes"`
 	xxx_hidden_PersistentVolumeClaim *v1.Application_PersistentVolumeClaim `protobuf:"bytes,32,opt,name=persistent_volume_claim,json=persistentVolumeClaim"`
-	xxx_hidden_LastCondition         *DataVolume_Condition                 `protobuf:"bytes,41,opt,name=last_condition,json=lastCondition"`
+	xxx_hidden_Conditions            *[]*DataVolume_Condition              `protobuf:"bytes,42,rep,name=conditions"`
 	XXX_raceDetectHookData           protoimpl.RaceDetectHookData
 	XXX_presence                     [1]uint32
 	unknownFields                    protoimpl.UnknownFields
@@ -730,9 +730,11 @@ func (x *DataVolume) GetPersistentVolumeClaim() *v1.Application_PersistentVolume
 	return nil
 }
 
-func (x *DataVolume) GetLastCondition() *DataVolume_Condition {
+func (x *DataVolume) GetConditions() []*DataVolume_Condition {
 	if x != nil {
-		return x.xxx_hidden_LastCondition
+		if x.xxx_hidden_Conditions != nil {
+			return *x.xxx_hidden_Conditions
+		}
 	}
 	return nil
 }
@@ -775,8 +777,8 @@ func (x *DataVolume) SetPersistentVolumeClaim(v *v1.Application_PersistentVolume
 	x.xxx_hidden_PersistentVolumeClaim = v
 }
 
-func (x *DataVolume) SetLastCondition(v *DataVolume_Condition) {
-	x.xxx_hidden_LastCondition = v
+func (x *DataVolume) SetConditions(v []*DataVolume_Condition) {
+	x.xxx_hidden_Conditions = &v
 }
 
 func (x *DataVolume) HasName() bool {
@@ -835,13 +837,6 @@ func (x *DataVolume) HasPersistentVolumeClaim() bool {
 	return x.xxx_hidden_PersistentVolumeClaim != nil
 }
 
-func (x *DataVolume) HasLastCondition() bool {
-	if x == nil {
-		return false
-	}
-	return x.xxx_hidden_LastCondition != nil
-}
-
 func (x *DataVolume) ClearName() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_Name = nil
@@ -880,10 +875,6 @@ func (x *DataVolume) ClearPersistentVolumeClaim() {
 	x.xxx_hidden_PersistentVolumeClaim = nil
 }
 
-func (x *DataVolume) ClearLastCondition() {
-	x.xxx_hidden_LastCondition = nil
-}
-
 type DataVolume_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
@@ -895,7 +886,7 @@ type DataVolume_builder struct {
 	Progress              *string
 	SizeBytes             *int64
 	PersistentVolumeClaim *v1.Application_PersistentVolumeClaim
-	LastCondition         *DataVolume_Condition
+	Conditions            []*DataVolume_Condition
 }
 
 func (b0 DataVolume_builder) Build() *DataVolume {
@@ -928,7 +919,7 @@ func (b0 DataVolume_builder) Build() *DataVolume {
 		x.xxx_hidden_SizeBytes = *b.SizeBytes
 	}
 	x.xxx_hidden_PersistentVolumeClaim = b.PersistentVolumeClaim
-	x.xxx_hidden_LastCondition = b.LastCondition
+	x.xxx_hidden_Conditions = &b.Conditions
 	return m0
 }
 
@@ -6279,18 +6270,18 @@ func (b0 DeleteVirtualMachineServiceRequest_builder) Build() *DeleteVirtualMachi
 }
 
 type VirtualMachine_Clone struct {
-	state                    protoimpl.MessageState    `protogen:"opaque.v1"`
-	xxx_hidden_Name          *string                   `protobuf:"bytes,1,opt,name=name"`
-	xxx_hidden_Namespace     *string                   `protobuf:"bytes,2,opt,name=namespace"`
-	xxx_hidden_SourceName    *string                   `protobuf:"bytes,3,opt,name=source_name,json=sourceName"`
-	xxx_hidden_TargetName    *string                   `protobuf:"bytes,4,opt,name=target_name,json=targetName"`
-	xxx_hidden_Phase         *string                   `protobuf:"bytes,11,opt,name=phase"`
-	xxx_hidden_CreatedAt     *timestamppb.Timestamp    `protobuf:"bytes,21,opt,name=created_at,json=createdAt"`
-	xxx_hidden_LastCondition *v1.Application_Condition `protobuf:"bytes,31,opt,name=last_condition,json=lastCondition"`
-	XXX_raceDetectHookData   protoimpl.RaceDetectHookData
-	XXX_presence             [1]uint32
-	unknownFields            protoimpl.UnknownFields
-	sizeCache                protoimpl.SizeCache
+	state                  protoimpl.MessageState       `protogen:"opaque.v1"`
+	xxx_hidden_Name        *string                      `protobuf:"bytes,1,opt,name=name"`
+	xxx_hidden_Namespace   *string                      `protobuf:"bytes,2,opt,name=namespace"`
+	xxx_hidden_SourceName  *string                      `protobuf:"bytes,3,opt,name=source_name,json=sourceName"`
+	xxx_hidden_TargetName  *string                      `protobuf:"bytes,4,opt,name=target_name,json=targetName"`
+	xxx_hidden_Phase       *string                      `protobuf:"bytes,11,opt,name=phase"`
+	xxx_hidden_CreatedAt   *timestamppb.Timestamp       `protobuf:"bytes,21,opt,name=created_at,json=createdAt"`
+	xxx_hidden_Conditions  *[]*v1.Application_Condition `protobuf:"bytes,32,rep,name=conditions"`
+	XXX_raceDetectHookData protoimpl.RaceDetectHookData
+	XXX_presence           [1]uint32
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
 }
 
 func (x *VirtualMachine_Clone) Reset() {
@@ -6375,9 +6366,11 @@ func (x *VirtualMachine_Clone) GetCreatedAt() *timestamppb.Timestamp {
 	return nil
 }
 
-func (x *VirtualMachine_Clone) GetLastCondition() *v1.Application_Condition {
+func (x *VirtualMachine_Clone) GetConditions() []*v1.Application_Condition {
 	if x != nil {
-		return x.xxx_hidden_LastCondition
+		if x.xxx_hidden_Conditions != nil {
+			return *x.xxx_hidden_Conditions
+		}
 	}
 	return nil
 }
@@ -6411,8 +6404,8 @@ func (x *VirtualMachine_Clone) SetCreatedAt(v *timestamppb.Timestamp) {
 	x.xxx_hidden_CreatedAt = v
 }
 
-func (x *VirtualMachine_Clone) SetLastCondition(v *v1.Application_Condition) {
-	x.xxx_hidden_LastCondition = v
+func (x *VirtualMachine_Clone) SetConditions(v []*v1.Application_Condition) {
+	x.xxx_hidden_Conditions = &v
 }
 
 func (x *VirtualMachine_Clone) HasName() bool {
@@ -6457,13 +6450,6 @@ func (x *VirtualMachine_Clone) HasCreatedAt() bool {
 	return x.xxx_hidden_CreatedAt != nil
 }
 
-func (x *VirtualMachine_Clone) HasLastCondition() bool {
-	if x == nil {
-		return false
-	}
-	return x.xxx_hidden_LastCondition != nil
-}
-
 func (x *VirtualMachine_Clone) ClearName() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_Name = nil
@@ -6493,20 +6479,16 @@ func (x *VirtualMachine_Clone) ClearCreatedAt() {
 	x.xxx_hidden_CreatedAt = nil
 }
 
-func (x *VirtualMachine_Clone) ClearLastCondition() {
-	x.xxx_hidden_LastCondition = nil
-}
-
 type VirtualMachine_Clone_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Name          *string
-	Namespace     *string
-	SourceName    *string
-	TargetName    *string
-	Phase         *string
-	CreatedAt     *timestamppb.Timestamp
-	LastCondition *v1.Application_Condition
+	Name       *string
+	Namespace  *string
+	SourceName *string
+	TargetName *string
+	Phase      *string
+	CreatedAt  *timestamppb.Timestamp
+	Conditions []*v1.Application_Condition
 }
 
 func (b0 VirtualMachine_Clone_builder) Build() *VirtualMachine_Clone {
@@ -6534,23 +6516,23 @@ func (b0 VirtualMachine_Clone_builder) Build() *VirtualMachine_Clone {
 		x.xxx_hidden_Phase = b.Phase
 	}
 	x.xxx_hidden_CreatedAt = b.CreatedAt
-	x.xxx_hidden_LastCondition = b.LastCondition
+	x.xxx_hidden_Conditions = &b.Conditions
 	return m0
 }
 
 type VirtualMachine_Snapshot struct {
-	state                    protoimpl.MessageState    `protogen:"opaque.v1"`
-	xxx_hidden_Name          *string                   `protobuf:"bytes,1,opt,name=name"`
-	xxx_hidden_Namespace     *string                   `protobuf:"bytes,2,opt,name=namespace"`
-	xxx_hidden_SourceName    *string                   `protobuf:"bytes,3,opt,name=source_name,json=sourceName"`
-	xxx_hidden_Phase         *string                   `protobuf:"bytes,11,opt,name=phase"`
-	xxx_hidden_ReadyToUse    bool                      `protobuf:"varint,12,opt,name=ready_to_use,json=readyToUse"`
-	xxx_hidden_CreatedAt     *timestamppb.Timestamp    `protobuf:"bytes,21,opt,name=created_at,json=createdAt"`
-	xxx_hidden_LastCondition *v1.Application_Condition `protobuf:"bytes,31,opt,name=last_condition,json=lastCondition"`
-	XXX_raceDetectHookData   protoimpl.RaceDetectHookData
-	XXX_presence             [1]uint32
-	unknownFields            protoimpl.UnknownFields
-	sizeCache                protoimpl.SizeCache
+	state                  protoimpl.MessageState       `protogen:"opaque.v1"`
+	xxx_hidden_Name        *string                      `protobuf:"bytes,1,opt,name=name"`
+	xxx_hidden_Namespace   *string                      `protobuf:"bytes,2,opt,name=namespace"`
+	xxx_hidden_SourceName  *string                      `protobuf:"bytes,3,opt,name=source_name,json=sourceName"`
+	xxx_hidden_Phase       *string                      `protobuf:"bytes,11,opt,name=phase"`
+	xxx_hidden_ReadyToUse  bool                         `protobuf:"varint,12,opt,name=ready_to_use,json=readyToUse"`
+	xxx_hidden_CreatedAt   *timestamppb.Timestamp       `protobuf:"bytes,21,opt,name=created_at,json=createdAt"`
+	xxx_hidden_Conditions  *[]*v1.Application_Condition `protobuf:"bytes,32,rep,name=conditions"`
+	XXX_raceDetectHookData protoimpl.RaceDetectHookData
+	XXX_presence           [1]uint32
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
 }
 
 func (x *VirtualMachine_Snapshot) Reset() {
@@ -6632,9 +6614,11 @@ func (x *VirtualMachine_Snapshot) GetCreatedAt() *timestamppb.Timestamp {
 	return nil
 }
 
-func (x *VirtualMachine_Snapshot) GetLastCondition() *v1.Application_Condition {
+func (x *VirtualMachine_Snapshot) GetConditions() []*v1.Application_Condition {
 	if x != nil {
-		return x.xxx_hidden_LastCondition
+		if x.xxx_hidden_Conditions != nil {
+			return *x.xxx_hidden_Conditions
+		}
 	}
 	return nil
 }
@@ -6668,8 +6652,8 @@ func (x *VirtualMachine_Snapshot) SetCreatedAt(v *timestamppb.Timestamp) {
 	x.xxx_hidden_CreatedAt = v
 }
 
-func (x *VirtualMachine_Snapshot) SetLastCondition(v *v1.Application_Condition) {
-	x.xxx_hidden_LastCondition = v
+func (x *VirtualMachine_Snapshot) SetConditions(v []*v1.Application_Condition) {
+	x.xxx_hidden_Conditions = &v
 }
 
 func (x *VirtualMachine_Snapshot) HasName() bool {
@@ -6714,13 +6698,6 @@ func (x *VirtualMachine_Snapshot) HasCreatedAt() bool {
 	return x.xxx_hidden_CreatedAt != nil
 }
 
-func (x *VirtualMachine_Snapshot) HasLastCondition() bool {
-	if x == nil {
-		return false
-	}
-	return x.xxx_hidden_LastCondition != nil
-}
-
 func (x *VirtualMachine_Snapshot) ClearName() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_Name = nil
@@ -6750,20 +6727,16 @@ func (x *VirtualMachine_Snapshot) ClearCreatedAt() {
 	x.xxx_hidden_CreatedAt = nil
 }
 
-func (x *VirtualMachine_Snapshot) ClearLastCondition() {
-	x.xxx_hidden_LastCondition = nil
-}
-
 type VirtualMachine_Snapshot_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Name          *string
-	Namespace     *string
-	SourceName    *string
-	Phase         *string
-	ReadyToUse    *bool
-	CreatedAt     *timestamppb.Timestamp
-	LastCondition *v1.Application_Condition
+	Name       *string
+	Namespace  *string
+	SourceName *string
+	Phase      *string
+	ReadyToUse *bool
+	CreatedAt  *timestamppb.Timestamp
+	Conditions []*v1.Application_Condition
 }
 
 func (b0 VirtualMachine_Snapshot_builder) Build() *VirtualMachine_Snapshot {
@@ -6791,23 +6764,23 @@ func (b0 VirtualMachine_Snapshot_builder) Build() *VirtualMachine_Snapshot {
 		x.xxx_hidden_ReadyToUse = *b.ReadyToUse
 	}
 	x.xxx_hidden_CreatedAt = b.CreatedAt
-	x.xxx_hidden_LastCondition = b.LastCondition
+	x.xxx_hidden_Conditions = &b.Conditions
 	return m0
 }
 
 type VirtualMachine_Restore struct {
-	state                    protoimpl.MessageState    `protogen:"opaque.v1"`
-	xxx_hidden_Name          *string                   `protobuf:"bytes,1,opt,name=name"`
-	xxx_hidden_Namespace     *string                   `protobuf:"bytes,2,opt,name=namespace"`
-	xxx_hidden_TargetName    *string                   `protobuf:"bytes,3,opt,name=target_name,json=targetName"`
-	xxx_hidden_SnapshotName  *string                   `protobuf:"bytes,4,opt,name=snapshot_name,json=snapshotName"`
-	xxx_hidden_Complete      bool                      `protobuf:"varint,11,opt,name=complete"`
-	xxx_hidden_CreatedAt     *timestamppb.Timestamp    `protobuf:"bytes,21,opt,name=created_at,json=createdAt"`
-	xxx_hidden_LastCondition *v1.Application_Condition `protobuf:"bytes,31,opt,name=last_condition,json=lastCondition"`
-	XXX_raceDetectHookData   protoimpl.RaceDetectHookData
-	XXX_presence             [1]uint32
-	unknownFields            protoimpl.UnknownFields
-	sizeCache                protoimpl.SizeCache
+	state                   protoimpl.MessageState       `protogen:"opaque.v1"`
+	xxx_hidden_Name         *string                      `protobuf:"bytes,1,opt,name=name"`
+	xxx_hidden_Namespace    *string                      `protobuf:"bytes,2,opt,name=namespace"`
+	xxx_hidden_TargetName   *string                      `protobuf:"bytes,3,opt,name=target_name,json=targetName"`
+	xxx_hidden_SnapshotName *string                      `protobuf:"bytes,4,opt,name=snapshot_name,json=snapshotName"`
+	xxx_hidden_Complete     bool                         `protobuf:"varint,11,opt,name=complete"`
+	xxx_hidden_CreatedAt    *timestamppb.Timestamp       `protobuf:"bytes,21,opt,name=created_at,json=createdAt"`
+	xxx_hidden_Conditions   *[]*v1.Application_Condition `protobuf:"bytes,32,rep,name=conditions"`
+	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
+	XXX_presence            [1]uint32
+	unknownFields           protoimpl.UnknownFields
+	sizeCache               protoimpl.SizeCache
 }
 
 func (x *VirtualMachine_Restore) Reset() {
@@ -6889,9 +6862,11 @@ func (x *VirtualMachine_Restore) GetCreatedAt() *timestamppb.Timestamp {
 	return nil
 }
 
-func (x *VirtualMachine_Restore) GetLastCondition() *v1.Application_Condition {
+func (x *VirtualMachine_Restore) GetConditions() []*v1.Application_Condition {
 	if x != nil {
-		return x.xxx_hidden_LastCondition
+		if x.xxx_hidden_Conditions != nil {
+			return *x.xxx_hidden_Conditions
+		}
 	}
 	return nil
 }
@@ -6925,8 +6900,8 @@ func (x *VirtualMachine_Restore) SetCreatedAt(v *timestamppb.Timestamp) {
 	x.xxx_hidden_CreatedAt = v
 }
 
-func (x *VirtualMachine_Restore) SetLastCondition(v *v1.Application_Condition) {
-	x.xxx_hidden_LastCondition = v
+func (x *VirtualMachine_Restore) SetConditions(v []*v1.Application_Condition) {
+	x.xxx_hidden_Conditions = &v
 }
 
 func (x *VirtualMachine_Restore) HasName() bool {
@@ -6971,13 +6946,6 @@ func (x *VirtualMachine_Restore) HasCreatedAt() bool {
 	return x.xxx_hidden_CreatedAt != nil
 }
 
-func (x *VirtualMachine_Restore) HasLastCondition() bool {
-	if x == nil {
-		return false
-	}
-	return x.xxx_hidden_LastCondition != nil
-}
-
 func (x *VirtualMachine_Restore) ClearName() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_Name = nil
@@ -7007,20 +6975,16 @@ func (x *VirtualMachine_Restore) ClearCreatedAt() {
 	x.xxx_hidden_CreatedAt = nil
 }
 
-func (x *VirtualMachine_Restore) ClearLastCondition() {
-	x.xxx_hidden_LastCondition = nil
-}
-
 type VirtualMachine_Restore_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Name          *string
-	Namespace     *string
-	TargetName    *string
-	SnapshotName  *string
-	Complete      *bool
-	CreatedAt     *timestamppb.Timestamp
-	LastCondition *v1.Application_Condition
+	Name         *string
+	Namespace    *string
+	TargetName   *string
+	SnapshotName *string
+	Complete     *bool
+	CreatedAt    *timestamppb.Timestamp
+	Conditions   []*v1.Application_Condition
 }
 
 func (b0 VirtualMachine_Restore_builder) Build() *VirtualMachine_Restore {
@@ -7048,7 +7012,7 @@ func (b0 VirtualMachine_Restore_builder) Build() *VirtualMachine_Restore {
 		x.xxx_hidden_Complete = *b.Complete
 	}
 	x.xxx_hidden_CreatedAt = b.CreatedAt
-	x.xxx_hidden_LastCondition = b.LastCondition
+	x.xxx_hidden_Conditions = &b.Conditions
 	return m0
 }
 
@@ -7771,7 +7735,7 @@ var File_api_instance_v1_instance_proto protoreflect.FileDescriptor
 
 const file_api_instance_v1_instance_proto_rawDesc = "" +
 	"\n" +
-	"\x1eapi/instance/v1/instance.proto\x12\x16otterscale.instance.v1\x1a\x15api/annotations.proto\x1a$api/application/v1/application.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xb1\x11\n" +
+	"\x1eapi/instance/v1/instance.proto\x12\x16otterscale.instance.v1\x1a\x15api/annotations.proto\x1a$api/application/v1/application.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xae\x11\n" +
 	"\x0eVirtualMachine\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1c\n" +
 	"\tnamespace\x18\x02 \x01(\tR\tnamespace\x12\x16\n" +
@@ -7789,7 +7753,7 @@ const file_api_instance_v1_instance_proto_rawDesc = "" +
 	"\x05disks\x18= \x03(\v2+.otterscale.instance.v1.VirtualMachine.DiskR\x05disks\x12D\n" +
 	"\x06clones\x18G \x03(\v2,.otterscale.instance.v1.VirtualMachine.CloneR\x06clones\x12M\n" +
 	"\tsnapshots\x18Q \x03(\v2/.otterscale.instance.v1.VirtualMachine.SnapshotR\tsnapshots\x12J\n" +
-	"\brestores\x18[ \x03(\v2..otterscale.instance.v1.VirtualMachine.RestoreR\brestores\x1a\xa5\x02\n" +
+	"\brestores\x18[ \x03(\v2..otterscale.instance.v1.VirtualMachine.RestoreR\brestores\x1a\xa4\x02\n" +
 	"\x05Clone\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1c\n" +
 	"\tnamespace\x18\x02 \x01(\tR\tnamespace\x12\x1f\n" +
@@ -7799,8 +7763,10 @@ const file_api_instance_v1_instance_proto_rawDesc = "" +
 	"targetName\x12\x14\n" +
 	"\x05phase\x18\v \x01(\tR\x05phase\x129\n" +
 	"\n" +
-	"created_at\x18\x15 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x12W\n" +
-	"\x0elast_condition\x18\x1f \x01(\v20.otterscale.application.v1.Application.ConditionR\rlastCondition\x1a\xa9\x02\n" +
+	"created_at\x18\x15 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x12P\n" +
+	"\n" +
+	"conditions\x18  \x03(\v20.otterscale.application.v1.Application.ConditionR\n" +
+	"conditionsJ\x04\b\x1f\x10 \x1a\xa8\x02\n" +
 	"\bSnapshot\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1c\n" +
 	"\tnamespace\x18\x02 \x01(\tR\tnamespace\x12\x1f\n" +
@@ -7810,8 +7776,10 @@ const file_api_instance_v1_instance_proto_rawDesc = "" +
 	"\fready_to_use\x18\f \x01(\bR\n" +
 	"readyToUse\x129\n" +
 	"\n" +
-	"created_at\x18\x15 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x12W\n" +
-	"\x0elast_condition\x18\x1f \x01(\v20.otterscale.application.v1.Application.ConditionR\rlastCondition\x1a\xb1\x02\n" +
+	"created_at\x18\x15 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x12P\n" +
+	"\n" +
+	"conditions\x18  \x03(\v20.otterscale.application.v1.Application.ConditionR\n" +
+	"conditionsJ\x04\b\x1f\x10 \x1a\xb0\x02\n" +
 	"\aRestore\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1c\n" +
 	"\tnamespace\x18\x02 \x01(\tR\tnamespace\x12\x1f\n" +
@@ -7820,8 +7788,10 @@ const file_api_instance_v1_instance_proto_rawDesc = "" +
 	"\rsnapshot_name\x18\x04 \x01(\tR\fsnapshotName\x12\x1a\n" +
 	"\bcomplete\x18\v \x01(\bR\bcomplete\x129\n" +
 	"\n" +
-	"created_at\x18\x15 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x12W\n" +
-	"\x0elast_condition\x18\x1f \x01(\v20.otterscale.application.v1.Application.ConditionR\rlastCondition\x1a\xbb\x04\n" +
+	"created_at\x18\x15 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x12P\n" +
+	"\n" +
+	"conditions\x18  \x03(\v20.otterscale.application.v1.Application.ConditionR\n" +
+	"conditionsJ\x04\b\x1f\x10 \x1a\xbb\x04\n" +
 	"\x04Disk\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12A\n" +
 	"\x03bus\x18\x02 \x01(\x0e2/.otterscale.instance.v1.VirtualMachine.Disk.BusR\x03bus\x12\x1d\n" +
@@ -7843,7 +7813,7 @@ const file_api_instance_v1_instance_proto_rawDesc = "" +
 	"BUS_VIRTIO\x10\x00\x12\f\n" +
 	"\bBUS_SATA\x10\x01\x12\f\n" +
 	"\bBUS_SCSI\x10\x02\x12\v\n" +
-	"\aBUS_USB\x10\x03\"\xed\x06\n" +
+	"\aBUS_USB\x10\x03\"\xec\x06\n" +
 	"\n" +
 	"DataVolume\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1c\n" +
@@ -7855,8 +7825,10 @@ const file_api_instance_v1_instance_proto_rawDesc = "" +
 	"\bprogress\x18\x16 \x01(\tR\bprogress\x12\x1d\n" +
 	"\n" +
 	"size_bytes\x18\x1f \x01(\x03R\tsizeBytes\x12t\n" +
-	"\x17persistent_volume_claim\x18  \x01(\v2<.otterscale.application.v1.Application.PersistentVolumeClaimR\x15persistentVolumeClaim\x12S\n" +
-	"\x0elast_condition\x18) \x01(\v2,.otterscale.instance.v1.DataVolume.ConditionR\rlastCondition\x1a\xbc\x01\n" +
+	"\x17persistent_volume_claim\x18  \x01(\v2<.otterscale.application.v1.Application.PersistentVolumeClaimR\x15persistentVolumeClaim\x12L\n" +
+	"\n" +
+	"conditions\x18* \x03(\v2,.otterscale.instance.v1.DataVolume.ConditionR\n" +
+	"conditions\x1a\xbc\x01\n" +
 	"\x06Source\x12B\n" +
 	"\x04type\x18\x01 \x01(\x0e2..otterscale.instance.v1.DataVolume.Source.TypeR\x04type\x12\x12\n" +
 	"\x04data\x18\x02 \x01(\tR\x04data\"Z\n" +
@@ -7870,7 +7842,7 @@ const file_api_instance_v1_instance_proto_rawDesc = "" +
 	"\x06reason\x18\x03 \x01(\tR\x06reason\x12\x18\n" +
 	"\amessage\x18\x04 \x01(\tR\amessage\x12>\n" +
 	"\fheartbeat_at\x18\xc9\x01 \x01(\v2\x1a.google.protobuf.TimestampR\vheartbeatAt\x12D\n" +
-	"\x0ftransitioned_at\x18\xca\x01 \x01(\v2\x1a.google.protobuf.TimestampR\x0etransitionedAt\"\xc6\x01\n" +
+	"\x0ftransitioned_at\x18\xca\x01 \x01(\v2\x1a.google.protobuf.TimestampR\x0etransitionedAtJ\x04\b)\x10*\"\xc6\x01\n" +
 	"\fInstanceType\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1b\n" +
 	"\tcpu_cores\x18\x03 \x01(\rR\bcpuCores\x12!\n" +
@@ -8167,7 +8139,7 @@ var file_api_instance_v1_instance_proto_depIdxs = []int32{
 	44, // 6: otterscale.instance.v1.VirtualMachine.restores:type_name -> otterscale.instance.v1.VirtualMachine.Restore
 	48, // 7: otterscale.instance.v1.DataVolume.source:type_name -> otterscale.instance.v1.DataVolume.Source
 	52, // 8: otterscale.instance.v1.DataVolume.persistent_volume_claim:type_name -> otterscale.application.v1.Application.PersistentVolumeClaim
-	49, // 9: otterscale.instance.v1.DataVolume.last_condition:type_name -> otterscale.instance.v1.DataVolume.Condition
+	49, // 9: otterscale.instance.v1.DataVolume.conditions:type_name -> otterscale.instance.v1.DataVolume.Condition
 	50, // 10: otterscale.instance.v1.InstanceType.created_at:type_name -> google.protobuf.Timestamp
 	4,  // 11: otterscale.instance.v1.ListVirtualMachinesResponse.virtual_machines:type_name -> otterscale.instance.v1.VirtualMachine
 	0,  // 12: otterscale.instance.v1.ListDataVolumesRequest.filter:type_name -> otterscale.instance.v1.DataVolumeFilter
@@ -8177,11 +8149,11 @@ var file_api_instance_v1_instance_proto_depIdxs = []int32{
 	53, // 16: otterscale.instance.v1.CreateVirtualMachineServiceRequest.ports:type_name -> otterscale.application.v1.Application.Service.Port
 	53, // 17: otterscale.instance.v1.UpdateVirtualMachineServiceRequest.ports:type_name -> otterscale.application.v1.Application.Service.Port
 	50, // 18: otterscale.instance.v1.VirtualMachine.Clone.created_at:type_name -> google.protobuf.Timestamp
-	54, // 19: otterscale.instance.v1.VirtualMachine.Clone.last_condition:type_name -> otterscale.application.v1.Application.Condition
+	54, // 19: otterscale.instance.v1.VirtualMachine.Clone.conditions:type_name -> otterscale.application.v1.Application.Condition
 	50, // 20: otterscale.instance.v1.VirtualMachine.Snapshot.created_at:type_name -> google.protobuf.Timestamp
-	54, // 21: otterscale.instance.v1.VirtualMachine.Snapshot.last_condition:type_name -> otterscale.application.v1.Application.Condition
+	54, // 21: otterscale.instance.v1.VirtualMachine.Snapshot.conditions:type_name -> otterscale.application.v1.Application.Condition
 	50, // 22: otterscale.instance.v1.VirtualMachine.Restore.created_at:type_name -> google.protobuf.Timestamp
-	54, // 23: otterscale.instance.v1.VirtualMachine.Restore.last_condition:type_name -> otterscale.application.v1.Application.Condition
+	54, // 23: otterscale.instance.v1.VirtualMachine.Restore.conditions:type_name -> otterscale.application.v1.Application.Condition
 	1,  // 24: otterscale.instance.v1.VirtualMachine.Disk.bus:type_name -> otterscale.instance.v1.VirtualMachine.Disk.Bus
 	46, // 25: otterscale.instance.v1.VirtualMachine.Disk.volume:type_name -> otterscale.instance.v1.VirtualMachine.Disk.Volume
 	47, // 26: otterscale.instance.v1.VirtualMachine.Disk.Volume.source:type_name -> otterscale.instance.v1.VirtualMachine.Disk.Volume.Source

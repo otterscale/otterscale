@@ -7,10 +7,11 @@
 	import { ApplicationService, type Job } from '$lib/api/application/v1/application_pb';
 	import type { ModelArtifact } from '$lib/api/model/v1/model_pb';
 	import { ModelService } from '$lib/api/model/v1/model_pb';
-	import { getJobStatus } from '$lib/components/applications/jobs/data-table/cells.svelte';
+	import { getJobStatus } from '$lib/components/applications/jobs/utils';
 	import { Reloader, ReloadManager } from '$lib/components/custom/reloader';
 	import * as Table from '$lib/components/custom/table';
 	import * as Layout from '$lib/components/settings/layout';
+	import { Spinner } from '$lib/components/ui/spinner';
 	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
 	import { formatCapacity, formatTimeAgo } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
@@ -107,29 +108,18 @@
 								<Table.Cell>
 									{@const downloadModelArtifactJob = jobMap.get(modelArtifact.name)}
 									{#if downloadModelArtifactJob}
-										{#if downloadModelArtifactJob.lastCondition && downloadModelArtifactJob.lastCondition.type === 'Failed'}
-											<div class="space-y-1">
-												<h4 class="text-destructive">
-													{getJobStatus(downloadModelArtifactJob)}:
-													{downloadModelArtifactJob.lastCondition.reason}
-												</h4>
-												<div class="flex gap-1">
-													<Tooltip.Provider>
-														<Tooltip.Root>
-															<Tooltip.Trigger>
-																<p class="max-w-50 truncate text-muted-foreground">
-																	{downloadModelArtifactJob.lastCondition.message}
-																</p>
-															</Tooltip.Trigger>
-															<Tooltip.Content>
-																{downloadModelArtifactJob.lastCondition.message}
-															</Tooltip.Content>
-														</Tooltip.Root>
-													</Tooltip.Provider>
-												</div>
-											</div>
+										{@const status = getJobStatus(downloadModelArtifactJob)}
+										{#if status === 'Running'}
+											<span class="flex items-center gap-1 text-muted-foreground">
+												<Spinner />
+												{status}
+											</span>
+										{:else if ['Failed', 'FailureTarget'].includes(status)}
+											<p class="text-destructive">
+												{status}
+											</p>
 										{:else}
-											{getJobStatus(downloadModelArtifactJob)}
+											{status}
 										{/if}
 									{/if}
 								</Table.Cell>

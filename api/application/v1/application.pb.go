@@ -356,21 +356,23 @@ func (b0 Namespace_builder) Build() *Namespace {
 }
 
 type Job struct {
-	state                    protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Name          *string                `protobuf:"bytes,1,opt,name=name"`
-	xxx_hidden_Namespace     *string                `protobuf:"bytes,2,opt,name=namespace"`
-	xxx_hidden_Active        int32                  `protobuf:"varint,3,opt,name=active"`
-	xxx_hidden_Ready         int32                  `protobuf:"varint,4,opt,name=ready"`
-	xxx_hidden_Succeeded     int32                  `protobuf:"varint,5,opt,name=succeeded"`
-	xxx_hidden_Failed        int32                  `protobuf:"varint,6,opt,name=failed"`
-	xxx_hidden_Terminating   int32                  `protobuf:"varint,7,opt,name=terminating"`
-	xxx_hidden_LastCondition *Job_Condition         `protobuf:"bytes,11,opt,name=last_condition,json=lastCondition"`
-	xxx_hidden_StartedAt     *timestamppb.Timestamp `protobuf:"bytes,201,opt,name=started_at,json=startedAt"`
-	xxx_hidden_CompletedAt   *timestamppb.Timestamp `protobuf:"bytes,202,opt,name=completed_at,json=completedAt"`
-	XXX_raceDetectHookData   protoimpl.RaceDetectHookData
-	XXX_presence             [1]uint32
-	unknownFields            protoimpl.UnknownFields
-	sizeCache                protoimpl.SizeCache
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Name        *string                `protobuf:"bytes,1,opt,name=name"`
+	xxx_hidden_Namespace   *string                `protobuf:"bytes,2,opt,name=namespace"`
+	xxx_hidden_Active      int32                  `protobuf:"varint,3,opt,name=active"`
+	xxx_hidden_Ready       int32                  `protobuf:"varint,4,opt,name=ready"`
+	xxx_hidden_Succeeded   int32                  `protobuf:"varint,5,opt,name=succeeded"`
+	xxx_hidden_Failed      int32                  `protobuf:"varint,6,opt,name=failed"`
+	xxx_hidden_Terminating int32                  `protobuf:"varint,7,opt,name=terminating"`
+	xxx_hidden_Conditions  *[]*Job_Condition      `protobuf:"bytes,12,rep,name=conditions"`
+	xxx_hidden_StartedAt   *timestamppb.Timestamp `protobuf:"bytes,201,opt,name=started_at,json=startedAt"`
+	xxx_hidden_CompletedAt *timestamppb.Timestamp `protobuf:"bytes,202,opt,name=completed_at,json=completedAt"`
+	xxx_hidden_CreatedAt   *timestamppb.Timestamp `protobuf:"bytes,203,opt,name=created_at,json=createdAt"`
+	xxx_hidden_DeletedAt   *timestamppb.Timestamp `protobuf:"bytes,204,opt,name=deleted_at,json=deletedAt"`
+	XXX_raceDetectHookData protoimpl.RaceDetectHookData
+	XXX_presence           [1]uint32
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
 }
 
 func (x *Job) Reset() {
@@ -453,9 +455,11 @@ func (x *Job) GetTerminating() int32 {
 	return 0
 }
 
-func (x *Job) GetLastCondition() *Job_Condition {
+func (x *Job) GetConditions() []*Job_Condition {
 	if x != nil {
-		return x.xxx_hidden_LastCondition
+		if x.xxx_hidden_Conditions != nil {
+			return *x.xxx_hidden_Conditions
+		}
 	}
 	return nil
 }
@@ -474,43 +478,57 @@ func (x *Job) GetCompletedAt() *timestamppb.Timestamp {
 	return nil
 }
 
+func (x *Job) GetCreatedAt() *timestamppb.Timestamp {
+	if x != nil {
+		return x.xxx_hidden_CreatedAt
+	}
+	return nil
+}
+
+func (x *Job) GetDeletedAt() *timestamppb.Timestamp {
+	if x != nil {
+		return x.xxx_hidden_DeletedAt
+	}
+	return nil
+}
+
 func (x *Job) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 10)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 12)
 }
 
 func (x *Job) SetNamespace(v string) {
 	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 10)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 12)
 }
 
 func (x *Job) SetActive(v int32) {
 	x.xxx_hidden_Active = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 10)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 12)
 }
 
 func (x *Job) SetReady(v int32) {
 	x.xxx_hidden_Ready = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 10)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 12)
 }
 
 func (x *Job) SetSucceeded(v int32) {
 	x.xxx_hidden_Succeeded = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 10)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 12)
 }
 
 func (x *Job) SetFailed(v int32) {
 	x.xxx_hidden_Failed = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 10)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 12)
 }
 
 func (x *Job) SetTerminating(v int32) {
 	x.xxx_hidden_Terminating = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 6, 10)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 6, 12)
 }
 
-func (x *Job) SetLastCondition(v *Job_Condition) {
-	x.xxx_hidden_LastCondition = v
+func (x *Job) SetConditions(v []*Job_Condition) {
+	x.xxx_hidden_Conditions = &v
 }
 
 func (x *Job) SetStartedAt(v *timestamppb.Timestamp) {
@@ -519,6 +537,14 @@ func (x *Job) SetStartedAt(v *timestamppb.Timestamp) {
 
 func (x *Job) SetCompletedAt(v *timestamppb.Timestamp) {
 	x.xxx_hidden_CompletedAt = v
+}
+
+func (x *Job) SetCreatedAt(v *timestamppb.Timestamp) {
+	x.xxx_hidden_CreatedAt = v
+}
+
+func (x *Job) SetDeletedAt(v *timestamppb.Timestamp) {
+	x.xxx_hidden_DeletedAt = v
 }
 
 func (x *Job) HasName() bool {
@@ -570,13 +596,6 @@ func (x *Job) HasTerminating() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 6)
 }
 
-func (x *Job) HasLastCondition() bool {
-	if x == nil {
-		return false
-	}
-	return x.xxx_hidden_LastCondition != nil
-}
-
 func (x *Job) HasStartedAt() bool {
 	if x == nil {
 		return false
@@ -589,6 +608,20 @@ func (x *Job) HasCompletedAt() bool {
 		return false
 	}
 	return x.xxx_hidden_CompletedAt != nil
+}
+
+func (x *Job) HasCreatedAt() bool {
+	if x == nil {
+		return false
+	}
+	return x.xxx_hidden_CreatedAt != nil
+}
+
+func (x *Job) HasDeletedAt() bool {
+	if x == nil {
+		return false
+	}
+	return x.xxx_hidden_DeletedAt != nil
 }
 
 func (x *Job) ClearName() {
@@ -626,10 +659,6 @@ func (x *Job) ClearTerminating() {
 	x.xxx_hidden_Terminating = 0
 }
 
-func (x *Job) ClearLastCondition() {
-	x.xxx_hidden_LastCondition = nil
-}
-
 func (x *Job) ClearStartedAt() {
 	x.xxx_hidden_StartedAt = nil
 }
@@ -638,19 +667,29 @@ func (x *Job) ClearCompletedAt() {
 	x.xxx_hidden_CompletedAt = nil
 }
 
+func (x *Job) ClearCreatedAt() {
+	x.xxx_hidden_CreatedAt = nil
+}
+
+func (x *Job) ClearDeletedAt() {
+	x.xxx_hidden_DeletedAt = nil
+}
+
 type Job_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Name          *string
-	Namespace     *string
-	Active        *int32
-	Ready         *int32
-	Succeeded     *int32
-	Failed        *int32
-	Terminating   *int32
-	LastCondition *Job_Condition
-	StartedAt     *timestamppb.Timestamp
-	CompletedAt   *timestamppb.Timestamp
+	Name        *string
+	Namespace   *string
+	Active      *int32
+	Ready       *int32
+	Succeeded   *int32
+	Failed      *int32
+	Terminating *int32
+	Conditions  []*Job_Condition
+	StartedAt   *timestamppb.Timestamp
+	CompletedAt *timestamppb.Timestamp
+	CreatedAt   *timestamppb.Timestamp
+	DeletedAt   *timestamppb.Timestamp
 }
 
 func (b0 Job_builder) Build() *Job {
@@ -658,36 +697,38 @@ func (b0 Job_builder) Build() *Job {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 10)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 12)
 		x.xxx_hidden_Name = b.Name
 	}
 	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 10)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 12)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
 	if b.Active != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 10)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 12)
 		x.xxx_hidden_Active = *b.Active
 	}
 	if b.Ready != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 10)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 12)
 		x.xxx_hidden_Ready = *b.Ready
 	}
 	if b.Succeeded != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 10)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 12)
 		x.xxx_hidden_Succeeded = *b.Succeeded
 	}
 	if b.Failed != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 10)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 12)
 		x.xxx_hidden_Failed = *b.Failed
 	}
 	if b.Terminating != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 6, 10)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 6, 12)
 		x.xxx_hidden_Terminating = *b.Terminating
 	}
-	x.xxx_hidden_LastCondition = b.LastCondition
+	x.xxx_hidden_Conditions = &b.Conditions
 	x.xxx_hidden_StartedAt = b.StartedAt
 	x.xxx_hidden_CompletedAt = b.CompletedAt
+	x.xxx_hidden_CreatedAt = b.CreatedAt
+	x.xxx_hidden_DeletedAt = b.DeletedAt
 	return m0
 }
 
@@ -5711,17 +5752,17 @@ func (b0 Application_Service_builder) Build() *Application_Service {
 }
 
 type Application_Pod struct {
-	state                    protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Name          *string                `protobuf:"bytes,1,opt,name=name"`
-	xxx_hidden_Phase         *string                `protobuf:"bytes,2,opt,name=phase"`
-	xxx_hidden_Ready         *string                `protobuf:"bytes,3,opt,name=ready"`
-	xxx_hidden_Restarts      *string                `protobuf:"bytes,4,opt,name=restarts"`
-	xxx_hidden_LastCondition *Application_Condition `protobuf:"bytes,11,opt,name=last_condition,json=lastCondition"`
-	xxx_hidden_CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,201,opt,name=created_at,json=createdAt"`
-	XXX_raceDetectHookData   protoimpl.RaceDetectHookData
-	XXX_presence             [1]uint32
-	unknownFields            protoimpl.UnknownFields
-	sizeCache                protoimpl.SizeCache
+	state                  protoimpl.MessageState    `protogen:"opaque.v1"`
+	xxx_hidden_Name        *string                   `protobuf:"bytes,1,opt,name=name"`
+	xxx_hidden_Phase       *string                   `protobuf:"bytes,2,opt,name=phase"`
+	xxx_hidden_Ready       *string                   `protobuf:"bytes,3,opt,name=ready"`
+	xxx_hidden_Restarts    *string                   `protobuf:"bytes,4,opt,name=restarts"`
+	xxx_hidden_Conditions  *[]*Application_Condition `protobuf:"bytes,12,rep,name=conditions"`
+	xxx_hidden_CreatedAt   *timestamppb.Timestamp    `protobuf:"bytes,201,opt,name=created_at,json=createdAt"`
+	XXX_raceDetectHookData protoimpl.RaceDetectHookData
+	XXX_presence           [1]uint32
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
 }
 
 func (x *Application_Pod) Reset() {
@@ -5789,9 +5830,11 @@ func (x *Application_Pod) GetRestarts() string {
 	return ""
 }
 
-func (x *Application_Pod) GetLastCondition() *Application_Condition {
+func (x *Application_Pod) GetConditions() []*Application_Condition {
 	if x != nil {
-		return x.xxx_hidden_LastCondition
+		if x.xxx_hidden_Conditions != nil {
+			return *x.xxx_hidden_Conditions
+		}
 	}
 	return nil
 }
@@ -5823,8 +5866,8 @@ func (x *Application_Pod) SetRestarts(v string) {
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 6)
 }
 
-func (x *Application_Pod) SetLastCondition(v *Application_Condition) {
-	x.xxx_hidden_LastCondition = v
+func (x *Application_Pod) SetConditions(v []*Application_Condition) {
+	x.xxx_hidden_Conditions = &v
 }
 
 func (x *Application_Pod) SetCreatedAt(v *timestamppb.Timestamp) {
@@ -5859,13 +5902,6 @@ func (x *Application_Pod) HasRestarts() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
-func (x *Application_Pod) HasLastCondition() bool {
-	if x == nil {
-		return false
-	}
-	return x.xxx_hidden_LastCondition != nil
-}
-
 func (x *Application_Pod) HasCreatedAt() bool {
 	if x == nil {
 		return false
@@ -5893,10 +5929,6 @@ func (x *Application_Pod) ClearRestarts() {
 	x.xxx_hidden_Restarts = nil
 }
 
-func (x *Application_Pod) ClearLastCondition() {
-	x.xxx_hidden_LastCondition = nil
-}
-
 func (x *Application_Pod) ClearCreatedAt() {
 	x.xxx_hidden_CreatedAt = nil
 }
@@ -5904,12 +5936,12 @@ func (x *Application_Pod) ClearCreatedAt() {
 type Application_Pod_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Name          *string
-	Phase         *string
-	Ready         *string
-	Restarts      *string
-	LastCondition *Application_Condition
-	CreatedAt     *timestamppb.Timestamp
+	Name       *string
+	Phase      *string
+	Ready      *string
+	Restarts   *string
+	Conditions []*Application_Condition
+	CreatedAt  *timestamppb.Timestamp
 }
 
 func (b0 Application_Pod_builder) Build() *Application_Pod {
@@ -5932,7 +5964,7 @@ func (b0 Application_Pod_builder) Build() *Application_Pod {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 6)
 		x.xxx_hidden_Restarts = b.Restarts
 	}
-	x.xxx_hidden_LastCondition = b.LastCondition
+	x.xxx_hidden_Conditions = &b.Conditions
 	x.xxx_hidden_CreatedAt = b.CreatedAt
 	return m0
 }
@@ -6366,7 +6398,7 @@ const file_api_application_v1_application_proto_rawDesc = "" +
 	"created_at\x18\v \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x1a9\n" +
 	"\vLabelsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\xf6\x04\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\xed\x05\n" +
 	"\x03Job\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1c\n" +
 	"\tnamespace\x18\x02 \x01(\tR\tnamespace\x12\x16\n" +
@@ -6374,18 +6406,24 @@ const file_api_application_v1_application_proto_rawDesc = "" +
 	"\x05ready\x18\x04 \x01(\x05R\x05ready\x12\x1c\n" +
 	"\tsucceeded\x18\x05 \x01(\x05R\tsucceeded\x12\x16\n" +
 	"\x06failed\x18\x06 \x01(\x05R\x06failed\x12 \n" +
-	"\vterminating\x18\a \x01(\x05R\vterminating\x12O\n" +
-	"\x0elast_condition\x18\v \x01(\v2(.otterscale.application.v1.Job.ConditionR\rlastCondition\x12:\n" +
+	"\vterminating\x18\a \x01(\x05R\vterminating\x12H\n" +
+	"\n" +
+	"conditions\x18\f \x03(\v2(.otterscale.application.v1.Job.ConditionR\n" +
+	"conditions\x12:\n" +
 	"\n" +
 	"started_at\x18\xc9\x01 \x01(\v2\x1a.google.protobuf.TimestampR\tstartedAt\x12>\n" +
-	"\fcompleted_at\x18\xca\x01 \x01(\v2\x1a.google.protobuf.TimestampR\vcompletedAt\x1a\xe9\x01\n" +
+	"\fcompleted_at\x18\xca\x01 \x01(\v2\x1a.google.protobuf.TimestampR\vcompletedAt\x12:\n" +
+	"\n" +
+	"created_at\x18\xcb\x01 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x12:\n" +
+	"\n" +
+	"deleted_at\x18\xcc\x01 \x01(\v2\x1a.google.protobuf.TimestampR\tdeletedAt\x1a\xe9\x01\n" +
 	"\tCondition\x12\x12\n" +
 	"\x04type\x18\x01 \x01(\tR\x04type\x12\x16\n" +
 	"\x06status\x18\x02 \x01(\tR\x06status\x12\x16\n" +
 	"\x06reason\x18\x03 \x01(\tR\x06reason\x12\x18\n" +
 	"\amessage\x18\x04 \x01(\tR\amessage\x128\n" +
 	"\tprobed_at\x18\xc9\x01 \x01(\v2\x1a.google.protobuf.TimestampR\bprobedAt\x12D\n" +
-	"\x0ftransitioned_at\x18\xca\x01 \x01(\v2\x1a.google.protobuf.TimestampR\x0etransitionedAt\"\xe5\x0f\n" +
+	"\x0ftransitioned_at\x18\xca\x01 \x01(\v2\x1a.google.protobuf.TimestampR\x0etransitionedAtJ\x04\b\v\x10\f\"\xe4\x0f\n" +
 	"\vApplication\x12?\n" +
 	"\x04type\x18\x01 \x01(\x0e2+.otterscale.application.v1.Application.TypeR\x04type\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x1c\n" +
@@ -6426,15 +6464,17 @@ const file_api_application_v1_application_proto_rawDesc = "" +
 	"\x04name\x18\x03 \x01(\tR\x04name\x12\x1a\n" +
 	"\bprotocol\x18\x04 \x01(\tR\bprotocol\x12\x1f\n" +
 	"\vtarget_port\x18\v \x01(\tR\n" +
-	"targetPort\x1a\xf6\x01\n" +
+	"targetPort\x1a\xf5\x01\n" +
 	"\x03Pod\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x14\n" +
 	"\x05phase\x18\x02 \x01(\tR\x05phase\x12\x14\n" +
 	"\x05ready\x18\x03 \x01(\tR\x05ready\x12\x1a\n" +
-	"\brestarts\x18\x04 \x01(\tR\brestarts\x12W\n" +
-	"\x0elast_condition\x18\v \x01(\v20.otterscale.application.v1.Application.ConditionR\rlastCondition\x12:\n" +
+	"\brestarts\x18\x04 \x01(\tR\brestarts\x12P\n" +
 	"\n" +
-	"created_at\x18\xc9\x01 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x1a\x8c\x02\n" +
+	"conditions\x18\f \x03(\v20.otterscale.application.v1.Application.ConditionR\n" +
+	"conditions\x12:\n" +
+	"\n" +
+	"created_at\x18\xc9\x01 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAtJ\x04\b\v\x10\f\x1a\x8c\x02\n" +
 	"\x15PersistentVolumeClaim\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x16\n" +
 	"\x06status\x18\x02 \x01(\tR\x06status\x12!\n" +
@@ -6711,88 +6751,90 @@ var file_api_application_v1_application_proto_depIdxs = []int32{
 	52, // 0: otterscale.application.v1.Release.chart:type_name -> otterscale.registry.v1.Chart
 	35, // 1: otterscale.application.v1.Namespace.labels:type_name -> otterscale.application.v1.Namespace.LabelsEntry
 	53, // 2: otterscale.application.v1.Namespace.created_at:type_name -> google.protobuf.Timestamp
-	36, // 3: otterscale.application.v1.Job.last_condition:type_name -> otterscale.application.v1.Job.Condition
+	36, // 3: otterscale.application.v1.Job.conditions:type_name -> otterscale.application.v1.Job.Condition
 	53, // 4: otterscale.application.v1.Job.started_at:type_name -> google.protobuf.Timestamp
 	53, // 5: otterscale.application.v1.Job.completed_at:type_name -> google.protobuf.Timestamp
-	0,  // 6: otterscale.application.v1.Application.type:type_name -> otterscale.application.v1.Application.Type
-	42, // 7: otterscale.application.v1.Application.labels:type_name -> otterscale.application.v1.Application.LabelsEntry
-	38, // 8: otterscale.application.v1.Application.containers:type_name -> otterscale.application.v1.Application.Container
-	39, // 9: otterscale.application.v1.Application.services:type_name -> otterscale.application.v1.Application.Service
-	40, // 10: otterscale.application.v1.Application.pods:type_name -> otterscale.application.v1.Application.Pod
-	41, // 11: otterscale.application.v1.Application.persistent_volume_claims:type_name -> otterscale.application.v1.Application.PersistentVolumeClaim
-	53, // 12: otterscale.application.v1.Application.created_at:type_name -> google.protobuf.Timestamp
-	44, // 13: otterscale.application.v1.StorageClass.parameters:type_name -> otterscale.application.v1.StorageClass.ParametersEntry
-	53, // 14: otterscale.application.v1.StorageClass.created_at:type_name -> google.protobuf.Timestamp
-	45, // 15: otterscale.application.v1.ConfigMap.labels:type_name -> otterscale.application.v1.ConfigMap.LabelsEntry
-	46, // 16: otterscale.application.v1.ConfigMap.data:type_name -> otterscale.application.v1.ConfigMap.DataEntry
-	47, // 17: otterscale.application.v1.ConfigMap.binary_data:type_name -> otterscale.application.v1.ConfigMap.BinaryDataEntry
-	53, // 18: otterscale.application.v1.ConfigMap.created_at:type_name -> google.protobuf.Timestamp
-	48, // 19: otterscale.application.v1.Secret.labels:type_name -> otterscale.application.v1.Secret.LabelsEntry
-	49, // 20: otterscale.application.v1.Secret.data:type_name -> otterscale.application.v1.Secret.DataEntry
-	50, // 21: otterscale.application.v1.Secret.string_data:type_name -> otterscale.application.v1.Secret.StringDataEntry
-	53, // 22: otterscale.application.v1.Secret.created_at:type_name -> google.protobuf.Timestamp
-	4,  // 23: otterscale.application.v1.ListApplicationsResponse.applications:type_name -> otterscale.application.v1.Application
-	0,  // 24: otterscale.application.v1.RestartApplicationRequest.type:type_name -> otterscale.application.v1.Application.Type
-	0,  // 25: otterscale.application.v1.ScaleApplicationRequest.type:type_name -> otterscale.application.v1.Application.Type
-	3,  // 26: otterscale.application.v1.ListJobsResponse.jobs:type_name -> otterscale.application.v1.Job
-	54, // 27: otterscale.application.v1.WatchLogsRequest.duration:type_name -> google.protobuf.Duration
-	1,  // 28: otterscale.application.v1.ListReleasesResponse.releases:type_name -> otterscale.application.v1.Release
-	51, // 29: otterscale.application.v1.CreateReleaseRequest.values_map:type_name -> otterscale.application.v1.CreateReleaseRequest.ValuesMapEntry
-	6,  // 30: otterscale.application.v1.ListConfigMapsResponse.config_maps:type_name -> otterscale.application.v1.ConfigMap
-	7,  // 31: otterscale.application.v1.ListSecretsResponse.secrets:type_name -> otterscale.application.v1.Secret
-	2,  // 32: otterscale.application.v1.ListNamespacesResponse.namespaces:type_name -> otterscale.application.v1.Namespace
-	5,  // 33: otterscale.application.v1.ListStorageClassesResponse.storage_classes:type_name -> otterscale.application.v1.StorageClass
-	53, // 34: otterscale.application.v1.Job.Condition.probed_at:type_name -> google.protobuf.Timestamp
-	53, // 35: otterscale.application.v1.Job.Condition.transitioned_at:type_name -> google.protobuf.Timestamp
-	53, // 36: otterscale.application.v1.Application.Condition.probed_at:type_name -> google.protobuf.Timestamp
-	53, // 37: otterscale.application.v1.Application.Condition.transitioned_at:type_name -> google.protobuf.Timestamp
-	43, // 38: otterscale.application.v1.Application.Service.ports:type_name -> otterscale.application.v1.Application.Service.Port
-	53, // 39: otterscale.application.v1.Application.Service.created_at:type_name -> google.protobuf.Timestamp
-	37, // 40: otterscale.application.v1.Application.Pod.last_condition:type_name -> otterscale.application.v1.Application.Condition
-	53, // 41: otterscale.application.v1.Application.Pod.created_at:type_name -> google.protobuf.Timestamp
-	5,  // 42: otterscale.application.v1.Application.PersistentVolumeClaim.storage_class:type_name -> otterscale.application.v1.StorageClass
-	53, // 43: otterscale.application.v1.Application.PersistentVolumeClaim.created_at:type_name -> google.protobuf.Timestamp
-	8,  // 44: otterscale.application.v1.ApplicationService.ListApplications:input_type -> otterscale.application.v1.ListApplicationsRequest
-	10, // 45: otterscale.application.v1.ApplicationService.GetApplication:input_type -> otterscale.application.v1.GetApplicationRequest
-	11, // 46: otterscale.application.v1.ApplicationService.RestartApplication:input_type -> otterscale.application.v1.RestartApplicationRequest
-	12, // 47: otterscale.application.v1.ApplicationService.ScaleApplication:input_type -> otterscale.application.v1.ScaleApplicationRequest
-	13, // 48: otterscale.application.v1.ApplicationService.DeleteApplicationPod:input_type -> otterscale.application.v1.DeleteApplicationPodRequest
-	14, // 49: otterscale.application.v1.ApplicationService.ListJobs:input_type -> otterscale.application.v1.ListJobsRequest
-	16, // 50: otterscale.application.v1.ApplicationService.WatchLogs:input_type -> otterscale.application.v1.WatchLogsRequest
-	18, // 51: otterscale.application.v1.ApplicationService.ExecuteTTY:input_type -> otterscale.application.v1.ExecuteTTYRequest
-	20, // 52: otterscale.application.v1.ApplicationService.WriteTTY:input_type -> otterscale.application.v1.WriteTTYRequest
-	21, // 53: otterscale.application.v1.ApplicationService.ListReleases:input_type -> otterscale.application.v1.ListReleasesRequest
-	23, // 54: otterscale.application.v1.ApplicationService.CreateRelease:input_type -> otterscale.application.v1.CreateReleaseRequest
-	24, // 55: otterscale.application.v1.ApplicationService.UpdateRelease:input_type -> otterscale.application.v1.UpdateReleaseRequest
-	25, // 56: otterscale.application.v1.ApplicationService.DeleteRelease:input_type -> otterscale.application.v1.DeleteReleaseRequest
-	26, // 57: otterscale.application.v1.ApplicationService.RollbackRelease:input_type -> otterscale.application.v1.RollbackReleaseRequest
-	27, // 58: otterscale.application.v1.ApplicationService.ListConfigMaps:input_type -> otterscale.application.v1.ListConfigMapsRequest
-	29, // 59: otterscale.application.v1.ApplicationService.ListSecrets:input_type -> otterscale.application.v1.ListSecretsRequest
-	32, // 60: otterscale.application.v1.ApplicationService.ListNamespaces:input_type -> otterscale.application.v1.ListNamespacesRequest
-	31, // 61: otterscale.application.v1.ApplicationService.ListStorageClasses:input_type -> otterscale.application.v1.ListStorageClassesRequest
-	9,  // 62: otterscale.application.v1.ApplicationService.ListApplications:output_type -> otterscale.application.v1.ListApplicationsResponse
-	4,  // 63: otterscale.application.v1.ApplicationService.GetApplication:output_type -> otterscale.application.v1.Application
-	55, // 64: otterscale.application.v1.ApplicationService.RestartApplication:output_type -> google.protobuf.Empty
-	55, // 65: otterscale.application.v1.ApplicationService.ScaleApplication:output_type -> google.protobuf.Empty
-	55, // 66: otterscale.application.v1.ApplicationService.DeleteApplicationPod:output_type -> google.protobuf.Empty
-	15, // 67: otterscale.application.v1.ApplicationService.ListJobs:output_type -> otterscale.application.v1.ListJobsResponse
-	17, // 68: otterscale.application.v1.ApplicationService.WatchLogs:output_type -> otterscale.application.v1.WatchLogsResponse
-	19, // 69: otterscale.application.v1.ApplicationService.ExecuteTTY:output_type -> otterscale.application.v1.ExecuteTTYResponse
-	55, // 70: otterscale.application.v1.ApplicationService.WriteTTY:output_type -> google.protobuf.Empty
-	22, // 71: otterscale.application.v1.ApplicationService.ListReleases:output_type -> otterscale.application.v1.ListReleasesResponse
-	1,  // 72: otterscale.application.v1.ApplicationService.CreateRelease:output_type -> otterscale.application.v1.Release
-	1,  // 73: otterscale.application.v1.ApplicationService.UpdateRelease:output_type -> otterscale.application.v1.Release
-	55, // 74: otterscale.application.v1.ApplicationService.DeleteRelease:output_type -> google.protobuf.Empty
-	55, // 75: otterscale.application.v1.ApplicationService.RollbackRelease:output_type -> google.protobuf.Empty
-	28, // 76: otterscale.application.v1.ApplicationService.ListConfigMaps:output_type -> otterscale.application.v1.ListConfigMapsResponse
-	30, // 77: otterscale.application.v1.ApplicationService.ListSecrets:output_type -> otterscale.application.v1.ListSecretsResponse
-	33, // 78: otterscale.application.v1.ApplicationService.ListNamespaces:output_type -> otterscale.application.v1.ListNamespacesResponse
-	34, // 79: otterscale.application.v1.ApplicationService.ListStorageClasses:output_type -> otterscale.application.v1.ListStorageClassesResponse
-	62, // [62:80] is the sub-list for method output_type
-	44, // [44:62] is the sub-list for method input_type
-	44, // [44:44] is the sub-list for extension type_name
-	44, // [44:44] is the sub-list for extension extendee
-	0,  // [0:44] is the sub-list for field type_name
+	53, // 6: otterscale.application.v1.Job.created_at:type_name -> google.protobuf.Timestamp
+	53, // 7: otterscale.application.v1.Job.deleted_at:type_name -> google.protobuf.Timestamp
+	0,  // 8: otterscale.application.v1.Application.type:type_name -> otterscale.application.v1.Application.Type
+	42, // 9: otterscale.application.v1.Application.labels:type_name -> otterscale.application.v1.Application.LabelsEntry
+	38, // 10: otterscale.application.v1.Application.containers:type_name -> otterscale.application.v1.Application.Container
+	39, // 11: otterscale.application.v1.Application.services:type_name -> otterscale.application.v1.Application.Service
+	40, // 12: otterscale.application.v1.Application.pods:type_name -> otterscale.application.v1.Application.Pod
+	41, // 13: otterscale.application.v1.Application.persistent_volume_claims:type_name -> otterscale.application.v1.Application.PersistentVolumeClaim
+	53, // 14: otterscale.application.v1.Application.created_at:type_name -> google.protobuf.Timestamp
+	44, // 15: otterscale.application.v1.StorageClass.parameters:type_name -> otterscale.application.v1.StorageClass.ParametersEntry
+	53, // 16: otterscale.application.v1.StorageClass.created_at:type_name -> google.protobuf.Timestamp
+	45, // 17: otterscale.application.v1.ConfigMap.labels:type_name -> otterscale.application.v1.ConfigMap.LabelsEntry
+	46, // 18: otterscale.application.v1.ConfigMap.data:type_name -> otterscale.application.v1.ConfigMap.DataEntry
+	47, // 19: otterscale.application.v1.ConfigMap.binary_data:type_name -> otterscale.application.v1.ConfigMap.BinaryDataEntry
+	53, // 20: otterscale.application.v1.ConfigMap.created_at:type_name -> google.protobuf.Timestamp
+	48, // 21: otterscale.application.v1.Secret.labels:type_name -> otterscale.application.v1.Secret.LabelsEntry
+	49, // 22: otterscale.application.v1.Secret.data:type_name -> otterscale.application.v1.Secret.DataEntry
+	50, // 23: otterscale.application.v1.Secret.string_data:type_name -> otterscale.application.v1.Secret.StringDataEntry
+	53, // 24: otterscale.application.v1.Secret.created_at:type_name -> google.protobuf.Timestamp
+	4,  // 25: otterscale.application.v1.ListApplicationsResponse.applications:type_name -> otterscale.application.v1.Application
+	0,  // 26: otterscale.application.v1.RestartApplicationRequest.type:type_name -> otterscale.application.v1.Application.Type
+	0,  // 27: otterscale.application.v1.ScaleApplicationRequest.type:type_name -> otterscale.application.v1.Application.Type
+	3,  // 28: otterscale.application.v1.ListJobsResponse.jobs:type_name -> otterscale.application.v1.Job
+	54, // 29: otterscale.application.v1.WatchLogsRequest.duration:type_name -> google.protobuf.Duration
+	1,  // 30: otterscale.application.v1.ListReleasesResponse.releases:type_name -> otterscale.application.v1.Release
+	51, // 31: otterscale.application.v1.CreateReleaseRequest.values_map:type_name -> otterscale.application.v1.CreateReleaseRequest.ValuesMapEntry
+	6,  // 32: otterscale.application.v1.ListConfigMapsResponse.config_maps:type_name -> otterscale.application.v1.ConfigMap
+	7,  // 33: otterscale.application.v1.ListSecretsResponse.secrets:type_name -> otterscale.application.v1.Secret
+	2,  // 34: otterscale.application.v1.ListNamespacesResponse.namespaces:type_name -> otterscale.application.v1.Namespace
+	5,  // 35: otterscale.application.v1.ListStorageClassesResponse.storage_classes:type_name -> otterscale.application.v1.StorageClass
+	53, // 36: otterscale.application.v1.Job.Condition.probed_at:type_name -> google.protobuf.Timestamp
+	53, // 37: otterscale.application.v1.Job.Condition.transitioned_at:type_name -> google.protobuf.Timestamp
+	53, // 38: otterscale.application.v1.Application.Condition.probed_at:type_name -> google.protobuf.Timestamp
+	53, // 39: otterscale.application.v1.Application.Condition.transitioned_at:type_name -> google.protobuf.Timestamp
+	43, // 40: otterscale.application.v1.Application.Service.ports:type_name -> otterscale.application.v1.Application.Service.Port
+	53, // 41: otterscale.application.v1.Application.Service.created_at:type_name -> google.protobuf.Timestamp
+	37, // 42: otterscale.application.v1.Application.Pod.conditions:type_name -> otterscale.application.v1.Application.Condition
+	53, // 43: otterscale.application.v1.Application.Pod.created_at:type_name -> google.protobuf.Timestamp
+	5,  // 44: otterscale.application.v1.Application.PersistentVolumeClaim.storage_class:type_name -> otterscale.application.v1.StorageClass
+	53, // 45: otterscale.application.v1.Application.PersistentVolumeClaim.created_at:type_name -> google.protobuf.Timestamp
+	8,  // 46: otterscale.application.v1.ApplicationService.ListApplications:input_type -> otterscale.application.v1.ListApplicationsRequest
+	10, // 47: otterscale.application.v1.ApplicationService.GetApplication:input_type -> otterscale.application.v1.GetApplicationRequest
+	11, // 48: otterscale.application.v1.ApplicationService.RestartApplication:input_type -> otterscale.application.v1.RestartApplicationRequest
+	12, // 49: otterscale.application.v1.ApplicationService.ScaleApplication:input_type -> otterscale.application.v1.ScaleApplicationRequest
+	13, // 50: otterscale.application.v1.ApplicationService.DeleteApplicationPod:input_type -> otterscale.application.v1.DeleteApplicationPodRequest
+	14, // 51: otterscale.application.v1.ApplicationService.ListJobs:input_type -> otterscale.application.v1.ListJobsRequest
+	16, // 52: otterscale.application.v1.ApplicationService.WatchLogs:input_type -> otterscale.application.v1.WatchLogsRequest
+	18, // 53: otterscale.application.v1.ApplicationService.ExecuteTTY:input_type -> otterscale.application.v1.ExecuteTTYRequest
+	20, // 54: otterscale.application.v1.ApplicationService.WriteTTY:input_type -> otterscale.application.v1.WriteTTYRequest
+	21, // 55: otterscale.application.v1.ApplicationService.ListReleases:input_type -> otterscale.application.v1.ListReleasesRequest
+	23, // 56: otterscale.application.v1.ApplicationService.CreateRelease:input_type -> otterscale.application.v1.CreateReleaseRequest
+	24, // 57: otterscale.application.v1.ApplicationService.UpdateRelease:input_type -> otterscale.application.v1.UpdateReleaseRequest
+	25, // 58: otterscale.application.v1.ApplicationService.DeleteRelease:input_type -> otterscale.application.v1.DeleteReleaseRequest
+	26, // 59: otterscale.application.v1.ApplicationService.RollbackRelease:input_type -> otterscale.application.v1.RollbackReleaseRequest
+	27, // 60: otterscale.application.v1.ApplicationService.ListConfigMaps:input_type -> otterscale.application.v1.ListConfigMapsRequest
+	29, // 61: otterscale.application.v1.ApplicationService.ListSecrets:input_type -> otterscale.application.v1.ListSecretsRequest
+	32, // 62: otterscale.application.v1.ApplicationService.ListNamespaces:input_type -> otterscale.application.v1.ListNamespacesRequest
+	31, // 63: otterscale.application.v1.ApplicationService.ListStorageClasses:input_type -> otterscale.application.v1.ListStorageClassesRequest
+	9,  // 64: otterscale.application.v1.ApplicationService.ListApplications:output_type -> otterscale.application.v1.ListApplicationsResponse
+	4,  // 65: otterscale.application.v1.ApplicationService.GetApplication:output_type -> otterscale.application.v1.Application
+	55, // 66: otterscale.application.v1.ApplicationService.RestartApplication:output_type -> google.protobuf.Empty
+	55, // 67: otterscale.application.v1.ApplicationService.ScaleApplication:output_type -> google.protobuf.Empty
+	55, // 68: otterscale.application.v1.ApplicationService.DeleteApplicationPod:output_type -> google.protobuf.Empty
+	15, // 69: otterscale.application.v1.ApplicationService.ListJobs:output_type -> otterscale.application.v1.ListJobsResponse
+	17, // 70: otterscale.application.v1.ApplicationService.WatchLogs:output_type -> otterscale.application.v1.WatchLogsResponse
+	19, // 71: otterscale.application.v1.ApplicationService.ExecuteTTY:output_type -> otterscale.application.v1.ExecuteTTYResponse
+	55, // 72: otterscale.application.v1.ApplicationService.WriteTTY:output_type -> google.protobuf.Empty
+	22, // 73: otterscale.application.v1.ApplicationService.ListReleases:output_type -> otterscale.application.v1.ListReleasesResponse
+	1,  // 74: otterscale.application.v1.ApplicationService.CreateRelease:output_type -> otterscale.application.v1.Release
+	1,  // 75: otterscale.application.v1.ApplicationService.UpdateRelease:output_type -> otterscale.application.v1.Release
+	55, // 76: otterscale.application.v1.ApplicationService.DeleteRelease:output_type -> google.protobuf.Empty
+	55, // 77: otterscale.application.v1.ApplicationService.RollbackRelease:output_type -> google.protobuf.Empty
+	28, // 78: otterscale.application.v1.ApplicationService.ListConfigMaps:output_type -> otterscale.application.v1.ListConfigMapsResponse
+	30, // 79: otterscale.application.v1.ApplicationService.ListSecrets:output_type -> otterscale.application.v1.ListSecretsResponse
+	33, // 80: otterscale.application.v1.ApplicationService.ListNamespaces:output_type -> otterscale.application.v1.ListNamespacesResponse
+	34, // 81: otterscale.application.v1.ApplicationService.ListStorageClasses:output_type -> otterscale.application.v1.ListStorageClassesResponse
+	64, // [64:82] is the sub-list for method output_type
+	46, // [46:64] is the sub-list for method input_type
+	46, // [46:46] is the sub-list for extension type_name
+	46, // [46:46] is the sub-list for extension extendee
+	0,  // [0:46] is the sub-list for field type_name
 }
 
 func init() { file_api_application_v1_application_proto_init() }

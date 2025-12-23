@@ -12,9 +12,11 @@
 		namespace,
 		active,
 		ready,
-		succeeded_or_failed,
+		succeeded,
+		failed,
 		terminating,
-		lastCondition,
+		status,
+		conditions,
 		startedAt,
 		completedAt
 	};
@@ -64,15 +66,30 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet succeeded_or_failed()}
+{#snippet succeeded()}
 	<Layout.Header class="justify-end">
-		<Layout.HeaderViewer>{m.succeeded_or_failed()}</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.succeeded()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
-{#snippet lastCondition()}
+{#snippet failed()}
+	<Layout.Header class="justify-end">
+		<Layout.HeaderViewer>{m.failed()}</Layout.HeaderViewer>
+	</Layout.Header>
+{/snippet}
+
+{#snippet status(column: Column<Job>)}
 	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>{m.last_condition()}</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.status()}</Layout.HeaderViewer>
+		<Layout.HeaderController>
+			<Sorter {column} />
+		</Layout.HeaderController>
+	</Layout.Header>
+{/snippet}
+
+{#snippet conditions()}
+	<Layout.Header class="justify-start">
+		<Layout.HeaderViewer>{m.conditions()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 

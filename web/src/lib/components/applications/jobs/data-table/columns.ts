@@ -13,9 +13,11 @@ const messages = {
 	name: m.name(),
 	namespace: m.namespace(),
 	ready: m.ready(),
-	succeeded_or_failed: m.succeeded_or_failed(),
+	succeeded: m.succeeded(),
+	failed: m.failed(),
 	terminating: m.terminating(),
-	lastCondition: m.last_condition(),
+	status: m.status(),
+	conditions: m.conditions(),
 	startedAt: m.started_at(),
 	completedAt: m.completed_at()
 };
@@ -52,12 +54,21 @@ function getColumns(): ColumnDef<Job>[] {
 			}
 		},
 		{
-			accessorKey: 'lastCondition',
+			accessorKey: 'status',
 			header: ({ column }) => {
-				return renderSnippet(headers.lastCondition, column);
+				return renderSnippet(headers.status, column);
 			},
 			cell: ({ row }) => {
-				return renderSnippet(cells.lastCondition, row);
+				return renderSnippet(cells.status, row);
+			}
+		},
+		{
+			accessorKey: 'conditions',
+			header: ({ column }) => {
+				return renderSnippet(headers.conditions, column);
+			},
+			cell: ({ row }) => {
+				return renderSnippet(cells.conditions, row);
 			}
 		},
 		{
@@ -88,15 +99,23 @@ function getColumns(): ColumnDef<Job>[] {
 			}
 		},
 		{
-			accessorKey: 'succeeded_or_failed',
+			accessorKey: 'succeeded',
 			header: ({ column }) => {
-				return renderSnippet(headers.succeeded_or_failed, column);
+				return renderSnippet(headers.succeeded, column);
 			},
 			cell: ({ row }) => {
-				return renderSnippet(cells.succeeded_or_failed, row);
+				return renderSnippet(cells.succeeded, row);
 			}
 		},
-
+		{
+			accessorKey: 'failed',
+			header: ({ column }) => {
+				return renderSnippet(headers.failed, column);
+			},
+			cell: ({ row }) => {
+				return renderSnippet(cells.failed, row);
+			}
+		},
 		{
 			accessorKey: 'startedAt',
 			header: ({ column }) => {

@@ -5,8 +5,12 @@
 	import type { Job } from '$lib/api/application/v1/application_pb';
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
+	import Badge from '$lib/components/ui/badge/badge.svelte';
+	import { Spinner } from '$lib/components/ui/spinner';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { formatTimeAgo } from '$lib/formatter';
+
+	import { getJobStatus } from '../utils';
 
 	export const cells = {
 		row_picker,
@@ -14,32 +18,14 @@
 		namespace,
 		active,
 		ready,
-		succeeded_or_failed,
+		succeeded,
+		failed,
 		terminating,
-		lastCondition,
+		status,
+		conditions,
 		startedAt,
 		completedAt
 	};
-
-	export function getJobStatus(job: Job) {
-		if (job.terminating) {
-			return 'Terminating';
-		}
-
-		if (job.active > 0) {
-			return 'Active';
-		}
-
-		if (job.succeeded > 0) {
-			return 'Succeeded';
-		}
-
-		if (job.failed > 0) {
-			return 'Failed';
-		}
-
-		return 'Pending';
-	}
 </script>
 
 {#snippet row_picker(row: Row<Job>)}
@@ -72,9 +58,15 @@
 	</Layout.Cell>
 {/snippet}
 
-{#snippet succeeded_or_failed(row: Row<Job>)}
+{#snippet succeeded(row: Row<Job>)}
 	<Layout.Cell class="items-end">
-		{row.original.succeeded}/{row.original.failed}
+		{row.original.succeeded}
+	</Layout.Cell>
+{/snippet}
+
+{#snippet failed(row: Row<Job>)}
+	<Layout.Cell class="items-end">
+		{row.original.failed}
 	</Layout.Cell>
 {/snippet}
 
@@ -84,33 +76,59 @@
 	</Layout.Cell>
 {/snippet}
 
-{#snippet lastCondition(row: Row<Job>)}
+{#snippet status(row: Row<Job>)}
 	<Layout.Cell class="items-start">
-		{#if row.original.lastCondition && row.original.lastCondition.type === 'Failed'}
-			<div class="space-y-1">
-				<h4 class="text-destructive">
-					{getJobStatus(row.original)}:
-					{row.original.lastCondition.reason}
-				</h4>
-				<div class="flex gap-1">
-					<Tooltip.Provider>
-						<Tooltip.Root>
-							<Tooltip.Trigger>
-								<p class="max-w-50 truncate text-muted-foreground">
-									{row.original.lastCondition.message}
-								</p>
-							</Tooltip.Trigger>
-							<Tooltip.Content>
-								{row.original.lastCondition.message}
-							</Tooltip.Content>
-						</Tooltip.Root>
-					</Tooltip.Provider>
-				</div>
-			</div>
+		{@const status = getJobStatus(row.original)}
+		{#if status === 'Running'}
+			<span class="flex items-center gap-1 text-muted-foreground">
+				<Spinner />
+				{status}
+			</span>
+		{:else if ['Failed', 'FailureTarget'].includes(status)}
+			<p class="text-destructive">
+				{status}
+			</p>
 		{:else}
-			{getJobStatus(row.original)}
+			{status}
 		{/if}
 	</Layout.Cell>
+{/snippet}
+
+{#snippet conditions(row: Row<Job>)}
+	{#if row.original.conditions}
+		{@const trueConditions = row.original.conditions.filter(
+			(condition) => condition.status === 'True'
+		)}
+		{#if trueConditions.length > 0}
+			<Layout.Cell class="items-start">
+				<div class="flex flex-wrap gap-1">
+					{#each trueConditions as trueCondition, index (index)}
+						<Tooltip.Provider>
+							<Tooltip.Root>
+								<Tooltip.Trigger>
+									<Badge
+										variant="outline"
+										class={['Failed', 'FailureTarget'].includes(trueCondition.type)
+											? 'border-destructive/50 text-destructive'
+											: ''}
+									>
+										{trueCondition.type}
+									</Badge>
+								</Tooltip.Trigger>
+								<Tooltip.Content>
+									{#if trueCondition.message}
+										{trueCondition.message}
+									{:else}
+										{trueCondition.type}
+									{/if}
+								</Tooltip.Content>
+							</Tooltip.Root>
+						</Tooltip.Provider>
+					{/each}
+				</div>
+			</Layout.Cell>
+		{/if}
+	{/if}
 {/snippet}
 
 {#snippet startedAt(row: Row<Job>)}

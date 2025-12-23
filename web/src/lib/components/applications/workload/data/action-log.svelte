@@ -2,11 +2,13 @@
 	import { durationFromMs } from '@bufbuild/protobuf/wkt';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
+	import ArrowDownIcon from '@lucide/svelte/icons/arrow-down';
 	import { getContext, onDestroy, onMount } from 'svelte';
 	import { fly } from 'svelte/transition';
 
 	import type { Application_Pod } from '$lib/api/application/v1/application_pb';
 	import { ApplicationService } from '$lib/api/application/v1/application_pb';
+	import Button from '$lib/components/ui/button/button.svelte';
 	import * as Select from '$lib/components/ui/select';
 	import * as Sheet from '$lib/components/ui/sheet';
 	import { m } from '$lib/paraglide/messages';
@@ -70,7 +72,8 @@
 					break;
 				}
 				messages = [...messages, { message: response.log, phase: 'LOG' }];
-				scrollToBottom();
+
+				autoScrollToBottom();
 
 				// Add delay for better UX
 				await new Promise((resolve) => setTimeout(resolve, 100));
@@ -89,10 +92,20 @@
 		}
 	}
 
-	function scrollToBottom() {
-		if (terminal) {
-			terminal.scrollTop = terminal.scrollHeight;
+	function autoScrollToBottom() {
+		if (!terminal) return;
+
+		if (
+			terminal.scrollHeight - terminal.scrollTop - terminal.clientHeight <
+			terminal.clientHeight / 3
+		) {
+			scrollToBottom();
 		}
+	}
+	function scrollToBottom() {
+		if (!terminal) return;
+
+		terminal.scrollTop = terminal.scrollHeight;
 	}
 
 	function stopWatching() {
@@ -132,10 +145,10 @@
 
 	<Sheet.Content class="rounded-l-lg border-none bg-transparent sm:max-w-9/10">
 		<div
-			class="dark size-full flex-col rounded-l-lg border border-border bg-secondary font-mono text-sm text-card-foreground shadow-sm"
+			class="dark relative size-full flex-col rounded-l-lg border border-border bg-secondary font-mono text-sm text-card-foreground shadow-sm"
 		>
 			<!-- Header with time selector -->
-			<div class="flex items-center justify-between border-b border-border p-4">
+			<div class="flex h-12 items-center justify-between border-b border-border p-4">
 				<h3 class="text-lg font-semibold">{m.log()}</h3>
 				<div class="mr-8 flex items-center gap-2">
 					<Select.Root type="single" onValueChange={handleDurationChange}>
@@ -145,7 +158,7 @@
 						<Select.Content>
 							<Select.Group>
 								<Select.Label>Duration</Select.Label>
-								{#each durations as duration (duration.label)}
+								{#each durations as duration (duration.value)}
 									<Select.Item value={duration.value}>
 										{duration.label}
 									</Select.Item>
@@ -157,7 +170,7 @@
 			</div>
 
 			<div bind:this={terminal} class="max-h-[calc(95vh-48px)] flex-col overflow-auto p-4">
-				{#each messages as msg, i}
+				{#each messages as msg, i (i)}
 					{@const isLastMessage = messages.length === i + 1}
 					{@const textClass = isLastMessage ? '' : 'text-green-500'}
 
@@ -170,6 +183,16 @@
 					{/if}
 				{/each}
 			</div>
+			<Button
+				onclick={() => {
+					scrollToBottom();
+				}}
+				variant="outline"
+				size="icon-sm"
+				class="absolute bottom-2 left-1/2 inline-flex -translate-x-1/2 transform rounded-full shadow-md"
+			>
+				<ArrowDownIcon class="size-3" />
+			</Button>
 		</div>
 	</Sheet.Content>
 </Sheet.Root>
