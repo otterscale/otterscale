@@ -7,6 +7,7 @@
 	import { resolve } from '$app/paths';
 	import { ApplicationService, type Job } from '$lib/api/application/v1/application_pb';
 	import { ModelService } from '$lib/api/model/v1/model_pb';
+	import { getJobStatus } from '$lib/components/applications/jobs/utils';
 	import { Single as SingleSelect } from '$lib/components/custom/select';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import * as Empty from '$lib/components/ui/empty/index.js';
@@ -83,9 +84,11 @@
 			<Icon icon="ph:archive-fill" />
 		</Select.Trigger>
 		<Select.Content>
-			{#each $modelArtifactOptions as option (option.value)}
-				{@const downloadModelArtifactJob = jobMap.get(option.value)}
-				{#if downloadModelArtifactJob && downloadModelArtifactJob.completedAt}
+			{#if $modelArtifactOptions.length > 0}
+				{#each $modelArtifactOptions as option (option.value)}
+					{@const downloadModelArtifactJob = jobMap.get(option.value)}
+					{@const isAvailable =
+						downloadModelArtifactJob && getJobStatus(downloadModelArtifactJob) === 'Complete'}
 					<Select.Item
 						value={option.value}
 						onclick={() => {
@@ -93,19 +96,24 @@
 							modelName = option.label;
 							persistentVolumeClaimName = option.value;
 						}}
+						disabled={!isAvailable}
 					>
 						<div class="flex items-center gap-2">
-							<Icon
-								icon={option.icon ? option.icon : 'ph:empty'}
-								class={cn('size-5', option.icon ? 'visible' : 'invisible')}
-							/>
+							{#if isAvailable}
+								<Icon
+									icon={option.icon ? option.icon : 'ph:empty'}
+									class={cn('size-5', option.icon ? 'visible' : 'invisible')}
+								/>
+							{:else}
+								<Icon icon="ph:spinner-gap" class="size-5 animate-spin" />
+							{/if}
 							<div>
 								<h4>{option.label}</h4>
 								<p class="text-muted-foreground">{option.value}</p>
 							</div>
 						</div>
 					</Select.Item>
-				{/if}
+				{/each}
 			{:else}
 				<Empty.Root>
 					<Empty.Header>
@@ -125,7 +133,7 @@
 						</Button>
 					</Empty.Content>
 				</Empty.Root>
-			{/each}
+			{/if}
 		</Select.Content>
 	</Select.Root>
 {/if}
