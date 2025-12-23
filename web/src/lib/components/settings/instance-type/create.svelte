@@ -70,7 +70,7 @@
 					<Form.Label>{m.memory()}</Form.Label>
 					<SingleInput.Measurement
 						bind:value={request.memoryBytes}
-						transformer={(value) => String(value)}
+						transformer={(value) => (value ? BigInt(value) : undefined)}
 						units={[{ value: 1024 ** 3, label: 'GB' } as SingleInput.UnitType]}
 					/>
 				</Form.Field>

@@ -77,7 +77,7 @@
 						required
 						bind:value={request.sizeBytes}
 						bind:invalid
-						transformer={(value) => String(value)}
+						transformer={(value) => (value ? BigInt(value) : undefined)}
 						units={[{ value: 1024 * 1024 * 1024, label: 'GB' } as SingleInput.UnitType]}
 					/>
 				</Form.Field>
