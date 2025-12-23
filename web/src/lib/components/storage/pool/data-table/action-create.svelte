@@ -165,7 +165,6 @@
 							type="number"
 							bind:value={request.replicatedSize}
 							bind:invalid={invalidity.replicatedSize}
-							transformer={(value) => BigInt(value)}
 						/>
 					</Form.Field>
 					<Form.Help>
@@ -179,7 +178,7 @@
 					</Form.Help>
 					<SingleInput.Measurement
 						bind:value={request.quotaBytes}
-						transformer={(value) => BigInt(value)}
+						transformer={(value) => String(value)}
 						units={[
 							{ value: Math.pow(2, 10 * 3), label: 'GB' } as SingleInput.UnitType,
 							{ value: Math.pow(2, 10 * 4), label: 'TB' } as SingleInput.UnitType
@@ -228,7 +227,6 @@
 				<Modal.Action
 					disabled={invalid}
 					onclick={() => {
-						console.log('request', request);
 						toast.promise(() => storageClient.createPool(request), {
 							loading: `Creating ${request.poolName}...`,
 							success: () => {
