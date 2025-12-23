@@ -14,6 +14,7 @@
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
+	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { m } from '$lib/paraglide/messages';
 
 	import ReleaseValuesInputEdit from './utils-input-edit-release-configuration.svelte';
@@ -74,7 +75,7 @@
 
 	onMount(async () => {
 		try {
-			if (release.chart) {
+			if (release.chart && release.chart.repositoryName) {
 				await fetchChartRef(scope, release.chart.repositoryName, release.chart.version);
 			}
 		} catch (error) {
@@ -96,10 +97,22 @@
 		}
 	}}
 >
-	<Modal.Trigger variant="creative">
+	<!-- TODO: disabled until feature is implemented -->
+	<!-- <Modal.Trigger variant="creative">
 		<Icon icon="ph:pencil" />
 		{m.edit()}
-	</Modal.Trigger>
+	</Modal.Trigger> -->
+	<Tooltip.Provider>
+		<Tooltip.Root>
+			<Tooltip.Trigger class="w-full">
+				<Modal.Trigger variant="creative" disabled>
+					<Icon icon="ph:pencil" />
+					{m.edit()}
+				</Modal.Trigger>
+			</Tooltip.Trigger>
+			<Tooltip.Content>{m.under_development()}</Tooltip.Content>
+		</Tooltip.Root>
+	</Tooltip.Provider>
 	<Modal.Content>
 		<Modal.Header>{m.edit_release()}</Modal.Header>
 		<Form.Fieldset>

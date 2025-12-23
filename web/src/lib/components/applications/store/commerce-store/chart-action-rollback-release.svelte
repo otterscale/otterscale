@@ -13,6 +13,7 @@
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
+	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { m } from '$lib/paraglide/messages';
 </script>
 
@@ -61,10 +62,22 @@
 		}
 	}}
 >
-	<Modal.Trigger variant="creative">
+	<!-- TODO: disabled until feature is implemented -->
+	<!-- <Modal.Trigger variant="creative">
 		<Icon icon="ph:arrow-counter-clockwise" />
 		{m.rollback()}
-	</Modal.Trigger>
+	</Modal.Trigger> -->
+	<Tooltip.Provider>
+		<Tooltip.Root>
+			<Tooltip.Trigger class="w-full">
+				<Modal.Trigger variant="creative" disabled>
+					<Icon icon="ph:arrow-counter-clockwise" />
+					{m.rollback()}
+				</Modal.Trigger>
+			</Tooltip.Trigger>
+			<Tooltip.Content>{m.under_development()}</Tooltip.Content>
+		</Tooltip.Root>
+	</Tooltip.Provider>
 	<Modal.Content>
 		<Modal.Header>
 			{m.rollback_release()}
