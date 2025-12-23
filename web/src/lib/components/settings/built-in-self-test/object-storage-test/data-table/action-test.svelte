@@ -47,12 +47,12 @@
 
 	// WARP Operation
 	const operationIconMap: Record<string, string> = {
-		'GET': 'ph:arrow-down-left',
-		'PUT': 'ph:arrow-up-right',
-		'DELETE': 'ph:trash',
-		'LIST': 'ph:list',
-		'STAT': 'ph:chart-bar',
-		'MIXED': 'ph:shuffle'
+		GET: 'ph:arrow-down-left',
+		PUT: 'ph:arrow-up-right',
+		DELETE: 'ph:trash',
+		LIST: 'ph:list',
+		STAT: 'ph:chart-bar',
+		MIXED: 'ph:shuffle'
 	};
 
 	const Options: SingleSelect.OptionType[] = Object.keys(Warp_Input_Operation)
