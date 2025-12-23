@@ -14,29 +14,22 @@ import (
 type Helm struct {
 	conf       *config.Config
 	kubernetes *kubernetes.Kubernetes
-
-	envSettings    *cli.EnvSettings
-	registryClient *registry.Client
 }
 
 func New(conf *config.Config, kubernetes *kubernetes.Kubernetes) (*Helm, error) {
-	opts := []registry.ClientOption{
-		registry.ClientOptEnableCache(true),
-	}
+	return &Helm{
+		conf:       conf,
+		kubernetes: kubernetes,
+	}, nil
+}
 
-	registryClient, err := registry.NewClient(opts...)
-	if err != nil {
-		return nil, err
-	}
-
+func newEnvSettings() *cli.EnvSettings {
 	envSettings := cli.New()
 	envSettings.RepositoryConfig = filepath.Join(os.TempDir(), "helm", "repositories.yaml")
 	envSettings.RepositoryCache = filepath.Join(os.TempDir(), "helm", "repository")
+	return envSettings
+}
 
-	return &Helm{
-		conf:           conf,
-		kubernetes:     kubernetes,
-		envSettings:    envSettings,
-		registryClient: registryClient,
-	}, nil
+func newRegistryClient() (*registry.Client, error) {
+	return registry.NewClient(registry.ClientOptEnableCache(true))
 }
