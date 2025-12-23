@@ -12,6 +12,7 @@
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
+	import type { Booleanified } from '$lib/components/custom/modal/single-step/type';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import { m } from '$lib/paraglide/messages';
@@ -24,9 +25,11 @@
 
 	// ==================== State Variables ====================
 	let request: CreateDataVolumeRequest = $state({} as CreateDataVolumeRequest);
-	let invalid: boolean | undefined = $state();
-	let open = $state(false);
 
+	let invalidity = $state({} as Booleanified<CreateDataVolumeRequest>);
+	const invalid = $derived(invalidity.name || invalidity.sizeBytes);
+
+	let open = $state(false);
 	function init() {
 		request = {
 			scope: scope,
@@ -66,7 +69,7 @@
 						required
 						type="text"
 						bind:value={request.name}
-						bind:invalid
+						bind:invalid={invalidity.name}
 						validateRule="rfc1123"
 					/>
 				</Form.Field>
@@ -77,8 +80,10 @@
 				<Form.Field>
 					<Form.Label>{m.size()}</Form.Label>
 					<SingleInput.Measurement
+						required
 						bind:value={request.sizeBytes}
-						transformer={(value) => (value ? BigInt(value) : undefined)}
+						bind:invalid={invalidity.sizeBytes}
+						transformer={(value) => (value !== undefined ? BigInt(value) : undefined)}
 						units={[
 							{ value: 1024 ** 3, label: 'GB' } as SingleInput.UnitType,
 							{ value: 1024 ** 4, label: 'TB' } as SingleInput.UnitType

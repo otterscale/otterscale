@@ -27,7 +27,6 @@
 	} = $props();
 	const transport: Transport = getContext('transport');
 
-	let invalid = $state(false);
 	const storageClient = createClient(StorageService, transport);
 
 	let request = $state({} as UpdateImageRequest);
@@ -70,14 +69,12 @@
 				<Form.Label>{m.quota_size()}</Form.Label>
 				<Form.Field>
 					<SingleInput.Measurement
-						required
-						transformer={(value) => (value ? BigInt(value) : undefined)}
+						transformer={(value) => (value !== undefined ? BigInt(value) : undefined)}
 						units={[
 							{ value: Math.pow(2, 10 * 3), label: 'GB' } as SingleInput.UnitType,
 							{ value: Math.pow(2, 10 * 4), label: 'TB' } as SingleInput.UnitType
 						]}
 						bind:value={request.quotaBytes}
-						bind:invalid
 					/>
 				</Form.Field>
 			</Form.Fieldset>
@@ -88,7 +85,6 @@
 			</Modal.Cancel>
 			<Modal.ActionsGroup>
 				<Modal.Action
-					disabled={invalid}
 					onclick={() => {
 						toast.promise(storageClient.updateImage(request), {
 							loading: `Updating ${request.imageName}...`,

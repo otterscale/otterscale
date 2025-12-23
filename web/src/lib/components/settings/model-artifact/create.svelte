@@ -175,7 +175,7 @@
 						]}
 						required
 						bind:invalid={invalidity.size}
-						transformer={(value) => (value ? BigInt(value) : undefined)}
+						transformer={(value) => (value !== undefined ? BigInt(value) : undefined)}
 					/>
 				</Form.Field>
 			</Form.Fieldset>

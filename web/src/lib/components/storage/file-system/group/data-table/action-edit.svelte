@@ -79,7 +79,7 @@
 					<Form.Label>{m.quota_size()}</Form.Label>
 					<SingleInput.Measurement
 						bind:value={request.quotaBytes}
-						transformer={(value) => (value ? BigInt(value) : undefined)}
+						transformer={(value) => (value !== undefined ? BigInt(value) : undefined)}
 						units={[
 							{ value: Math.pow(2, 10 * 3), label: 'GB' } as SingleInput.UnitType,
 							{ value: Math.pow(2, 10 * 4), label: 'TB' } as SingleInput.UnitType
@@ -97,13 +97,13 @@
 					disabled={invalid}
 					onclick={() => {
 						toast.promise(() => storageClient.updateSubvolumeGroup(request), {
-							loading: `Updating ${request.volumeName}...`,
+							loading: `Updating ${request.groupName}...`,
 							success: () => {
 								reloadManager.force();
-								return `Update ${request.volumeName}`;
+								return `Update ${request.groupName}`;
 							},
 							error: (error) => {
-								let message = `Fail to update ${request.volumeName}`;
+								let message = `Fail to update ${request.groupName}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
 									duration: Number.POSITIVE_INFINITY
