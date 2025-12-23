@@ -86,7 +86,7 @@ func (r *releaseRepo) Install(_ context.Context, scope, namespace, name string, 
 	client.Labels = labelsInSecrets
 	client.PostRenderer = newPostRenderer(labels, annotations)
 
-	chartPath, err := client.LocateChart(chartRef, r.helm.envSettings)
+	chartPath, err := client.LocateChart(chartRef, newEnvSettings())
 	if err != nil {
 		return nil, err
 	}
@@ -133,7 +133,7 @@ func (r *releaseRepo) Upgrade(_ context.Context, scope, namespace, name string, 
 	client.DryRun = dryRun
 	client.ReuseValues = reuseValues
 
-	chartPath, err := client.LocateChart(chartRef, r.helm.envSettings)
+	chartPath, err := client.LocateChart(chartRef, newEnvSettings())
 	if err != nil {
 		return nil, err
 	}
@@ -187,15 +187,22 @@ func (r *releaseRepo) chartInstall(chartPath string, dependencyUpdate bool, keyr
 				return nil, fmt.Errorf("failed to check chart dependencies: %w", err)
 			}
 
+			envSettings := newEnvSettings()
+
+			registryClient, err := newRegistryClient()
+			if err != nil {
+				return nil, err
+			}
+
 			manager := &downloader.Manager{
 				ChartPath:        chartPath,
 				Keyring:          keyring,
 				SkipUpdate:       false,
-				Getters:          getter.All(r.helm.envSettings),
-				RepositoryConfig: r.helm.envSettings.RepositoryConfig,
-				RepositoryCache:  r.helm.envSettings.RepositoryCache,
-				Debug:            r.helm.envSettings.Debug,
-				RegistryClient:   r.helm.registryClient,
+				Getters:          getter.All(envSettings),
+				RepositoryConfig: envSettings.RepositoryConfig,
+				RepositoryCache:  envSettings.RepositoryCache,
+				Debug:            envSettings.Debug,
+				RegistryClient:   registryClient,
 			}
 			if err := manager.Update(); err != nil {
 				return nil, err
@@ -229,7 +236,11 @@ func (r *releaseRepo) config(scope, namespace string) (*action.Configuration, er
 		return nil, err
 	}
 
-	config.RegistryClient = r.helm.registryClient
+	registryClient, err := newRegistryClient()
+	if err != nil {
+		return nil, err
+	}
+	config.RegistryClient = registryClient
 
 	return config, nil
 }
