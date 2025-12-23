@@ -78,7 +78,7 @@
 					<Form.Label>{m.size()}</Form.Label>
 					<SingleInput.Measurement
 						bind:value={request.sizeBytes}
-						transformer={(value) => String(value)}
+						transformer={(value) => (value ? BigInt(value) : undefined)}
 						units={[
 							{ value: 1024 ** 3, label: 'GB' } as SingleInput.UnitType,
 							{ value: 1024 ** 4, label: 'TB' } as SingleInput.UnitType
