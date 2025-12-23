@@ -228,7 +228,6 @@
 				<Modal.Action
 					disabled={invalid}
 					onclick={() => {
-						console.log(request);
 						toast.promise(() => storageClient.createPool(request), {
 							loading: `Creating ${request.poolName}...`,
 							success: () => {
