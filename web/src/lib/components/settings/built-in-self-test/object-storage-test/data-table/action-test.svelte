@@ -35,20 +35,32 @@
 	const warpTarget: Writable<SingleSelect.OptionType[]> = writable([
 		{
 			value: 'internalObjectService',
-			label: 'Internal Object Service'
+			label: 'Internal Object Service',
+			icon: 'ph:database'
 		},
 		{
 			value: 'externalObjectService',
-			label: 'External Object Service'
+			label: 'External Object Service',
+			icon: 'ph:cloud'
 		}
 	]);
 
-	// WARP AccessMode
+	// WARP Operation
+	const operationIconMap: Record<string, string> = {
+		'GET': 'ph:arrow-down-left',
+		'PUT': 'ph:arrow-up-right',
+		'DELETE': 'ph:trash',
+		'LIST': 'ph:list',
+		'STAT': 'ph:chart-bar',
+		'MIXED': 'ph:shuffle'
+	};
+
 	const Options: SingleSelect.OptionType[] = Object.keys(Warp_Input_Operation)
 		.filter((key) => isNaN(Number(key)))
 		.map((key) => ({
 			value: Warp_Input_Operation[key as keyof typeof Warp_Input_Operation],
-			label: key
+			label: key,
+			icon: operationIconMap[key] ?? 'ph:empty'
 		}));
 	const warpInputOperation: Writable<SingleSelect.OptionType[]> = writable(Options);
 </script>
