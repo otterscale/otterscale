@@ -31,11 +31,13 @@
 	const fioTarget: Writable<SingleSelect.OptionType[]> = writable([
 		{
 			value: 'cephBlockDevice',
-			label: 'Ceph Block Device'
+			label: 'Ceph Block Device',
+			icon: 'ph:hard-drives'
 		},
 		{
 			value: 'networkFileSystem',
-			label: 'Network File System'
+			label: 'Network File System',
+			icon: 'ph:network'
 		}
 	]);
 
@@ -44,7 +46,8 @@
 		.filter((key) => isNaN(Number(key)))
 		.map((key) => ({
 			value: FIO_Input_AccessMode[key as keyof typeof FIO_Input_AccessMode],
-			label: key
+			label: key,
+			icon: 'ph:cube'
 		}));
 	const fioInputAccessMode: Writable<SingleSelect.OptionType[]> = writable(Options);
 </script>
