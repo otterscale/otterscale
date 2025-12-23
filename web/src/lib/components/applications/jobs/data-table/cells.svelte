@@ -99,33 +99,35 @@
 		{@const trueConditions = row.original.conditions.filter(
 			(condition) => condition.status === 'True'
 		)}
-		<Layout.Cell class="items-start">
-			<div class="flex flex-wrap gap-1">
-				{#each trueConditions as trueCondition, index (index)}
-					<Tooltip.Provider>
-						<Tooltip.Root>
-							<Tooltip.Trigger>
-								<Badge
-									variant="outline"
-									class={['Failed', 'FailureTarget'].includes(trueCondition.type)
-										? 'border-destructive/50 text-destructive'
-										: ''}
-								>
-									{trueCondition.type}
-								</Badge>
-							</Tooltip.Trigger>
-							<Tooltip.Content>
-								{#if trueCondition.message}
-									{trueCondition.message}
-								{:else}
-									{trueCondition.type}
-								{/if}
-							</Tooltip.Content>
-						</Tooltip.Root>
-					</Tooltip.Provider>
-				{/each}
-			</div>
-		</Layout.Cell>
+		{#if trueConditions.length > 0}
+			<Layout.Cell class="items-start">
+				<div class="flex flex-wrap gap-1">
+					{#each trueConditions as trueCondition, index (index)}
+						<Tooltip.Provider>
+							<Tooltip.Root>
+								<Tooltip.Trigger>
+									<Badge
+										variant="outline"
+										class={['Failed', 'FailureTarget'].includes(trueCondition.type)
+											? 'border-destructive/50 text-destructive'
+											: ''}
+									>
+										{trueCondition.type}
+									</Badge>
+								</Tooltip.Trigger>
+								<Tooltip.Content>
+									{#if trueCondition.message}
+										{trueCondition.message}
+									{:else}
+										{trueCondition.type}
+									{/if}
+								</Tooltip.Content>
+							</Tooltip.Root>
+						</Tooltip.Provider>
+					{/each}
+				</div>
+			</Layout.Cell>
+		{/if}
 	{/if}
 {/snippet}
 

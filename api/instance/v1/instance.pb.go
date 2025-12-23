@@ -7,15 +7,14 @@
 package pb
 
 import (
-	reflect "reflect"
-	unsafe "unsafe"
-
 	_ "github.com/otterscale/otterscale/api"
 	v1 "github.com/otterscale/otterscale/api/application/v1"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
+	reflect "reflect"
+	unsafe "unsafe"
 )
 
 const (
@@ -631,7 +630,7 @@ type DataVolume struct {
 	xxx_hidden_Progress              *string                               `protobuf:"bytes,22,opt,name=progress"`
 	xxx_hidden_SizeBytes             int64                                 `protobuf:"varint,31,opt,name=size_bytes,json=sizeBytes"`
 	xxx_hidden_PersistentVolumeClaim *v1.Application_PersistentVolumeClaim `protobuf:"bytes,32,opt,name=persistent_volume_claim,json=persistentVolumeClaim"`
-	xxx_hidden_Conditions            *[]*DataVolume_Condition              `protobuf:"bytes,41,rep,name=conditions"`
+	xxx_hidden_Conditions            *[]*DataVolume_Condition              `protobuf:"bytes,42,rep,name=conditions"`
 	XXX_raceDetectHookData           protoimpl.RaceDetectHookData
 	XXX_presence                     [1]uint32
 	unknownFields                    protoimpl.UnknownFields
@@ -6777,7 +6776,7 @@ type VirtualMachine_Restore struct {
 	xxx_hidden_SnapshotName *string                      `protobuf:"bytes,4,opt,name=snapshot_name,json=snapshotName"`
 	xxx_hidden_Complete     bool                         `protobuf:"varint,11,opt,name=complete"`
 	xxx_hidden_CreatedAt    *timestamppb.Timestamp       `protobuf:"bytes,21,opt,name=created_at,json=createdAt"`
-	xxx_hidden_Conditions   *[]*v1.Application_Condition `protobuf:"bytes,31,rep,name=conditions"`
+	xxx_hidden_Conditions   *[]*v1.Application_Condition `protobuf:"bytes,32,rep,name=conditions"`
 	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
 	XXX_presence            [1]uint32
 	unknownFields           protoimpl.UnknownFields
@@ -7736,7 +7735,7 @@ var File_api_instance_v1_instance_proto protoreflect.FileDescriptor
 
 const file_api_instance_v1_instance_proto_rawDesc = "" +
 	"\n" +
-	"\x1eapi/instance/v1/instance.proto\x12\x16otterscale.instance.v1\x1a\x15api/annotations.proto\x1a$api/application/v1/application.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xa8\x11\n" +
+	"\x1eapi/instance/v1/instance.proto\x12\x16otterscale.instance.v1\x1a\x15api/annotations.proto\x1a$api/application/v1/application.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xae\x11\n" +
 	"\x0eVirtualMachine\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1c\n" +
 	"\tnamespace\x18\x02 \x01(\tR\tnamespace\x12\x16\n" +
@@ -7780,7 +7779,7 @@ const file_api_instance_v1_instance_proto_rawDesc = "" +
 	"created_at\x18\x15 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x12P\n" +
 	"\n" +
 	"conditions\x18  \x03(\v20.otterscale.application.v1.Application.ConditionR\n" +
-	"conditionsJ\x04\b\x1f\x10 \x1a\xaa\x02\n" +
+	"conditionsJ\x04\b\x1f\x10 \x1a\xb0\x02\n" +
 	"\aRestore\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1c\n" +
 	"\tnamespace\x18\x02 \x01(\tR\tnamespace\x12\x1f\n" +
@@ -7791,8 +7790,8 @@ const file_api_instance_v1_instance_proto_rawDesc = "" +
 	"\n" +
 	"created_at\x18\x15 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x12P\n" +
 	"\n" +
-	"conditions\x18\x1f \x03(\v20.otterscale.application.v1.Application.ConditionR\n" +
-	"conditions\x1a\xbb\x04\n" +
+	"conditions\x18  \x03(\v20.otterscale.application.v1.Application.ConditionR\n" +
+	"conditionsJ\x04\b\x1f\x10 \x1a\xbb\x04\n" +
 	"\x04Disk\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12A\n" +
 	"\x03bus\x18\x02 \x01(\x0e2/.otterscale.instance.v1.VirtualMachine.Disk.BusR\x03bus\x12\x1d\n" +
@@ -7814,7 +7813,7 @@ const file_api_instance_v1_instance_proto_rawDesc = "" +
 	"BUS_VIRTIO\x10\x00\x12\f\n" +
 	"\bBUS_SATA\x10\x01\x12\f\n" +
 	"\bBUS_SCSI\x10\x02\x12\v\n" +
-	"\aBUS_USB\x10\x03\"\xe6\x06\n" +
+	"\aBUS_USB\x10\x03\"\xec\x06\n" +
 	"\n" +
 	"DataVolume\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1c\n" +
@@ -7828,7 +7827,7 @@ const file_api_instance_v1_instance_proto_rawDesc = "" +
 	"size_bytes\x18\x1f \x01(\x03R\tsizeBytes\x12t\n" +
 	"\x17persistent_volume_claim\x18  \x01(\v2<.otterscale.application.v1.Application.PersistentVolumeClaimR\x15persistentVolumeClaim\x12L\n" +
 	"\n" +
-	"conditions\x18) \x03(\v2,.otterscale.instance.v1.DataVolume.ConditionR\n" +
+	"conditions\x18* \x03(\v2,.otterscale.instance.v1.DataVolume.ConditionR\n" +
 	"conditions\x1a\xbc\x01\n" +
 	"\x06Source\x12B\n" +
 	"\x04type\x18\x01 \x01(\x0e2..otterscale.instance.v1.DataVolume.Source.TypeR\x04type\x12\x12\n" +
@@ -7843,7 +7842,7 @@ const file_api_instance_v1_instance_proto_rawDesc = "" +
 	"\x06reason\x18\x03 \x01(\tR\x06reason\x12\x18\n" +
 	"\amessage\x18\x04 \x01(\tR\amessage\x12>\n" +
 	"\fheartbeat_at\x18\xc9\x01 \x01(\v2\x1a.google.protobuf.TimestampR\vheartbeatAt\x12D\n" +
-	"\x0ftransitioned_at\x18\xca\x01 \x01(\v2\x1a.google.protobuf.TimestampR\x0etransitionedAt\"\xc6\x01\n" +
+	"\x0ftransitioned_at\x18\xca\x01 \x01(\v2\x1a.google.protobuf.TimestampR\x0etransitionedAtJ\x04\b)\x10*\"\xc6\x01\n" +
 	"\fInstanceType\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1b\n" +
 	"\tcpu_cores\x18\x03 \x01(\rR\bcpuCores\x12!\n" +
@@ -8140,7 +8139,7 @@ var file_api_instance_v1_instance_proto_depIdxs = []int32{
 	44, // 6: otterscale.instance.v1.VirtualMachine.restores:type_name -> otterscale.instance.v1.VirtualMachine.Restore
 	48, // 7: otterscale.instance.v1.DataVolume.source:type_name -> otterscale.instance.v1.DataVolume.Source
 	52, // 8: otterscale.instance.v1.DataVolume.persistent_volume_claim:type_name -> otterscale.application.v1.Application.PersistentVolumeClaim
-	49, // 9: otterscale.instance.v1.DataVolume.last_condition:type_name -> otterscale.instance.v1.DataVolume.Condition
+	49, // 9: otterscale.instance.v1.DataVolume.conditions:type_name -> otterscale.instance.v1.DataVolume.Condition
 	50, // 10: otterscale.instance.v1.InstanceType.created_at:type_name -> google.protobuf.Timestamp
 	4,  // 11: otterscale.instance.v1.ListVirtualMachinesResponse.virtual_machines:type_name -> otterscale.instance.v1.VirtualMachine
 	0,  // 12: otterscale.instance.v1.ListDataVolumesRequest.filter:type_name -> otterscale.instance.v1.DataVolumeFilter
@@ -8150,11 +8149,11 @@ var file_api_instance_v1_instance_proto_depIdxs = []int32{
 	53, // 16: otterscale.instance.v1.CreateVirtualMachineServiceRequest.ports:type_name -> otterscale.application.v1.Application.Service.Port
 	53, // 17: otterscale.instance.v1.UpdateVirtualMachineServiceRequest.ports:type_name -> otterscale.application.v1.Application.Service.Port
 	50, // 18: otterscale.instance.v1.VirtualMachine.Clone.created_at:type_name -> google.protobuf.Timestamp
-	54, // 19: otterscale.instance.v1.VirtualMachine.Clone.last_condition:type_name -> otterscale.application.v1.Application.Condition
+	54, // 19: otterscale.instance.v1.VirtualMachine.Clone.conditions:type_name -> otterscale.application.v1.Application.Condition
 	50, // 20: otterscale.instance.v1.VirtualMachine.Snapshot.created_at:type_name -> google.protobuf.Timestamp
-	54, // 21: otterscale.instance.v1.VirtualMachine.Snapshot.last_condition:type_name -> otterscale.application.v1.Application.Condition
+	54, // 21: otterscale.instance.v1.VirtualMachine.Snapshot.conditions:type_name -> otterscale.application.v1.Application.Condition
 	50, // 22: otterscale.instance.v1.VirtualMachine.Restore.created_at:type_name -> google.protobuf.Timestamp
-	54, // 23: otterscale.instance.v1.VirtualMachine.Restore.last_condition:type_name -> otterscale.application.v1.Application.Condition
+	54, // 23: otterscale.instance.v1.VirtualMachine.Restore.conditions:type_name -> otterscale.application.v1.Application.Condition
 	1,  // 24: otterscale.instance.v1.VirtualMachine.Disk.bus:type_name -> otterscale.instance.v1.VirtualMachine.Disk.Bus
 	46, // 25: otterscale.instance.v1.VirtualMachine.Disk.volume:type_name -> otterscale.instance.v1.VirtualMachine.Disk.Volume
 	47, // 26: otterscale.instance.v1.VirtualMachine.Disk.Volume.source:type_name -> otterscale.instance.v1.VirtualMachine.Disk.Volume.Source

@@ -227,7 +227,8 @@ message VirtualMachine {
     string snapshot_name = 4;
     bool complete = 11;
     google.protobuf.Timestamp created_at = 21;
-    repeated otterscale.application.v1.Application.Condition conditions = 31;
+    reserved 31;
+    repeated otterscale.application.v1.Application.Condition conditions = 32;
   }
   message Disk {
     enum Bus {
@@ -297,7 +298,8 @@ message DataVolume {
   string progress = 22;
   int64 size_bytes = 31;  // requested size in bytes
   otterscale.application.v1.Application.PersistentVolumeClaim persistent_volume_claim = 32;
-  repeated Condition conditions = 41;
+  reserved 41;
+  repeated Condition conditions = 42;
 }
 
 message InstanceType {

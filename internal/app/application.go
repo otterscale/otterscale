@@ -456,9 +456,9 @@ func toProtoJob(j *workload.Job) *pb.Job {
 		ret.SetCompletedAt(timestamppb.New(completionTime.Time))
 	}
 
-	ret.SetCreatedAt(timestamppb.New(j.ObjectMeta.CreationTimestamp.Time))
+	ret.SetCreatedAt(timestamppb.New(j.CreationTimestamp.Time))
 
-	deletionTimestamp := j.ObjectMeta.DeletionTimestamp
+	deletionTimestamp := j.DeletionTimestamp
 	if deletionTimestamp != nil {
 		ret.SetDeletedAt(timestamppb.New(deletionTimestamp.Time))
 	}
