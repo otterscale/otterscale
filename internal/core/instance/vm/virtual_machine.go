@@ -5,11 +5,14 @@ import (
 	"fmt"
 
 	"golang.org/x/sync/errgroup"
+	corev1 "k8s.io/api/core/v1"
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	kvcorev1 "kubevirt.io/api/core/v1"
+	cdiv1beta1 "kubevirt.io/containerized-data-importer-api/pkg/apis/core/v1beta1"
 
 	"github.com/otterscale/otterscale/internal/core/application/service"
+	"github.com/otterscale/otterscale/internal/core/instance/cdi"
 	"github.com/otterscale/otterscale/internal/core/instance/vmi"
 	"github.com/otterscale/otterscale/internal/core/machine"
 )
@@ -75,9 +78,11 @@ type UseCase struct {
 	machine                machine.MachineRepo
 	service                service.ServiceRepo
 	virtualMachineInstance vmi.VirtualMachineInstanceRepo
+	dataVolume             cdi.DataVolumeRepo
+	cdiUseCase             *cdi.UseCase
 }
 
-func NewUseCase(virtualMachine VirtualMachineRepo, virtualMachineClone VirtualMachineCloneRepo, virtualMachineRestore VirtualMachineRestoreRepo, virtualMachineSnapshot VirtualMachineSnapshotRepo, machine machine.MachineRepo, service service.ServiceRepo, virtualMachineInstance vmi.VirtualMachineInstanceRepo) *UseCase {
+func NewUseCase(virtualMachine VirtualMachineRepo, virtualMachineClone VirtualMachineCloneRepo, virtualMachineRestore VirtualMachineRestoreRepo, virtualMachineSnapshot VirtualMachineSnapshotRepo, machine machine.MachineRepo, service service.ServiceRepo, virtualMachineInstance vmi.VirtualMachineInstanceRepo, dataVolume cdi.DataVolumeRepo, cdiUseCase *cdi.UseCase) *UseCase {
 	return &UseCase{
 		virtualMachine:         virtualMachine,
 		virtualMachineClone:    virtualMachineClone,
@@ -86,6 +91,8 @@ func NewUseCase(virtualMachine VirtualMachineRepo, virtualMachineClone VirtualMa
 		service:                service,
 		machine:                machine,
 		virtualMachineInstance: virtualMachineInstance,
+		dataVolume:             dataVolume,
+		cdiUseCase:             cdiUseCase,
 	}
 }
 
@@ -254,7 +261,33 @@ func (uc *UseCase) GetVirtualMachine(ctx context.Context, scope, namespace, name
 }
 
 func (uc *UseCase) CreateVirtualMachine(ctx context.Context, scope, namespace, name, instanceType, bootDataVolume, startupScript string) (*VirtualMachineData, error) {
-	virtualMachine, err := uc.virtualMachine.Create(ctx, scope, namespace, uc.buildVirtualMachine(namespace, name, instanceType, bootDataVolume, startupScript))
+	dvPersistent, err := uc.cdiUseCase.GetDataVolume(ctx, scope, namespace, bootDataVolume)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get source DataVolume %s: %w", bootDataVolume, err)
+	}
+
+	if dvPersistent.PersistentVolumeClaim == nil {
+		return nil, fmt.Errorf("source DataVolume %s has no PVC", bootDataVolume)
+	}
+
+	pvc := dvPersistent.PersistentVolumeClaim
+	if pvc.Spec.Resources.Requests == nil {
+		return nil, fmt.Errorf("source DataVolume %s PVC has no resource requests", bootDataVolume)
+	}
+
+	storageSize := pvc.Spec.Resources.Requests
+	volumeMode := pvc.Spec.VolumeMode
+	if volumeMode == nil {
+		defaultMode := corev1.PersistentVolumeFilesystem
+		volumeMode = &defaultMode
+	}
+
+	accessModes := pvc.Spec.AccessModes
+	if len(accessModes) == 0 {
+		accessModes = []corev1.PersistentVolumeAccessMode{corev1.ReadWriteOnce}
+	}
+
+	virtualMachine, err := uc.virtualMachine.Create(ctx, scope, namespace, uc.buildVirtualMachine(namespace, name, instanceType, bootDataVolume, volumeMode, accessModes, storageSize, startupScript))
 	if err != nil {
 		return nil, err
 	}
@@ -541,15 +574,9 @@ func (uc *UseCase) combineVirtualMachine(namespace, name string, virtualMachine 
 	}
 }
 
-func (uc *UseCase) buildVirtualMachine(namespace, name, instanceType, bootDataVolume, startupScript string) *VirtualMachine {
-	var (
-		runStrategy   = kvcorev1.RunStrategyHalted
-		enabled       = true
-		bootOrder     = uint(1)
-		osDisk        = "os-disk"
-		cloudInitDisk = "cloud-init-disk"
-		nic1          = "nic1"
-	)
+func (uc *UseCase) buildVirtualMachine(namespace, name, instanceType, bootDataVolume string, volumeMode *corev1.PersistentVolumeMode, accessModes []corev1.PersistentVolumeAccessMode, storageSize corev1.ResourceList, startupScript string) *VirtualMachine {
+	runStrategy := kvcorev1.RunStrategyHalted
+	dataVolumeName := name
 
 	virtualMachine := &kvcorev1.VirtualMachine{
 		ObjectMeta: metav1.ObjectMeta{
@@ -564,75 +591,125 @@ func (uc *UseCase) buildVirtualMachine(namespace, name, instanceType, bootDataVo
 			Instancetype: &kvcorev1.InstancetypeMatcher{
 				Name: instanceType,
 			},
-			Template: &kvcorev1.VirtualMachineInstanceTemplateSpec{
-				Spec: kvcorev1.VirtualMachineInstanceSpec{
-					Domain: kvcorev1.DomainSpec{
-						Devices: kvcorev1.Devices{
-							Disks: []kvcorev1.Disk{
-								{
-									Name: osDisk,
-									DiskDevice: kvcorev1.DiskDevice{
-										Disk: &kvcorev1.DiskTarget{
-											Bus: kvcorev1.DiskBusVirtio,
-										},
-									},
-									BootOrder: &bootOrder,
-								},
-							},
-							Interfaces: []kvcorev1.Interface{
-								{
-									Name: nic1,
-									InterfaceBindingMethod: kvcorev1.InterfaceBindingMethod{
-										Bridge: &kvcorev1.InterfaceBridge{},
-									},
-								},
-							},
-							TPM: &kvcorev1.TPMDevice{
-								Enabled: &enabled,
-							},
-						},
-					},
-					Networks: []kvcorev1.Network{
-						{
-							Name: nic1,
-							NetworkSource: kvcorev1.NetworkSource{
-								Pod: &kvcorev1.PodNetwork{},
-							},
-						},
-					},
-					Volumes: []kvcorev1.Volume{
+			DataVolumeTemplates: []kvcorev1.DataVolumeTemplateSpec{
+				uc.buildDataVolumeTemplate(namespace, dataVolumeName, bootDataVolume, volumeMode, accessModes, storageSize),
+			},
+			Template: uc.buildVMInstanceTemplate(dataVolumeName),
+		},
+	}
+
+	if startupScript != "" {
+		uc.addCloudInitDisk(virtualMachine, startupScript)
+	}
+
+	return virtualMachine
+}
+
+func (uc *UseCase) buildDataVolumeTemplate(namespace, dataVolumeName, bootDataVolume string, volumeMode *corev1.PersistentVolumeMode, accessModes []corev1.PersistentVolumeAccessMode, storageSize corev1.ResourceList) kvcorev1.DataVolumeTemplateSpec {
+	return kvcorev1.DataVolumeTemplateSpec{
+		ObjectMeta: metav1.ObjectMeta{
+			Name: dataVolumeName,
+		},
+		Spec: cdiv1beta1.DataVolumeSpec{
+			Source: &cdiv1beta1.DataVolumeSource{
+				PVC: &cdiv1beta1.DataVolumeSourcePVC{
+					Namespace: namespace,
+					Name:      bootDataVolume,
+				},
+			},
+			PVC: &corev1.PersistentVolumeClaimSpec{
+				AccessModes: accessModes,
+				VolumeMode:  volumeMode,
+				Resources: corev1.VolumeResourceRequirements{
+					Requests: storageSize,
+				},
+			},
+		},
+	}
+}
+
+func (uc *UseCase) buildVMInstanceTemplate(dataVolumeName string) *kvcorev1.VirtualMachineInstanceTemplateSpec {
+	var (
+		enabled   = true
+		bootOrder = uint(1)
+		osDisk    = "os-disk"
+		nic1      = "nic1"
+	)
+
+	return &kvcorev1.VirtualMachineInstanceTemplateSpec{
+		Spec: kvcorev1.VirtualMachineInstanceSpec{
+			Domain: kvcorev1.DomainSpec{
+				Devices: kvcorev1.Devices{
+					Disks: []kvcorev1.Disk{
 						{
 							Name: osDisk,
-							VolumeSource: kvcorev1.VolumeSource{
-								DataVolume: &kvcorev1.DataVolumeSource{
-									Name: bootDataVolume,
+							DiskDevice: kvcorev1.DiskDevice{
+								Disk: &kvcorev1.DiskTarget{
+									Bus: kvcorev1.DiskBusVirtio,
 								},
 							},
+							BootOrder: &bootOrder,
+						},
+					},
+					Interfaces: []kvcorev1.Interface{
+						{
+							Name: nic1,
+							InterfaceBindingMethod: kvcorev1.InterfaceBindingMethod{
+								Bridge: &kvcorev1.InterfaceBridge{},
+							},
+						},
+					},
+					TPM: &kvcorev1.TPMDevice{
+						Enabled: &enabled,
+					},
+				},
+			},
+			Networks: []kvcorev1.Network{
+				{
+					Name: nic1,
+					NetworkSource: kvcorev1.NetworkSource{
+						Pod: &kvcorev1.PodNetwork{},
+					},
+				},
+			},
+			Volumes: []kvcorev1.Volume{
+				{
+					Name: osDisk,
+					VolumeSource: kvcorev1.VolumeSource{
+						DataVolume: &kvcorev1.DataVolumeSource{
+							Name: dataVolumeName,
 						},
 					},
 				},
 			},
 		},
 	}
+}
 
-	if startupScript != "" {
-		virtualMachine.Spec.Template.Spec.Domain.Devices.Disks = append(virtualMachine.Spec.Template.Spec.Domain.Devices.Disks, kvcorev1.Disk{
+func (uc *UseCase) addCloudInitDisk(virtualMachine *kvcorev1.VirtualMachine, startupScript string) {
+	cloudInitDisk := "cloud-init-disk"
+
+	virtualMachine.Spec.Template.Spec.Domain.Devices.Disks = append(
+		virtualMachine.Spec.Template.Spec.Domain.Devices.Disks,
+		kvcorev1.Disk{
 			Name: cloudInitDisk,
 			DiskDevice: kvcorev1.DiskDevice{
 				Disk: &kvcorev1.DiskTarget{
 					Bus: kvcorev1.DiskBusVirtio,
 				},
 			},
-		})
-		virtualMachine.Spec.Template.Spec.Volumes = append(virtualMachine.Spec.Template.Spec.Volumes, kvcorev1.Volume{
+		},
+	)
+
+	virtualMachine.Spec.Template.Spec.Volumes = append(
+		virtualMachine.Spec.Template.Spec.Volumes,
+		kvcorev1.Volume{
 			Name: cloudInitDisk,
 			VolumeSource: kvcorev1.VolumeSource{
 				CloudInitNoCloud: &kvcorev1.CloudInitNoCloudSource{
 					UserData: startupScript,
 				},
 			},
-		})
-	}
-
-	return virtualMachine
+		},
+	)
 }

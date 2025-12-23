@@ -141,7 +141,7 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	virtualMachineRestoreRepo := kubevirt.NewVirtualMachineRestoreRepo(kubeVirt)
 	virtualMachineSnapshotRepo := kubevirt.NewVirtualMachineSnapshotRepo(kubeVirt)
 	virtualMachineInstanceRepo := kubevirt.NewVirtualMachineInstanceRepo(kubeVirt)
-	vmUseCase := vm.NewUseCase(virtualMachineRepo, virtualMachineCloneRepo, virtualMachineRestoreRepo, virtualMachineSnapshotRepo, machineRepo, serviceRepo, virtualMachineInstanceRepo)
+	vmUseCase := vm.NewUseCase(virtualMachineRepo, virtualMachineCloneRepo, virtualMachineRestoreRepo, virtualMachineSnapshotRepo, machineRepo, serviceRepo, virtualMachineInstanceRepo, dataVolumeRepo, cdiUseCase)
 	virtualMachineInstanceTypeRepo := kubevirt.NewVirtualMachineInstanceTypeRepo(kubeVirt)
 	virtualMachineInstanceMigrationRepo := kubevirt.NewVirtualMachineInstanceMigrationRepo(kubeVirt)
 	vmiUseCase := vmi.NewUseCase(virtualMachineInstanceRepo, virtualMachineInstanceTypeRepo, virtualMachineInstanceMigrationRepo)
