@@ -85,7 +85,7 @@
 					</Form.Help>
 					<SingleInput.Measurement
 						bind:value={request.quotaBytes}
-						transformer={(value) => (value ? BigInt(value) : undefined)}
+						transformer={(value) => (typeof value === 'number' ? BigInt(value) : undefined)}
 						units={[
 							{ value: Math.pow(2, 10 * 3), label: 'GB' } as SingleInput.UnitType,
 							{ value: Math.pow(2, 10 * 4), label: 'TB' } as SingleInput.UnitType
@@ -97,7 +97,11 @@
 					<Form.Help>
 						{m.pool_quota_objects_direction()}
 					</Form.Help>
-					<SingleInput.General bind:value={request.quotaObjects} />
+					<SingleInput.General
+						type="number"
+						bind:value={request.quotaObjects}
+						transformer={(value) => (typeof value === 'number' ? BigInt(value) : undefined)}
+					/>
 				</Form.Field>
 			</Form.Fieldset>
 		</Form.Root>

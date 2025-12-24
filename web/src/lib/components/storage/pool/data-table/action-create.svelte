@@ -165,7 +165,7 @@
 							type="number"
 							bind:value={request.replicatedSize}
 							bind:invalid={invalidity.replicatedSize}
-							transformer={(value) => (value ? BigInt(value) : undefined)}
+							transformer={(value) => (typeof value === 'number' ? BigInt(value) : undefined)}
 						/>
 					</Form.Field>
 					<Form.Help>
@@ -179,45 +179,43 @@
 					</Form.Help>
 					<SingleInput.Measurement
 						bind:value={request.quotaBytes}
-						transformer={(value) => (value ? BigInt(value) : undefined)}
+						transformer={(value) => (typeof value === 'number' ? BigInt(value) : undefined)}
 						units={[
 							{ value: Math.pow(2, 10 * 3), label: 'GB' } as SingleInput.UnitType,
 							{ value: Math.pow(2, 10 * 4), label: 'TB' } as SingleInput.UnitType
 						]}
 					/>
 				</Form.Field>
-				<Form.Field>
-					<Collapsible.Root bind:open={isAdvancedOpen}>
-						<div class="flex items-center justify-between gap-2">
-							<p class={cn('text-base font-bold', isAdvancedOpen ? 'invisible' : 'visible')}>
-								Advanced
-							</p>
-							<Collapsible.Trigger class="rounded-full bg-muted p-1 ">
-								<Icon
-									icon="ph:caret-left"
-									class={cn(
-										'transition-all duration-300',
-										isAdvancedOpen ? '-rotate-90' : 'rotate-0'
-									)}
-								/>
-							</Collapsible.Trigger>
-						</div>
+				<Collapsible.Root bind:open={isAdvancedOpen}>
+					<div class="flex items-center justify-between gap-2">
+						<p class={cn('text-base font-bold', isAdvancedOpen ? 'invisible' : 'visible')}>
+							Advanced
+						</p>
+						<Collapsible.Trigger class="rounded-full bg-muted p-1 ">
+							<Icon
+								icon="ph:caret-left"
+								class={cn(
+									'transition-all duration-300',
+									isAdvancedOpen ? '-rotate-90' : 'rotate-0'
+								)}
+							/>
+						</Collapsible.Trigger>
+					</div>
 
-						<Collapsible.Content>
-							<Form.Fieldset>
-								<Form.Legend>{m.quota()}</Form.Legend>
-
-								<Form.Field>
-									<Form.Label>{m.quota_objects()}</Form.Label>
-									<Form.Help>
-										{m.pool_quota_objects_direction()}
-									</Form.Help>
-									<SingleInput.General type="number" bind:value={request.quotaObjects} />
-								</Form.Field>
-							</Form.Fieldset>
-						</Collapsible.Content>
-					</Collapsible.Root>
-				</Form.Field>
+					<Collapsible.Content>
+						<Form.Field>
+							<Form.Label>{m.quota_objects()}</Form.Label>
+							<Form.Help>
+								{m.pool_quota_objects_direction()}
+							</Form.Help>
+							<SingleInput.General
+								type="number"
+								bind:value={request.quotaObjects}
+								transformer={(value) => (typeof value === 'number' ? BigInt(value) : undefined)}
+							/>
+						</Form.Field>
+					</Collapsible.Content>
+				</Collapsible.Root>
 			</Form.Fieldset>
 		</Form.Root>
 		<Modal.Footer>
