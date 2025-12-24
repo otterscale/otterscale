@@ -157,7 +157,7 @@
 					<Form.Label>{m.quota_size()}</Form.Label>
 					<SingleInput.Measurement
 						bind:value={request.quotaBytes}
-						transformer={(value) => (value !== undefined ? BigInt(value) : undefined)}
+						transformer={(value) => (typeof value === 'number' ? BigInt(value) : undefined)}
 						units={[
 							{ value: Math.pow(2, 10 * 3), label: 'GB' } as SingleInput.UnitType,
 							{ value: Math.pow(2, 10 * 4), label: 'TB' } as SingleInput.UnitType
@@ -185,7 +185,7 @@
 							<Form.Label>{m.object_size()}</Form.Label>
 							<SingleInput.Measurement
 								bind:value={request.objectSizeBytes}
-								transformer={(value) => (value !== undefined ? BigInt(value) : undefined)}
+								transformer={(value) => (typeof value === 'number' ? BigInt(value) : undefined)}
 								units={[
 									{ value: Math.pow(2, 10 * 2), label: 'MB' } as SingleInput.UnitType,
 									{ value: Math.pow(2, 10 * 3), label: 'GB' } as SingleInput.UnitType
@@ -197,7 +197,7 @@
 							<Form.Label>{m.stripe_unit()}</Form.Label>
 							<SingleInput.Measurement
 								bind:value={request.stripeUnitBytes}
-								transformer={(value) => (value !== undefined ? BigInt(value) : undefined)}
+								transformer={(value) => (typeof value === 'number' ? BigInt(value) : undefined)}
 								units={[
 									{ value: Math.pow(2, 10 * 2), label: 'MB' } as SingleInput.UnitType,
 									{ value: Math.pow(2, 10 * 3), label: 'GB' } as SingleInput.UnitType
@@ -210,7 +210,7 @@
 							<SingleInput.General
 								type="number"
 								bind:value={request.stripeCount}
-								transformer={(value) => (value !== undefined ? BigInt(value) : undefined)}
+								transformer={(value) => (typeof value === 'number' ? BigInt(value) : undefined)}
 							/>
 						</Form.Field>
 					</Form.Fieldset>

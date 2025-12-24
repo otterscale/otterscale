@@ -73,7 +73,9 @@
 					onclick={() => {
 						temporaryUnit = option;
 						value = transformer(
-							temporaryValue && temporaryUnit ? temporaryValue * temporaryUnit.value : undefined
+							typeof temporaryValue === 'number' && temporaryUnit !== undefined
+								? temporaryValue * temporaryUnit.value
+								: undefined
 						);
 					}}
 				>

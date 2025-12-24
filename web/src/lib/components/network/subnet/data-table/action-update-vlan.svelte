@@ -84,7 +84,7 @@
 					<SingleInput.General
 						type="number"
 						bind:value={request.mtu}
-						transformer={(value) => (value !== undefined ? BigInt(value) : undefined)}
+						transformer={(value) => (typeof value === 'number' ? BigInt(value) : undefined)}
 					/>
 				</Form.Field>
 
@@ -106,7 +106,6 @@
 				<Modal.Action
 					disabled={invalid}
 					onclick={() => {
-						console.log(request);
 						toast.promise(() => client.updateVLAN(request), {
 							loading: 'Loading...',
 							success: () => {

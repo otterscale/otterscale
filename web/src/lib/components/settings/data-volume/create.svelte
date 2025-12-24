@@ -83,7 +83,7 @@
 						required
 						bind:value={request.sizeBytes}
 						bind:invalid={invalidity.sizeBytes}
-						transformer={(value) => (value !== undefined ? BigInt(value) : undefined)}
+						transformer={(value) => (typeof value === 'number' ? BigInt(value) : undefined)}
 						units={[
 							{ value: 1024 ** 3, label: 'GB' } as SingleInput.UnitType,
 							{ value: 1024 ** 4, label: 'TB' } as SingleInput.UnitType

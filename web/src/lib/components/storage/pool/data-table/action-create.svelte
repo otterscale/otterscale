@@ -165,7 +165,7 @@
 							type="number"
 							bind:value={request.replicatedSize}
 							bind:invalid={invalidity.replicatedSize}
-							transformer={(value) => (value !== undefined ? BigInt(value) : undefined)}
+							transformer={(value) => (typeof value === 'number' ? BigInt(value) : undefined)}
 						/>
 					</Form.Field>
 					<Form.Help>
@@ -179,7 +179,7 @@
 					</Form.Help>
 					<SingleInput.Measurement
 						bind:value={request.quotaBytes}
-						transformer={(value) => (value !== undefined ? BigInt(value) : undefined)}
+						transformer={(value) => (typeof value === 'number' ? BigInt(value) : undefined)}
 						units={[
 							{ value: Math.pow(2, 10 * 3), label: 'GB' } as SingleInput.UnitType,
 							{ value: Math.pow(2, 10 * 4), label: 'TB' } as SingleInput.UnitType
@@ -211,7 +211,7 @@
 							<SingleInput.General
 								type="number"
 								bind:value={request.quotaObjects}
-								transformer={(value) => (value !== undefined ? BigInt(value) : undefined)}
+								transformer={(value) => (typeof value === 'number' ? BigInt(value) : undefined)}
 							/>
 						</Form.Field>
 					</Collapsible.Content>

@@ -160,7 +160,7 @@
 					<SingleInput.Measurement
 						required
 						type="number"
-						transformer={(value) => (value !== undefined ? BigInt(value) : undefined)}
+						transformer={(value) => (typeof value === 'number' ? BigInt(value) : undefined)}
 						bind:value={request.sizeBytes}
 						bind:invalid={invaliditySMBShare.sizeBytes}
 						units={[

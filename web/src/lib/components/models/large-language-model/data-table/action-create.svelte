@@ -214,7 +214,7 @@
 						type="number"
 						bind:value={request.sizeBytes}
 						required
-						transformer={(value) => (value !== undefined ? BigInt(value) : undefined)}
+						transformer={(value) => (typeof value === 'number' ? BigInt(value) : undefined)}
 						bind:invalid={invalidity.sizeBytes}
 						units={[
 							{ value: Math.pow(2, 10 * 3), label: 'GB' } as SingleInput.UnitType,
