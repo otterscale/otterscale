@@ -12,8 +12,8 @@
 	let { selectedMode = $bindable() }: { selectedMode: string } = $props();
 
 	const modes = writable<SingleSelect.OptionType[]>([
-		{ value: 'get', label: 'Get', icon: 'ph:download-simple' },
-		{ value: 'put', label: 'Put', icon: 'ph:upload-simple' },
+		{ value: 'get', label: 'Get', icon: 'ph:upload' },
+		{ value: 'put', label: 'Put', icon: 'ph:download' },
 		{ value: 'delete', label: 'Delete', icon: 'ph:trash' }
 	]);
 </script>
