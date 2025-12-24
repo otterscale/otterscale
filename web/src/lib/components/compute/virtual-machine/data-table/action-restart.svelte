@@ -12,8 +12,7 @@
 	let {
 		virtualMachine,
 		scope,
-		closeActions
-	}: { virtualMachine: VirtualMachine; scope: string; closeActions: () => void } = $props();
+	}: { virtualMachine: VirtualMachine; scope: string} = $props();
 
 	const transport: Transport = getContext('transport');
 	const virtualMachineClient = createClient(InstanceService, transport);
@@ -64,7 +63,6 @@
 	<button
 		onclick={async () => {
 			await handleClick();
-			closeActions();
 		}}
 		disabled={loading || !isRunning}
 		class="flex items-center gap-1 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
