@@ -1,12 +1,15 @@
 # OtterScale
 
 [![GitHub Release](https://img.shields.io/github/v/release/otterscale/otterscale?logo=github)](https://github.com/otterscale/otterscale/releases)
+[![GitHub Pre-Release](https://img.shields.io/github/v/release/otterscale/otterscale?logo=github&include_prereleases&label=pre-release)](https://github.com/otterscale/otterscale/releases)
 [![GitHub License](https://img.shields.io/github/license/otterscale/otterscale?logo=github)](https://opensource.org/license/agpl-v3)
-[![Go CI](https://github.com/otterscale/otterscale/actions/workflows/ci-go.yml/badge.svg)](https://github.com/otterscale/otterscale/actions/workflows/ci-go.yml)
-[![SvelteKit CI](https://github.com/otterscale/otterscale/actions/workflows/ci-sveltekit.yml/badge.svg)](https://github.com/otterscale/otterscale/actions/workflows/ci-sveltekit.yml)
+[![Go CI](https://img.shields.io/github/actions/workflow/status/otterscale/otterscale/ci-go.yml?logo=github&label=go%20ci)](https://github.com/otterscale/otterscale/actions/workflows/ci-go.yml)
+[![SvelteKit CI](https://img.shields.io/github/actions/workflow/status/otterscale/otterscale/ci-sveltekit.yml?logo=github&label=sveltekit%20ci)](https://github.com/otterscale/otterscale/actions/workflows/ci-sveltekit.yml)
 [![Codecov](https://codecov.io/gh/otterscale/otterscale/graph/badge.svg?token=I7R0YEMXER)](https://codecov.io/gh/otterscale/otterscale)
+
+[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/11651/badge)](https://www.bestpractices.dev/projects/11651)
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/otterscale/otterscale/badge)](https://scorecard.dev/viewer/?uri=github.com/otterscale/otterscale)
 [![Go Report Card](https://goreportcard.com/badge/github.com/otterscale/otterscale)](https://goreportcard.com/report/github.com/otterscale/otterscale)
-[![Go Reference](https://pkg.go.dev/badge/github.com/otterscale/otterscale.svg)](https://pkg.go.dev/github.com/otterscale/otterscale)
 
 **OtterScale** is a hyper-converged infrastructure (HCI) platform that unifies compute, storage, and networking into a scalable solution. Seamlessly manage VMs, containers, GPUs, and applications through a single control plane with enterprise-grade performance.
 

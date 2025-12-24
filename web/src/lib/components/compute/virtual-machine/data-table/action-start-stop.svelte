@@ -9,11 +9,7 @@
 </script>
 
 <script lang="ts">
-	let {
-		virtualMachine,
-		scope,
-		closeActions
-	}: { virtualMachine: VirtualMachine; scope: string; closeActions: () => void } = $props();
+	let { virtualMachine, scope }: { virtualMachine: VirtualMachine; scope: string } = $props();
 
 	const transport: Transport = getContext('transport');
 	const virtualMachineClient = createClient(InstanceService, transport);
