@@ -9,11 +9,7 @@
 </script>
 
 <script lang="ts">
-	let {
-		virtualMachine,
-		scope,
-		closeActions
-	}: { virtualMachine: VirtualMachine; scope: string; closeActions: () => void } = $props();
+	let { virtualMachine, scope }: { virtualMachine: VirtualMachine; scope: string } = $props();
 
 	const transport: Transport = getContext('transport');
 	const virtualMachineClient = createClient(InstanceService, transport);
@@ -85,26 +81,23 @@
 	}
 </script>
 
-<div class="flex items-center justify-end gap-1">
-	<button
-		onclick={async () => {
-			await handleClick();
-			closeActions();
-		}}
-		disabled={loading || isShutdown || (!isRunning && !isPaused)}
-		class="flex items-center gap-1 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
-	>
-		{#if loading}
-			<Icon icon="ph:spinner-gap" class="animate-spin" />
-			{m.please_wait()}
-		{:else if isRunning}
-			<Icon icon="ph:pause" class="text-orange-400" /> {m.vm_pause()}
-		{:else if isPaused}
-			<Icon icon="ph:play" class="text-accent-foreground" /> {m.vm_resume()}
-		{:else if isShutdown}
-			<Icon icon="ph:play" class="text-accent-foreground" /> {m.vm_resume()}
-		{:else}
-			<Icon icon="ph:pause" class="text-orange-400" /> {m.vm_pause()}
-		{/if}
-	</button>
-</div>
+<button
+	onclick={async () => {
+		await handleClick();
+	}}
+	disabled={loading || isShutdown || (!isRunning && !isPaused)}
+	class="flex w-full items-center gap-1 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
+>
+	{#if loading}
+		<Icon icon="ph:spinner-gap" class="animate-spin" />
+		{m.please_wait()}
+	{:else if isRunning}
+		<Icon icon="ph:pause" class="text-orange-400" /> {m.vm_pause()}
+	{:else if isPaused}
+		<Icon icon="ph:play" class="text-accent-foreground" /> {m.vm_resume()}
+	{:else if isShutdown}
+		<Icon icon="ph:play" class="text-accent-foreground" /> {m.vm_resume()}
+	{:else}
+		<Icon icon="ph:pause" class="text-orange-400" /> {m.vm_pause()}
+	{/if}
+</button>

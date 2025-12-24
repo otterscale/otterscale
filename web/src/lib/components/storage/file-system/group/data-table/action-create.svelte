@@ -74,7 +74,7 @@
 					<Form.Label>{m.quota_size()}</Form.Label>
 					<SingleInput.Measurement
 						bind:value={request.quotaBytes}
-						transformer={(value) => (value ? BigInt(value) : undefined)}
+						transformer={(value) => (typeof value === 'number' ? BigInt(value) : undefined)}
 						units={[
 							{ value: Math.pow(2, 10 * 3), label: 'GB' } as SingleInput.UnitType,
 							{ value: Math.pow(2, 10 * 4), label: 'TB' } as SingleInput.UnitType
@@ -92,13 +92,13 @@
 					disabled={invalid}
 					onclick={() => {
 						toast.promise(() => storageClient.createSubvolumeGroup(request), {
-							loading: `Creating ${request.volumeName}...`,
+							loading: `Creating ${request.groupName}...`,
 							success: () => {
 								reloadManager.force();
-								return `Create ${request.volumeName}`;
+								return `Create ${request.groupName}`;
 							},
 							error: (error) => {
-								let message = `Fail to create ${request.volumeName}`;
+								let message = `Fail to create ${request.groupName}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
 									duration: Number.POSITIVE_INFINITY

@@ -18,23 +18,23 @@ const typeToIcon: Record<string, string> = {
 	password: 'ph:password'
 };
 
-function getInputMeasurementUnitByValue(
+function getMeasurement(
 	value: number | undefined,
 	units: UnitType[]
-): { value: number | undefined; unit: UnitType | undefined } {
-	const UNITS = units.sort((p, n) => p.value - n.value);
+): { value: number | undefined; unit: UnitType } {
+	const sortedUnits = units.sort((p, n) => p.value - n.value);
 
-	const INITIAL_VALUE = value ? Number(value) : undefined;
-
-	if (!INITIAL_VALUE) {
-		return { value: undefined, unit: UNITS[0] };
+	if (value === undefined) {
+		return { value: undefined, unit: sortedUnits[0] };
 	}
 
-	let temporaryValue = 0;
-	let [temporaryUnit] = units;
-	for (const unit of UNITS) {
-		if (INITIAL_VALUE / unit.value >= 1) {
-			temporaryValue = INITIAL_VALUE / unit.value;
+	const rawValue = Number(value);
+
+	let temporaryUnit = sortedUnits[0];
+	let temporaryValue = rawValue / sortedUnits[0].value;
+	for (const unit of sortedUnits) {
+		if (rawValue / unit.value >= 1) {
+			temporaryValue = rawValue / unit.value;
 			temporaryUnit = unit;
 		}
 	}
@@ -53,4 +53,4 @@ class PasswordManager {
 	}
 }
 
-export { getInputMeasurementUnitByValue, INPUT_CLASSNAME, PasswordManager, typeToIcon };
+export { getMeasurement, INPUT_CLASSNAME, PasswordManager, typeToIcon };
