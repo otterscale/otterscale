@@ -146,7 +146,7 @@
 						bind:value={request.port}
 						min="0"
 						max="65535"
-						placeholder="445"
+						placeholder="e.g., 445"
 						oninput={(e) => {
 							const target = e.target as HTMLInputElement;
 							const value = parseInt(target.value);

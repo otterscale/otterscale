@@ -9,7 +9,7 @@
 
 	import { General } from '.';
 	import type { InputType, UnitType } from './types';
-	import { getInputMeasurementUnitByValue } from './utils.svelte';
+	import { getMeasurement } from './utils.svelte';
 </script>
 
 <script lang="ts">
@@ -31,9 +31,9 @@
 	let temporaryValue: number | undefined = $state(undefined);
 	let temporaryUnit: UnitType | undefined = $state(undefined);
 	onMount(() => {
-		const defaultMeasurement = getInputMeasurementUnitByValue(value, units);
-		temporaryValue = defaultMeasurement.value;
-		temporaryUnit = defaultMeasurement.unit;
+		const measurement = getMeasurement(value, units);
+		temporaryValue = measurement.value;
+		temporaryUnit = measurement.unit;
 	});
 
 	const isInvalid = $derived(required && (value === null || value === undefined));
