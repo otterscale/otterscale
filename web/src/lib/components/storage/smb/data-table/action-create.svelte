@@ -146,7 +146,7 @@
 						bind:value={request.port}
 						min="0"
 						max="65535"
-						placeholder="445"
+						placeholder="e.g., 445"
 						oninput={(e) => {
 							const target = e.target as HTMLInputElement;
 							const value = parseInt(target.value);
@@ -165,7 +165,7 @@
 					<SingleInput.Measurement
 						required
 						type="number"
-						transformer={(value) => (value ? BigInt(value) : undefined)}
+						transformer={(value) => (typeof value === 'number' ? BigInt(value) : undefined)}
 						bind:value={request.sizeBytes}
 						bind:invalid={invaliditySMBShare.sizeBytes}
 						units={[

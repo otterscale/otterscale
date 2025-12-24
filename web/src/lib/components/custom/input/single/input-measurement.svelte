@@ -1,6 +1,7 @@
 <script lang="ts" module>
 	import Icon from '@iconify/svelte';
 	import type { WithElementRef } from 'bits-ui';
+	import { onMount } from 'svelte';
 	import type { HTMLInputAttributes } from 'svelte/elements';
 
 	import * as Select from '$lib/components/ui/select';
@@ -8,7 +9,7 @@
 
 	import { General } from '.';
 	import type { InputType, UnitType } from './types';
-	import { getInputMeasurementUnitByValue } from './utils.svelte';
+	import { getMeasurement } from './utils.svelte';
 </script>
 
 <script lang="ts">
@@ -27,12 +28,13 @@
 		invalid?: boolean | null | undefined;
 	} = $props();
 
-	const DEFAULT = getInputMeasurementUnitByValue(value, units);
-	const DEFAULT_VALUE = DEFAULT.value;
-	const DEFAULT_UNIT = DEFAULT.unit;
-
-	let temporaryValue: number | undefined = $state(DEFAULT_VALUE);
-	let unit: UnitType | undefined = $state(DEFAULT_UNIT);
+	let temporaryValue: number | undefined = $state(undefined);
+	let temporaryUnit: UnitType | undefined = $state(undefined);
+	onMount(() => {
+		const measurement = getMeasurement(value, units);
+		temporaryValue = measurement.value;
+		temporaryUnit = measurement.unit;
+	});
 
 	const isInvalid = $derived(required && (value === null || value === undefined));
 	$effect(() => {
@@ -44,29 +46,37 @@
 	<div class={cn('w-full')}>
 		<General
 			bind:ref
-			data-slot="input-general"
 			type="number"
 			bind:value={temporaryValue}
 			{required}
+			{invalid}
 			oninput={(e) => {
-				value = transformer(temporaryValue && unit ? temporaryValue * unit.value : undefined);
+				value = transformer(
+					typeof temporaryValue === 'number' && temporaryUnit !== undefined
+						? temporaryValue * temporaryUnit.value
+						: undefined
+				);
 				oninput?.(e);
 			}}
 			{...restProps}
 		/>
 	</div>
-	<Select.Root type="single">
-		<Select.Trigger class={cn('w-fit')}>
-			{unit && unit.label ? unit.label : 'No Unit'}
+	<Select.Root type="single" value={temporaryUnit?.value}>
+		<Select.Trigger class="w-fit">
+			{temporaryUnit && temporaryUnit.label ? temporaryUnit.label : 'No Unit'}
 		</Select.Trigger>
 		<Select.Content>
-			{#each units as option}
+			{#each units as option (option.value)}
 				<Select.Item
 					value={option.value}
 					class="flex items-center gap-2 text-xs hover:cursor-pointer"
 					onclick={() => {
-						unit = option;
-						value = transformer(temporaryValue && unit ? temporaryValue * unit.value : undefined);
+						temporaryUnit = option;
+						value = transformer(
+							typeof temporaryValue === 'number' && temporaryUnit !== undefined
+								? temporaryValue * temporaryUnit.value
+								: undefined
+						);
 					}}
 				>
 					<Icon icon={option.icon ?? 'ph:scales'} class={cn('size-4')} />

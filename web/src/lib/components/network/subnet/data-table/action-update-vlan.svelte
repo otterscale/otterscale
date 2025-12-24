@@ -84,7 +84,7 @@
 					<SingleInput.General
 						type="number"
 						bind:value={request.mtu}
-						transformer={(value) => (value ? BigInt(value) : undefined)}
+						transformer={(value) => (typeof value === 'number' ? BigInt(value) : undefined)}
 					/>
 				</Form.Field>
 

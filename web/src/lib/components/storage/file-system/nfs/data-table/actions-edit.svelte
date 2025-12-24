@@ -73,7 +73,7 @@
 				<Form.Field>
 					<SingleInput.Measurement
 						bind:value={request.quotaBytes}
-						transformer={(value) => (value ? BigInt(value) : undefined)}
+						transformer={(value) => (typeof value === 'number' ? BigInt(value) : undefined)}
 						units={[
 							{ value: Math.pow(2, 10 * 3), label: 'GB' } as SingleInput.UnitType,
 							{ value: Math.pow(2, 10 * 4), label: 'TB' } as SingleInput.UnitType
