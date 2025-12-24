@@ -31,13 +31,13 @@
 	<Actions.Label>{m.actions()}</Actions.Label>
 	<Actions.Separator />
 	<Actions.Item>
-		<PauseResume {virtualMachine} {scope} closeActions={close} />
+		<PauseResume {virtualMachine} {scope} />
 	</Actions.Item>
 	<Actions.Item>
-		<StartStop {virtualMachine} {scope} closeActions={close} />
+		<StartStop {virtualMachine} {scope} />
 	</Actions.Item>
 	<Actions.Item>
-		<Restart {virtualMachine} {scope} closeActions={close} />
+		<Restart {virtualMachine} {scope} />
 	</Actions.Item>
 	<Actions.Separator />
 	<Actions.Item>
