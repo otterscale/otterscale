@@ -22,6 +22,7 @@ class ReloadManager {
 		if (this.identifier) return;
 		this.state = true;
 		this.identifier = setInterval(() => this.reloadFunction(), this.interval * 1000);
+		this.reloadFunction();
 	}
 
 	stop() {
