@@ -1,5 +1,5 @@
 # Build stage
-FROM golang:1.25.4-trixie AS builder
+FROM golang:1.25.4-trixie@sha256:a02d35efc036053fdf0da8c15919276bf777a80cbfda6a35c5e9f087e652adfc AS builder
 
 WORKDIR /src
 
@@ -21,7 +21,7 @@ COPY . .
 RUN make build
 
 # Runtime stage
-FROM debian:trixie-slim
+FROM debian:trixie-slim@sha256:e711a7b30ec1261130d0a121050b4ed81d7fb28aeabcf4ea0c7876d4e9f5aca2
 
 WORKDIR /app
 

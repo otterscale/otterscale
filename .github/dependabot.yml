@@ -19,3 +19,18 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
+
+  - package-ecosystem: docker
+    directory: /
+    schedule:
+      interval: daily
+
+  - package-ecosystem: docker
+    directory: /web
+    schedule:
+      interval: daily
+
+  - package-ecosystem: npm
+    directory: /web/static/vnc
+    schedule:
+      interval: daily
