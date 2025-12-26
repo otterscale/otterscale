@@ -13,6 +13,7 @@ import (
 
 	"k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset"
 
+	"k8s.io/client-go/dynamic"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
@@ -53,6 +54,22 @@ func (m *Kubernetes) Config(scope string) (*rest.Config, error) {
 	m.configs.Store(scope, config)
 
 	return config, nil
+}
+
+func (m *Kubernetes) dynamic(cluster, userName string, groups []string) (*dynamic.DynamicClient, error) {
+	config, err := m.Config(cluster)
+	if err != nil {
+		return nil, err
+	}
+
+	userConfig := rest.CopyConfig(config)
+
+	userConfig.Impersonate = rest.ImpersonationConfig{
+		UserName: userName,
+		Groups:   groups,
+	}
+
+	return dynamic.NewForConfig(userConfig)
 }
 
 func (m *Kubernetes) InternalIP(ctx context.Context, scope string) (string, error) {
