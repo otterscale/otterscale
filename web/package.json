@@ -109,7 +109,7 @@
 		"pg": "^8.16.3",
 		"prometheus-query": "^3.5.1",
 		"rehype-highlight": "^7.0.2",
-		"runed": "^0.37.0",
+		"runed": "^0.37.1",
 		"shiki": "^3.20.0",
 		"svelte-exmarkdown": "^5.0.2",
 		"svelte-monaco": "^1.0.4",
