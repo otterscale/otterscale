@@ -58,7 +58,7 @@ require (
 	k8s.io/client-go v0.34.3
 	k8s.io/kubectl v0.34.3
 	kubevirt.io/api v1.6.3
-	kubevirt.io/containerized-data-importer-api v1.63.1
+	kubevirt.io/containerized-data-importer-api v1.64.0
 	oras.land/oras-go/v2 v2.6.0
 	sigs.k8s.io/gateway-api v1.4.1
 	sigs.k8s.io/gateway-api-inference-extension v1.2.1
