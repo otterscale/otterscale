@@ -57,7 +57,7 @@ require (
 	k8s.io/cli-runtime v0.34.3
 	k8s.io/client-go v0.34.3
 	k8s.io/kubectl v0.34.3
-	kubevirt.io/api v1.6.3
+	kubevirt.io/api v1.7.0
 	kubevirt.io/containerized-data-importer-api v1.63.1
 	oras.land/oras-go/v2 v2.6.0
 	sigs.k8s.io/gateway-api v1.4.1
