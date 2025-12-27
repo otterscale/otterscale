@@ -3,12 +3,16 @@ edition = "2024";
 package otterscale.resource.v1;
 
 import "google/protobuf/empty.proto";
+import "google/protobuf/struct.proto";
 
 option go_package = "github.com/otterscale/otterscale/api/resource/v1;pb";
 
 // ResourceService provides a generic interface to manage any Kubernetes resources,
 // including native objects (Pods, Deployments) and Custom Resource Definitions (CRDs).
 service ResourceService {
+  // Discovery retrieves the available API resources in the specified cluster.
+  rpc Discovery(DiscoveryRequest) returns (DiscoveryResponse);
+
   // List retrieves a collection of resources based on the provided GVR and filters.
   rpc List(ListRequest) returns (ListResponse);
 
@@ -29,11 +33,34 @@ service ResourceService {
   rpc Watch(WatchRequest) returns (stream WatchEvent);
 }
 
+// APIResource represents a Kubernetes API resource with its metadata.
+message APIResource {
+  string          group       = 1;
+  string          version     = 2;
+  string          resource    = 3;
+  string          kind        = 4;
+  bool            namespaced  = 5;
+  repeated string verbs       = 6;
+  repeated string short_names = 7;
+}
+
+// DiscoveryRequest defines the parameters for discovering API resources.
+message DiscoveryRequest {
+  // The target Kubernetes cluster identifier.
+  string cluster = 1;
+}
+
+// DiscoveryResponse contains the list of available API resources in the cluster.
+message DiscoveryResponse {
+  // The list of available API resources in the cluster.
+  repeated APIResource api_resources = 1;
+}
+
 // Resource represents a single Kubernetes object serialized as a JSON string.
 message Resource {
   // The full JSON representation of the Kubernetes object.
   // Note: Backend may strip managedFields to reduce payload size.
-  string object = 1;
+  google.protobuf.Struct object = 1;
 }
 
 // ListRequest defines the parameters for querying multiple resources.

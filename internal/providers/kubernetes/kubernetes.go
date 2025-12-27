@@ -13,6 +13,7 @@ import (
 
 	"k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset"
 
+	"k8s.io/client-go/discovery"
 	"k8s.io/client-go/dynamic"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
@@ -70,6 +71,15 @@ func (m *Kubernetes) dynamic(cluster, userName string, groups []string) (*dynami
 	}
 
 	return dynamic.NewForConfig(userConfig)
+}
+
+func (m *Kubernetes) discovery(cluster string) (*discovery.DiscoveryClient, error) {
+	config, err := m.Config(cluster)
+	if err != nil {
+		return nil, err
+	}
+
+	return discovery.NewDiscoveryClientForConfig(config)
 }
 
 func (m *Kubernetes) InternalIP(ctx context.Context, scope string) (string, error) {

@@ -7,7 +7,6 @@ import (
 	"connectrpc.com/connect"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
-	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/apimachinery/pkg/watch"
 	"k8s.io/utils/ptr"
@@ -19,7 +18,7 @@ type resourceRepo struct {
 	kubernetes *Kubernetes
 }
 
-func NewresourceRepo(kubernetes *Kubernetes) resource.ResourceRepo {
+func NewResourceRepo(kubernetes *Kubernetes) resource.ResourceRepo {
 	return &resourceRepo{
 		kubernetes: kubernetes,
 	}
@@ -27,16 +26,10 @@ func NewresourceRepo(kubernetes *Kubernetes) resource.ResourceRepo {
 
 var _ resource.ResourceRepo = (*resourceRepo)(nil)
 
-func (r *resourceRepo) List(ctx context.Context, cluster, group, version, resource, namespace, labelSelector, fieldSelector string, limit int64, continueToken string) (*unstructured.UnstructuredList, error) {
-	dynamic, err := r.kubernetes.dynamic(cluster, "", nil) // from context
+func (r *resourceRepo) List(ctx context.Context, cgvr resource.ClusterGroupVersionResource, namespace, labelSelector, fieldSelector string, limit int64, continueToken string) (*unstructured.UnstructuredList, error) {
+	client, err := r.kubernetes.dynamic(cgvr.Cluster, "", nil) // from context
 	if err != nil {
 		return nil, err
-	}
-
-	gvr := schema.GroupVersionResource{
-		Group:    group,
-		Version:  version,
-		Resource: resource,
 	}
 
 	opts := metav1.ListOptions{
@@ -46,36 +39,24 @@ func (r *resourceRepo) List(ctx context.Context, cluster, group, version, resour
 		Continue:      continueToken,
 	}
 
-	return dynamic.Resource(gvr).Namespace(namespace).List(ctx, opts)
+	return client.Resource(cgvr.GroupVersionResource).Namespace(namespace).List(ctx, opts)
 }
 
-func (r *resourceRepo) Get(ctx context.Context, cluster, group, version, resource, namespace, name string) (*unstructured.Unstructured, error) {
-	dynamic, err := r.kubernetes.dynamic(cluster, "", nil) // from context
+func (r *resourceRepo) Get(ctx context.Context, cgvr resource.ClusterGroupVersionResource, namespace, name string) (*unstructured.Unstructured, error) {
+	client, err := r.kubernetes.dynamic(cgvr.Cluster, "", nil) // from context
 	if err != nil {
 		return nil, err
-	}
-
-	gvr := schema.GroupVersionResource{
-		Group:    group,
-		Version:  version,
-		Resource: resource,
 	}
 
 	opts := metav1.GetOptions{}
 
-	return dynamic.Resource(gvr).Namespace(namespace).Get(ctx, name, opts)
+	return client.Resource(cgvr.GroupVersionResource).Namespace(namespace).Get(ctx, name, opts)
 }
 
-func (r *resourceRepo) Create(ctx context.Context, cluster, group, version, resource, namespace string, manifest []byte) (*unstructured.Unstructured, error) {
-	dynamic, err := r.kubernetes.dynamic(cluster, "", nil) // from context
+func (r *resourceRepo) Create(ctx context.Context, cgvr resource.ClusterGroupVersionResource, namespace string, manifest []byte) (*unstructured.Unstructured, error) {
+	client, err := r.kubernetes.dynamic(cgvr.Cluster, "", nil) // from context
 	if err != nil {
 		return nil, err
-	}
-
-	gvr := schema.GroupVersionResource{
-		Group:    group,
-		Version:  version,
-		Resource: resource,
 	}
 
 	obj := &unstructured.Unstructured{}
@@ -85,19 +66,13 @@ func (r *resourceRepo) Create(ctx context.Context, cluster, group, version, reso
 
 	opts := metav1.CreateOptions{}
 
-	return dynamic.Resource(gvr).Namespace(namespace).Create(ctx, obj, opts)
+	return client.Resource(cgvr.GroupVersionResource).Namespace(namespace).Create(ctx, obj, opts)
 }
 
-func (r *resourceRepo) Apply(ctx context.Context, cluster, group, version, resource, namespace, name string, manifest []byte, force bool, fieldManager string) (*unstructured.Unstructured, error) {
-	dynamic, err := r.kubernetes.dynamic(cluster, "", nil) // from context
+func (r *resourceRepo) Apply(ctx context.Context, cgvr resource.ClusterGroupVersionResource, namespace, name string, manifest []byte, force bool, fieldManager string) (*unstructured.Unstructured, error) {
+	client, err := r.kubernetes.dynamic(cgvr.Cluster, "", nil) // from context
 	if err != nil {
 		return nil, err
-	}
-
-	gvr := schema.GroupVersionResource{
-		Group:    group,
-		Version:  version,
-		Resource: resource,
 	}
 
 	opts := metav1.PatchOptions{
@@ -105,38 +80,26 @@ func (r *resourceRepo) Apply(ctx context.Context, cluster, group, version, resou
 		FieldManager: fieldManager,
 	}
 
-	return dynamic.Resource(gvr).Namespace(namespace).Patch(ctx, name, types.ApplyPatchType, manifest, opts)
+	return client.Resource(cgvr.GroupVersionResource).Namespace(namespace).Patch(ctx, name, types.ApplyPatchType, manifest, opts)
 }
 
-func (r *resourceRepo) Delete(ctx context.Context, cluster, group, version, resource, namespace, name string, gracePeriodSeconds *int64) error {
-	dynamic, err := r.kubernetes.dynamic(cluster, "", nil) // from context
+func (r *resourceRepo) Delete(ctx context.Context, cgvr resource.ClusterGroupVersionResource, namespace, name string, gracePeriodSeconds *int64) error {
+	client, err := r.kubernetes.dynamic(cgvr.Cluster, "", nil) // from context
 	if err != nil {
 		return err
-	}
-
-	gvr := schema.GroupVersionResource{
-		Group:    group,
-		Version:  version,
-		Resource: resource,
 	}
 
 	opts := metav1.DeleteOptions{
 		GracePeriodSeconds: gracePeriodSeconds,
 	}
 
-	return dynamic.Resource(gvr).Namespace(namespace).Delete(ctx, name, opts)
+	return client.Resource(cgvr.GroupVersionResource).Namespace(namespace).Delete(ctx, name, opts)
 }
 
-func (r *resourceRepo) Watch(ctx context.Context, cluster, group, version, resource, namespace, labelSelector, fieldSelector, resourceVersion string) (watch.Interface, error) {
-	dynamic, err := r.kubernetes.dynamic(cluster, "", nil) // from context
+func (r *resourceRepo) Watch(ctx context.Context, cgvr resource.ClusterGroupVersionResource, namespace, labelSelector, fieldSelector, resourceVersion string) (watch.Interface, error) {
+	client, err := r.kubernetes.dynamic(cgvr.Cluster, "", nil) // from context
 	if err != nil {
 		return nil, err
-	}
-
-	gvr := schema.GroupVersionResource{
-		Group:    group,
-		Version:  version,
-		Resource: resource,
 	}
 
 	opts := metav1.ListOptions{
@@ -145,5 +108,5 @@ func (r *resourceRepo) Watch(ctx context.Context, cluster, group, version, resou
 		ResourceVersion: resourceVersion,
 	}
 
-	return dynamic.Resource(gvr).Namespace(namespace).Watch(ctx, opts)
+	return client.Resource(cgvr.GroupVersionResource).Namespace(namespace).Watch(ctx, opts)
 }
