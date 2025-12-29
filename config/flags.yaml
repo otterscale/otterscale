@@ -47,7 +47,7 @@ flags:
     variants:
       "on": true
       "off": false
-    defaultVariant: "on"
+    defaultVariant: "off"
 
   debug:
     state: DISABLED
