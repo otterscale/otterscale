@@ -37,6 +37,7 @@ import (
 	"github.com/otterscale/otterscale/internal/core/orchestrator/standalone"
 	registry2 "github.com/otterscale/otterscale/internal/core/registry"
 	"github.com/otterscale/otterscale/internal/core/registry/chart"
+	"github.com/otterscale/otterscale/internal/core/resource"
 	"github.com/otterscale/otterscale/internal/core/scope"
 	"github.com/otterscale/otterscale/internal/core/storage"
 	"github.com/otterscale/otterscale/internal/core/storage/block"
@@ -181,6 +182,10 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	manifestRepo := registry.NewManifestRepo(registryRegistry)
 	registryUseCase := registry2.NewUseCase(manifestRepo, repositoryRepo)
 	registryService := app.NewRegistryService(chartUseCase, registryUseCase)
+	discoveryRepo := kubernetes.NewDiscoveryRepo(kubernetesKubernetes)
+	resourceRepo := kubernetes.NewResourceRepo(kubernetesKubernetes)
+	resourceUseCase := resource.NewUseCase(discoveryRepo, resourceRepo)
+	resourceService := app.NewResourceService(resourceUseCase)
 	storageUseCase := storage.NewUseCase(storageNodeRepo, poolRepo, machineRepo)
 	imageSnapshotRepo := ceph.NewImageSnapshotRepo(cephCeph)
 	blockUseCase := block.NewUseCase(imageRepo, imageSnapshotRepo, poolRepo)
@@ -203,7 +208,7 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	sshKeyRepo := maas.NewSSHKeyRepo(maasMAAS)
 	scopeUseCase := scope.NewUseCase(scopeRepo, sshKeyRepo, packageRepositoryRepo)
 	scopeService := app.NewScopeService(scopeUseCase)
-	serve := mux.NewServe(applicationService, configurationService, environmentService, facilityService, instanceService, machineService, modelService, networkService, orchestratorService, registryService, storageService, scopeService)
+	serve := mux.NewServe(applicationService, configurationService, environmentService, facilityService, instanceService, machineService, modelService, networkService, orchestratorService, registryService, resourceService, storageService, scopeService)
 	command := newCmd(configConfig, muxBootstrap, jwksProxy, serve)
 	return command, func() {
 	}, nil

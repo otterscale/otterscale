@@ -1,0 +1,196 @@
+edition = "2023";
+
+package otterscale.resource.v1;
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/struct.proto";
+
+option go_package = "github.com/otterscale/otterscale/api/resource/v1;pb";
+
+// ResourceService provides a generic interface to manage any Kubernetes resources,
+// including native objects (Pods, Deployments) and Custom Resource Definitions (CRDs).
+service ResourceService {
+  // Discovery retrieves the available API resources in the specified cluster.
+  rpc Discovery(DiscoveryRequest) returns (DiscoveryResponse);
+
+  // List retrieves a collection of resources based on the provided GVR and filters.
+  rpc List(ListRequest) returns (ListResponse);
+
+  // Get retrieves a single resource by its name within a namespace.
+  rpc Get(GetRequest) returns (Resource);
+
+  // Create creates a new resource in the cluster using the provided manifest.
+  rpc Create(CreateRequest) returns (Resource);
+
+  // Apply performs a Server-Side Apply (SSA) to update or create a resource.
+  // This is the recommended way to perform partial updates.
+  rpc Apply(ApplyRequest) returns (Resource);
+
+  // Delete removes a resource from the cluster by its name.
+  rpc Delete(DeleteRequest) returns (google.protobuf.Empty);
+
+  // Watch initiates a server-side stream to monitor resource changes in real-time.
+  rpc Watch(WatchRequest) returns (stream WatchEvent);
+}
+
+// APIResource represents a Kubernetes API resource with its metadata.
+message APIResource {
+  string          group       = 1;
+  string          version     = 2;
+  string          resource    = 3;
+  string          kind        = 4;
+  bool            namespaced  = 5;
+  repeated string verbs       = 6;
+  repeated string short_names = 7;
+}
+
+// DiscoveryRequest defines the parameters for discovering API resources.
+message DiscoveryRequest {
+  // The target Kubernetes cluster identifier.
+  string cluster = 1;
+}
+
+// DiscoveryResponse contains the list of available API resources in the cluster.
+message DiscoveryResponse {
+  // The list of available API resources in the cluster.
+  repeated APIResource api_resources = 1;
+}
+
+// Resource represents a single Kubernetes object serialized as a JSON string.
+message Resource {
+  // The full JSON representation of the Kubernetes object.
+  // Note: Backend may strip managedFields to reduce payload size.
+  google.protobuf.Struct object = 1;
+}
+
+// ListRequest defines the parameters for querying multiple resources.
+message ListRequest {
+  // The target Kubernetes cluster identifier.
+  string cluster = 1;
+
+  // Kubernetes API Group (e.g., "apps" for Deployments, "" for core resources like Pods).
+  string group = 2;
+
+  // Kubernetes API Version (e.g., "v1").
+  string version = 3;
+
+  // Kubernetes API Resource name in plural (e.g., "pods", "deployments").
+  string resource = 4;
+
+  // The namespace to query. If empty, the request may target all namespaces depending on cluster permissions.
+  string namespace = 5;
+
+  // A selector to restrict the list of returned objects by their labels.
+  string label_selector = 6;
+
+  // A selector to restrict the list of returned objects by their fields (e.g., "status.phase=Running").
+  string field_selector = 7;
+
+  // The maximum number of items to return in a single page.
+  int64 limit = 8;
+
+  // The continue token for pagination, retrieved from a previous ListResponse.
+  string continue = 9;
+}
+
+// ListResponse contains the requested list of resources and pagination metadata.
+message ListResponse {
+  // The resourceVersion of the list, used to initiate a Watch from a specific point in time.
+  string resource_version = 1;
+
+  // A token used to retrieve the next page of results. Empty if no more pages exist.
+  string continue = 2;
+
+  // The estimated number of items remaining if pagination is used.
+  int64 remaining_item_count = 3;
+
+  // The list of resources found.
+  repeated Resource items = 4;
+}
+
+// GetRequest defines the parameters to fetch a single object.
+message GetRequest {
+  string cluster   = 1;
+  string group     = 2;
+  string version   = 3;
+  string resource  = 4;
+  string namespace = 5;
+  string name      = 6;
+}
+
+// CreateRequest defines the parameters for creating a new object.
+message CreateRequest {
+  string cluster   = 1;
+  string group     = 2;
+  string version   = 3;
+  string resource  = 4;
+  string namespace = 5;
+
+  // The full manifest of the object to be created in YAML format.
+  bytes manifest = 6;
+}
+
+// ApplyRequest defines the parameters for Server-Side Apply (SSA).
+message ApplyRequest {
+  string cluster   = 1;
+  string group     = 2;
+  string version   = 3;
+  string resource  = 4;
+  string namespace = 5;
+  string name      = 6;
+
+  // A partial or YAML manifest in JSON format to be merged by the API server.
+  bytes manifest = 7;
+
+  bool force = 8;
+
+  // Identifies the entity managing the fields (e.g., "otterscale-web-ui"). Required for SSA.
+  string field_manager = 9;
+}
+
+// DeleteRequest defines the parameters to remove an object.
+message DeleteRequest {
+  string cluster              = 1;
+  string group                = 2;
+  string version              = 3;
+  string resource             = 4;
+  string namespace            = 5;
+  string name                 = 6;
+  int64  grace_period_seconds = 7;
+}
+
+// WatchRequest defines the parameters to start a streaming watch.
+message WatchRequest {
+  string cluster        = 1;
+  string group          = 2;
+  string version        = 3;
+  string resource       = 4;
+  string namespace      = 5;
+  string label_selector = 6;
+  string field_selector = 7;
+
+  // Start the watch from this specific resource version.
+  string resource_version = 8;
+}
+
+// WatchEvent represents a single change notification from the Kubernetes API.
+message WatchEvent {
+  // Type defines the possible types of events from Kubernetes watch.
+  enum Type {
+    TYPE_UNSPECIFIED = 0;
+    TYPE_ADDED       = 1;
+    TYPE_MODIFIED    = 2;
+    TYPE_DELETED     = 3;
+    TYPE_BOOKMARK    = 4;
+    TYPE_ERROR       = 5;
+  }
+
+  // The type of the watch event.
+  Type type = 1;
+
+  // The state of the resource associated with the event.
+  Resource resource = 2;
+
+  // The resourceVersion of the watch event, used to initiate a Watch from a specific point in time.
+  string resource_version = 3;
+}
