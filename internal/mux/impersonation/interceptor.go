@@ -2,6 +2,7 @@ package impersonation
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"strings"
 	"time"
@@ -46,7 +47,7 @@ func (i *Interceptor) WrapUnary(next connect.UnaryFunc) connect.UnaryFunc {
 
 		idToken, err := i.verifier.Verify(ctx, token)
 		if err != nil {
-			return nil, connect.NewError(connect.CodeUnauthenticated, fmt.Errorf("invalid token: %w", err))
+			return nil, connect.NewError(connect.CodeUnauthenticated, errors.New("invalid token"))
 		}
 
 		newCtx := context.WithValue(ctx, subjectKey, idToken.Subject)
