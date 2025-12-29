@@ -67,6 +67,7 @@
 	let virtualIp = $state('');
 	let kubeConfig = $state('');
 	let kubeConfigError = $state('');
+	let kubeConfigValid = $state(false);
 	let isSubmitting = $state(false);
 
 	async function fetchMachines() {
@@ -137,7 +138,7 @@
 
 			return '';
 		} catch (error) {
-			return `Validation failed: ${(error as Error).message}`;
+			return 'Validation failed: ${(error as Error).message}';
 		}
 	}
 
@@ -304,6 +305,7 @@
 		virtualIp = '';
 		kubeConfig = '';
 		kubeConfigError = '';
+		kubeConfigValid = false;
 		isSubmitting = false;
 	}
 
@@ -550,12 +552,26 @@
 						oninput={async (e: Event) => {
 							const target = e.currentTarget as HTMLTextAreaElement;
 							kubeConfig = target.value;
-							kubeConfigError = await validateKubeConfig(target.value);
+							const error = await validateKubeConfig(target.value);
+							if (error) {
+								kubeConfigError = error;
+								kubeConfigValid = false;
+							} else {
+								kubeConfigError = '';
+								kubeConfigValid = true;
+							}
 						}}
 						required
 					></textarea>
+					{#if kubeConfigValid}
+						<p class="text-sm text-green-600">
+							{m.kubeconfig_verification_passed()}
+						</p>
+					{/if}
 					{#if kubeConfigError}
-						<p class="text-sm text-destructive">{kubeConfigError}</p>
+						<p class="text-sm text-destructive">
+							{kubeConfigError}
+						</p>
 					{/if}
 				</div>
 			{/if}
