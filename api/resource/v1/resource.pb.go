@@ -7,6 +7,7 @@
 package pb
 
 import (
+	_ "github.com/otterscale/otterscale/api"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
@@ -2594,7 +2595,7 @@ var File_api_resource_v1_resource_proto protoreflect.FileDescriptor
 
 const file_api_resource_v1_resource_proto_rawDesc = "" +
 	"\n" +
-	"\x1eapi/resource/v1/resource.proto\x12\x16otterscale.resource.v1\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1cgoogle/protobuf/struct.proto\"\xc4\x01\n" +
+	"\x1eapi/resource/v1/resource.proto\x12\x16otterscale.resource.v1\x1a\x15api/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1cgoogle/protobuf/struct.proto\"\xc4\x01\n" +
 	"\vAPIResource\x12\x14\n" +
 	"\x05group\x18\x01 \x01(\tR\x05group\x12\x18\n" +
 	"\aversion\x18\x02 \x01(\tR\aversion\x12\x1a\n" +
@@ -2682,15 +2683,22 @@ const file_api_resource_v1_resource_proto_rawDesc = "" +
 	"\fTYPE_DELETED\x10\x03\x12\x11\n" +
 	"\rTYPE_BOOKMARK\x10\x04\x12\x0e\n" +
 	"\n" +
-	"TYPE_ERROR\x10\x052\xd5\x04\n" +
-	"\x0fResourceService\x12`\n" +
-	"\tDiscovery\x12(.otterscale.resource.v1.DiscoveryRequest\x1a).otterscale.resource.v1.DiscoveryResponse\x12Q\n" +
-	"\x04List\x12#.otterscale.resource.v1.ListRequest\x1a$.otterscale.resource.v1.ListResponse\x12K\n" +
-	"\x03Get\x12\".otterscale.resource.v1.GetRequest\x1a .otterscale.resource.v1.Resource\x12Q\n" +
-	"\x06Create\x12%.otterscale.resource.v1.CreateRequest\x1a .otterscale.resource.v1.Resource\x12O\n" +
-	"\x05Apply\x12$.otterscale.resource.v1.ApplyRequest\x1a .otterscale.resource.v1.Resource\x12G\n" +
-	"\x06Delete\x12%.otterscale.resource.v1.DeleteRequest\x1a\x16.google.protobuf.Empty\x12S\n" +
-	"\x05Watch\x12$.otterscale.resource.v1.WatchRequest\x1a\".otterscale.resource.v1.WatchEvent0\x01B5Z3github.com/otterscale/otterscale/api/resource/v1;pbb\beditionsp\xe8\a"
+	"TYPE_ERROR\x10\x052\x84\x06\n" +
+	"\x0fResourceService\x12y\n" +
+	"\tDiscovery\x12(.otterscale.resource.v1.DiscoveryRequest\x1a).otterscale.resource.v1.DiscoveryResponse\"\x17\x8a\xdf\xd5\x1d\x12\n" +
+	"\x10resource-enabled\x12j\n" +
+	"\x04List\x12#.otterscale.resource.v1.ListRequest\x1a$.otterscale.resource.v1.ListResponse\"\x17\x8a\xdf\xd5\x1d\x12\n" +
+	"\x10resource-enabled\x12d\n" +
+	"\x03Get\x12\".otterscale.resource.v1.GetRequest\x1a .otterscale.resource.v1.Resource\"\x17\x8a\xdf\xd5\x1d\x12\n" +
+	"\x10resource-enabled\x12j\n" +
+	"\x06Create\x12%.otterscale.resource.v1.CreateRequest\x1a .otterscale.resource.v1.Resource\"\x17\x8a\xdf\xd5\x1d\x12\n" +
+	"\x10resource-enabled\x12h\n" +
+	"\x05Apply\x12$.otterscale.resource.v1.ApplyRequest\x1a .otterscale.resource.v1.Resource\"\x17\x8a\xdf\xd5\x1d\x12\n" +
+	"\x10resource-enabled\x12`\n" +
+	"\x06Delete\x12%.otterscale.resource.v1.DeleteRequest\x1a\x16.google.protobuf.Empty\"\x17\x8a\xdf\xd5\x1d\x12\n" +
+	"\x10resource-enabled\x12l\n" +
+	"\x05Watch\x12$.otterscale.resource.v1.WatchRequest\x1a\".otterscale.resource.v1.WatchEvent\"\x17\x8a\xdf\xd5\x1d\x12\n" +
+	"\x10resource-enabled0\x01B5Z3github.com/otterscale/otterscale/api/resource/v1;pbb\beditionsp\xe8\a"
 
 var file_api_resource_v1_resource_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
 var file_api_resource_v1_resource_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
