@@ -18,7 +18,6 @@ import (
 const domain = "otterscale"
 
 type Interceptor struct {
-	connect.UnaryInterceptorFunc
 	client     *openfeature.Client
 	featureMap *sync.Map
 }
@@ -35,16 +34,13 @@ func NewInterceptor() (*Interceptor, error) {
 	client := openfeature.NewClient(domain)
 	featureMap := &sync.Map{}
 
-	interceptor := &Interceptor{
+	return &Interceptor{
 		client:     client,
 		featureMap: featureMap,
-	}
-
-	interceptor.UnaryInterceptorFunc = connect.UnaryInterceptorFunc(interceptor.intercept)
-	return interceptor, nil
+	}, nil
 }
 
-func (i *Interceptor) intercept(next connect.UnaryFunc) connect.UnaryFunc {
+func (i *Interceptor) WrapUnary(next connect.UnaryFunc) connect.UnaryFunc {
 	return func(ctx context.Context, req connect.AnyRequest) (connect.AnyResponse, error) {
 		featureName, err := i.getFeatureName(req)
 		if err != nil {
@@ -66,6 +62,14 @@ func (i *Interceptor) intercept(next connect.UnaryFunc) connect.UnaryFunc {
 
 		return next(ctx, req)
 	}
+}
+
+func (i *Interceptor) WrapStreamingClient(next connect.StreamingClientFunc) connect.StreamingClientFunc {
+	return next
+}
+
+func (i *Interceptor) WrapStreamingHandler(next connect.StreamingHandlerFunc) connect.StreamingHandlerFunc {
+	return next
 }
 
 func (i *Interceptor) getFeatureName(req connect.AnyRequest) (string, error) {

@@ -36,6 +36,11 @@ type Ceph struct {
 	RADOSTimeout time.Duration `json:"rados_timeout"`
 }
 
+type Keycloak struct {
+	RealmURL string `json:"realm_url"`
+	ClientID string `json:"client_id"`
+}
+
 type Schema struct {
 	// System
 	MAAS     MAAS     `json:"maas"`
@@ -44,6 +49,9 @@ type Schema struct {
 
 	// User
 	Ceph Ceph `json:"ceph"`
+
+	// Next
+	Keycloak Keycloak `json:"keycloak"`
 }
 
 type Config struct {
@@ -132,6 +140,14 @@ func (c *Config) MicroK8sConfig() string {
 
 func (c *Config) CephRADOSTimeout() time.Duration {
 	return c.v.GetDuration("ceph.rados_timeout")
+}
+
+func (c *Config) KeycloakRealmURL() string {
+	return c.v.GetString("keycloak.realm_url")
+}
+
+func (c *Config) KeycloakClientID() string {
+	return c.v.GetString("keycloak.client_id")
 }
 
 func PrintDefault() error {

@@ -24,7 +24,7 @@ func NewResourceRepo(kubernetes *Kubernetes) resource.ResourceRepo {
 var _ resource.ResourceRepo = (*resourceRepo)(nil)
 
 func (r *resourceRepo) List(ctx context.Context, cgvr resource.ClusterGroupVersionResource, namespace, labelSelector, fieldSelector string, limit int64, continueToken string) (*unstructured.UnstructuredList, error) {
-	client, err := r.kubernetes.dynamic(cgvr.Cluster, "", nil) // from context
+	client, err := r.kubernetes.dynamic(ctx, cgvr.Cluster)
 	if err != nil {
 		return nil, err
 	}
@@ -40,7 +40,7 @@ func (r *resourceRepo) List(ctx context.Context, cgvr resource.ClusterGroupVersi
 }
 
 func (r *resourceRepo) Get(ctx context.Context, cgvr resource.ClusterGroupVersionResource, namespace, name string) (*unstructured.Unstructured, error) {
-	client, err := r.kubernetes.dynamic(cgvr.Cluster, "", nil) // from context
+	client, err := r.kubernetes.dynamic(ctx, cgvr.Cluster)
 	if err != nil {
 		return nil, err
 	}
@@ -51,7 +51,7 @@ func (r *resourceRepo) Get(ctx context.Context, cgvr resource.ClusterGroupVersio
 }
 
 func (r *resourceRepo) Create(ctx context.Context, cgvr resource.ClusterGroupVersionResource, namespace string, obj *unstructured.Unstructured) (*unstructured.Unstructured, error) {
-	client, err := r.kubernetes.dynamic(cgvr.Cluster, "", nil) // from context
+	client, err := r.kubernetes.dynamic(ctx, cgvr.Cluster)
 	if err != nil {
 		return nil, err
 	}
@@ -62,7 +62,7 @@ func (r *resourceRepo) Create(ctx context.Context, cgvr resource.ClusterGroupVer
 }
 
 func (r *resourceRepo) Apply(ctx context.Context, cgvr resource.ClusterGroupVersionResource, namespace, name string, data []byte, force bool, fieldManager string) (*unstructured.Unstructured, error) {
-	client, err := r.kubernetes.dynamic(cgvr.Cluster, "", nil) // from context
+	client, err := r.kubernetes.dynamic(ctx, cgvr.Cluster)
 	if err != nil {
 		return nil, err
 	}
@@ -76,7 +76,7 @@ func (r *resourceRepo) Apply(ctx context.Context, cgvr resource.ClusterGroupVers
 }
 
 func (r *resourceRepo) Delete(ctx context.Context, cgvr resource.ClusterGroupVersionResource, namespace, name string, gracePeriodSeconds *int64) error {
-	client, err := r.kubernetes.dynamic(cgvr.Cluster, "", nil) // from context
+	client, err := r.kubernetes.dynamic(ctx, cgvr.Cluster)
 	if err != nil {
 		return err
 	}
@@ -89,7 +89,7 @@ func (r *resourceRepo) Delete(ctx context.Context, cgvr resource.ClusterGroupVer
 }
 
 func (r *resourceRepo) Watch(ctx context.Context, cgvr resource.ClusterGroupVersionResource, namespace, labelSelector, fieldSelector, resourceVersion string, sendInitialEvents bool) (watch.Interface, error) {
-	client, err := r.kubernetes.dynamic(cgvr.Cluster, "", nil) // from context
+	client, err := r.kubernetes.dynamic(ctx, cgvr.Cluster)
 	if err != nil {
 		return nil, err
 	}
