@@ -12,18 +12,12 @@ import (
 
 	"github.com/ceph/go-ceph/rados"
 	"github.com/ceph/go-ceph/rgw/admin"
+	"github.com/otterscale/otterscale/internal/providers/kubernetes"
 	"gopkg.in/ini.v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/client-go/kubernetes"
-	"k8s.io/client-go/tools/clientcmd"
+	k8sclient "k8s.io/client-go/kubernetes"
 
 	"github.com/otterscale/otterscale/internal/config"
-)
-
-var (
-	// temporary using path for testing purpose
-	defaultKubeConfigPath string = "/root/.kube/config"
-	kubeConfigMap                = map[string]string{}
 )
 
 const (
@@ -35,10 +29,8 @@ const (
 )
 
 type Ceph struct {
-	conf *config.Config
-
-	kubeConfigPath string
-	k8sClientsets  sync.Map
+	conf       *config.Config
+	kubernetes *kubernetes.Kubernetes
 
 	connections sync.Map
 	clients     sync.Map
@@ -56,36 +48,19 @@ type clientConfig struct {
 	SecretKey string
 }
 
-func New(conf *config.Config) *Ceph {
+func New(conf *config.Config, kubernetes *kubernetes.Kubernetes) *Ceph {
 	return &Ceph{
-		conf:           conf,
-		kubeConfigPath: defaultKubeConfigPath,
+		conf:       conf,
+		kubernetes: kubernetes,
 	}
-}
-
-// 取得對應 kubeconfig 的 k8s clientset，若已存在則直接回傳
-func (m *Ceph) getK8sClientset(scope string) (*kubernetes.Clientset, error) {
-	kubeConfigPath := m.kubeConfigPath
-	if v, ok := kubeConfigMap[scope]; ok && v != "" {
-		kubeConfigPath = v
-	}
-	if v, ok := m.k8sClientsets.Load(kubeConfigPath); ok {
-		return v.(*kubernetes.Clientset), nil
-	}
-	config, err := clientcmd.BuildConfigFromFlags("", kubeConfigPath)
-	if err != nil {
-		return nil, err
-	}
-	cs, err := kubernetes.NewForConfig(config)
-	if err != nil {
-		return nil, err
-	}
-	m.k8sClientsets.Store(kubeConfigPath, cs)
-	return cs, nil
 }
 
 func (m *Ceph) getConnectionConfig(scope string) (connectionConfig, error) {
-	clientset, err := m.getK8sClientset(scope)
+	config, err := m.kubernetes.Config(scope)
+	if err != nil {
+		return connectionConfig{}, err
+	}
+	clientset, err := k8sclient.NewForConfig(config)
 	if err != nil {
 		return connectionConfig{}, err
 	}
@@ -135,7 +110,7 @@ func parseKeyring(keyring string) (string, error) {
 }
 
 // Helper function to get secret data
-func getSecretData(ctx context.Context, clientset *kubernetes.Clientset, namespace, secretName, key string) (string, error) {
+func getSecretData(ctx context.Context, clientset *k8sclient.Clientset, namespace, secretName, key string) (string, error) {
 	secret, err := clientset.CoreV1().Secrets(namespace).Get(ctx, secretName, metav1.GetOptions{})
 	if err != nil {
 		return "", err
@@ -273,7 +248,11 @@ func (m *Ceph) extractObjectKeys(r map[string]any) (accessKey, secretKey string,
 }
 
 func (m *Ceph) getClientConfig(scope string) (clientConfig, error) {
-	clientset, err := m.getK8sClientset(scope)
+	config, err := m.kubernetes.Config(scope)
+	if err != nil {
+		return clientConfig{}, err
+	}
+	clientset, err := k8sclient.NewForConfig(config)
 	if err != nil {
 		return clientConfig{}, err
 	}

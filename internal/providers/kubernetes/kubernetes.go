@@ -6,7 +6,8 @@ import (
 	"fmt"
 	"os"
 	"sync"
-	"time"
+
+	"k8s.io/client-go/tools/clientcmd"
 
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -15,28 +16,28 @@ import (
 
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
-	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/client-go/tools/clientcmd/api"
 
 	"github.com/otterscale/otterscale/internal/config"
 	"github.com/otterscale/otterscale/internal/core/application/cluster"
 	"github.com/otterscale/otterscale/internal/core/scope"
-	"github.com/otterscale/otterscale/internal/providers/juju"
 )
+
+var kubeConfigPath string = "/root/.kube/%s/config"
 
 type Kubernetes struct {
 	conf *config.Config
-	juju *juju.Juju
 
-	configs       sync.Map
-	clientsets    sync.Map
-	extClientsets sync.Map
+	kubeConfigPath string
+	configs        sync.Map
+	clientsets     sync.Map
+	extClientsets  sync.Map
 }
 
-func New(conf *config.Config, juju *juju.Juju) (*Kubernetes, error) {
+func New(conf *config.Config) (*Kubernetes, error) {
 	return &Kubernetes{
-		conf: conf,
-		juju: juju,
+		conf:           conf,
+		kubeConfigPath: kubeConfigPath,
 	}, nil
 }
 
@@ -99,12 +100,12 @@ func (m *Kubernetes) newMicroK8sConfig() (*rest.Config, error) {
 	return clientcmd.NewDefaultClientConfig(*configAPI, &clientcmd.ConfigOverrides{}).ClientConfig()
 }
 
-func (m *Kubernetes) getKubeConfig(ctx context.Context, scope, name string) (*api.Config, error) {
-	result, err := m.juju.Run(ctx, scope, name, "get-kubeconfig", nil)
+func (m *Kubernetes) getKubeConfig(path string) (*api.Config, error) {
+	data, err := os.ReadFile(path)
 	if err != nil {
 		return nil, err
 	}
-	return clientcmd.Load([]byte(result["kubeconfig"].(string)))
+	return clientcmd.Load(data)
 }
 
 func (m *Kubernetes) writeCAToFile(caData []byte) (string, error) {
@@ -121,10 +122,9 @@ func (m *Kubernetes) writeCAToFile(caData []byte) (string, error) {
 }
 
 func (m *Kubernetes) newConfig(scope string) (*rest.Config, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
-	defer cancel()
+	kubeConfigPath := fmt.Sprintf(m.kubeConfigPath, scope)
 
-	kubeConfig, err := m.getKubeConfig(ctx, scope, "kubernetes-control-plane")
+	kubeConfig, err := m.getKubeConfig(kubeConfigPath)
 	if err != nil {
 		return nil, err
 	}

@@ -64,8 +64,7 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	bootstrapService := app.NewBootstrapService(useCase)
 	muxBootstrap := mux.NewBootstrap(bootstrapService)
 	jwksProxy := mux.NewJWKSProxy()
-	jujuJuju := juju.New(configConfig)
-	kubernetesKubernetes, err := kubernetes.New(configConfig, jujuJuju)
+	kubernetesKubernetes, err := kubernetes.New(configConfig)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -110,9 +109,10 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	bootSourceSelectionRepo := maas.NewBootSourceSelectionRepo(maasMAAS)
 	packageRepositoryRepo := maas.NewPackageRepositoryRepo(maasMAAS)
 	provisionerRepo := maas.NewProvisionerRepo(maasMAAS)
+	jujuJuju := juju.New(configConfig)
 	scopeConfigRepo := juju.NewScopeConfigRepo(jujuJuju)
 	configurationUseCase := configuration.NewUseCase(configConfig, bootResourceRepo, bootSourceRepo, bootSourceSelectionRepo, packageRepositoryRepo, provisionerRepo, scopeConfigRepo)
-	cephCeph := ceph.New(configConfig)
+	cephCeph := ceph.New(configConfig, kubernetesKubernetes)
 	bucketRepo := ceph.NewBucketRepo(cephCeph)
 	imageRepo := ceph.NewImageRepo(cephCeph)
 	poolRepo := ceph.NewPoolRepo(cephCeph)
