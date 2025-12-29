@@ -17,6 +17,7 @@ import (
 	envv1 "github.com/otterscale/otterscale/api/environment/v1/pbconnect"
 	facilityv1 "github.com/otterscale/otterscale/api/facility/v1/pbconnect"
 	instancev1 "github.com/otterscale/otterscale/api/instance/v1/pbconnect"
+	k8sv1 "github.com/otterscale/otterscale/api/kubernetes/v1/pbconnect"
 	machinev1 "github.com/otterscale/otterscale/api/machine/v1/pbconnect"
 	modelv1 "github.com/otterscale/otterscale/api/model/v1/pbconnect"
 	networkv1 "github.com/otterscale/otterscale/api/network/v1/pbconnect"
@@ -36,6 +37,7 @@ type Serve struct {
 	environment   *app.EnvironmentService
 	facility      *app.FacilityService
 	instance      *app.InstanceService
+	kubernetes    *app.KubernetesService
 	machine       *app.MachineService
 	model         *app.ModelService
 	network       *app.NetworkService
@@ -46,7 +48,7 @@ type Serve struct {
 	scope         *app.ScopeService
 }
 
-func NewServe(application *app.ApplicationService, configuration *app.ConfigurationService, environment *app.EnvironmentService, facility *app.FacilityService, instance *app.InstanceService, machine *app.MachineService, model *app.ModelService, network *app.NetworkService, orchestrator *app.OrchestratorService, registry *app.RegistryService, resource *app.ResourceService, storage *app.StorageService, scope *app.ScopeService) *Serve {
+func NewServe(application *app.ApplicationService, configuration *app.ConfigurationService, environment *app.EnvironmentService, facility *app.FacilityService, instance *app.InstanceService, kubernetes *app.KubernetesService, machine *app.MachineService, model *app.ModelService, network *app.NetworkService, orchestrator *app.OrchestratorService, registry *app.RegistryService, resource *app.ResourceService, storage *app.StorageService, scope *app.ScopeService) *Serve {
 	return &Serve{
 		ServeMux:      &http.ServeMux{},
 		application:   application,
@@ -54,6 +56,7 @@ func NewServe(application *app.ApplicationService, configuration *app.Configurat
 		environment:   environment,
 		facility:      facility,
 		instance:      instance,
+		kubernetes:    kubernetes,
 		machine:       machine,
 		model:         model,
 		network:       network,
@@ -73,6 +76,7 @@ func (s *Serve) RegisterHandlers(opts []connect.HandlerOption) error {
 		envv1.EnvironmentServiceName,
 		facilityv1.FacilityServiceName,
 		instancev1.InstanceServiceName,
+		k8sv1.KubernetesServiceName,
 		machinev1.MachineServiceName,
 		modelv1.ModelServiceName,
 		networkv1.NetworkServiceName,
@@ -109,6 +113,7 @@ func (s *Serve) RegisterHandlers(opts []connect.HandlerOption) error {
 	s.Handle(envv1.NewEnvironmentServiceHandler(s.environment, opts...))
 	s.Handle(facilityv1.NewFacilityServiceHandler(s.facility, opts...))
 	s.Handle(instancev1.NewInstanceServiceHandler(s.instance, opts...))
+	s.Handle(k8sv1.NewKubernetesServiceHandler(s.kubernetes, opts...))
 	s.Handle(machinev1.NewMachineServiceHandler(s.machine, opts...))
 	s.Handle(modelv1.NewModelServiceHandler(s.model, opts...))
 	s.Handle(networkv1.NewNetworkServiceHandler(s.network, opts...))
