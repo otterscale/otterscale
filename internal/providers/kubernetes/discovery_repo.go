@@ -5,6 +5,7 @@ import (
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime/schema"
+	"k8s.io/apimachinery/pkg/version"
 
 	"github.com/otterscale/otterscale/internal/core/resource"
 )
@@ -48,8 +49,8 @@ func (r *discoveryRepo) Validate(cluster, group, version, res string) (resource.
 		return resource.ClusterGroupVersionResource{}, err
 	}
 
-	for _, res := range resources.APIResources {
-		if res.Name == gvr.Resource {
+	for i := range resources.APIResources {
+		if resources.APIResources[i].Name == gvr.Resource {
 			return resource.ClusterGroupVersionResource{
 				Cluster:              cluster,
 				GroupVersionResource: gvr,
@@ -58,4 +59,13 @@ func (r *discoveryRepo) Validate(cluster, group, version, res string) (resource.
 	}
 
 	return resource.ClusterGroupVersionResource{}, fmt.Errorf("resource %s not found in group version %s", gvr.Resource, gvr.GroupVersion().String())
+}
+
+func (r *discoveryRepo) Version(cluster string) (*version.Info, error) {
+	client, err := r.kubernetes.discovery(cluster)
+	if err != nil {
+		return nil, err
+	}
+
+	return client.ServerVersion()
 }

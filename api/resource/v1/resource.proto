@@ -1,4 +1,4 @@
-edition = "2024";
+edition = "2023";
 
 package otterscale.resource.v1;
 
@@ -126,7 +126,7 @@ message CreateRequest {
   string resource  = 4;
   string namespace = 5;
 
-  // The full manifest of the object to be created in JSON format.
+  // The full manifest of the object to be created in YAML format.
   bytes manifest = 6;
 }
 
@@ -139,7 +139,7 @@ message ApplyRequest {
   string namespace = 5;
   string name      = 6;
 
-  // A partial or full manifest in JSON format to be merged by the API server.
+  // A partial or YAML manifest in JSON format to be merged by the API server.
   bytes manifest = 7;
 
   bool force = 8;
@@ -175,17 +175,22 @@ message WatchRequest {
 
 // WatchEvent represents a single change notification from the Kubernetes API.
 message WatchEvent {
-  // EventType defines the possible types of events from Kubernetes watch.
-  enum EventType {
-    EVENT_TYPE_UNSPECIFIED = 0;
-    EVENT_TYPE_ADDED       = 1;
-    EVENT_TYPE_MODIFIED    = 2;
-    EVENT_TYPE_DELETED     = 3;
-    EVENT_TYPE_ERROR       = 4;
+  // Type defines the possible types of events from Kubernetes watch.
+  enum Type {
+    TYPE_UNSPECIFIED = 0;
+    TYPE_ADDED       = 1;
+    TYPE_MODIFIED    = 2;
+    TYPE_DELETED     = 3;
+    TYPE_BOOKMARK    = 4;
+    TYPE_ERROR       = 5;
   }
 
   // The type of the watch event.
-  EventType type = 1;
+  Type type = 1;
+
   // The state of the resource associated with the event.
   Resource resource = 2;
+
+  // The resourceVersion of the watch event, used to initiate a Watch from a specific point in time.
+  string resource_version = 3;
 }

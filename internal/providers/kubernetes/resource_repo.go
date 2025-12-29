@@ -2,14 +2,11 @@ package kubernetes
 
 import (
 	"context"
-	"fmt"
 
-	"connectrpc.com/connect"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/apimachinery/pkg/watch"
-	"k8s.io/utils/ptr"
 
 	"github.com/otterscale/otterscale/internal/core/resource"
 )
@@ -53,15 +50,10 @@ func (r *resourceRepo) Get(ctx context.Context, cgvr resource.ClusterGroupVersio
 	return client.Resource(cgvr.GroupVersionResource).Namespace(namespace).Get(ctx, name, opts)
 }
 
-func (r *resourceRepo) Create(ctx context.Context, cgvr resource.ClusterGroupVersionResource, namespace string, manifest []byte) (*unstructured.Unstructured, error) {
+func (r *resourceRepo) Create(ctx context.Context, cgvr resource.ClusterGroupVersionResource, namespace string, obj *unstructured.Unstructured) (*unstructured.Unstructured, error) {
 	client, err := r.kubernetes.dynamic(cgvr.Cluster, "", nil) // from context
 	if err != nil {
 		return nil, err
-	}
-
-	obj := &unstructured.Unstructured{}
-	if err := obj.UnmarshalJSON(manifest); err != nil {
-		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("invalid manifest: %v", err))
 	}
 
 	opts := metav1.CreateOptions{}
@@ -69,18 +61,18 @@ func (r *resourceRepo) Create(ctx context.Context, cgvr resource.ClusterGroupVer
 	return client.Resource(cgvr.GroupVersionResource).Namespace(namespace).Create(ctx, obj, opts)
 }
 
-func (r *resourceRepo) Apply(ctx context.Context, cgvr resource.ClusterGroupVersionResource, namespace, name string, manifest []byte, force bool, fieldManager string) (*unstructured.Unstructured, error) {
+func (r *resourceRepo) Apply(ctx context.Context, cgvr resource.ClusterGroupVersionResource, namespace, name string, data []byte, force bool, fieldManager string) (*unstructured.Unstructured, error) {
 	client, err := r.kubernetes.dynamic(cgvr.Cluster, "", nil) // from context
 	if err != nil {
 		return nil, err
 	}
 
 	opts := metav1.PatchOptions{
-		Force:        ptr.To(force),
+		Force:        &force,
 		FieldManager: fieldManager,
 	}
 
-	return client.Resource(cgvr.GroupVersionResource).Namespace(namespace).Patch(ctx, name, types.ApplyPatchType, manifest, opts)
+	return client.Resource(cgvr.GroupVersionResource).Namespace(namespace).Patch(ctx, name, types.ApplyPatchType, data, opts)
 }
 
 func (r *resourceRepo) Delete(ctx context.Context, cgvr resource.ClusterGroupVersionResource, namespace, name string, gracePeriodSeconds *int64) error {
@@ -96,17 +88,28 @@ func (r *resourceRepo) Delete(ctx context.Context, cgvr resource.ClusterGroupVer
 	return client.Resource(cgvr.GroupVersionResource).Namespace(namespace).Delete(ctx, name, opts)
 }
 
-func (r *resourceRepo) Watch(ctx context.Context, cgvr resource.ClusterGroupVersionResource, namespace, labelSelector, fieldSelector, resourceVersion string) (watch.Interface, error) {
+func (r *resourceRepo) Watch(ctx context.Context, cgvr resource.ClusterGroupVersionResource, namespace, labelSelector, fieldSelector, resourceVersion string, sendInitialEvents bool) (watch.Interface, error) {
 	client, err := r.kubernetes.dynamic(cgvr.Cluster, "", nil) // from context
 	if err != nil {
 		return nil, err
 	}
 
 	opts := metav1.ListOptions{
-		LabelSelector:   labelSelector,
-		FieldSelector:   fieldSelector,
-		ResourceVersion: resourceVersion,
+		LabelSelector:       labelSelector,
+		FieldSelector:       fieldSelector,
+		Watch:               true,
+		AllowWatchBookmarks: true,
+		ResourceVersion:     resourceVersion,
+	}
+
+	if sendInitialEvents {
+		opts.ResourceVersionMatch = metav1.ResourceVersionMatchNotOlderThan
+		opts.SendInitialEvents = ref(true)
 	}
 
 	return client.Resource(cgvr.GroupVersionResource).Namespace(namespace).Watch(ctx, opts)
+}
+
+func ref[T any](v T) *T {
+	return &v
 }

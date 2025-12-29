@@ -57,6 +57,7 @@ func (m *Kubernetes) Config(scope string) (*rest.Config, error) {
 	return config, nil
 }
 
+//nolint:unparam // next pr
 func (m *Kubernetes) dynamic(cluster, userName string, groups []string) (*dynamic.DynamicClient, error) {
 	config, err := m.Config(cluster)
 	if err != nil {
