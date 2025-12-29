@@ -64,7 +64,6 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	useCase := bootstrap.NewUseCase(configConfig)
 	bootstrapService := app.NewBootstrapService(useCase)
 	muxBootstrap := mux.NewBootstrap(bootstrapService)
-	jwksProxy := mux.NewJWKSProxy()
 	jujuJuju := juju.New(configConfig)
 	kubernetesKubernetes, err := kubernetes.New(configConfig, jujuJuju)
 	if err != nil {
@@ -209,7 +208,7 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	scopeUseCase := scope.NewUseCase(scopeRepo, sshKeyRepo, packageRepositoryRepo)
 	scopeService := app.NewScopeService(scopeUseCase)
 	serve := mux.NewServe(applicationService, configurationService, environmentService, facilityService, instanceService, machineService, modelService, networkService, orchestratorService, registryService, resourceService, storageService, scopeService)
-	command := newCmd(configConfig, muxBootstrap, jwksProxy, serve)
+	command := newCmd(configConfig, muxBootstrap, serve)
 	return command, func() {
 	}, nil
 }
