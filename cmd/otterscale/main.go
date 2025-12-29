@@ -13,7 +13,7 @@ import (
 
 var version = "devel"
 
-func newCmd(conf *config.Config, bootstrap *mux.Bootstrap, jwksProxy *mux.JWKSProxy, serve *mux.Serve) *cobra.Command {
+func newCmd(conf *config.Config, bootstrap *mux.Bootstrap, serve *mux.Serve) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:           "otterscale",
 		Short:         "Open-source platform for managing server infrastructure and GPU farms",
@@ -25,7 +25,6 @@ func newCmd(conf *config.Config, bootstrap *mux.Bootstrap, jwksProxy *mux.JWKSPr
 	cmd.AddCommand(
 		oscmd.NewInit(),
 		oscmd.NewBootstrap(bootstrap),
-		oscmd.NewJWKSProxy(jwksProxy),
 		oscmd.NewServe(conf, serve),
 	)
 	return cmd
