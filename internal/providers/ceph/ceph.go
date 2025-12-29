@@ -2,6 +2,7 @@ package ceph
 
 import (
 	"context"
+	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"slices"
@@ -11,16 +12,33 @@ import (
 
 	"github.com/ceph/go-ceph/rados"
 	"github.com/ceph/go-ceph/rgw/admin"
-	"golang.org/x/sync/errgroup"
 	"gopkg.in/ini.v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/client-go/kubernetes"
+	"k8s.io/client-go/tools/clientcmd"
 
 	"github.com/otterscale/otterscale/internal/config"
-	"github.com/otterscale/otterscale/internal/providers/juju"
+)
+
+var (
+	// temporary using path for testing purpose
+	defaultKubeConfigPath string = "/root/.kube/config"
+	kubeConfigMap                = map[string]string{}
+)
+
+const (
+	cephNamespace          = "rook-ceph"
+	cephMonSecret          = "rook-ceph-mon"
+	cephMonHostSecret      = "rook-ceph-config"
+	cephAdminKeyringSecret = "rook-ceph-admin-keyring"
+	cephObjectUserSecret   = "rook-ceph-object-user-ceph-objectstore-otterscale"
 )
 
 type Ceph struct {
 	conf *config.Config
-	juju *juju.Juju
+
+	kubeConfigPath string
+	k8sClientsets  sync.Map
 
 	connections sync.Map
 	clients     sync.Map
@@ -38,56 +56,105 @@ type clientConfig struct {
 	SecretKey string
 }
 
-func New(conf *config.Config, juju *juju.Juju) *Ceph {
+func New(conf *config.Config) *Ceph {
 	return &Ceph{
-		conf: conf,
-		juju: juju,
+		conf:           conf,
+		kubeConfigPath: defaultKubeConfigPath,
 	}
 }
 
-func (m *Ceph) extractAsConnectionConfig(r map[string]any) (connectionConfig, error) {
-	stdout, ok := r["stdout"]
-	if !ok {
-		return connectionConfig{}, errors.New("ceph config stdout not found")
+// 取得對應 kubeconfig 的 k8s clientset，若已存在則直接回傳
+func (m *Ceph) getK8sClientset(scope string) (*kubernetes.Clientset, error) {
+	kubeConfigPath := m.kubeConfigPath
+	if v, ok := kubeConfigMap[scope]; ok && v != "" {
+		kubeConfigPath = v
 	}
+	if v, ok := m.k8sClientsets.Load(kubeConfigPath); ok {
+		return v.(*kubernetes.Clientset), nil
+	}
+	config, err := clientcmd.BuildConfigFromFlags("", kubeConfigPath)
+	if err != nil {
+		return nil, err
+	}
+	cs, err := kubernetes.NewForConfig(config)
+	if err != nil {
+		return nil, err
+	}
+	m.k8sClientsets.Store(kubeConfigPath, cs)
+	return cs, nil
+}
 
-	file, err := ini.Load([]byte(stdout.(string)))
+func (m *Ceph) getConnectionConfig(scope string) (connectionConfig, error) {
+	clientset, err := m.getK8sClientset(scope)
 	if err != nil {
 		return connectionConfig{}, err
 	}
 
-	id := file.Section("global").Key("fsid").String()
-	if id == "" {
-		return connectionConfig{}, errors.New("ceph config fsid not found")
+	// Create a single context with timeout
+	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
+	defer cancel()
+
+	// Retrieve fsid
+	fsid, err := getSecretData(ctx, clientset, cephNamespace, cephMonSecret, "fsid")
+	if err != nil {
+		return connectionConfig{}, err
 	}
 
-	host := file.Section("global").Key("mon_host").String()
-	if host == "" {
-		return connectionConfig{}, errors.New("ceph config mon_host not found")
+	// Retrieve mon_host
+	monHost, err := getSecretData(ctx, clientset, cephNamespace, cephMonHostSecret, "mon_host")
+	if err != nil {
+		return connectionConfig{}, err
 	}
 
-	key := file.Section("client.admin").Key("key").String()
-	if key == "" {
-		return connectionConfig{}, errors.New("ceph config key not found")
+	// Retrieve key
+	key, err := getSecretData(ctx, clientset, cephNamespace, cephAdminKeyringSecret, "keyring")
+	if err != nil {
+		return connectionConfig{}, err
 	}
 
 	return connectionConfig{
-		ID:   id,
-		Host: host,
+		ID:   fsid,
+		Host: monHost,
 		Key:  key,
 	}, nil
 }
 
-func (m *Ceph) getConnectionConfig(scope string) (connectionConfig, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
-	defer cancel()
-
-	result, err := m.juju.ExecuteFromApp(ctx, scope, "ceph-mon", "ceph config generate-minimal-conf && ceph auth get client.admin")
+// Helper function to parse keyring data
+func parseKeyring(keyring string) (string, error) {
+	file, err := ini.Load([]byte(keyring))
 	if err != nil {
-		return connectionConfig{}, err
+		return "", err
 	}
 
-	return m.extractAsConnectionConfig(result)
+	key := file.Section("client.admin").Key("key").String()
+	if key == "" {
+		return "", errors.New("client.admin key not found in keyring")
+	}
+
+	return key, nil
+}
+
+// Helper function to get secret data
+func getSecretData(ctx context.Context, clientset *kubernetes.Clientset, namespace, secretName, key string) (string, error) {
+	secret, err := clientset.CoreV1().Secrets(namespace).Get(ctx, secretName, metav1.GetOptions{})
+	if err != nil {
+		return "", err
+	}
+	data, ok := secret.Data[key]
+	if !ok {
+		return "", errors.New("key not found in secret")
+	}
+	decoded, err := base64.StdEncoding.DecodeString(string(data))
+	if err != nil {
+		return "", err
+	}
+
+	// If the key is "keyring", parse it to extract the client.admin key
+	if key == "keyring" {
+		return parseKeyring(string(decoded))
+	}
+
+	return string(decoded), nil
 }
 
 func (m *Ceph) newConnection(c connectionConfig) (*rados.Conn, error) {
@@ -205,54 +272,50 @@ func (m *Ceph) extractObjectKeys(r map[string]any) (accessKey, secretKey string,
 	return accessKey, secretKey, nil
 }
 
-func (m *Ceph) getObjectKeys(ctx context.Context, scope, name string) (accessKey, secretKey string, err error) {
-	result, err := m.juju.ExecuteFromApp(ctx, scope, name, "radosgw-admin user list")
-	if err != nil {
-		return "", "", err
-	}
-
-	cmd, err := m.getRGWCommand(result)
-	if err != nil {
-		return "", "", err
-	}
-
-	result, err = m.juju.ExecuteFromApp(ctx, scope, name, cmd)
-	if err != nil {
-		return "", "", err
-	}
-
-	return m.extractObjectKeys(result)
-}
-
 func (m *Ceph) getClientConfig(scope string) (clientConfig, error) {
-	config := clientConfig{}
-	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
-	defer cancel()
-
-	eg, egctx := errgroup.WithContext(ctx)
-
-	eg.Go(func() error {
-		accessKey, secretKey, err := m.getObjectKeys(egctx, scope, "ceph-mon")
-		if err == nil {
-			config.AccessKey = accessKey
-			config.SecretKey = secretKey
-		}
-		return err
-	})
-
-	eg.Go(func() error {
-		endpoint, err := m.juju.GetEndpoint(egctx, scope, "ceph-radosgw")
-		if err == nil {
-			config.Endpoint = endpoint
-		}
-		return err
-	})
-
-	if err := eg.Wait(); err != nil {
+	clientset, err := m.getK8sClientset(scope)
+	if err != nil {
 		return clientConfig{}, err
 	}
 
-	return config, nil
+	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
+	defer cancel()
+
+	secret, err := clientset.CoreV1().Secrets(cephNamespace).Get(ctx, cephObjectUserSecret, metav1.GetOptions{})
+	if err != nil {
+		return clientConfig{}, err
+	}
+
+	getField := func(field string) (string, error) {
+		data, ok := secret.Data[field]
+		if !ok {
+			return "", errors.New(field + " not found in secret")
+		}
+		decoded, err := base64.StdEncoding.DecodeString(string(data))
+		if err != nil {
+			return "", err
+		}
+		return string(decoded), nil
+	}
+
+	accessKey, err := getField("AccessKey")
+	if err != nil {
+		return clientConfig{}, err
+	}
+	endpoint, err := getField("Endpoint")
+	if err != nil {
+		return clientConfig{}, err
+	}
+	secretKey, err := getField("SecretKey")
+	if err != nil {
+		return clientConfig{}, err
+	}
+
+	return clientConfig{
+		Endpoint:  endpoint,
+		AccessKey: accessKey,
+		SecretKey: secretKey,
+	}, nil
 }
 
 func (m *Ceph) client(scope string) (*admin.API, error) {

@@ -112,7 +112,7 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	provisionerRepo := maas.NewProvisionerRepo(maasMAAS)
 	scopeConfigRepo := juju.NewScopeConfigRepo(jujuJuju)
 	configurationUseCase := configuration.NewUseCase(configConfig, bootResourceRepo, bootSourceRepo, bootSourceSelectionRepo, packageRepositoryRepo, provisionerRepo, scopeConfigRepo)
-	cephCeph := ceph.New(configConfig, jujuJuju)
+	cephCeph := ceph.New(configConfig)
 	bucketRepo := ceph.NewBucketRepo(cephCeph)
 	imageRepo := ceph.NewImageRepo(cephCeph)
 	poolRepo := ceph.NewPoolRepo(cephCeph)
