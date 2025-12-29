@@ -2,6 +2,7 @@ edition = "2023";
 
 package otterscale.resource.v1;
 
+import "api/annotations.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/struct.proto";
 
@@ -11,26 +12,54 @@ option go_package = "github.com/otterscale/otterscale/api/resource/v1;pb";
 // including native objects (Pods, Deployments) and Custom Resource Definitions (CRDs).
 service ResourceService {
   // Discovery retrieves the available API resources in the specified cluster.
-  rpc Discovery(DiscoveryRequest) returns (DiscoveryResponse);
+  rpc Discovery(DiscoveryRequest) returns (DiscoveryResponse) {
+    option (otterscale.api.feature) = {
+      name: "resource-enabled"
+    };
+  };
 
   // List retrieves a collection of resources based on the provided GVR and filters.
-  rpc List(ListRequest) returns (ListResponse);
+  rpc List(ListRequest) returns (ListResponse) {
+    option (otterscale.api.feature) = {
+      name: "resource-enabled"
+    };
+  };
 
   // Get retrieves a single resource by its name within a namespace.
-  rpc Get(GetRequest) returns (Resource);
+  rpc Get(GetRequest) returns (Resource){
+    option (otterscale.api.feature) = {
+      name: "resource-enabled"
+    };
+  };
 
   // Create creates a new resource in the cluster using the provided manifest.
-  rpc Create(CreateRequest) returns (Resource);
+  rpc Create(CreateRequest) returns (Resource){
+    option (otterscale.api.feature) = {
+      name: "resource-enabled"
+    };
+  };
 
   // Apply performs a Server-Side Apply (SSA) to update or create a resource.
   // This is the recommended way to perform partial updates.
-  rpc Apply(ApplyRequest) returns (Resource);
+  rpc Apply(ApplyRequest) returns (Resource){
+    option (otterscale.api.feature) = {
+      name: "resource-enabled"
+    };
+  };
 
   // Delete removes a resource from the cluster by its name.
-  rpc Delete(DeleteRequest) returns (google.protobuf.Empty);
+  rpc Delete(DeleteRequest) returns (google.protobuf.Empty){
+    option (otterscale.api.feature) = {
+      name: "resource-enabled"
+    };
+  };
 
   // Watch initiates a server-side stream to monitor resource changes in real-time.
-  rpc Watch(WatchRequest) returns (stream WatchEvent);
+  rpc Watch(WatchRequest) returns (stream WatchEvent){
+    option (otterscale.api.feature) = {
+      name: "resource-enabled"
+    };
+  };
 }
 
 // APIResource represents a Kubernetes API resource with its metadata.
