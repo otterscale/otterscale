@@ -23,6 +23,7 @@ import (
 	"github.com/otterscale/otterscale/internal/config"
 	"github.com/otterscale/otterscale/internal/core/application/cluster"
 	"github.com/otterscale/otterscale/internal/core/scope"
+	"github.com/otterscale/otterscale/internal/mux/impersonation"
 	"github.com/otterscale/otterscale/internal/providers/juju"
 )
 
@@ -57,8 +58,12 @@ func (m *Kubernetes) Config(scope string) (*rest.Config, error) {
 	return config, nil
 }
 
-//nolint:unparam // next pr
-func (m *Kubernetes) dynamic(cluster, userName string, groups []string) (*dynamic.DynamicClient, error) {
+func (m *Kubernetes) dynamic(ctx context.Context, cluster string) (*dynamic.DynamicClient, error) {
+	userSub, ok := impersonation.GetSubject(ctx)
+	if !ok {
+		return nil, fmt.Errorf("user sub not found in context")
+	}
+
 	config, err := m.Config(cluster)
 	if err != nil {
 		return nil, err
@@ -67,8 +72,7 @@ func (m *Kubernetes) dynamic(cluster, userName string, groups []string) (*dynami
 	userConfig := rest.CopyConfig(config)
 
 	userConfig.Impersonate = rest.ImpersonationConfig{
-		UserName: userName,
-		Groups:   groups,
+		UserName: userSub,
 	}
 
 	return dynamic.NewForConfig(userConfig)
