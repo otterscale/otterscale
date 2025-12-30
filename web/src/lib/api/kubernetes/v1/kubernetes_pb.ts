@@ -4,13 +4,15 @@
 
 import type { GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv2";
 import { fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv2";
+import type { EmptySchema } from "@bufbuild/protobuf/wkt";
+import { file_google_protobuf_empty } from "@bufbuild/protobuf/wkt";
 import type { Message } from "@bufbuild/protobuf";
 
 /**
  * Describes the file api/kubernetes/v1/kubernetes.proto.
  */
 export const file_api_kubernetes_v1_kubernetes: GenFile = /*@__PURE__*/
-  fileDesc("CiJhcGkva3ViZXJuZXRlcy92MS9rdWJlcm5ldGVzLnByb3RvEhhvdHRlcnNjYWxlLmt1YmVybmV0ZXMudjEiLwoZVmFsaWRhdGVLdWJlQ29uZmlnUmVxdWVzdBISCgprdWJlY29uZmlnGAEgASgJIi0KGlZhbGlkYXRlS3ViZUNvbmZpZ1Jlc3BvbnNlEg8KB21lc3NhZ2UYASABKAkylAEKEUt1YmVybmV0ZXNTZXJ2aWNlEn8KElZhbGlkYXRlS3ViZUNvbmZpZxIzLm90dGVyc2NhbGUua3ViZXJuZXRlcy52MS5WYWxpZGF0ZUt1YmVDb25maWdSZXF1ZXN0GjQub3R0ZXJzY2FsZS5rdWJlcm5ldGVzLnYxLlZhbGlkYXRlS3ViZUNvbmZpZ1Jlc3BvbnNlQjdaNWdpdGh1Yi5jb20vb3R0ZXJzY2FsZS9vdHRlcnNjYWxlL2FwaS9rdWJlcm5ldGVzL3YxO3BiYghlZGl0aW9uc3DoBw");
+  fileDesc("CiJhcGkva3ViZXJuZXRlcy92MS9rdWJlcm5ldGVzLnByb3RvEhhvdHRlcnNjYWxlLmt1YmVybmV0ZXMudjEiLwoZVmFsaWRhdGVLdWJlQ29uZmlnUmVxdWVzdBISCgprdWJlY29uZmlnGAEgASgJMnYKEUt1YmVybmV0ZXNTZXJ2aWNlEmEKElZhbGlkYXRlS3ViZUNvbmZpZxIzLm90dGVyc2NhbGUua3ViZXJuZXRlcy52MS5WYWxpZGF0ZUt1YmVDb25maWdSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5QjdaNWdpdGh1Yi5jb20vb3R0ZXJzY2FsZS9vdHRlcnNjYWxlL2FwaS9rdWJlcm5ldGVzL3YxO3BiYghlZGl0aW9uc3DoBw", [file_google_protobuf_empty]);
 
 /**
  * @generated from message otterscale.kubernetes.v1.ValidateKubeConfigRequest
@@ -30,23 +32,6 @@ export const ValidateKubeConfigRequestSchema: GenMessage<ValidateKubeConfigReque
   messageDesc(file_api_kubernetes_v1_kubernetes, 0);
 
 /**
- * @generated from message otterscale.kubernetes.v1.ValidateKubeConfigResponse
- */
-export type ValidateKubeConfigResponse = Message<"otterscale.kubernetes.v1.ValidateKubeConfigResponse"> & {
-  /**
-   * @generated from field: string message = 1;
-   */
-  message: string;
-};
-
-/**
- * Describes the message otterscale.kubernetes.v1.ValidateKubeConfigResponse.
- * Use `create(ValidateKubeConfigResponseSchema)` to create a new message.
- */
-export const ValidateKubeConfigResponseSchema: GenMessage<ValidateKubeConfigResponse> = /*@__PURE__*/
-  messageDesc(file_api_kubernetes_v1_kubernetes, 1);
-
-/**
  * @generated from service otterscale.kubernetes.v1.KubernetesService
  */
 export const KubernetesService: GenService<{
@@ -56,7 +41,7 @@ export const KubernetesService: GenService<{
   validateKubeConfig: {
     methodKind: "unary";
     input: typeof ValidateKubeConfigRequestSchema;
-    output: typeof ValidateKubeConfigResponseSchema;
+    output: typeof EmptySchema;
   },
 }> = /*@__PURE__*/
   serviceDesc(file_api_kubernetes_v1_kubernetes, 0);

@@ -128,13 +128,9 @@
 		const kubeconfigBase64 = encodeBase64(trimmed);
 
 		try {
-			const response = await kubernetesClient.validateKubeConfig({
+			await kubernetesClient.validateKubeConfig({
 				kubeconfig: kubeconfigBase64
 			});
-
-			if (response.message) {
-				return `Invalid KubeConfig: ${response.message}`;
-			}
 
 			return '';
 		} catch (error) {

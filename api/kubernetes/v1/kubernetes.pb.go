@@ -9,6 +9,7 @@ package pb
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	reflect "reflect"
 	unsafe "unsafe"
 )
@@ -98,106 +99,26 @@ func (b0 ValidateKubeConfigRequest_builder) Build() *ValidateKubeConfigRequest {
 	return m0
 }
 
-type ValidateKubeConfigResponse struct {
-	state                  protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Message     *string                `protobuf:"bytes,1,opt,name=message"`
-	XXX_raceDetectHookData protoimpl.RaceDetectHookData
-	XXX_presence           [1]uint32
-	unknownFields          protoimpl.UnknownFields
-	sizeCache              protoimpl.SizeCache
-}
-
-func (x *ValidateKubeConfigResponse) Reset() {
-	*x = ValidateKubeConfigResponse{}
-	mi := &file_api_kubernetes_v1_kubernetes_proto_msgTypes[1]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *ValidateKubeConfigResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ValidateKubeConfigResponse) ProtoMessage() {}
-
-func (x *ValidateKubeConfigResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_kubernetes_v1_kubernetes_proto_msgTypes[1]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-func (x *ValidateKubeConfigResponse) GetMessage() string {
-	if x != nil {
-		if x.xxx_hidden_Message != nil {
-			return *x.xxx_hidden_Message
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *ValidateKubeConfigResponse) SetMessage(v string) {
-	x.xxx_hidden_Message = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 1)
-}
-
-func (x *ValidateKubeConfigResponse) HasMessage() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
-}
-
-func (x *ValidateKubeConfigResponse) ClearMessage() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_Message = nil
-}
-
-type ValidateKubeConfigResponse_builder struct {
-	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
-
-	Message *string
-}
-
-func (b0 ValidateKubeConfigResponse_builder) Build() *ValidateKubeConfigResponse {
-	m0 := &ValidateKubeConfigResponse{}
-	b, x := &b0, m0
-	_, _ = b, x
-	if b.Message != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 1)
-		x.xxx_hidden_Message = b.Message
-	}
-	return m0
-}
-
 var File_api_kubernetes_v1_kubernetes_proto protoreflect.FileDescriptor
 
 const file_api_kubernetes_v1_kubernetes_proto_rawDesc = "" +
 	"\n" +
-	"\"api/kubernetes/v1/kubernetes.proto\x12\x18otterscale.kubernetes.v1\";\n" +
+	"\"api/kubernetes/v1/kubernetes.proto\x12\x18otterscale.kubernetes.v1\x1a\x1bgoogle/protobuf/empty.proto\";\n" +
 	"\x19ValidateKubeConfigRequest\x12\x1e\n" +
 	"\n" +
 	"kubeconfig\x18\x01 \x01(\tR\n" +
-	"kubeconfig\"6\n" +
-	"\x1aValidateKubeConfigResponse\x12\x18\n" +
-	"\amessage\x18\x01 \x01(\tR\amessage2\x94\x01\n" +
-	"\x11KubernetesService\x12\x7f\n" +
-	"\x12ValidateKubeConfig\x123.otterscale.kubernetes.v1.ValidateKubeConfigRequest\x1a4.otterscale.kubernetes.v1.ValidateKubeConfigResponseB7Z5github.com/otterscale/otterscale/api/kubernetes/v1;pbb\beditionsp\xe8\a"
+	"kubeconfig2v\n" +
+	"\x11KubernetesService\x12a\n" +
+	"\x12ValidateKubeConfig\x123.otterscale.kubernetes.v1.ValidateKubeConfigRequest\x1a\x16.google.protobuf.EmptyB7Z5github.com/otterscale/otterscale/api/kubernetes/v1;pbb\beditionsp\xe8\a"
 
-var file_api_kubernetes_v1_kubernetes_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_api_kubernetes_v1_kubernetes_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_api_kubernetes_v1_kubernetes_proto_goTypes = []any{
-	(*ValidateKubeConfigRequest)(nil),  // 0: otterscale.kubernetes.v1.ValidateKubeConfigRequest
-	(*ValidateKubeConfigResponse)(nil), // 1: otterscale.kubernetes.v1.ValidateKubeConfigResponse
+	(*ValidateKubeConfigRequest)(nil), // 0: otterscale.kubernetes.v1.ValidateKubeConfigRequest
+	(*emptypb.Empty)(nil),             // 1: google.protobuf.Empty
 }
 var file_api_kubernetes_v1_kubernetes_proto_depIdxs = []int32{
 	0, // 0: otterscale.kubernetes.v1.KubernetesService.ValidateKubeConfig:input_type -> otterscale.kubernetes.v1.ValidateKubeConfigRequest
-	1, // 1: otterscale.kubernetes.v1.KubernetesService.ValidateKubeConfig:output_type -> otterscale.kubernetes.v1.ValidateKubeConfigResponse
+	1, // 1: otterscale.kubernetes.v1.KubernetesService.ValidateKubeConfig:output_type -> google.protobuf.Empty
 	1, // [1:2] is the sub-list for method output_type
 	0, // [0:1] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
@@ -216,7 +137,7 @@ func file_api_kubernetes_v1_kubernetes_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_api_kubernetes_v1_kubernetes_proto_rawDesc), len(file_api_kubernetes_v1_kubernetes_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   1,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

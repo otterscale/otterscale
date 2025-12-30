@@ -9,6 +9,7 @@ import (
 	context "context"
 	errors "errors"
 	v1 "github.com/otterscale/otterscale/api/kubernetes/v1"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	http "net/http"
 	strings "strings"
 )
@@ -40,7 +41,7 @@ const (
 
 // KubernetesServiceClient is a client for the otterscale.kubernetes.v1.KubernetesService service.
 type KubernetesServiceClient interface {
-	ValidateKubeConfig(context.Context, *v1.ValidateKubeConfigRequest) (*v1.ValidateKubeConfigResponse, error)
+	ValidateKubeConfig(context.Context, *v1.ValidateKubeConfigRequest) (*emptypb.Empty, error)
 }
 
 // NewKubernetesServiceClient constructs a client for the otterscale.kubernetes.v1.KubernetesService
@@ -54,7 +55,7 @@ func NewKubernetesServiceClient(httpClient connect.HTTPClient, baseURL string, o
 	baseURL = strings.TrimRight(baseURL, "/")
 	kubernetesServiceMethods := v1.File_api_kubernetes_v1_kubernetes_proto.Services().ByName("KubernetesService").Methods()
 	return &kubernetesServiceClient{
-		validateKubeConfig: connect.NewClient[v1.ValidateKubeConfigRequest, v1.ValidateKubeConfigResponse](
+		validateKubeConfig: connect.NewClient[v1.ValidateKubeConfigRequest, emptypb.Empty](
 			httpClient,
 			baseURL+KubernetesServiceValidateKubeConfigProcedure,
 			connect.WithSchema(kubernetesServiceMethods.ByName("ValidateKubeConfig")),
@@ -65,11 +66,11 @@ func NewKubernetesServiceClient(httpClient connect.HTTPClient, baseURL string, o
 
 // kubernetesServiceClient implements KubernetesServiceClient.
 type kubernetesServiceClient struct {
-	validateKubeConfig *connect.Client[v1.ValidateKubeConfigRequest, v1.ValidateKubeConfigResponse]
+	validateKubeConfig *connect.Client[v1.ValidateKubeConfigRequest, emptypb.Empty]
 }
 
 // ValidateKubeConfig calls otterscale.kubernetes.v1.KubernetesService.ValidateKubeConfig.
-func (c *kubernetesServiceClient) ValidateKubeConfig(ctx context.Context, req *v1.ValidateKubeConfigRequest) (*v1.ValidateKubeConfigResponse, error) {
+func (c *kubernetesServiceClient) ValidateKubeConfig(ctx context.Context, req *v1.ValidateKubeConfigRequest) (*emptypb.Empty, error) {
 	response, err := c.validateKubeConfig.CallUnary(ctx, connect.NewRequest(req))
 	if response != nil {
 		return response.Msg, err
@@ -80,7 +81,7 @@ func (c *kubernetesServiceClient) ValidateKubeConfig(ctx context.Context, req *v
 // KubernetesServiceHandler is an implementation of the otterscale.kubernetes.v1.KubernetesService
 // service.
 type KubernetesServiceHandler interface {
-	ValidateKubeConfig(context.Context, *v1.ValidateKubeConfigRequest) (*v1.ValidateKubeConfigResponse, error)
+	ValidateKubeConfig(context.Context, *v1.ValidateKubeConfigRequest) (*emptypb.Empty, error)
 }
 
 // NewKubernetesServiceHandler builds an HTTP handler from the service implementation. It returns
@@ -109,6 +110,6 @@ func NewKubernetesServiceHandler(svc KubernetesServiceHandler, opts ...connect.H
 // UnimplementedKubernetesServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedKubernetesServiceHandler struct{}
 
-func (UnimplementedKubernetesServiceHandler) ValidateKubeConfig(context.Context, *v1.ValidateKubeConfigRequest) (*v1.ValidateKubeConfigResponse, error) {
+func (UnimplementedKubernetesServiceHandler) ValidateKubeConfig(context.Context, *v1.ValidateKubeConfigRequest) (*emptypb.Empty, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.kubernetes.v1.KubernetesService.ValidateKubeConfig is not implemented"))
 }
