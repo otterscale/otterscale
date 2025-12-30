@@ -53,7 +53,7 @@
 	const machinesStore = writable<Machine[]>([]);
 	const scopesStore = writable<Scope[]>([]);
 
-	// Validation regex: only lowercase letters and hyphens, must start with a letter
+	// Validation regex
 	const SCOPE_NAME_REGEX = /^[a-z0-9][a-z0-9-]*$/;
 
 	// Form state
@@ -138,7 +138,7 @@
 
 			return '';
 		} catch (error) {
-			return 'Validation failed: ${(error as Error).message}';
+			return `Validation failed: ${(error as Error).message}`;
 		}
 	}
 
