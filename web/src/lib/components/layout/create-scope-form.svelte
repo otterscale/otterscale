@@ -54,7 +54,7 @@
 	const scopesStore = writable<Scope[]>([]);
 
 	// Validation regex
-	const SCOPE_NAME_REGEX = /^[a-z0-9][a-z0-9-]*$/;
+	const SCOPE_NAME_REGEX = /^[a-z0-9](?:[-a-z0-9]*[a-z0-9])?$/;
 
 	// Form state
 	let scopeCreationOption = $state('create_scope');
@@ -67,8 +67,8 @@
 	let virtualIp = $state('');
 	let kubeConfig = $state('');
 	let kubeConfigError = $state('');
-	let kubeConfigValid = $state(false);
 	let isSubmitting = $state(false);
+	let debounceTimer: ReturnType<typeof setTimeout>;
 
 	async function fetchMachines() {
 		try {
@@ -311,7 +311,6 @@
 		virtualIp = '';
 		kubeConfig = '';
 		kubeConfigError = '';
-		kubeConfigValid = false;
 		isSubmitting = false;
 	}
 
@@ -555,11 +554,11 @@
 						class="flex min-h-[120px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
 						placeholder="Paste your KubeConfig here..."
 						bind:value={kubeConfig}
-						oninput={async (e: Event) => {
-							const target = e.currentTarget as HTMLTextAreaElement;
-							kubeConfig = target.value;
-							const kubeConfigValidationError = await validateKubeConfig(target.value);
-							kubeConfigError = kubeConfigValidationError
+						oninput={() => {
+							clearTimeout(debounceTimer);
+							debounceTimer = setTimeout(async () => {
+								kubeConfigError = await validateKubeConfig(kubeConfig);
+							}, 500);
 						}}
 						required
 					></textarea>

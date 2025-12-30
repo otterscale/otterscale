@@ -263,7 +263,7 @@ func getInternalIP(node *cluster.Node) string {
 	return ""
 }
 
-func (m *Kubernetes) ValidateKubeConfig(kubeconfig string) error {
+func (m *Kubernetes) ValidateKubeConfig(ctx context.Context, kubeconfig string) error {
 	if kubeconfig == "" {
 		return fmt.Errorf("kubeconfig is empty")
 	}

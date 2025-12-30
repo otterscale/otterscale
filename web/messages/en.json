@@ -908,6 +908,5 @@
 	"validate_lower_alphanum_dash_dot": "Must consist of lower case alphanumeric characters, '-' or '.', and can start with '.'.",
 	"validate_max_length": "Must be at most {max} characters long.",
 	"jobs": "Jobs",
-	"active": "Active",
-	"kubeconfig_verification_passed": "KubeConfig Verification passed"
+	"active": "Active"
 }
