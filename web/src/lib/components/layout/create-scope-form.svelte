@@ -559,12 +559,12 @@
 							const target = e.currentTarget as HTMLTextAreaElement;
 							kubeConfig = target.value;
 							const kubeConfigValidationError = await validateKubeConfig(target.value);
-							kubeConfigError = kubeConfigValidationError;
+							kubeConfigError = kubeConfigValidationError
 						}}
 						required
 					></textarea>
 					{#if kubeConfigError}
-						<p class="mb-6 text-sm text-destructive">
+						<p class="text-sm text-destructive mb-6">
 							{kubeConfigError}
 						</p>
 					{/if}

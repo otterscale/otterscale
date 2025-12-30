@@ -23,7 +23,7 @@ func NewKubernetesService(kubernetes *kubernetes.Kubernetes) *KubernetesService 
 var _ pbconnect.KubernetesServiceHandler = (*KubernetesService)(nil)
 
 func (s *KubernetesService) ValidateKubeConfig(ctx context.Context, req *pb.ValidateKubeConfigRequest) (*pb.ValidateKubeConfigResponse, error) {
-	err := s.kubernetes.ValidateKubeConfig(ctx, req.GetKubeconfig())
+	err := s.kubernetes.ValidateKubeConfig(req.GetKubeconfig())
 	resp := &pb.ValidateKubeConfigResponse{}
 	if err != nil {
 		resp.SetMessage(err.Error())

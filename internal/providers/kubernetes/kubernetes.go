@@ -263,7 +263,7 @@ func getInternalIP(node *cluster.Node) string {
 	return ""
 }
 
-func (m *Kubernetes) ValidateKubeConfig(ctx context.Context, kubeconfig string) error {
+func (m *Kubernetes) ValidateKubeConfig(kubeconfig string) error {
 	if kubeconfig == "" {
 		return fmt.Errorf("kubeconfig is empty")
 	}
@@ -288,7 +288,7 @@ func (m *Kubernetes) ValidateKubeConfig(ctx context.Context, kubeconfig string) 
 		return err
 	}
 
-	_, err = clientset.CoreV1().Namespaces().List(ctx, metav1.ListOptions{Limit: 1})
+	_, err = clientset.ServerVersion()
 	if err != nil {
 		return err
 	}

@@ -148,6 +148,7 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	vncRepo := kubevirt.NewVNCRepo(kubeVirt)
 	vncUseCase := vnc.NewUseCase(vncRepo)
 	instanceService := app.NewInstanceService(cdiUseCase, vmUseCase, vmiUseCase, vncUseCase)
+	kubernetesService := app.NewKubernetesService(kubernetesKubernetes)
 	eventRepo := maas.NewEventRepo(maasMAAS)
 	machineManagerRepo := juju.NewMachineManagerRepo(jujuJuju)
 	nodeDeviceRepo := maas.NewNodeDeviceRepo(maasMAAS)
@@ -207,7 +208,7 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	sshKeyRepo := maas.NewSSHKeyRepo(maasMAAS)
 	scopeUseCase := scope.NewUseCase(scopeRepo, sshKeyRepo, packageRepositoryRepo)
 	scopeService := app.NewScopeService(scopeUseCase)
-	serve := mux.NewServe(applicationService, configurationService, environmentService, facilityService, instanceService, machineService, modelService, networkService, orchestratorService, registryService, resourceService, storageService, scopeService)
+	serve := mux.NewServe(applicationService, configurationService, environmentService, facilityService, instanceService, kubernetesService, machineService, modelService, networkService, orchestratorService, registryService, resourceService, storageService, scopeService)
 	command := newCmd(configConfig, muxBootstrap, serve)
 	return command, func() {
 	}, nil

@@ -178,9 +178,9 @@
 	"scope_selector_description": "請從以下選擇您的範圍：",
 	"scopes": "範圍",
 	"add_scope": "新增範圍",
-	"create_scope": "建立範圍",
-	"create_scope_description": "將使用者組織成具有特定權限的群組。資源在範圍之間是隔離的。",
-	"create_scope_prefix_name_description": "設施命名的前綴（若未提供，預設為範圍名稱）",
+	"select_method": "選擇方式",
+	"select_method_description": "將使用者組織成具有特定權限的群組。資源在範圍之間是隔離的。",
+	"select_method_prefix_name_description": "設施命名的前綴（若未提供，預設為範圍名稱）",
 	"prefix_name": "前綴名稱",
 	"new_scope": "新範圍",
 	"scope_name": "名稱",
@@ -222,6 +222,10 @@
 	"create_scope_calico_cidr_description": "Kubernetes Pod 通訊的網路範圍。",
 	"create_scope_virtual_ip": "虛擬 IP",
 	"create_scope_virtual_ip_description": "Kubernetes 控制平面的高可用性 IP。",
+	"import_scope_option_create": "新建立範圍",
+	"import_scope_option_add_from_rancher": "匯入 Rancher",
+	"import_scope_kubeconfig": "KubeConfig",
+	"import_scope_kubeconfig_description": "輸入 KubeConfig 內容",
 	"cluster_health": "叢集健康狀態",
 	"architecture": "架構",
 	"cpu": "CPU",
@@ -903,5 +907,6 @@
 	"validate_lower_alphanum_dash_dot": "必須由小寫字母、數字、'-' 或 '.' 組成，可以 '.' 開頭。",
 	"validate_max_length": "必須少於 {max} 個字元。",
 	"jobs": "Jobs",
-	"active": "Active"
+	"active": "Active",
+	"kubeconfig_verification_passed": "KubeConfig 驗證通過"
 }
