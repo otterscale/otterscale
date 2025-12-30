@@ -209,7 +209,7 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	scopeUseCase := scope.NewUseCase(scopeRepo, sshKeyRepo, packageRepositoryRepo)
 	scopeService := app.NewScopeService(scopeUseCase)
 	serve := mux.NewServe(applicationService, configurationService, environmentService, facilityService, instanceService, kubernetesService, machineService, modelService, networkService, orchestratorService, registryService, resourceService, storageService, scopeService)
-	command := newCmd(configConfig, muxBootstrap, jwksProxy, serve)
+	command := newCmd(configConfig, muxBootstrap, serve)
 	return command, func() {
 	}, nil
 }

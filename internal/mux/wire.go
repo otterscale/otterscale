@@ -6,4 +6,4 @@ import (
 	"github.com/otterscale/otterscale/internal/app"
 )
 
-var ProviderSet = wire.NewSet(NewBootstrap, NewJWKSProxy, NewServe, app.ProviderSet)
+var ProviderSet = wire.NewSet(NewBootstrap, NewServe, app.ProviderSet)
