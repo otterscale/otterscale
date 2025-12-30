@@ -1,0 +1,18 @@
+edition = "2023";
+
+package otterscale.kubernetes.v1;
+
+option go_package = "github.com/otterscale/otterscale/api/kubernetes/v1;pb";
+
+service KubernetesService {
+  rpc ValidateKubeConfig(ValidateKubeConfigRequest) returns (ValidateKubeConfigResponse);
+}
+
+message ValidateKubeConfigRequest {
+  string kubeconfig = 1;
+}
+
+message ValidateKubeConfigResponse {
+  bool validate = 1;
+  string message = 2;
+}
