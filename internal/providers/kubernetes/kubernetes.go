@@ -13,6 +13,8 @@ import (
 
 	"k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset"
 
+	"k8s.io/client-go/discovery"
+	"k8s.io/client-go/dynamic"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
@@ -21,6 +23,7 @@ import (
 	"github.com/otterscale/otterscale/internal/config"
 	"github.com/otterscale/otterscale/internal/core/application/cluster"
 	"github.com/otterscale/otterscale/internal/core/scope"
+	"github.com/otterscale/otterscale/internal/mux/impersonation"
 	"github.com/otterscale/otterscale/internal/providers/juju"
 )
 
@@ -53,6 +56,35 @@ func (m *Kubernetes) Config(scope string) (*rest.Config, error) {
 	m.configs.Store(scope, config)
 
 	return config, nil
+}
+
+func (m *Kubernetes) dynamic(ctx context.Context, cluster string) (*dynamic.DynamicClient, error) {
+	userSub, ok := impersonation.GetSubject(ctx)
+	if !ok {
+		return nil, fmt.Errorf("user sub not found in context")
+	}
+
+	config, err := m.Config(cluster)
+	if err != nil {
+		return nil, err
+	}
+
+	userConfig := rest.CopyConfig(config)
+
+	userConfig.Impersonate = rest.ImpersonationConfig{
+		UserName: userSub,
+	}
+
+	return dynamic.NewForConfig(userConfig)
+}
+
+func (m *Kubernetes) discovery(cluster string) (*discovery.DiscoveryClient, error) {
+	config, err := m.Config(cluster)
+	if err != nil {
+		return nil, err
+	}
+
+	return discovery.NewDiscoveryClientForConfig(config)
 }
 
 func (m *Kubernetes) InternalIP(ctx context.Context, scope string) (string, error) {

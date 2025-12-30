@@ -31,6 +31,7 @@ import (
 	"github.com/otterscale/otterscale/internal/core/orchestrator/standalone"
 	"github.com/otterscale/otterscale/internal/core/registry"
 	"github.com/otterscale/otterscale/internal/core/registry/chart"
+	"github.com/otterscale/otterscale/internal/core/resource"
 	"github.com/otterscale/otterscale/internal/core/scope"
 	"github.com/otterscale/otterscale/internal/core/storage"
 	"github.com/otterscale/otterscale/internal/core/storage/block"
@@ -64,6 +65,7 @@ var ProviderSet = wire.NewSet(
 	network.NewUseCase,
 	orchestrator.NewUseCase,
 	registry.NewUseCase,
+	resource.NewUseCase,
 	chart.NewUseCase,
 	extension.NewUseCase,
 	gpu.NewUseCase,

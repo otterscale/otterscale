@@ -42,6 +42,13 @@ flags:
       "off": false
     defaultVariant: "on"
 
+  resource-enabled:
+    state: ENABLED
+    variants:
+      "on": true
+      "off": false
+    defaultVariant: "on"
+
   debug:
     state: DISABLED
     variants:

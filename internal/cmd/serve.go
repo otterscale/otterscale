@@ -10,6 +10,7 @@ import (
 
 	"github.com/otterscale/otterscale/internal/config"
 	"github.com/otterscale/otterscale/internal/mux"
+	"github.com/otterscale/otterscale/internal/mux/impersonation"
 	"github.com/otterscale/otterscale/internal/mux/openfeature"
 )
 
@@ -33,7 +34,7 @@ func NewServe(conf *config.Config, serve *mux.Serve) *cobra.Command {
 				return err
 			}
 
-			opts, err := newServeOptions()
+			opts, err := newServeOptions(conf)
 			if err != nil {
 				return err
 			}
@@ -60,16 +61,23 @@ func NewServe(conf *config.Config, serve *mux.Serve) *cobra.Command {
 	return cmd
 }
 
-func newServeOptions() ([]connect.HandlerOption, error) {
+func newServeOptions(conf *config.Config) ([]connect.HandlerOption, error) {
 	openTelemetryInterceptor, err := otelconnect.NewInterceptor()
 	if err != nil {
 		return nil, err
 	}
+
 	openFeatureInterceptor, err := openfeature.NewInterceptor()
 	if err != nil {
 		return nil, err
 	}
+
+	impersonationInterceptor, err := impersonation.NewInterceptor(conf)
+	if err != nil {
+		return nil, err
+	}
+
 	return []connect.HandlerOption{
-		connect.WithInterceptors(openTelemetryInterceptor, openFeatureInterceptor),
+		connect.WithInterceptors(openTelemetryInterceptor, openFeatureInterceptor, impersonationInterceptor),
 	}, nil
 }

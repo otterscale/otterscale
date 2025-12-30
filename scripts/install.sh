@@ -1658,7 +1658,7 @@ keycloakx:
             "clients": [
               {
                 "enabled": true,
-                "clientId": "otterscale",
+                "clientId": "$keycloak_clientID",
                 "clientAuthenticatorType": "client-secret",
                 "secret": "$keycloak_secret_token",
                 "protocol": "openid-connect",
@@ -1677,7 +1677,22 @@ keycloakx:
                 "attributes": {
                   "frontchannel.logout.session.required": "true",
                   "pkce.code.challenge.method": "S256"
-                }
+                },
+                "protocolMappers": [
+                  {
+                    "name": "audience-mapper",
+                    "protocol": "openid-connect",
+                    "protocolMapper": "oidc-audience-mapper",
+                    "consentRequired": false,
+                    "config": {
+                      "included.client.audience": "$keycloak_clientID",
+                      "id.token.claim": "false",
+                      "lightweight.claim": "false",
+                      "access.token.claim": "true",
+                      "introspection.token.claim": "true"
+                    }
+                  }
+                ]
               }
             ]
           }
@@ -1730,6 +1745,9 @@ $(echo "$juju_cacert" | sed 's/^/      /')
     cloud_region: default
   ceph:
     rados_timeout: 0s
+  keycloak:
+    realm_url: http://$OTTERSCALE_WEB_IP/auth/realms/$keycloak_realm
+    client_id: $keycloak_clientID
 EOF
 }
 
