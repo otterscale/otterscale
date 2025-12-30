@@ -37,6 +37,8 @@ const (
 	// ResourceServiceDiscoveryProcedure is the fully-qualified name of the ResourceService's Discovery
 	// RPC.
 	ResourceServiceDiscoveryProcedure = "/otterscale.resource.v1.ResourceService/Discovery"
+	// ResourceServiceSchemaProcedure is the fully-qualified name of the ResourceService's Schema RPC.
+	ResourceServiceSchemaProcedure = "/otterscale.resource.v1.ResourceService/Schema"
 	// ResourceServiceListProcedure is the fully-qualified name of the ResourceService's List RPC.
 	ResourceServiceListProcedure = "/otterscale.resource.v1.ResourceService/List"
 	// ResourceServiceGetProcedure is the fully-qualified name of the ResourceService's Get RPC.
@@ -55,6 +57,9 @@ const (
 type ResourceServiceClient interface {
 	// Discovery retrieves the available API resources in the specified cluster.
 	Discovery(context.Context, *v1.DiscoveryRequest) (*v1.DiscoveryResponse, error)
+	// Schema retrieves the structural definition (JSON Schema) for a specific resource type.
+	// It supports both native Kubernetes resources and installed CRDs.
+	Schema(context.Context, *v1.SchemaRequest) (*v1.SchemaResponse, error)
 	// List retrieves a collection of resources based on the provided GVR and filters.
 	List(context.Context, *v1.ListRequest) (*v1.ListResponse, error)
 	// Get retrieves a single resource by its name within a namespace.
@@ -85,6 +90,12 @@ func NewResourceServiceClient(httpClient connect.HTTPClient, baseURL string, opt
 			httpClient,
 			baseURL+ResourceServiceDiscoveryProcedure,
 			connect.WithSchema(resourceServiceMethods.ByName("Discovery")),
+			connect.WithClientOptions(opts...),
+		),
+		schema: connect.NewClient[v1.SchemaRequest, v1.SchemaResponse](
+			httpClient,
+			baseURL+ResourceServiceSchemaProcedure,
+			connect.WithSchema(resourceServiceMethods.ByName("Schema")),
 			connect.WithClientOptions(opts...),
 		),
 		list: connect.NewClient[v1.ListRequest, v1.ListResponse](
@@ -129,6 +140,7 @@ func NewResourceServiceClient(httpClient connect.HTTPClient, baseURL string, opt
 // resourceServiceClient implements ResourceServiceClient.
 type resourceServiceClient struct {
 	discovery *connect.Client[v1.DiscoveryRequest, v1.DiscoveryResponse]
+	schema    *connect.Client[v1.SchemaRequest, v1.SchemaResponse]
 	list      *connect.Client[v1.ListRequest, v1.ListResponse]
 	get       *connect.Client[v1.GetRequest, v1.Resource]
 	create    *connect.Client[v1.CreateRequest, v1.Resource]
@@ -140,6 +152,15 @@ type resourceServiceClient struct {
 // Discovery calls otterscale.resource.v1.ResourceService.Discovery.
 func (c *resourceServiceClient) Discovery(ctx context.Context, req *v1.DiscoveryRequest) (*v1.DiscoveryResponse, error) {
 	response, err := c.discovery.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
+}
+
+// Schema calls otterscale.resource.v1.ResourceService.Schema.
+func (c *resourceServiceClient) Schema(ctx context.Context, req *v1.SchemaRequest) (*v1.SchemaResponse, error) {
+	response, err := c.schema.CallUnary(ctx, connect.NewRequest(req))
 	if response != nil {
 		return response.Msg, err
 	}
@@ -201,6 +222,9 @@ func (c *resourceServiceClient) Watch(ctx context.Context, req *v1.WatchRequest)
 type ResourceServiceHandler interface {
 	// Discovery retrieves the available API resources in the specified cluster.
 	Discovery(context.Context, *v1.DiscoveryRequest) (*v1.DiscoveryResponse, error)
+	// Schema retrieves the structural definition (JSON Schema) for a specific resource type.
+	// It supports both native Kubernetes resources and installed CRDs.
+	Schema(context.Context, *v1.SchemaRequest) (*v1.SchemaResponse, error)
 	// List retrieves a collection of resources based on the provided GVR and filters.
 	List(context.Context, *v1.ListRequest) (*v1.ListResponse, error)
 	// Get retrieves a single resource by its name within a namespace.
@@ -227,6 +251,12 @@ func NewResourceServiceHandler(svc ResourceServiceHandler, opts ...connect.Handl
 		ResourceServiceDiscoveryProcedure,
 		svc.Discovery,
 		connect.WithSchema(resourceServiceMethods.ByName("Discovery")),
+		connect.WithHandlerOptions(opts...),
+	)
+	resourceServiceSchemaHandler := connect.NewUnaryHandlerSimple(
+		ResourceServiceSchemaProcedure,
+		svc.Schema,
+		connect.WithSchema(resourceServiceMethods.ByName("Schema")),
 		connect.WithHandlerOptions(opts...),
 	)
 	resourceServiceListHandler := connect.NewUnaryHandlerSimple(
@@ -269,6 +299,8 @@ func NewResourceServiceHandler(svc ResourceServiceHandler, opts ...connect.Handl
 		switch r.URL.Path {
 		case ResourceServiceDiscoveryProcedure:
 			resourceServiceDiscoveryHandler.ServeHTTP(w, r)
+		case ResourceServiceSchemaProcedure:
+			resourceServiceSchemaHandler.ServeHTTP(w, r)
 		case ResourceServiceListProcedure:
 			resourceServiceListHandler.ServeHTTP(w, r)
 		case ResourceServiceGetProcedure:
@@ -292,6 +324,10 @@ type UnimplementedResourceServiceHandler struct{}
 
 func (UnimplementedResourceServiceHandler) Discovery(context.Context, *v1.DiscoveryRequest) (*v1.DiscoveryResponse, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.resource.v1.ResourceService.Discovery is not implemented"))
+}
+
+func (UnimplementedResourceServiceHandler) Schema(context.Context, *v1.SchemaRequest) (*v1.SchemaResponse, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.resource.v1.ResourceService.Schema is not implemented"))
 }
 
 func (UnimplementedResourceServiceHandler) List(context.Context, *v1.ListRequest) (*v1.ListResponse, error) {

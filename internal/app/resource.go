@@ -2,9 +2,11 @@ package app
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 
 	"connectrpc.com/connect"
+	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/structpb"
 	"k8s.io/apimachinery/pkg/api/meta"
@@ -12,6 +14,7 @@ import (
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/watch"
+	"k8s.io/kube-openapi/pkg/validation/spec"
 
 	pb "github.com/otterscale/otterscale/api/resource/v1"
 	"github.com/otterscale/otterscale/api/resource/v1/pbconnect"
@@ -45,6 +48,23 @@ func (s *ResourceService) Discovery(_ context.Context, req *pb.DiscoveryRequest)
 
 	resp := &pb.DiscoveryResponse{}
 	resp.SetApiResources(pbAPIResources)
+	return resp, nil
+}
+
+func (s *ResourceService) Schema(_ context.Context, req *pb.SchemaRequest) (*pb.SchemaResponse, error) {
+	schema, err := s.resource.GetSchema(req.GetCluster(), req.GetGroup(), req.GetVersion(), req.GetKind())
+	if err != nil {
+		return nil, err
+	}
+
+	jsonSchema, err := s.toProtoStructFromJSONSchema(schema.JSONSchema)
+	if err != nil {
+		return nil, err
+	}
+
+	resp := &pb.SchemaResponse{}
+	resp.SetJsonSchema(jsonSchema)
+	// resp.SetUiSchema(uiSchema)
 	return resp, nil
 }
 
@@ -224,6 +244,20 @@ func (s *ResourceService) toProtoAPIResource(gv schema.GroupVersion, r *metav1.A
 	ret.SetVerbs(r.Verbs)
 	ret.SetShortNames(r.ShortNames)
 	return ret
+}
+
+func (s *ResourceService) toProtoStructFromJSONSchema(js *spec.Schema) (*structpb.Struct, error) {
+	jsBytes, err := json.Marshal(js)
+	if err != nil {
+		return nil, err
+	}
+
+	ret := &structpb.Struct{}
+	if err := protojson.Unmarshal(jsBytes, ret); err != nil {
+		return nil, err
+	}
+
+	return ret, nil
 }
 
 func (s *ResourceService) toProtoResources(list []unstructured.Unstructured) ([]*pb.Resource, error) {

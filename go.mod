@@ -53,8 +53,10 @@ require (
 	k8s.io/api v0.34.3
 	k8s.io/apiextensions-apiserver v0.34.3
 	k8s.io/apimachinery v0.34.3
+	k8s.io/apiserver v0.34.3
 	k8s.io/cli-runtime v0.34.3
 	k8s.io/client-go v0.34.3
+	k8s.io/kube-openapi v0.0.0-20250814151709-d7b6acb124c3
 	k8s.io/kubectl v0.34.3
 	kubevirt.io/api v1.6.3
 	kubevirt.io/containerized-data-importer-api v1.63.1
@@ -279,10 +281,8 @@ require (
 	gopkg.in/tomb.v1 v1.0.0-20141024135613-dd632973f1e7 // indirect
 	gopkg.in/tomb.v2 v2.0.0-20161208151619-d5d1b5820637 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
-	k8s.io/apiserver v0.34.3 // indirect
 	k8s.io/component-base v0.34.3 // indirect
 	k8s.io/klog/v2 v2.130.1 // indirect
-	k8s.io/kube-openapi v0.0.0-20250814151709-d7b6acb124c3 // indirect
 	k8s.io/utils v0.0.0-20251002143259-bc988d571ff4 // indirect
 	kubevirt.io/controller-lifecycle-operator-sdk/api v0.0.0-20220329064328-f3cc58c6ed90 // indirect
 	sigs.k8s.io/json v0.0.0-20250730193827-2d320260d730 // indirect
