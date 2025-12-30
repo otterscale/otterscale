@@ -3,6 +3,8 @@ package resource
 import (
 	"context"
 	"fmt"
+	"strings"
+	"sync"
 
 	"connectrpc.com/connect"
 	"github.com/Masterminds/semver/v3"
@@ -10,7 +12,13 @@ import (
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime/serializer/yaml"
 	"k8s.io/apimachinery/pkg/watch"
+	"k8s.io/kube-openapi/pkg/validation/spec"
 )
+
+type Schema struct {
+	JSONSchema *spec.Schema
+	UISchema   map[string]any
+}
 
 //nolint:revive // allows this exported struct name.
 type ResourceRepo interface {
@@ -25,6 +33,8 @@ type ResourceRepo interface {
 type UseCase struct {
 	discovery DiscoveryRepo
 	resource  ResourceRepo
+
+	schemaCache sync.Map
 }
 
 func NewUseCase(discovery DiscoveryRepo, resource ResourceRepo) *UseCase {
@@ -40,6 +50,28 @@ func (uc *UseCase) Validate(cluster, group, version, resource string) (ClusterGr
 
 func (uc *UseCase) ListAPIResources(cluster string) ([]*metav1.APIResourceList, error) {
 	return uc.discovery.List(cluster)
+}
+
+func (uc *UseCase) GetSchema(cluster, group, version, kind string) (*Schema, error) {
+	key := uc.schemaCacheKey(cluster, group, version, kind)
+
+	if v, ok := uc.schemaCache.Load(key); ok {
+		return v.(*Schema), nil
+	}
+
+	jsonSchema, err := uc.discovery.Schema(cluster, group, version, kind)
+	if err != nil {
+		return nil, err
+	}
+
+	schema := &Schema{
+		JSONSchema: jsonSchema,
+		// todo: ui schema
+	}
+
+	uc.schemaCache.Store(key, schema)
+
+	return schema, nil
 }
 
 func (uc *UseCase) ListResources(ctx context.Context, cgvr ClusterGroupVersionResource, namespace, labelSelector, fieldSelector string, limit int64, continueToken string) (*unstructured.UnstructuredList, error) {
@@ -142,4 +174,8 @@ func (uc *UseCase) watchListFeature(cluster string) (bool, error) {
 	}
 
 	return kubeVersion.GreaterThanEqual(watchListVersion), nil
+}
+
+func (uc *UseCase) schemaCacheKey(cluster, group, version, kind string) string {
+	return strings.Join([]string{cluster, group, version, kind}, "/")
 }

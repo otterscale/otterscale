@@ -13,7 +13,7 @@ import type { JsonObject, Message } from "@bufbuild/protobuf";
  * Describes the file api/resource/v1/resource.proto.
  */
 export const file_api_resource_v1_resource: GenFile = /*@__PURE__*/
-  fileDesc("Ch5hcGkvcmVzb3VyY2UvdjEvcmVzb3VyY2UucHJvdG8SFm90dGVyc2NhbGUucmVzb3VyY2UudjEihQEKC0FQSVJlc291cmNlEg0KBWdyb3VwGAEgASgJEg8KB3ZlcnNpb24YAiABKAkSEAoIcmVzb3VyY2UYAyABKAkSDAoEa2luZBgEIAEoCRISCgpuYW1lc3BhY2VkGAUgASgIEg0KBXZlcmJzGAYgAygJEhMKC3Nob3J0X25hbWVzGAcgAygJIiMKEERpc2NvdmVyeVJlcXVlc3QSDwoHY2x1c3RlchgBIAEoCSJPChFEaXNjb3ZlcnlSZXNwb25zZRI6Cg1hcGlfcmVzb3VyY2VzGAEgAygLMiMub3R0ZXJzY2FsZS5yZXNvdXJjZS52MS5BUElSZXNvdXJjZSIzCghSZXNvdXJjZRInCgZvYmplY3QYASABKAsyFy5nb29nbGUucHJvdG9idWYuU3RydWN0IrQBCgtMaXN0UmVxdWVzdBIPCgdjbHVzdGVyGAEgASgJEg0KBWdyb3VwGAIgASgJEg8KB3ZlcnNpb24YAyABKAkSEAoIcmVzb3VyY2UYBCABKAkSEQoJbmFtZXNwYWNlGAUgASgJEhYKDmxhYmVsX3NlbGVjdG9yGAYgASgJEhYKDmZpZWxkX3NlbGVjdG9yGAcgASgJEg0KBWxpbWl0GAggASgDEhAKCGNvbnRpbnVlGAkgASgJIokBCgxMaXN0UmVzcG9uc2USGAoQcmVzb3VyY2VfdmVyc2lvbhgBIAEoCRIQCghjb250aW51ZRgCIAEoCRIcChRyZW1haW5pbmdfaXRlbV9jb3VudBgDIAEoAxIvCgVpdGVtcxgEIAMoCzIgLm90dGVyc2NhbGUucmVzb3VyY2UudjEuUmVzb3VyY2UicAoKR2V0UmVxdWVzdBIPCgdjbHVzdGVyGAEgASgJEg0KBWdyb3VwGAIgASgJEg8KB3ZlcnNpb24YAyABKAkSEAoIcmVzb3VyY2UYBCABKAkSEQoJbmFtZXNwYWNlGAUgASgJEgwKBG5hbWUYBiABKAkidwoNQ3JlYXRlUmVxdWVzdBIPCgdjbHVzdGVyGAEgASgJEg0KBWdyb3VwGAIgASgJEg8KB3ZlcnNpb24YAyABKAkSEAoIcmVzb3VyY2UYBCABKAkSEQoJbmFtZXNwYWNlGAUgASgJEhAKCG1hbmlmZXN0GAYgASgMIqoBCgxBcHBseVJlcXVlc3QSDwoHY2x1c3RlchgBIAEoCRINCgVncm91cBgCIAEoCRIPCgd2ZXJzaW9uGAMgASgJEhAKCHJlc291cmNlGAQgASgJEhEKCW5hbWVzcGFjZRgFIAEoCRIMCgRuYW1lGAYgASgJEhAKCG1hbmlmZXN0GAcgASgMEg0KBWZvcmNlGAggASgIEhUKDWZpZWxkX21hbmFnZXIYCSABKAkikQEKDURlbGV0ZVJlcXVlc3QSDwoHY2x1c3RlchgBIAEoCRINCgVncm91cBgCIAEoCRIPCgd2ZXJzaW9uGAMgASgJEhAKCHJlc291cmNlGAQgASgJEhEKCW5hbWVzcGFjZRgFIAEoCRIMCgRuYW1lGAYgASgJEhwKFGdyYWNlX3BlcmlvZF9zZWNvbmRzGAcgASgDIq4BCgxXYXRjaFJlcXVlc3QSDwoHY2x1c3RlchgBIAEoCRINCgVncm91cBgCIAEoCRIPCgd2ZXJzaW9uGAMgASgJEhAKCHJlc291cmNlGAQgASgJEhEKCW5hbWVzcGFjZRgFIAEoCRIWCg5sYWJlbF9zZWxlY3RvchgGIAEoCRIWCg5maWVsZF9zZWxlY3RvchgHIAEoCRIYChByZXNvdXJjZV92ZXJzaW9uGAggASgJIocCCgpXYXRjaEV2ZW50EjUKBHR5cGUYASABKA4yJy5vdHRlcnNjYWxlLnJlc291cmNlLnYxLldhdGNoRXZlbnQuVHlwZRIyCghyZXNvdXJjZRgCIAEoCzIgLm90dGVyc2NhbGUucmVzb3VyY2UudjEuUmVzb3VyY2USGAoQcmVzb3VyY2VfdmVyc2lvbhgDIAEoCSJ0CgRUeXBlEhQKEFRZUEVfVU5TUEVDSUZJRUQQABIOCgpUWVBFX0FEREVEEAESEQoNVFlQRV9NT0RJRklFRBACEhAKDFRZUEVfREVMRVRFRBADEhEKDVRZUEVfQk9PS01BUksQBBIOCgpUWVBFX0VSUk9SEAUyhAYKD1Jlc291cmNlU2VydmljZRJ5CglEaXNjb3ZlcnkSKC5vdHRlcnNjYWxlLnJlc291cmNlLnYxLkRpc2NvdmVyeVJlcXVlc3QaKS5vdHRlcnNjYWxlLnJlc291cmNlLnYxLkRpc2NvdmVyeVJlc3BvbnNlIheK39UdEgoQcmVzb3VyY2UtZW5hYmxlZBJqCgRMaXN0EiMub3R0ZXJzY2FsZS5yZXNvdXJjZS52MS5MaXN0UmVxdWVzdBokLm90dGVyc2NhbGUucmVzb3VyY2UudjEuTGlzdFJlc3BvbnNlIheK39UdEgoQcmVzb3VyY2UtZW5hYmxlZBJkCgNHZXQSIi5vdHRlcnNjYWxlLnJlc291cmNlLnYxLkdldFJlcXVlc3QaIC5vdHRlcnNjYWxlLnJlc291cmNlLnYxLlJlc291cmNlIheK39UdEgoQcmVzb3VyY2UtZW5hYmxlZBJqCgZDcmVhdGUSJS5vdHRlcnNjYWxlLnJlc291cmNlLnYxLkNyZWF0ZVJlcXVlc3QaIC5vdHRlcnNjYWxlLnJlc291cmNlLnYxLlJlc291cmNlIheK39UdEgoQcmVzb3VyY2UtZW5hYmxlZBJoCgVBcHBseRIkLm90dGVyc2NhbGUucmVzb3VyY2UudjEuQXBwbHlSZXF1ZXN0GiAub3R0ZXJzY2FsZS5yZXNvdXJjZS52MS5SZXNvdXJjZSIXit/VHRIKEHJlc291cmNlLWVuYWJsZWQSYAoGRGVsZXRlEiUub3R0ZXJzY2FsZS5yZXNvdXJjZS52MS5EZWxldGVSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5IheK39UdEgoQcmVzb3VyY2UtZW5hYmxlZBJsCgVXYXRjaBIkLm90dGVyc2NhbGUucmVzb3VyY2UudjEuV2F0Y2hSZXF1ZXN0GiIub3R0ZXJzY2FsZS5yZXNvdXJjZS52MS5XYXRjaEV2ZW50IheK39UdEgoQcmVzb3VyY2UtZW5hYmxlZDABQjVaM2dpdGh1Yi5jb20vb3R0ZXJzY2FsZS9vdHRlcnNjYWxlL2FwaS9yZXNvdXJjZS92MTtwYmIIZWRpdGlvbnNw6Ac", [file_api_annotations, file_google_protobuf_empty, file_google_protobuf_struct]);
+  fileDesc("Ch5hcGkvcmVzb3VyY2UvdjEvcmVzb3VyY2UucHJvdG8SFm90dGVyc2NhbGUucmVzb3VyY2UudjEihQEKC0FQSVJlc291cmNlEg0KBWdyb3VwGAEgASgJEg8KB3ZlcnNpb24YAiABKAkSEAoIcmVzb3VyY2UYAyABKAkSDAoEa2luZBgEIAEoCRISCgpuYW1lc3BhY2VkGAUgASgIEg0KBXZlcmJzGAYgAygJEhMKC3Nob3J0X25hbWVzGAcgAygJIiMKEERpc2NvdmVyeVJlcXVlc3QSDwoHY2x1c3RlchgBIAEoCSJPChFEaXNjb3ZlcnlSZXNwb25zZRI6Cg1hcGlfcmVzb3VyY2VzGAEgAygLMiMub3R0ZXJzY2FsZS5yZXNvdXJjZS52MS5BUElSZXNvdXJjZSJOCg1TY2hlbWFSZXF1ZXN0Eg8KB2NsdXN0ZXIYASABKAkSDQoFZ3JvdXAYAiABKAkSDwoHdmVyc2lvbhgDIAEoCRIMCgRraW5kGAQgASgJImoKDlNjaGVtYVJlc3BvbnNlEiwKC2pzb25fc2NoZW1hGAEgASgLMhcuZ29vZ2xlLnByb3RvYnVmLlN0cnVjdBIqCgl1aV9zY2hlbWEYAiABKAsyFy5nb29nbGUucHJvdG9idWYuU3RydWN0IjMKCFJlc291cmNlEicKBm9iamVjdBgBIAEoCzIXLmdvb2dsZS5wcm90b2J1Zi5TdHJ1Y3QitAEKC0xpc3RSZXF1ZXN0Eg8KB2NsdXN0ZXIYASABKAkSDQoFZ3JvdXAYAiABKAkSDwoHdmVyc2lvbhgDIAEoCRIQCghyZXNvdXJjZRgEIAEoCRIRCgluYW1lc3BhY2UYBSABKAkSFgoObGFiZWxfc2VsZWN0b3IYBiABKAkSFgoOZmllbGRfc2VsZWN0b3IYByABKAkSDQoFbGltaXQYCCABKAMSEAoIY29udGludWUYCSABKAkiiQEKDExpc3RSZXNwb25zZRIYChByZXNvdXJjZV92ZXJzaW9uGAEgASgJEhAKCGNvbnRpbnVlGAIgASgJEhwKFHJlbWFpbmluZ19pdGVtX2NvdW50GAMgASgDEi8KBWl0ZW1zGAQgAygLMiAub3R0ZXJzY2FsZS5yZXNvdXJjZS52MS5SZXNvdXJjZSJwCgpHZXRSZXF1ZXN0Eg8KB2NsdXN0ZXIYASABKAkSDQoFZ3JvdXAYAiABKAkSDwoHdmVyc2lvbhgDIAEoCRIQCghyZXNvdXJjZRgEIAEoCRIRCgluYW1lc3BhY2UYBSABKAkSDAoEbmFtZRgGIAEoCSJ3Cg1DcmVhdGVSZXF1ZXN0Eg8KB2NsdXN0ZXIYASABKAkSDQoFZ3JvdXAYAiABKAkSDwoHdmVyc2lvbhgDIAEoCRIQCghyZXNvdXJjZRgEIAEoCRIRCgluYW1lc3BhY2UYBSABKAkSEAoIbWFuaWZlc3QYBiABKAwiqgEKDEFwcGx5UmVxdWVzdBIPCgdjbHVzdGVyGAEgASgJEg0KBWdyb3VwGAIgASgJEg8KB3ZlcnNpb24YAyABKAkSEAoIcmVzb3VyY2UYBCABKAkSEQoJbmFtZXNwYWNlGAUgASgJEgwKBG5hbWUYBiABKAkSEAoIbWFuaWZlc3QYByABKAwSDQoFZm9yY2UYCCABKAgSFQoNZmllbGRfbWFuYWdlchgJIAEoCSKRAQoNRGVsZXRlUmVxdWVzdBIPCgdjbHVzdGVyGAEgASgJEg0KBWdyb3VwGAIgASgJEg8KB3ZlcnNpb24YAyABKAkSEAoIcmVzb3VyY2UYBCABKAkSEQoJbmFtZXNwYWNlGAUgASgJEgwKBG5hbWUYBiABKAkSHAoUZ3JhY2VfcGVyaW9kX3NlY29uZHMYByABKAMirgEKDFdhdGNoUmVxdWVzdBIPCgdjbHVzdGVyGAEgASgJEg0KBWdyb3VwGAIgASgJEg8KB3ZlcnNpb24YAyABKAkSEAoIcmVzb3VyY2UYBCABKAkSEQoJbmFtZXNwYWNlGAUgASgJEhYKDmxhYmVsX3NlbGVjdG9yGAYgASgJEhYKDmZpZWxkX3NlbGVjdG9yGAcgASgJEhgKEHJlc291cmNlX3ZlcnNpb24YCCABKAkihwIKCldhdGNoRXZlbnQSNQoEdHlwZRgBIAEoDjInLm90dGVyc2NhbGUucmVzb3VyY2UudjEuV2F0Y2hFdmVudC5UeXBlEjIKCHJlc291cmNlGAIgASgLMiAub3R0ZXJzY2FsZS5yZXNvdXJjZS52MS5SZXNvdXJjZRIYChByZXNvdXJjZV92ZXJzaW9uGAMgASgJInQKBFR5cGUSFAoQVFlQRV9VTlNQRUNJRklFRBAAEg4KClRZUEVfQURERUQQARIRCg1UWVBFX01PRElGSUVEEAISEAoMVFlQRV9ERUxFVEVEEAMSEQoNVFlQRV9CT09LTUFSSxAEEg4KClRZUEVfRVJST1IQBTL2BgoPUmVzb3VyY2VTZXJ2aWNlEnkKCURpc2NvdmVyeRIoLm90dGVyc2NhbGUucmVzb3VyY2UudjEuRGlzY292ZXJ5UmVxdWVzdBopLm90dGVyc2NhbGUucmVzb3VyY2UudjEuRGlzY292ZXJ5UmVzcG9uc2UiF4rf1R0SChByZXNvdXJjZS1lbmFibGVkEnAKBlNjaGVtYRIlLm90dGVyc2NhbGUucmVzb3VyY2UudjEuU2NoZW1hUmVxdWVzdBomLm90dGVyc2NhbGUucmVzb3VyY2UudjEuU2NoZW1hUmVzcG9uc2UiF4rf1R0SChByZXNvdXJjZS1lbmFibGVkEmoKBExpc3QSIy5vdHRlcnNjYWxlLnJlc291cmNlLnYxLkxpc3RSZXF1ZXN0GiQub3R0ZXJzY2FsZS5yZXNvdXJjZS52MS5MaXN0UmVzcG9uc2UiF4rf1R0SChByZXNvdXJjZS1lbmFibGVkEmQKA0dldBIiLm90dGVyc2NhbGUucmVzb3VyY2UudjEuR2V0UmVxdWVzdBogLm90dGVyc2NhbGUucmVzb3VyY2UudjEuUmVzb3VyY2UiF4rf1R0SChByZXNvdXJjZS1lbmFibGVkEmoKBkNyZWF0ZRIlLm90dGVyc2NhbGUucmVzb3VyY2UudjEuQ3JlYXRlUmVxdWVzdBogLm90dGVyc2NhbGUucmVzb3VyY2UudjEuUmVzb3VyY2UiF4rf1R0SChByZXNvdXJjZS1lbmFibGVkEmgKBUFwcGx5EiQub3R0ZXJzY2FsZS5yZXNvdXJjZS52MS5BcHBseVJlcXVlc3QaIC5vdHRlcnNjYWxlLnJlc291cmNlLnYxLlJlc291cmNlIheK39UdEgoQcmVzb3VyY2UtZW5hYmxlZBJgCgZEZWxldGUSJS5vdHRlcnNjYWxlLnJlc291cmNlLnYxLkRlbGV0ZVJlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkiF4rf1R0SChByZXNvdXJjZS1lbmFibGVkEmwKBVdhdGNoEiQub3R0ZXJzY2FsZS5yZXNvdXJjZS52MS5XYXRjaFJlcXVlc3QaIi5vdHRlcnNjYWxlLnJlc291cmNlLnYxLldhdGNoRXZlbnQiF4rf1R0SChByZXNvdXJjZS1lbmFibGVkMAFCNVozZ2l0aHViLmNvbS9vdHRlcnNjYWxlL290dGVyc2NhbGUvYXBpL3Jlc291cmNlL3YxO3BiYghlZGl0aW9uc3DoBw", [file_api_annotations, file_google_protobuf_empty, file_google_protobuf_struct]);
 
 /**
  * APIResource represents a Kubernetes API resource with its metadata.
@@ -107,6 +107,79 @@ export const DiscoveryResponseSchema: GenMessage<DiscoveryResponse> = /*@__PURE_
   messageDesc(file_api_resource_v1_resource, 2);
 
 /**
+ * SchemaRequest defines the parameters to retrieve the schema of a specific GVR.
+ *
+ * @generated from message otterscale.resource.v1.SchemaRequest
+ */
+export type SchemaRequest = Message<"otterscale.resource.v1.SchemaRequest"> & {
+  /**
+   * The target Kubernetes cluster identifier.
+   *
+   * @generated from field: string cluster = 1;
+   */
+  cluster: string;
+
+  /**
+   * Kubernetes API Group (e.g., "apps" for Deployments, "" for core resources like Pods).
+   *
+   * @generated from field: string group = 2;
+   */
+  group: string;
+
+  /**
+   * Kubernetes API Version (e.g., "v1").
+   *
+   * @generated from field: string version = 3;
+   */
+  version: string;
+
+  /**
+   * Kubernetes API Kind (e,g, "Pod").
+   *
+   * @generated from field: string kind = 4;
+   */
+  kind: string;
+};
+
+/**
+ * Describes the message otterscale.resource.v1.SchemaRequest.
+ * Use `create(SchemaRequestSchema)` to create a new message.
+ */
+export const SchemaRequestSchema: GenMessage<SchemaRequest> = /*@__PURE__*/
+  messageDesc(file_api_resource_v1_resource, 3);
+
+/**
+ * SchemaResponse contains the structural definition and optional UI hints for a resource.
+ *
+ * @generated from message otterscale.resource.v1.SchemaResponse
+ */
+export type SchemaResponse = Message<"otterscale.resource.v1.SchemaResponse"> & {
+  /**
+   * The raw JSON Schema (Draft 4/7 or 2020-12) describing the resource structure.
+   * This is typically derived from Kubernetes OpenAPIV3Schema.
+   *
+   * @generated from field: google.protobuf.Struct json_schema = 1;
+   */
+  jsonSchema?: JsonObject;
+
+  /**
+   * Optional UI Schema provides hints for rendering forms in the frontend.
+   * It can be used to define widget types, field order, or visibility rules
+   * that are not part of the standard JSON Schema.
+   *
+   * @generated from field: google.protobuf.Struct ui_schema = 2;
+   */
+  uiSchema?: JsonObject;
+};
+
+/**
+ * Describes the message otterscale.resource.v1.SchemaResponse.
+ * Use `create(SchemaResponseSchema)` to create a new message.
+ */
+export const SchemaResponseSchema: GenMessage<SchemaResponse> = /*@__PURE__*/
+  messageDesc(file_api_resource_v1_resource, 4);
+
+/**
  * Resource represents a single Kubernetes object serialized as a JSON string.
  *
  * @generated from message otterscale.resource.v1.Resource
@@ -126,7 +199,7 @@ export type Resource = Message<"otterscale.resource.v1.Resource"> & {
  * Use `create(ResourceSchema)` to create a new message.
  */
 export const ResourceSchema: GenMessage<Resource> = /*@__PURE__*/
-  messageDesc(file_api_resource_v1_resource, 3);
+  messageDesc(file_api_resource_v1_resource, 5);
 
 /**
  * ListRequest defines the parameters for querying multiple resources.
@@ -203,7 +276,7 @@ export type ListRequest = Message<"otterscale.resource.v1.ListRequest"> & {
  * Use `create(ListRequestSchema)` to create a new message.
  */
 export const ListRequestSchema: GenMessage<ListRequest> = /*@__PURE__*/
-  messageDesc(file_api_resource_v1_resource, 4);
+  messageDesc(file_api_resource_v1_resource, 6);
 
 /**
  * ListResponse contains the requested list of resources and pagination metadata.
@@ -245,7 +318,7 @@ export type ListResponse = Message<"otterscale.resource.v1.ListResponse"> & {
  * Use `create(ListResponseSchema)` to create a new message.
  */
 export const ListResponseSchema: GenMessage<ListResponse> = /*@__PURE__*/
-  messageDesc(file_api_resource_v1_resource, 5);
+  messageDesc(file_api_resource_v1_resource, 7);
 
 /**
  * GetRequest defines the parameters to fetch a single object.
@@ -289,7 +362,7 @@ export type GetRequest = Message<"otterscale.resource.v1.GetRequest"> & {
  * Use `create(GetRequestSchema)` to create a new message.
  */
 export const GetRequestSchema: GenMessage<GetRequest> = /*@__PURE__*/
-  messageDesc(file_api_resource_v1_resource, 6);
+  messageDesc(file_api_resource_v1_resource, 8);
 
 /**
  * CreateRequest defines the parameters for creating a new object.
@@ -335,7 +408,7 @@ export type CreateRequest = Message<"otterscale.resource.v1.CreateRequest"> & {
  * Use `create(CreateRequestSchema)` to create a new message.
  */
 export const CreateRequestSchema: GenMessage<CreateRequest> = /*@__PURE__*/
-  messageDesc(file_api_resource_v1_resource, 7);
+  messageDesc(file_api_resource_v1_resource, 9);
 
 /**
  * ApplyRequest defines the parameters for Server-Side Apply (SSA).
@@ -398,7 +471,7 @@ export type ApplyRequest = Message<"otterscale.resource.v1.ApplyRequest"> & {
  * Use `create(ApplyRequestSchema)` to create a new message.
  */
 export const ApplyRequestSchema: GenMessage<ApplyRequest> = /*@__PURE__*/
-  messageDesc(file_api_resource_v1_resource, 8);
+  messageDesc(file_api_resource_v1_resource, 10);
 
 /**
  * DeleteRequest defines the parameters to remove an object.
@@ -447,7 +520,7 @@ export type DeleteRequest = Message<"otterscale.resource.v1.DeleteRequest"> & {
  * Use `create(DeleteRequestSchema)` to create a new message.
  */
 export const DeleteRequestSchema: GenMessage<DeleteRequest> = /*@__PURE__*/
-  messageDesc(file_api_resource_v1_resource, 9);
+  messageDesc(file_api_resource_v1_resource, 11);
 
 /**
  * WatchRequest defines the parameters to start a streaming watch.
@@ -503,7 +576,7 @@ export type WatchRequest = Message<"otterscale.resource.v1.WatchRequest"> & {
  * Use `create(WatchRequestSchema)` to create a new message.
  */
 export const WatchRequestSchema: GenMessage<WatchRequest> = /*@__PURE__*/
-  messageDesc(file_api_resource_v1_resource, 10);
+  messageDesc(file_api_resource_v1_resource, 12);
 
 /**
  * WatchEvent represents a single change notification from the Kubernetes API.
@@ -538,7 +611,7 @@ export type WatchEvent = Message<"otterscale.resource.v1.WatchEvent"> & {
  * Use `create(WatchEventSchema)` to create a new message.
  */
 export const WatchEventSchema: GenMessage<WatchEvent> = /*@__PURE__*/
-  messageDesc(file_api_resource_v1_resource, 11);
+  messageDesc(file_api_resource_v1_resource, 13);
 
 /**
  * Type defines the possible types of events from Kubernetes watch.
@@ -581,7 +654,7 @@ export enum WatchEvent_Type {
  * Describes the enum otterscale.resource.v1.WatchEvent.Type.
  */
 export const WatchEvent_TypeSchema: GenEnum<WatchEvent_Type> = /*@__PURE__*/
-  enumDesc(file_api_resource_v1_resource, 11, 0);
+  enumDesc(file_api_resource_v1_resource, 13, 0);
 
 /**
  * ResourceService provides a generic interface to manage any Kubernetes resources,
@@ -599,6 +672,17 @@ export const ResourceService: GenService<{
     methodKind: "unary";
     input: typeof DiscoveryRequestSchema;
     output: typeof DiscoveryResponseSchema;
+  },
+  /**
+   * Schema retrieves the structural definition (JSON Schema) for a specific resource type.
+   * It supports both native Kubernetes resources and installed CRDs.
+   *
+   * @generated from rpc otterscale.resource.v1.ResourceService.Schema
+   */
+  schema: {
+    methodKind: "unary";
+    input: typeof SchemaRequestSchema;
+    output: typeof SchemaResponseSchema;
   },
   /**
    * List retrieves a collection of resources based on the provided GVR and filters.
