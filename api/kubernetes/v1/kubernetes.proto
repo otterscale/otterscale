@@ -1,0 +1,15 @@
+edition = "2023";
+
+package otterscale.kubernetes.v1;
+
+import "google/protobuf/empty.proto";
+
+option go_package = "github.com/otterscale/otterscale/api/kubernetes/v1;pb";
+
+service KubernetesService {
+  rpc ValidateKubeConfig(ValidateKubeConfigRequest) returns (google.protobuf.Empty);
+}
+
+message ValidateKubeConfigRequest {
+  string kubeconfig = 1;
+}

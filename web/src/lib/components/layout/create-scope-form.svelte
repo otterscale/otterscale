@@ -11,6 +11,7 @@
 	import { type Machine, MachineService } from '$lib/api/machine/v1/machine_pb';
 	import { OrchestratorService } from '$lib/api/orchestrator/v1/orchestrator_pb';
 	import { type Scope, ScopeService } from '$lib/api/scope/v1/scope_pb';
+	import { KubernetesService } from '$lib/api/kubernetes/v1/kubernetes_pb';
 	import { IPv4AddressInput } from '$lib/components/custom/ipv4';
 	import { IPv4CIDRInput } from '$lib/components/custom/ipv4-cidr';
 	import { Badge } from '$lib/components/ui/badge';
@@ -48,13 +49,15 @@
 	const machineClient = createClient(MachineService, transport);
 	const scopeClient = createClient(ScopeService, transport);
 	const orchestratorClient = createClient(OrchestratorService, transport);
+	const kubernetesClient = createClient(KubernetesService, transport);
 	const machinesStore = writable<Machine[]>([]);
 	const scopesStore = writable<Scope[]>([]);
 
-	// Validation regex: only lowercase letters and hyphens, must start with a letter
-	const SCOPE_NAME_REGEX = /^[a-z][a-z-]*$/;
+	// Validation regex
+	const SCOPE_NAME_REGEX = /^[a-z0-9](?:[-a-z0-9]*[a-z0-9])?$/;
 
 	// Form state
+	let scopeCreationOption = $state('create_scope');
 	let scopeName = $state('');
 	let scopeNameError = $state('');
 	let selectedMachine = $state('');
@@ -62,7 +65,10 @@
 	let storageDevicesError = $state('');
 	let calicoCidr = $state('');
 	let virtualIp = $state('');
+	let kubeConfig = $state('');
+	let kubeConfigError = $state('');
 	let isSubmitting = $state(false);
+	let debounceTimer: ReturnType<typeof setTimeout>;
 
 	async function fetchMachines() {
 		try {
@@ -97,16 +103,66 @@
 		return '';
 	}
 
-	function handleSubmit(event: Event) {
+	const encodeBase64 = (str: string) => {
+		if (typeof Buffer !== 'undefined') {
+			return Buffer.from(str, 'utf8').toString('base64');
+		}
+
+		if (typeof btoa !== 'undefined') {
+			const bytes = new TextEncoder().encode(str);
+			let binary = '';
+			for (const b of bytes) {
+				binary += String.fromCharCode(b);
+			}
+			return btoa(binary);
+		}
+		throw new Error('No base64 encoder available in this runtime');
+	};
+
+	async function validateKubeConfig(value: string): Promise<string> {
+		const trimmed = value.trim();
+		if (!trimmed) {
+			return 'KubeConfig is required';
+		}
+
+		const kubeconfigBase64 = encodeBase64(trimmed);
+
+		try {
+			await kubernetesClient.validateKubeConfig({
+				kubeconfig: kubeconfigBase64
+			});
+
+			return '';
+		} catch (error) {
+			return `Validation failed: ${(error as Error).message}`;
+		}
+	}
+
+	async function handleSubmit(event: Event) {
 		event.preventDefault();
 
 		// Validate scope name before submission
 		if (validateScopeName(scopeName)) return;
 		if (isSubmitting) return;
-		if (selectedDevices.length === 0) {
-			storageDevicesError = m.create_scope_storage_devices_required();
+
+		if (scopeCreationOption === 'create_scope') {
+			if (selectedDevices.length === 0) {
+				storageDevicesError = m.create_scope_storage_devices_required();
+				return;
+			}
+		} else if (scopeCreationOption === 'add_from_rancher') {
+			const kubeConfigValidationError = await validateKubeConfig(kubeConfig);
+			if (kubeConfigValidationError) {
+				kubeConfigError = kubeConfigValidationError;
+				return;
+			}
+		}
+
+		if (scopeCreationOption === 'add_from_rancher') {
+			toast.info('Add from Rancher feature is not yet implemented');
 			return;
 		}
+
 		isSubmitting = true;
 
 		// Prepare data
@@ -126,85 +182,98 @@
 				// Step 1: Create Scope
 				const scopeResponse = await scopeClient.createScope({ name: scope });
 
-				// Reset form and navigate
-				handleSuccess(scope);
+				if (scopeCreationOption === 'create_scope') {
+					// Reset form and navigate
+					handleSuccess(scope);
 
-				// Step 2: Add Machine Tags
-				toast.loading('Adding machine tags...', { id: toastId, duration: TOAST_DURATION_MS });
-				await machineClient.addMachineTags({ id: machineId, tags: [] });
+					// Step 2: Add Machine Tags
+					toast.loading('Adding machine tags...', { id: toastId, duration: TOAST_DURATION_MS });
+					await machineClient.addMachineTags({ id: machineId, tags: [] });
 
-				// Step 3: Commission Machine
-				toast.loading('Commissioning machine...', { id: toastId, duration: TOAST_DURATION_MS });
-				await machineClient.commissionMachine({
-					id: machineId,
-					enableSsh: true,
-					skipBmcConfig: false,
-					skipNetworking: false,
-					skipStorage: false
-				});
+					// Step 3: Commission Machine
+					toast.loading('Commissioning machine...', { id: toastId, duration: TOAST_DURATION_MS });
+					await machineClient.commissionMachine({
+						id: machineId,
+						enableSsh: true,
+						skipBmcConfig: false,
+						skipNetworking: false,
+						skipStorage: false
+					});
 
-				// Step 4: Wait for machine status to be Ready
-				let machineReady = false;
-				let retryCount = 0;
-				while (!machineReady && retryCount < MAX_POLL_ATTEMPTS) {
-					const machineResponse = await machineClient.getMachine({ id: machineId });
-					toast.loading('Waiting for machine to be ready...', {
+					// Step 4: Wait for machine status to be Ready
+					let machineReady = false;
+					let retryCount = 0;
+					while (!machineReady && retryCount < MAX_POLL_ATTEMPTS) {
+						const machineResponse = await machineClient.getMachine({ id: machineId });
+						toast.loading('Waiting for machine to be ready...', {
+							id: toastId,
+							duration: TOAST_DURATION_MS,
+							description: machineResponse.statusMessage
+						});
+						if (machineResponse.status.toLowerCase() === 'ready') {
+							machineReady = true;
+						} else if (machineResponse.status.toLowerCase().startsWith('failed')) {
+							throw new Error(`Machine commissioning failed: ${machineResponse.statusMessage}`);
+						}
+						await new Promise((resolve) => setTimeout(resolve, POLLING_INTERVAL_MS)); // Wait 5 seconds between checks
+						retryCount++;
+					}
+
+					// Step 5: Create Machine
+					toast.loading('Creating machine...', { id: toastId, duration: TOAST_DURATION_MS });
+					await machineClient.createMachine({ id: machineId, scope: scope });
+
+					// Step 6: Wait for agent status to be Started
+					let agentStarted = false;
+					retryCount = 0;
+					while (!agentStarted && retryCount < MAX_POLL_ATTEMPTS) {
+						const machineResponse = await machineClient.getMachine({ id: machineId });
+						toast.loading('Waiting for agent to start...', {
+							id: toastId,
+							duration: TOAST_DURATION_MS,
+							description: machineResponse.agentStatusMessage
+						});
+						if (machineResponse.agentStatus.toLowerCase() === 'started') {
+							agentStarted = true;
+						} else if (machineResponse.agentStatus.toLowerCase().startsWith('failed')) {
+							throw new Error(
+								`Machine agent failed to start: ${machineResponse.agentStatusMessage}`
+							);
+						}
+						await new Promise((resolve) => setTimeout(resolve, POLLING_INTERVAL_MS)); // Wait 5 seconds between checks
+						retryCount++;
+					}
+
+					// Step 7: Create Node
+					toast.loading('Creating node...', {
 						id: toastId,
 						duration: TOAST_DURATION_MS,
-						description: machineResponse.statusMessage
+						description: 'Installing  Kubernetes and Ceph'
 					});
-					if (machineResponse.status.toLowerCase() === 'ready') {
-						machineReady = true;
-					} else if (machineResponse.status.toLowerCase().startsWith('failed')) {
-						throw new Error(`Machine commissioning failed: ${machineResponse.statusMessage}`);
-					}
-					await new Promise((resolve) => setTimeout(resolve, POLLING_INTERVAL_MS)); // Wait 5 seconds between checks
-					retryCount++;
-				}
+					await orchestratorClient.createNode({
+						scope: scope,
+						machineId: machineId,
+						virtualIps: virtualIps,
+						calicoCidr: calicoCidrValue,
+						osdDevices: osdDevices
+					});
 
-				// Step 5: Create Machine
-				toast.loading('Creating machine...', { id: toastId, duration: TOAST_DURATION_MS });
-				await machineClient.createMachine({ id: machineId, scope: scope });
-
-				// Step 6: Wait for agent status to be Started
-				let agentStarted = false;
-				retryCount = 0;
-				while (!agentStarted && retryCount < MAX_POLL_ATTEMPTS) {
-					const machineResponse = await machineClient.getMachine({ id: machineId });
-					toast.loading('Waiting for agent to start...', {
+					// Success
+					toast.success(m.create_scope_success({ name: scopeResponse.name }), {
 						id: toastId,
-						duration: TOAST_DURATION_MS,
-						description: machineResponse.agentStatusMessage
+						duration: 5000,
+						description: ''
 					});
-					if (machineResponse.agentStatus.toLowerCase() === 'started') {
-						agentStarted = true;
-					} else if (machineResponse.agentStatus.toLowerCase().startsWith('failed')) {
-						throw new Error(`Machine agent failed to start: ${machineResponse.agentStatusMessage}`);
-					}
-					await new Promise((resolve) => setTimeout(resolve, POLLING_INTERVAL_MS)); // Wait 5 seconds between checks
-					retryCount++;
-				}
-
-				// Step 7: Create Node
-				toast.loading('Creating node...', {
-					id: toastId,
-					duration: TOAST_DURATION_MS,
-					description: 'Installing  Kubernetes and Ceph'
-				});
-				await orchestratorClient.createNode({
-					scope: scope,
-					machineId: machineId,
-					virtualIps: virtualIps,
-					calicoCidr: calicoCidrValue,
-					osdDevices: osdDevices
-				});
-
-				// Success
-				toast.success(m.create_scope_success({ name: scopeResponse.name }), {
-					id: toastId,
-					duration: 5000,
-					description: ''
-				});
+				} /*else if (scopeCreationOption === 'add_from_rancher') {
+					// TODO: Handle Rancher integration
+					// For now, just show success
+					/*toast.success(m.create_scope_success({ name: scopeResponse.name }), {
+						id: toastId,
+						duration: 5000,
+						description: ''
+					});
+					handleSuccess(scope);
+				}*/
 				isSubmitting = false;
 			} catch (error) {
 				isSubmitting = false;
@@ -230,11 +299,14 @@
 	}
 
 	function resetForm() {
+		scopeCreationOption = 'create_scope';
 		scopeName = '';
 		selectedMachine = '';
 		selectedDevices = [];
 		calicoCidr = '';
 		virtualIp = '';
+		kubeConfig = '';
+		kubeConfigError = '';
 		isSubmitting = false;
 	}
 
@@ -270,6 +342,38 @@
 	<!-- Form -->
 	<form class="flex h-full flex-col justify-between pt-4" onsubmit={handleSubmit}>
 		<div class="grid gap-6">
+			<!-- Scope Creation Option -->
+			<div class="grid gap-3">
+				<div class="grid gap-1">
+					<Label for="creation-option">
+						{m.select_method()}
+						<div class="h-2 w-2 rounded-full bg-yellow-500"></div>
+					</Label>
+					<p class="text-sm text-muted-foreground">
+						{m.select_method_description()}
+					</p>
+				</div>
+				<Select.Root type="single" bind:value={scopeCreationOption} required>
+					<Select.Trigger id="creation-option" class="w-full text-left">
+						{#if scopeCreationOption === 'create_scope'}
+							{m.import_scope_option_create()}
+						{:else if scopeCreationOption === 'add_from_rancher'}
+							{m.import_scope_option_add_from_rancher()}
+						{:else}
+							{m.import_scope_option_create()}
+						{/if}
+					</Select.Trigger>
+					<Select.Content>
+						<Select.Item value="create_scope">
+							{m.import_scope_option_create()}
+						</Select.Item>
+						<Select.Item value="add_from_rancher">
+							{m.import_scope_option_add_from_rancher()}
+						</Select.Item>
+					</Select.Content>
+				</Select.Root>
+			</div>
+
 			<!-- Scope Name -->
 			<div class="grid gap-3">
 				<div class="grid gap-1">
@@ -299,133 +403,166 @@
 				{/if}
 			</div>
 
-			<!-- Machine Selection -->
-			<div class="grid gap-3">
-				<div class="grid gap-1">
-					<Label for="machine">
-						{m.create_scope_machine()}
-						<div class="h-2 w-2 rounded-full bg-yellow-500"></div>
-					</Label>
-					<p class="text-sm text-muted-foreground">
-						{m.create_scope_machine_description()}
-					</p>
-				</div>
-				<Select.Root type="single" bind:value={selectedMachine} required>
-					<Select.Trigger id="storage-devices" class="w-full text-left">
-						{#if selectedMachine}
-							{@const machine = $machinesStore.find((m) => m.id === selectedMachine)!}
-							{@render machineSelectItem(machine)}
-						{:else}
-							<span>{m.create_scope_machine_select()}</span>
-						{/if}
-					</Select.Trigger>
-					<Select.Content>
-						{#each $machinesStore.filter((m) => m.status === 'Ready' || m.status === 'New') as machine (machine.id)}
-							<Select.Item value={machine.id}>
-								{@render machineSelectItem(machine)}
-							</Select.Item>
-						{:else}
-							<Select.Item value="" disabled class="[&_svg]:hidden">
-								{m.no_available_machines()}
-							</Select.Item>
-						{/each}
-					</Select.Content>
-				</Select.Root>
-			</div>
-
-			<!-- Storage Devices -->
-			{#if selectedMachine}
-				{@const selectedMachineData = $machinesStore.find((m) => m.id === selectedMachine)}
-				{@const availableDevices =
-					selectedMachineData?.blockDevices?.filter((device) => !device.bootDisk) ?? []}
-
+			{#if scopeCreationOption === 'create_scope'}
+				<!-- Machine Selection -->
 				<div class="grid gap-3">
 					<div class="grid gap-1">
-						<Label for="storage-devices">
-							{m.create_scope_storage_devices()}
+						<Label for="machine">
+							{m.create_scope_machine()}
 							<div class="h-2 w-2 rounded-full bg-yellow-500"></div>
 						</Label>
 						<p class="text-sm text-muted-foreground">
-							{m.create_scope_storage_devices_description()}
+							{m.create_scope_machine_description()}
 						</p>
 					</div>
-					<div class="flex gap-3 overflow-x-auto">
-						{#each availableDevices as device (device.name)}
-							<Tooltip.Provider>
-								<Tooltip.Root>
-									<Tooltip.Trigger>
-										<Label
-											class="flex items-start gap-x-2 rounded-md border p-2 hover:bg-accent/50 has-aria-checked:border-slate-600 has-aria-checked:bg-blue-50 dark:has-aria-checked:border-slate-900 dark:has-aria-checked:bg-slate-950 
-											{storageDevicesError ? 'border-destructive' : ''}"
-										>
-											<Checkbox
-												id={device.name}
-												checked={selectedDevices.includes(device.name)}
-												onCheckedChange={(checked) => {
-													if (checked) {
-														selectedDevices = [...selectedDevices, device.name];
-													} else {
-														selectedDevices = selectedDevices.filter((d) => d !== device.name);
-													}
-													storageDevicesError = '';
-												}}
-												class="data-[state=checked]:border-slate-600 data-[state=checked]:bg-slate-600 data-[state=checked]:text-white dark:data-[state=checked]:border-slate-700 dark:data-[state=checked]:bg-slate-700"
-											/>
-											<p class="text-sm leading-none">{device.name}</p>
-										</Label>
-									</Tooltip.Trigger>
-									<Tooltip.Content>
-										<p>
-											[{device.firmwareVersion}] {device.model}
-											{formatCapacity(device.storageMb).value}
-											{formatCapacity(device.storageMb).unit}
-										</p>
-									</Tooltip.Content>
-								</Tooltip.Root>
-							</Tooltip.Provider>
-							{#if storageDevicesError}
-								<span class="flex items-center gap-2 text-sm text-destructive">
-									<Icon icon="ph:warning-circle-bold" class="size-4" />
-									{storageDevicesError}
-								</span>
+					<Select.Root type="single" bind:value={selectedMachine} required>
+						<Select.Trigger id="storage-devices" class="w-full text-left">
+							{#if selectedMachine}
+								{@const machine = $machinesStore.find((m) => m.id === selectedMachine)!}
+								{@render machineSelectItem(machine)}
+							{:else}
+								<span>{m.create_scope_machine_select()}</span>
 							{/if}
-						{:else}
-							<p class="flex items-center gap-2 text-sm text-destructive">
-								<Icon icon="ph:warning-circle-bold" class="size-4" />
-								{m.no_available_storage_devices()}
-							</p>
-						{/each}
-					</div>
+						</Select.Trigger>
+						<Select.Content>
+							{#each $machinesStore.filter((m) => m.status === 'Ready' || m.status === 'New') as machine (machine.id)}
+								<Select.Item value={machine.id}>
+									{@render machineSelectItem(machine)}
+								</Select.Item>
+							{:else}
+								<Select.Item value="" disabled class="[&_svg]:hidden">
+									{m.no_available_machines()}
+								</Select.Item>
+							{/each}
+						</Select.Content>
+					</Select.Root>
 				</div>
 
-				<!-- Network Configuration -->
-				<div class="grid grid-cols-2 gap-4">
+				<!-- Storage Devices -->
+				{#if selectedMachine}
+					{@const selectedMachineData = $machinesStore.find((m) => m.id === selectedMachine)}
+					{@const availableDevices =
+						selectedMachineData?.blockDevices?.filter((device) => !device.bootDisk) ?? []}
+
 					<div class="grid gap-3">
 						<div class="grid gap-1">
-							<Label for="calico-cidr">{m.create_scope_calico_cidr()} ({m.optional()})</Label>
+							<Label for="storage-devices">
+								{m.create_scope_storage_devices()}
+								<div class="h-2 w-2 rounded-full bg-yellow-500"></div>
+							</Label>
 							<p class="text-sm text-muted-foreground">
-								{m.create_scope_calico_cidr_description()}
+								{m.create_scope_storage_devices_description()}
 							</p>
 						</div>
-						<IPv4CIDRInput
-							class="font-sans text-sm font-normal"
-							placeholder="192.168.0.0/16"
-							bind:value={calicoCidr}
-						/>
-					</div>
-					<div class="grid gap-3">
-						<div class="grid gap-1">
-							<Label for="virtual-ip">{m.create_scope_virtual_ip()} ({m.optional()})</Label>
-							<p class="text-sm text-muted-foreground">
-								{m.create_scope_virtual_ip_description()}
-							</p>
+						<div class="flex gap-3 overflow-x-auto">
+							{#each availableDevices as device (device.name)}
+								<Tooltip.Provider>
+									<Tooltip.Root>
+										<Tooltip.Trigger>
+											<Label
+												class="flex items-start gap-x-2 rounded-md border p-2 hover:bg-accent/50 has-aria-checked:border-slate-600 has-aria-checked:bg-blue-50 dark:has-aria-checked:border-slate-900 dark:has-aria-checked:bg-slate-950 
+											{storageDevicesError ? 'border-destructive' : ''}"
+											>
+												<Checkbox
+													id={device.name}
+													checked={selectedDevices.includes(device.name)}
+													onCheckedChange={(checked) => {
+														if (checked) {
+															selectedDevices = [...selectedDevices, device.name];
+														} else {
+															selectedDevices = selectedDevices.filter((d) => d !== device.name);
+														}
+														storageDevicesError = '';
+													}}
+													class="data-[state=checked]:border-slate-600 data-[state=checked]:bg-slate-600 data-[state=checked]:text-white dark:data-[state=checked]:border-slate-700 dark:data-[state=checked]:bg-slate-700"
+												/>
+												<p class="text-sm leading-none">{device.name}</p>
+											</Label>
+										</Tooltip.Trigger>
+										<Tooltip.Content>
+											<p>
+												[{device.firmwareVersion}] {device.model}
+												{formatCapacity(device.storageMb).value}
+												{formatCapacity(device.storageMb).unit}
+											</p>
+										</Tooltip.Content>
+									</Tooltip.Root>
+								</Tooltip.Provider>
+								{#if storageDevicesError}
+									<span class="flex items-center gap-2 text-sm text-destructive">
+										<Icon icon="ph:warning-circle-bold" class="size-4" />
+										{storageDevicesError}
+									</span>
+								{/if}
+							{:else}
+								<p class="flex items-center gap-2 text-sm text-destructive">
+									<Icon icon="ph:warning-circle-bold" class="size-4" />
+									{m.no_available_storage_devices()}
+								</p>
+							{/each}
 						</div>
-						<IPv4AddressInput
-							class="font-sans text-sm font-normal"
-							placeholder="192.168.1.1"
-							bind:value={virtualIp}
-						/>
 					</div>
+
+					<!-- Network Configuration -->
+					<div class="grid grid-cols-2 gap-4">
+						<div class="grid gap-3">
+							<div class="grid gap-1">
+								<Label for="calico-cidr">{m.create_scope_calico_cidr()} ({m.optional()})</Label>
+								<p class="text-sm text-muted-foreground">
+									{m.create_scope_calico_cidr_description()}
+								</p>
+							</div>
+							<IPv4CIDRInput
+								class="font-sans text-sm font-normal"
+								placeholder="192.168.0.0/16"
+								bind:value={calicoCidr}
+							/>
+						</div>
+						<div class="grid gap-3">
+							<div class="grid gap-1">
+								<Label for="virtual-ip">{m.create_scope_virtual_ip()} ({m.optional()})</Label>
+								<p class="text-sm text-muted-foreground">
+									{m.create_scope_virtual_ip_description()}
+								</p>
+							</div>
+							<IPv4AddressInput
+								class="font-sans text-sm font-normal"
+								placeholder="192.168.1.1"
+								bind:value={virtualIp}
+							/>
+						</div>
+					</div>
+				{/if}
+			{:else if scopeCreationOption === 'add_from_rancher'}
+				<!-- KubeConfig -->
+				<div class="grid gap-3">
+					<div class="grid gap-1">
+						<Label for="kubeconfig">
+							{m.import_scope_kubeconfig()}
+							<div class="h-2 w-2 rounded-full bg-yellow-500"></div>
+						</Label>
+						<p class="text-sm text-muted-foreground">
+							{m.import_scope_kubeconfig_description()}
+						</p>
+					</div>
+					<textarea
+						id="kubeconfig"
+						class="flex min-h-[120px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+						placeholder="Paste your KubeConfig here..."
+						bind:value={kubeConfig}
+						oninput={() => {
+							clearTimeout(debounceTimer);
+							debounceTimer = setTimeout(async () => {
+								kubeConfigError = await validateKubeConfig(kubeConfig);
+							}, 500);
+						}}
+						required
+					></textarea>
+					{#if kubeConfigError}
+						<p class="text-sm text-destructive mb-6">
+							{kubeConfigError}
+						</p>
+					{/if}
 				</div>
 			{/if}
 		</div>
