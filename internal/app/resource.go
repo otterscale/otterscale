@@ -64,6 +64,7 @@ func (s *ResourceService) Schema(_ context.Context, req *pb.SchemaRequest) (*pb.
 
 	resp := &pb.SchemaResponse{}
 	resp.SetJsonSchema(jsonSchema)
+	// todo: ui schema
 	// resp.SetUiSchema(uiSchema)
 	return resp, nil
 }
