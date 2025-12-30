@@ -57,7 +57,7 @@
 	const SCOPE_NAME_REGEX = /^[a-z0-9][a-z0-9-]*$/;
 
 	// Form state
-	let scopeCreationOption = $state('create');
+	let scopeCreationOption = $state('create_scope');
 	let scopeName = $state('');
 	let scopeNameError = $state('');
 	let selectedMachine = $state('');
@@ -149,7 +149,7 @@
 		if (validateScopeName(scopeName)) return;
 		if (isSubmitting) return;
 
-		if (scopeCreationOption === 'create') {
+		if (scopeCreationOption === 'create_scope') {
 			if (selectedDevices.length === 0) {
 				storageDevicesError = m.create_scope_storage_devices_required();
 				return;
@@ -161,6 +161,12 @@
 				return;
 			}
 		}
+
+		if (scopeCreationOption === 'add_from_rancher') {
+			toast.info('Add from Rancher feature is not yet implemented');
+			return;
+		}
+
 		isSubmitting = true;
 
 		// Prepare data
@@ -180,7 +186,7 @@
 				// Step 1: Create Scope
 				const scopeResponse = await scopeClient.createScope({ name: scope });
 
-				if (scopeCreationOption === 'create') {
+				if (scopeCreationOption === 'create_scope') {
 					// Reset form and navigate
 					handleSuccess(scope);
 
@@ -262,16 +268,16 @@
 						duration: 5000,
 						description: ''
 					});
-				} else if (scopeCreationOption === 'add_from_rancher') {
+				} /*else if (scopeCreationOption === 'add_from_rancher') {
 					// TODO: Handle Rancher integration
 					// For now, just show success
-					toast.success(m.create_scope_success({ name: scopeResponse.name }), {
+					/*toast.success(m.create_scope_success({ name: scopeResponse.name }), {
 						id: toastId,
 						duration: 5000,
 						description: ''
 					});
 					handleSuccess(scope);
-				}
+				}*/
 				isSubmitting = false;
 			} catch (error) {
 				isSubmitting = false;
@@ -297,7 +303,7 @@
 	}
 
 	function resetForm() {
-		scopeCreationOption = 'create';
+		scopeCreationOption = 'create_scope';
 		scopeName = '';
 		selectedMachine = '';
 		selectedDevices = [];
@@ -354,7 +360,7 @@
 				</div>
 				<Select.Root type="single" bind:value={scopeCreationOption} required>
 					<Select.Trigger id="creation-option" class="w-full text-left">
-						{#if scopeCreationOption === 'create'}
+						{#if scopeCreationOption === 'create_scope'}
 							{m.import_scope_option_create()}
 						{:else if scopeCreationOption === 'add_from_rancher'}
 							{m.import_scope_option_add_from_rancher()}
@@ -363,7 +369,7 @@
 						{/if}
 					</Select.Trigger>
 					<Select.Content>
-						<Select.Item value="create">
+						<Select.Item value="create_scope">
 							{m.import_scope_option_create()}
 						</Select.Item>
 						<Select.Item value="add_from_rancher">
@@ -402,7 +408,7 @@
 				{/if}
 			</div>
 
-			{#if scopeCreationOption === 'create'}
+			{#if scopeCreationOption === 'create_scope'}
 				<!-- Machine Selection -->
 				<div class="grid gap-3">
 					<div class="grid gap-1">
