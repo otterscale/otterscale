@@ -13,6 +13,5 @@ message ValidateKubeConfigRequest {
 }
 
 message ValidateKubeConfigResponse {
-  bool validate = 1;
-  string message = 2;
+  string message = 1;
 }
