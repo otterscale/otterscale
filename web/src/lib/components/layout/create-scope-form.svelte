@@ -132,8 +132,8 @@
 				kubeconfig: kubeconfigBase64
 			});
 
-			if (!response.validate) {
-				return response.message || 'Invalid KubeConfig';
+			if (response.message) {
+				return `Invalid KubeConfig: ${response.message}`;
 			}
 
 			return '';
@@ -552,24 +552,13 @@
 						oninput={async (e: Event) => {
 							const target = e.currentTarget as HTMLTextAreaElement;
 							kubeConfig = target.value;
-							const error = await validateKubeConfig(target.value);
-							if (error) {
-								kubeConfigError = error;
-								kubeConfigValid = false;
-							} else {
-								kubeConfigError = '';
-								kubeConfigValid = true;
-							}
+							const kubeConfigValidationError = await validateKubeConfig(target.value);
+							kubeConfigError = kubeConfigValidationError
 						}}
 						required
 					></textarea>
-					{#if kubeConfigValid}
-						<p class="text-sm text-green-600">
-							{m.kubeconfig_verification_passed()}
-						</p>
-					{/if}
 					{#if kubeConfigError}
-						<p class="text-sm text-destructive">
+						<p class="text-sm text-destructive mb-6">
 							{kubeConfigError}
 						</p>
 					{/if}

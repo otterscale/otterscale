@@ -100,8 +100,7 @@ func (b0 ValidateKubeConfigRequest_builder) Build() *ValidateKubeConfigRequest {
 
 type ValidateKubeConfigResponse struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Validate    bool                   `protobuf:"varint,1,opt,name=validate"`
-	xxx_hidden_Message     *string                `protobuf:"bytes,2,opt,name=message"`
+	xxx_hidden_Message     *string                `protobuf:"bytes,1,opt,name=message"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
 	unknownFields          protoimpl.UnknownFields
@@ -133,13 +132,6 @@ func (x *ValidateKubeConfigResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *ValidateKubeConfigResponse) GetValidate() bool {
-	if x != nil {
-		return x.xxx_hidden_Validate
-	}
-	return false
-}
-
 func (x *ValidateKubeConfigResponse) GetMessage() string {
 	if x != nil {
 		if x.xxx_hidden_Message != nil {
@@ -150,57 +142,35 @@ func (x *ValidateKubeConfigResponse) GetMessage() string {
 	return ""
 }
 
-func (x *ValidateKubeConfigResponse) SetValidate(v bool) {
-	x.xxx_hidden_Validate = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
-}
-
 func (x *ValidateKubeConfigResponse) SetMessage(v string) {
 	x.xxx_hidden_Message = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
-}
-
-func (x *ValidateKubeConfigResponse) HasValidate() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 1)
 }
 
 func (x *ValidateKubeConfigResponse) HasMessage() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
-}
-
-func (x *ValidateKubeConfigResponse) ClearValidate() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_Validate = false
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
 func (x *ValidateKubeConfigResponse) ClearMessage() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_Message = nil
 }
 
 type ValidateKubeConfigResponse_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Validate *bool
-	Message  *string
+	Message *string
 }
 
 func (b0 ValidateKubeConfigResponse_builder) Build() *ValidateKubeConfigResponse {
 	m0 := &ValidateKubeConfigResponse{}
 	b, x := &b0, m0
 	_, _ = b, x
-	if b.Validate != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
-		x.xxx_hidden_Validate = *b.Validate
-	}
 	if b.Message != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 1)
 		x.xxx_hidden_Message = b.Message
 	}
 	return m0
@@ -214,10 +184,9 @@ const file_api_kubernetes_v1_kubernetes_proto_rawDesc = "" +
 	"\x19ValidateKubeConfigRequest\x12\x1e\n" +
 	"\n" +
 	"kubeconfig\x18\x01 \x01(\tR\n" +
-	"kubeconfig\"R\n" +
-	"\x1aValidateKubeConfigResponse\x12\x1a\n" +
-	"\bvalidate\x18\x01 \x01(\bR\bvalidate\x12\x18\n" +
-	"\amessage\x18\x02 \x01(\tR\amessage2\x94\x01\n" +
+	"kubeconfig\"6\n" +
+	"\x1aValidateKubeConfigResponse\x12\x18\n" +
+	"\amessage\x18\x01 \x01(\tR\amessage2\x94\x01\n" +
 	"\x11KubernetesService\x12\x7f\n" +
 	"\x12ValidateKubeConfig\x123.otterscale.kubernetes.v1.ValidateKubeConfigRequest\x1a4.otterscale.kubernetes.v1.ValidateKubeConfigResponseB7Z5github.com/otterscale/otterscale/api/kubernetes/v1;pbb\beditionsp\xe8\a"
 

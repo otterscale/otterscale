@@ -235,35 +235,35 @@ func getInternalIP(node *cluster.Node) string {
 	return ""
 }
 
-func (m *Kubernetes) ValidateKubeConfig(kubeconfig string) (bool, error) {
+func (m *Kubernetes) ValidateKubeConfig(kubeconfig string) error {
 	if kubeconfig == "" {
-		return false, fmt.Errorf("kubeconfig is empty")
+		return fmt.Errorf("kubeconfig is empty")
 	}
 
 	kubeconfig_decode, err := base64.StdEncoding.DecodeString(kubeconfig)
 	if err != nil {
-		return false, err
+		return err
 	}
 
 	configAPI, err := clientcmd.Load([]byte(kubeconfig_decode))
 	if err != nil {
-		return false, err
+		return err
 	}
 
 	config, err := clientcmd.NewDefaultClientConfig(*configAPI, &clientcmd.ConfigOverrides{}).ClientConfig()
 	if err != nil {
-		return false, err
+		return err
 	}
 
 	clientset, err := kubernetes.NewForConfig(config)
 	if err != nil {
-		return false, err
+		return err
 	}
 
 	_, err = clientset.ServerVersion()
 	if err != nil {
-		return false, err
+		return err
 	}
 
-	return true, nil
+	return nil
 }

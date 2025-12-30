@@ -10,7 +10,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file api/kubernetes/v1/kubernetes.proto.
  */
 export const file_api_kubernetes_v1_kubernetes: GenFile = /*@__PURE__*/
-  fileDesc("CiJhcGkva3ViZXJuZXRlcy92MS9rdWJlcm5ldGVzLnByb3RvEhhvdHRlcnNjYWxlLmt1YmVybmV0ZXMudjEiLwoZVmFsaWRhdGVLdWJlQ29uZmlnUmVxdWVzdBISCgprdWJlY29uZmlnGAEgASgJIj8KGlZhbGlkYXRlS3ViZUNvbmZpZ1Jlc3BvbnNlEhAKCHZhbGlkYXRlGAEgASgIEg8KB21lc3NhZ2UYAiABKAkylAEKEUt1YmVybmV0ZXNTZXJ2aWNlEn8KElZhbGlkYXRlS3ViZUNvbmZpZxIzLm90dGVyc2NhbGUua3ViZXJuZXRlcy52MS5WYWxpZGF0ZUt1YmVDb25maWdSZXF1ZXN0GjQub3R0ZXJzY2FsZS5rdWJlcm5ldGVzLnYxLlZhbGlkYXRlS3ViZUNvbmZpZ1Jlc3BvbnNlQjdaNWdpdGh1Yi5jb20vb3R0ZXJzY2FsZS9vdHRlcnNjYWxlL2FwaS9rdWJlcm5ldGVzL3YxO3BiYghlZGl0aW9uc3DoBw");
+  fileDesc("CiJhcGkva3ViZXJuZXRlcy92MS9rdWJlcm5ldGVzLnByb3RvEhhvdHRlcnNjYWxlLmt1YmVybmV0ZXMudjEiLwoZVmFsaWRhdGVLdWJlQ29uZmlnUmVxdWVzdBISCgprdWJlY29uZmlnGAEgASgJIi0KGlZhbGlkYXRlS3ViZUNvbmZpZ1Jlc3BvbnNlEg8KB21lc3NhZ2UYASABKAkylAEKEUt1YmVybmV0ZXNTZXJ2aWNlEn8KElZhbGlkYXRlS3ViZUNvbmZpZxIzLm90dGVyc2NhbGUua3ViZXJuZXRlcy52MS5WYWxpZGF0ZUt1YmVDb25maWdSZXF1ZXN0GjQub3R0ZXJzY2FsZS5rdWJlcm5ldGVzLnYxLlZhbGlkYXRlS3ViZUNvbmZpZ1Jlc3BvbnNlQjdaNWdpdGh1Yi5jb20vb3R0ZXJzY2FsZS9vdHRlcnNjYWxlL2FwaS9rdWJlcm5ldGVzL3YxO3BiYghlZGl0aW9uc3DoBw");
 
 /**
  * @generated from message otterscale.kubernetes.v1.ValidateKubeConfigRequest
@@ -34,12 +34,7 @@ export const ValidateKubeConfigRequestSchema: GenMessage<ValidateKubeConfigReque
  */
 export type ValidateKubeConfigResponse = Message<"otterscale.kubernetes.v1.ValidateKubeConfigResponse"> & {
   /**
-   * @generated from field: bool validate = 1;
-   */
-  validate: boolean;
-
-  /**
-   * @generated from field: string message = 2;
+   * @generated from field: string message = 1;
    */
   message: string;
 };
