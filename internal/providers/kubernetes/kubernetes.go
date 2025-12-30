@@ -267,17 +267,17 @@ func getInternalIP(node *cluster.Node) string {
 	return ""
 }
 
-func (m *Kubernetes) ValidateKubeConfig(kubeconfig string) error {
+func (m *Kubernetes) ValidateKubeConfig(ctx context.Context, kubeconfig string) error {
 	if kubeconfig == "" {
 		return fmt.Errorf("kubeconfig is empty")
 	}
 
-	kubeconfig_decode, err := base64.StdEncoding.DecodeString(kubeconfig)
+	kubeconfigDecode, err := base64.StdEncoding.DecodeString(kubeconfig)
 	if err != nil {
 		return err
 	}
 
-	configAPI, err := clientcmd.Load([]byte(kubeconfig_decode))
+	configAPI, err := clientcmd.Load(kubeconfigDecode)
 	if err != nil {
 		return err
 	}
@@ -292,7 +292,7 @@ func (m *Kubernetes) ValidateKubeConfig(kubeconfig string) error {
 		return err
 	}
 
-	_, err = clientset.ServerVersion()
+	_, err = clientset.CoreV1().Namespaces().List(ctx, metav1.ListOptions{Limit: 1})
 	if err != nil {
 		return err
 	}
