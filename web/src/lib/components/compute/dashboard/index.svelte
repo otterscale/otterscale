@@ -4,7 +4,6 @@
 	import { getContext, onDestroy, onMount } from 'svelte';
 
 	import { page } from '$app/state';
-	import { env } from '$env/dynamic/public';
 	import { EnvironmentService } from '$lib/api/environment/v1/environment_pb';
 	import { Reloader } from '$lib/components/custom/reloader';
 	import * as Tabs from '$lib/components/ui/tabs';
@@ -34,8 +33,11 @@
 				.getPrometheus({})
 				.then((response) => {
 					prometheusDriver = new PrometheusDriver({
-						endpoint: `${env.PUBLIC_API_URL}/prometheus`,
-						baseURL: response.baseUrl
+						endpoint: '/prometheus',
+						baseURL: response.baseUrl,
+						headers: {
+							'x-proxy-target': 'api'
+						}
 					});
 				})
 				.catch((error) => {

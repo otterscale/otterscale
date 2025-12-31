@@ -102,7 +102,13 @@ export async function GET(event: RequestEvent): Promise<Response> {
 		));
 
 	const sessionToken = generateSessionToken();
-	const session = await createSession(sessionToken, user.id);
+	const session = await createSession(
+		sessionToken,
+		user.id,
+		tokens.accessToken(),
+		tokens.accessTokenExpiresAt(),
+		tokens.refreshToken()
+	);
 	setSessionTokenCookie(event.cookies, sessionToken, session.expiresAt);
 
 	return new Response(null, {

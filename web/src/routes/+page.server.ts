@@ -12,9 +12,7 @@ interface EnvVar {
 	name: string;
 }
 
-const REQUIRED_ENV_VARS_ALL: readonly EnvVar[] = [
-	{ value: publicEnv.PUBLIC_API_URL, name: 'PUBLIC_API_URL' }
-];
+const REQUIRED_ENV_VARS_ALL: readonly EnvVar[] = [{ value: env.API_URL, name: 'API_URL' }];
 
 const REQUIRED_ENV_VARS_NORMAL: readonly EnvVar[] = [
 	{ value: publicEnv.PUBLIC_WEB_URL, name: 'PUBLIC_WEB_URL' },

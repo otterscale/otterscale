@@ -15,6 +15,13 @@
       "when": 1765949929896,
       "tag": "0001_legal_hydra",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1767162857631,
+      "tag": "0002_clean_gamora",
+      "breakpoints": true
     }
   ]
 }

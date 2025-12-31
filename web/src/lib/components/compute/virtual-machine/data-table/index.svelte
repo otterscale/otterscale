@@ -30,11 +30,13 @@
 		virtualMachines,
 		metrics,
 		scope,
+		url,
 		reloadManager
 	}: {
 		virtualMachines: Writable<VirtualMachine[]>;
 		metrics: Metrics;
 		scope: string;
+		url: URL;
 		reloadManager: ReloadManager;
 	} = $props();
 
@@ -51,7 +53,7 @@
 			return $virtualMachines;
 		},
 		get columns() {
-			return getColumns(metrics, scope, reloadManager);
+			return getColumns(metrics, scope, url, reloadManager);
 		},
 
 		getCoreRowModel: getCoreRowModel(),

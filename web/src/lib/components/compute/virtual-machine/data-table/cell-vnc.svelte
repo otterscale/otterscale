@@ -3,7 +3,6 @@
 	import Icon from '@iconify/svelte';
 	import { getContext } from 'svelte';
 
-	import { env } from '$env/dynamic/public';
 	import { InstanceService, type VirtualMachine } from '$lib/api/instance/v1/instance_pb';
 	import { buttonVariants } from '$lib/components/ui/button';
 	import * as Sheet from '$lib/components/ui/sheet';
@@ -11,14 +10,17 @@
 </script>
 
 <script lang="ts">
-	let { virtualMachine, scope }: { virtualMachine: VirtualMachine; scope: string } = $props();
+	let { virtualMachine, scope, url }: { virtualMachine: VirtualMachine; scope: string; url: URL } =
+		$props();
 
 	const transport: Transport = getContext('transport');
 	const virtualMachineClient = createClient(InstanceService, transport);
 
-	const url = new URL(env.PUBLIC_API_URL ?? '');
-	const [host, port] = url.host.split(':');
-	const defaultPort = url.protocol === 'https:' ? '443' : '80';
+	const urlParts = $derived(() => {
+		const [host, port] = url.host.split(':');
+		const defaultPort = url.protocol === 'https:' ? '443' : '80';
+		return { host, port, defaultPort };
+	});
 
 	let isMounted = $state(false);
 	let vncUrl = $state('');
@@ -31,6 +33,7 @@
 				namespace: virtualMachine.namespace
 			});
 			isMounted = true;
+			const { host, port, defaultPort } = urlParts();
 			vncUrl = `/vnc/vnc.html?autoconnect=true&host=${host}&port=${port || defaultPort}&path=vnc/${response.sessionId}`;
 		} catch (error) {
 			console.error('Error fetching VNC URL:', error);

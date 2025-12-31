@@ -5,6 +5,8 @@
 	import { m } from '$lib/paraglide/messages';
 	import { breadcrumbs } from '$lib/stores';
 
+	let { data } = $props();
+
 	// Set breadcrumbs navigation
 	breadcrumbs.set([
 		{
@@ -19,5 +21,5 @@
 </script>
 
 {#if page.params.scope!}
-	<VirtualMachine scope={page.params.scope!} />
+	<VirtualMachine scope={page.params.scope!} url={data.url} />
 {/if}

@@ -82,12 +82,21 @@ export function generateSessionToken(): string {
 	return token;
 }
 
-export async function createSession(token: string, userId: number): Promise<Session> {
+export async function createSession(
+	token: string,
+	userId: number,
+	accessToken: string,
+	accessTokenExpiresAt: Date,
+	refreshToken: string
+): Promise<Session> {
 	const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
 	const session: Session = {
 		id: sessionId,
 		userId,
-		expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30)
+		expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30),
+		accessToken,
+		accessTokenExpiresAt,
+		refreshToken
 	};
 
 	const sessions = await db
@@ -95,12 +104,38 @@ export async function createSession(token: string, userId: number): Promise<Sess
 		.values({
 			id: session.id,
 			userId: session.userId,
-			expiresAt: session.expiresAt
+			expiresAt: session.expiresAt,
+			accessToken: session.accessToken,
+			accessTokenExpiresAt: session.accessTokenExpiresAt,
+			refreshToken: session.refreshToken
 		})
 		.returning();
 
 	if (sessions.length === 0) {
 		throw new Error('Failed to create session');
+	}
+
+	return sessions[0];
+}
+
+export async function updateSession(
+	sessionId: string,
+	accessToken: string,
+	accessTokenExpiresAt: Date,
+	refreshToken: string
+): Promise<Session> {
+	const sessions = await db
+		.update(sessionsTable)
+		.set({
+			accessToken: accessToken,
+			accessTokenExpiresAt: accessTokenExpiresAt,
+			refreshToken: refreshToken
+		})
+		.where(eq(sessionsTable.id, sessionId))
+		.returning();
+
+	if (sessions.length === 0) {
+		throw new Error('Failed to update session');
 	}
 
 	return sessions[0];
