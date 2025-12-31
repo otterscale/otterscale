@@ -10,6 +10,7 @@ import (
 	errors "errors"
 	v1 "github.com/otterscale/otterscale/api/resource/v1"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
+	structpb "google.golang.org/protobuf/types/known/structpb"
 	http "net/http"
 	strings "strings"
 )
@@ -59,7 +60,9 @@ type ResourceServiceClient interface {
 	Discovery(context.Context, *v1.DiscoveryRequest) (*v1.DiscoveryResponse, error)
 	// Schema retrieves the structural definition (JSON Schema) for a specific resource type.
 	// It supports both native Kubernetes resources and installed CRDs.
-	Schema(context.Context, *v1.SchemaRequest) (*v1.SchemaResponse, error)
+	// The raw JSON Schema (Draft 4/7 or 2020-12) describing the resource structure.
+	// This is typically derived from Kubernetes OpenAPIV3Schema.
+	Schema(context.Context, *v1.SchemaRequest) (*structpb.Struct, error)
 	// List retrieves a collection of resources based on the provided GVR and filters.
 	List(context.Context, *v1.ListRequest) (*v1.ListResponse, error)
 	// Get retrieves a single resource by its name within a namespace.
@@ -92,7 +95,7 @@ func NewResourceServiceClient(httpClient connect.HTTPClient, baseURL string, opt
 			connect.WithSchema(resourceServiceMethods.ByName("Discovery")),
 			connect.WithClientOptions(opts...),
 		),
-		schema: connect.NewClient[v1.SchemaRequest, v1.SchemaResponse](
+		schema: connect.NewClient[v1.SchemaRequest, structpb.Struct](
 			httpClient,
 			baseURL+ResourceServiceSchemaProcedure,
 			connect.WithSchema(resourceServiceMethods.ByName("Schema")),
@@ -140,7 +143,7 @@ func NewResourceServiceClient(httpClient connect.HTTPClient, baseURL string, opt
 // resourceServiceClient implements ResourceServiceClient.
 type resourceServiceClient struct {
 	discovery *connect.Client[v1.DiscoveryRequest, v1.DiscoveryResponse]
-	schema    *connect.Client[v1.SchemaRequest, v1.SchemaResponse]
+	schema    *connect.Client[v1.SchemaRequest, structpb.Struct]
 	list      *connect.Client[v1.ListRequest, v1.ListResponse]
 	get       *connect.Client[v1.GetRequest, v1.Resource]
 	create    *connect.Client[v1.CreateRequest, v1.Resource]
@@ -159,7 +162,7 @@ func (c *resourceServiceClient) Discovery(ctx context.Context, req *v1.Discovery
 }
 
 // Schema calls otterscale.resource.v1.ResourceService.Schema.
-func (c *resourceServiceClient) Schema(ctx context.Context, req *v1.SchemaRequest) (*v1.SchemaResponse, error) {
+func (c *resourceServiceClient) Schema(ctx context.Context, req *v1.SchemaRequest) (*structpb.Struct, error) {
 	response, err := c.schema.CallUnary(ctx, connect.NewRequest(req))
 	if response != nil {
 		return response.Msg, err
@@ -224,7 +227,9 @@ type ResourceServiceHandler interface {
 	Discovery(context.Context, *v1.DiscoveryRequest) (*v1.DiscoveryResponse, error)
 	// Schema retrieves the structural definition (JSON Schema) for a specific resource type.
 	// It supports both native Kubernetes resources and installed CRDs.
-	Schema(context.Context, *v1.SchemaRequest) (*v1.SchemaResponse, error)
+	// The raw JSON Schema (Draft 4/7 or 2020-12) describing the resource structure.
+	// This is typically derived from Kubernetes OpenAPIV3Schema.
+	Schema(context.Context, *v1.SchemaRequest) (*structpb.Struct, error)
 	// List retrieves a collection of resources based on the provided GVR and filters.
 	List(context.Context, *v1.ListRequest) (*v1.ListResponse, error)
 	// Get retrieves a single resource by its name within a namespace.
@@ -326,7 +331,7 @@ func (UnimplementedResourceServiceHandler) Discovery(context.Context, *v1.Discov
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.resource.v1.ResourceService.Discovery is not implemented"))
 }
 
-func (UnimplementedResourceServiceHandler) Schema(context.Context, *v1.SchemaRequest) (*v1.SchemaResponse, error) {
+func (UnimplementedResourceServiceHandler) Schema(context.Context, *v1.SchemaRequest) (*structpb.Struct, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.resource.v1.ResourceService.Schema is not implemented"))
 }
 

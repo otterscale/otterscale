@@ -15,11 +15,6 @@ import (
 	"k8s.io/kube-openapi/pkg/validation/spec"
 )
 
-type Schema struct {
-	JSONSchema *spec.Schema
-	UISchema   map[string]any
-}
-
 //nolint:revive // allows this exported struct name.
 type ResourceRepo interface {
 	List(ctx context.Context, cgvr ClusterGroupVersionResource, namespace, labelSelector, fieldSelector string, limit int64, continueToken string) (*unstructured.UnstructuredList, error)
@@ -52,21 +47,16 @@ func (uc *UseCase) ListAPIResources(cluster string) ([]*metav1.APIResourceList, 
 	return uc.discovery.List(cluster)
 }
 
-func (uc *UseCase) GetSchema(cluster, group, version, kind string) (*Schema, error) {
+func (uc *UseCase) GetSchema(cluster, group, version, kind string) (*spec.Schema, error) {
 	key := uc.schemaCacheKey(cluster, group, version, kind)
 
 	if v, ok := uc.schemaCache.Load(key); ok {
-		return v.(*Schema), nil
+		return v.(*spec.Schema), nil
 	}
 
-	jsonSchema, err := uc.discovery.Schema(cluster, group, version, kind)
+	schema, err := uc.discovery.Schema(cluster, group, version, kind)
 	if err != nil {
 		return nil, err
-	}
-
-	schema := &Schema{
-		JSONSchema: jsonSchema,
-		// todo: ui schema
 	}
 
 	uc.schemaCache.Store(key, schema)
