@@ -79,14 +79,14 @@ func newServeOptions(conf *config.Config) ([]connect.HandlerOption, error) {
 		return nil, err
 	}
 
-	// removed on release 0.7
-	gatedImpersonation := gated.NewInterceptor(impersonationInterceptor,
+	// TODO: remove in release 0.7
+	gatedImpersonationInterceptor := gated.NewInterceptor(impersonationInterceptor,
 		func(ctx context.Context) bool {
 			enabled, _ := openFeatureInterceptor.Evaluate(ctx, "resource-enabled")
 			return enabled
 		})
 
 	return []connect.HandlerOption{
-		connect.WithInterceptors(openTelemetryInterceptor, openFeatureInterceptor, gatedImpersonation),
+		connect.WithInterceptors(openTelemetryInterceptor, openFeatureInterceptor, gatedImpersonationInterceptor),
 	}, nil
 }
