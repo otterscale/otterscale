@@ -20,7 +20,9 @@ service ResourceService {
 
   // Schema retrieves the structural definition (JSON Schema) for a specific resource type.
   // It supports both native Kubernetes resources and installed CRDs.
-  rpc Schema(SchemaRequest) returns (SchemaResponse) {
+  // The raw JSON Schema (Draft 4/7 or 2020-12) describing the resource structure.
+  // This is typically derived from Kubernetes OpenAPIV3Schema.
+  rpc Schema(SchemaRequest) returns (google.protobuf.Struct) {
     option (otterscale.api.feature) = {
       name: "resource-enabled"
     };
@@ -106,18 +108,6 @@ message SchemaRequest {
 
   // Kubernetes API Kind (e,g, "Pod").
   string kind = 4;
-}
-
-// SchemaResponse contains the structural definition and optional UI hints for a resource.
-message SchemaResponse {
-  // The raw JSON Schema (Draft 4/7 or 2020-12) describing the resource structure.
-  // This is typically derived from Kubernetes OpenAPIV3Schema.
-  google.protobuf.Struct json_schema = 1;
-
-  // Optional UI Schema provides hints for rendering forms in the frontend.
-  // It can be used to define widget types, field order, or visibility rules
-  // that are not part of the standard JSON Schema.
-  google.protobuf.Struct ui_schema = 2;
 }
 
 // Resource represents a single Kubernetes object serialized as a JSON string.

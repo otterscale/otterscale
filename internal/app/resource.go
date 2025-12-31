@@ -51,22 +51,13 @@ func (s *ResourceService) Discovery(_ context.Context, req *pb.DiscoveryRequest)
 	return resp, nil
 }
 
-func (s *ResourceService) Schema(_ context.Context, req *pb.SchemaRequest) (*pb.SchemaResponse, error) {
+func (s *ResourceService) Schema(_ context.Context, req *pb.SchemaRequest) (*structpb.Struct, error) {
 	schema, err := s.resource.GetSchema(req.GetCluster(), req.GetGroup(), req.GetVersion(), req.GetKind())
 	if err != nil {
 		return nil, err
 	}
 
-	jsonSchema, err := s.toProtoStructFromJSONSchema(schema.JSONSchema)
-	if err != nil {
-		return nil, err
-	}
-
-	resp := &pb.SchemaResponse{}
-	resp.SetJsonSchema(jsonSchema)
-	// todo: ui schema
-	// resp.SetUiSchema(uiSchema)
-	return resp, nil
+	return s.toProtoStructFromJSONSchema(schema)
 }
 
 func (s *ResourceService) List(ctx context.Context, req *pb.ListRequest) (*pb.ListResponse, error) {
