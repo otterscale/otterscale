@@ -8,6 +8,7 @@ import (
 	"sync"
 	"time"
 
+	authorizationv1 "k8s.io/api/authorization/v1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
@@ -291,6 +292,26 @@ func (m *Kubernetes) ValidateKubeConfig(ctx context.Context, kubeconfig string) 
 	_, err = clientset.ServerVersion()
 	if err != nil {
 		return err
+	}
+
+	sar := &authorizationv1.SelfSubjectAccessReview{
+		Spec: authorizationv1.SelfSubjectAccessReviewSpec{
+			ResourceAttributes: &authorizationv1.ResourceAttributes{
+				Verb:     "impersonate",
+				Resource: "users",
+				Name:     "default",
+				Group:    "",
+			},
+		},
+	}
+
+	resp, err := clientset.AuthorizationV1().SelfSubjectAccessReviews().Create(ctx, sar, metav1.CreateOptions{})
+	if err != nil {
+		return err
+	}
+
+	if !resp.Status.Allowed {
+		return fmt.Errorf("impersonation not allowed")
 	}
 
 	return nil
