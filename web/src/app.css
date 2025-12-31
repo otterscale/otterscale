@@ -3,6 +3,7 @@
 @import '@fontsource/geist';
 @import '@fontsource/geist-mono';
 @import '@fontsource/noto-sans-tc';
+@import '@sjsf/shadcn4-theme/styles.css';
 
 @custom-variant dark (&:is(.dark *));
 
