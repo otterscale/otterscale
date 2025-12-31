@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"context"
 	"log/slog"
 	"os"
 
@@ -10,8 +11,9 @@ import (
 
 	"github.com/otterscale/otterscale/internal/config"
 	"github.com/otterscale/otterscale/internal/mux"
-	"github.com/otterscale/otterscale/internal/mux/impersonation"
-	"github.com/otterscale/otterscale/internal/mux/openfeature"
+	"github.com/otterscale/otterscale/internal/mux/interceptor/gated"
+	"github.com/otterscale/otterscale/internal/mux/interceptor/impersonation"
+	"github.com/otterscale/otterscale/internal/mux/interceptor/openfeature"
 )
 
 func NewServe(conf *config.Config, serve *mux.Serve) *cobra.Command {
@@ -77,7 +79,14 @@ func newServeOptions(conf *config.Config) ([]connect.HandlerOption, error) {
 		return nil, err
 	}
 
+	// removed on release 0.7
+	gatedImpersonation := gated.NewInterceptor(impersonationInterceptor,
+		func(ctx context.Context) bool {
+			enabled, _ := openFeatureInterceptor.Evaluate(ctx, "resource-enabled")
+			return enabled
+		})
+
 	return []connect.HandlerOption{
-		connect.WithInterceptors(openTelemetryInterceptor, openFeatureInterceptor, impersonationInterceptor),
+		connect.WithInterceptors(openTelemetryInterceptor, openFeatureInterceptor, gatedImpersonation),
 	}, nil
 }

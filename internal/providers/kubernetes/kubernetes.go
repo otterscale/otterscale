@@ -23,7 +23,7 @@ import (
 	"github.com/otterscale/otterscale/internal/config"
 	"github.com/otterscale/otterscale/internal/core/application/cluster"
 	"github.com/otterscale/otterscale/internal/core/scope"
-	"github.com/otterscale/otterscale/internal/mux/impersonation"
+	"github.com/otterscale/otterscale/internal/mux/interceptor/impersonation"
 	"github.com/otterscale/otterscale/internal/providers/juju"
 )
 

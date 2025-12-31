@@ -40,6 +40,10 @@ func NewInterceptor() (*Interceptor, error) {
 	}, nil
 }
 
+func (i *Interceptor) Evaluate(ctx context.Context, flagName string) (bool, error) {
+	return i.client.BooleanValue(ctx, flagName, false, openfeature.EvaluationContext{})
+}
+
 func (i *Interceptor) WrapUnary(next connect.UnaryFunc) connect.UnaryFunc {
 	return func(ctx context.Context, req connect.AnyRequest) (connect.AnyResponse, error) {
 		featureName, err := i.getFeatureName(req)
@@ -51,7 +55,7 @@ func (i *Interceptor) WrapUnary(next connect.UnaryFunc) connect.UnaryFunc {
 			return next(ctx, req)
 		}
 
-		enabled, err := i.client.BooleanValue(ctx, featureName, false, openfeature.EvaluationContext{})
+		enabled, err := i.Evaluate(ctx, featureName)
 		if err != nil {
 			return nil, connect.NewError(connect.CodeFailedPrecondition, fmt.Errorf("failed to evaluate feature %q: %w", featureName, err))
 		}
