@@ -8,6 +8,7 @@ import (
 
 	"connectrpc.com/connect"
 	"github.com/Masterminds/semver/v3"
+	"golang.org/x/sync/singleflight"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime/serializer/yaml"
@@ -29,7 +30,8 @@ type UseCase struct {
 	discovery DiscoveryRepo
 	resource  ResourceRepo
 
-	schemaCache sync.Map
+	schemaCache   sync.Map
+	schemaFlights singleflight.Group
 }
 
 func NewUseCase(discovery DiscoveryRepo, resource ResourceRepo) *UseCase {
@@ -54,14 +56,21 @@ func (uc *UseCase) GetSchema(cluster, group, version, kind string) (*spec.Schema
 		return v.(*spec.Schema), nil
 	}
 
-	schema, err := uc.discovery.Schema(cluster, group, version, kind)
+	v, err, _ := uc.schemaFlights.Do(key, func() (any, error) {
+		schema, err := uc.discovery.Schema(cluster, group, version, kind)
+		if err != nil {
+			return nil, err
+		}
+
+		uc.schemaCache.Store(key, schema)
+
+		return schema, nil
+	})
 	if err != nil {
 		return nil, err
 	}
 
-	uc.schemaCache.Store(key, schema)
-
-	return schema, nil
+	return v.(*spec.Schema), nil
 }
 
 func (uc *UseCase) ListResources(ctx context.Context, cgvr ClusterGroupVersionResource, namespace, labelSelector, fieldSelector string, limit int64, continueToken string) (*unstructured.UnstructuredList, error) {
