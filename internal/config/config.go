@@ -36,11 +36,20 @@ type Ceph struct {
 	RADOSTimeout time.Duration `json:"rados_timeout"`
 }
 
+type Vault struct {
+	Address            string `json:"address"`
+	Token              string `json:"token"`
+	KVMount            string `json:"kv_mount"`
+	KubernetesRole     string `json:"kubernetes_role"`
+	KubernetesAuthPath string `json:"kubernetes_auth_path"`
+}
+
 type Schema struct {
 	// System
 	MAAS     MAAS     `json:"maas"`
 	Juju     Juju     `json:"juju"`
 	MicroK8s MicroK8s `json:"micro_k8s"`
+	Vault    Vault    `json:"vault"`
 
 	// User
 	Ceph Ceph `json:"ceph"`
@@ -132,6 +141,32 @@ func (c *Config) MicroK8sConfig() string {
 
 func (c *Config) CephRADOSTimeout() time.Duration {
 	return c.v.GetDuration("ceph.rados_timeout")
+}
+
+func (c *Config) VaultAddress() string {
+	return c.v.GetString("vault.address")
+}
+
+func (c *Config) VaultToken() string {
+	return c.v.GetString("vault.token")
+}
+
+func (c *Config) VaultKVMount() string {
+	if mount := c.v.GetString("vault.kv_mount"); mount != "" {
+		return mount
+	}
+	return "secret"
+}
+
+func (c *Config) VaultKubernetesRole() string {
+	return c.v.GetString("vault.kubernetes_role")
+}
+
+func (c *Config) VaultKubernetesAuthPath() string {
+	if path := c.v.GetString("vault.kubernetes_auth_path"); path != "" {
+		return path
+	}
+	return "kubernetes"
 }
 
 func PrintDefault() error {

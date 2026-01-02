@@ -54,6 +54,7 @@ import (
 	"github.com/otterscale/otterscale/internal/providers/maas"
 	"github.com/otterscale/otterscale/internal/providers/registry"
 	"github.com/otterscale/otterscale/internal/providers/samba"
+	"github.com/otterscale/otterscale/internal/providers/vault"
 	"github.com/spf13/cobra"
 )
 
@@ -65,7 +66,13 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	bootstrapService := app.NewBootstrapService(useCase)
 	muxBootstrap := mux.NewBootstrap(bootstrapService)
 	jujuJuju := juju.New(configConfig)
-	kubernetesKubernetes, err := kubernetes.New(configConfig, jujuJuju)
+	vaultVault, err := vault.New(configConfig)
+	if err != nil {
+		return nil, nil, err
+	}
+	repository := vault.NewSecretRepo(vaultVault)
+	kubeConfigRepo := vault.NewKubeConfigRepo(repository)
+	kubernetesKubernetes, err := kubernetes.New(configConfig, jujuJuju, kubeConfigRepo)
 	if err != nil {
 		return nil, nil, err
 	}
