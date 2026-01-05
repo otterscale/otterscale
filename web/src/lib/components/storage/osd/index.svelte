@@ -4,7 +4,6 @@
 	import { getContext, onDestroy, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
-	import { env } from '$env/dynamic/public';
 	import { EnvironmentService } from '$lib/api/environment/v1/environment_pb';
 	import { type ObjectStorageDaemon, StorageService } from '$lib/api/storage/v1/storage_pb';
 	import * as Loading from '$lib/components/custom/loading';
@@ -38,8 +37,11 @@
 		if (!prometheusDriver) {
 			const response = await environmentService.getPrometheus({});
 			prometheusDriver = new PrometheusDriver({
-				endpoint: `${env.PUBLIC_API_URL}/prometheus`,
-				baseURL: response.baseUrl
+				endpoint: '/prometheus',
+				baseURL: response.baseUrl,
+				headers: {
+					'x-proxy-target': 'api'
+				}
 			});
 		}
 

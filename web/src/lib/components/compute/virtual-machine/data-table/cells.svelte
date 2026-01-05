@@ -111,7 +111,7 @@
 					<HoverCard.Trigger>
 						<Icon icon="ph:info" />
 					</HoverCard.Trigger>
-					<HoverCard.Content class="min-w-[300px]">
+					<HoverCard.Content class="min-w-75">
 						<Table.Root>
 							<Table.Body class="text-xs">
 								{#if row.original.instanceType.name}
@@ -186,10 +186,10 @@
 	</Layout.Cell>
 {/snippet}
 
-{#snippet vnc(data: { row: Row<VirtualMachine>; scope: string })}
+{#snippet vnc(data: { row: Row<VirtualMachine>; scope: string; url: URL })}
 	<Layout.Cell class="items-end">
 		{#if data.row.original.status === 'Running'}
-			<VNC virtualMachine={data.row.original} scope={data.scope} />
+			<VNC virtualMachine={data.row.original} scope={data.scope} url={data.url} />
 		{/if}
 	</Layout.Cell>
 {/snippet}

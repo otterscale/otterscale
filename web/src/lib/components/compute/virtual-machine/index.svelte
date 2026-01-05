@@ -4,7 +4,6 @@
 	import { getContext, onDestroy, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
-	import { env } from '$env/dynamic/public';
 	import { EnvironmentService } from '$lib/api/environment/v1/environment_pb';
 	import { InstanceService, type VirtualMachine } from '$lib/api/instance/v1/instance_pb';
 	import * as Loading from '$lib/components/custom/loading';
@@ -17,7 +16,7 @@
 </script>
 
 <script lang="ts">
-	let { scope }: { scope: string } = $props();
+	let { scope, url }: { scope: string; url: URL } = $props();
 
 	const transport: Transport = getContext('transport');
 	const VirtualMachineClient = createClient(InstanceService, transport);
@@ -37,8 +36,11 @@
 		if (!prometheusDriver) {
 			const response = await environmentService.getPrometheus({});
 			prometheusDriver = new PrometheusDriver({
-				endpoint: `${env.PUBLIC_API_URL}/prometheus`,
-				baseURL: response.baseUrl
+				endpoint: '/prometheus',
+				baseURL: response.baseUrl,
+				headers: {
+					'x-proxy-target': 'api'
+				}
 			});
 		}
 
@@ -105,7 +107,7 @@
 <main class="space-y-4 py-4">
 	<ExtensionsAlert {scope} />
 	{#if isMounted}
-		<DataTable {virtualMachines} {metrics} {scope} {reloadManager} />
+		<DataTable {virtualMachines} {metrics} {scope} {url} {reloadManager} />
 	{:else}
 		<Loading.DataTable />
 	{/if}

@@ -26,6 +26,7 @@ const messages = {
 function getColumns(
 	metrics: Metrics,
 	scope: string,
+	url: URL,
 	reloadManager: ReloadManager
 ): ColumnDef<VirtualMachine>[] {
 	return [
@@ -154,7 +155,7 @@ function getColumns(
 				return renderSnippet(headers.vnc, column);
 			},
 			cell: ({ row }) => {
-				return renderSnippet(cells.vnc, { row, scope });
+				return renderSnippet(cells.vnc, { row, scope, url });
 			},
 			enableHiding: false
 		},

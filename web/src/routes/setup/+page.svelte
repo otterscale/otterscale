@@ -6,15 +6,18 @@
 	import { fly } from 'svelte/transition';
 
 	import { version } from '$app/environment';
-	import { env } from '$env/dynamic/public';
 	import { BootstrapService, type WatchStatusResponse } from '$lib/api/bootstrap/v1/bootstrap_pb';
 	import SquareGridImage from '$lib/assets/square-grid.svg';
 	import * as Code from '$lib/components/custom/code';
 	import { Button } from '$lib/components/ui/button';
 	import { m } from '$lib/paraglide/messages';
 
+	let { data } = $props();
+
 	// Constants
-	const INSTALL_CODE = `bash -c "$(curl -fsSL https://raw.githubusercontent.com/otterscale/otterscale/refs/tags/${version}/scripts/install.sh)" -- url=${env.PUBLIC_API_URL}`;
+	const INSTALL_CODE = $derived(
+		`bash -c "$(curl -fsSL https://raw.githubusercontent.com/otterscale/otterscale/refs/tags/${version}/scripts/install.sh)" -- url=${data.url}`
+	);
 	const RETRY_DELAY = 2000;
 
 	const SetupPhase = {

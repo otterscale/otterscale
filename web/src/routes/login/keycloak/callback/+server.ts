@@ -5,7 +5,6 @@ import { resolve } from '$app/paths';
 import { env } from '$env/dynamic/private';
 import { keycloak } from '$lib/server/keycloak';
 import { createSession, generateSessionToken, setSessionTokenCookie } from '$lib/server/session';
-import { createUser, getUser } from '$lib/server/user';
 
 interface KeycloakIdTokenClaims {
 	iss: string;
@@ -14,6 +13,12 @@ interface KeycloakIdTokenClaims {
 	email?: string;
 	name?: string;
 	picture?: string;
+	preferred_username?: string;
+	resource_access?: {
+		[key: string]: {
+			roles?: string[];
+		};
+	};
 	[key: string]: unknown;
 }
 
@@ -90,20 +95,23 @@ export async function GET(event: RequestEvent): Promise<Response> {
 	const claimsError = validateClaims(claims);
 	if (claimsError) return claimsError;
 
-	const existingUser = await getUser(claims.sub);
-	const user =
-		existingUser ??
-		(await createUser(
-			claims.sub,
-			(claims.preferred_username as string) ?? '',
-			claims.email ?? '',
-			claims.name ?? '',
-			claims.picture ?? ''
-		));
+	const token = generateSessionToken();
+	const user = {
+		sub: claims.sub,
+		username: claims.preferred_username ?? '',
+		name: claims.name ?? '',
+		email: claims.email ?? '',
+		picture: claims.picture ?? '',
+		roles: claims.resource_access?.[env.KEYCLOAK_CLIENT_ID ?? '']?.roles ?? []
+	};
+	const tokenSet = {
+		accessToken: tokens.accessToken(),
+		accessTokenExpiresAt: tokens.accessTokenExpiresAt(),
+		refreshToken: tokens.refreshToken()
+	};
 
-	const sessionToken = generateSessionToken();
-	const session = await createSession(sessionToken, user.id);
-	setSessionTokenCookie(event.cookies, sessionToken, session.expiresAt);
+	const session = await createSession(token, user, tokenSet);
+	setSessionTokenCookie(event.cookies, token, session.expiresAt);
 
 	return new Response(null, {
 		status: 302,

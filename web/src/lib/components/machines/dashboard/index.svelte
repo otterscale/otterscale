@@ -3,7 +3,6 @@
 	import { PrometheusDriver } from 'prometheus-query';
 	import { getContext, onDestroy, onMount } from 'svelte';
 
-	import { env } from '$env/dynamic/public';
 	import { EnvironmentService } from '$lib/api/environment/v1/environment_pb';
 	import { Reloader } from '$lib/components/custom/reloader';
 	import { Overview } from '$lib/components/machines/dashboard/overview/index';
@@ -21,10 +20,13 @@
 
 	onMount(async () => {
 		try {
-			const envResponse = await environmentService.getPrometheus({});
+			const response = await environmentService.getPrometheus({});
 			prometheusDriver = new PrometheusDriver({
-				endpoint: `${env.PUBLIC_API_URL}/prometheus`,
-				baseURL: envResponse.baseUrl
+				endpoint: '/prometheus',
+				baseURL: response.baseUrl,
+				headers: {
+					'x-proxy-target': 'api'
+				}
 			});
 		} catch (error) {
 			console.error('Failed to initialize Prometheus driver:', error);

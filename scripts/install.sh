@@ -1655,6 +1655,8 @@ keycloakx:
             "registrationAllowed": true,
             "rememberMe": true,
             "resetPasswordAllowed": true,
+            "revokeRefreshToken": true,
+            "refreshTokenMaxReuse": 2,
             "clients": [
               {
                 "enabled": true,
@@ -1691,10 +1693,39 @@ keycloakx:
                       "access.token.claim": "true",
                       "introspection.token.claim": "true"
                     }
+                  },
+                  {
+                    "name": "client roles",
+                    "protocol": "openid-connect",
+                    "protocolMapper": "oidc-usermodel-client-role-mapper",
+                    "consentRequired": false,
+                    "config": {
+                      "introspection.token.claim": "true",
+                      "multivalued": "true",
+                      "userinfo.token.claim": "false",
+                      "user.attribute": "foo",
+                      "id.token.claim": "true",
+                      "lightweight.claim": "false",
+                      "access.token.claim": "true",
+                      "claim.name": "resource_access.${client_id}.roles",
+                      "jsonType.label": "String"
+                    }
                   }
                 ]
               }
-            ]
+            ],
+            "roles": {
+              "client": {
+                "$keycloak_clientID": [
+                  {
+                    "name": "admin",
+                    "composite": false,
+                    "clientRole": true,
+                    "attributes": {}
+                  }
+                ]
+              }
+            }
           }
 
   database:

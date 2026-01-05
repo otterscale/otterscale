@@ -11,7 +11,7 @@
 	import { useSidebar } from '$lib/components/ui/sidebar';
 	import { m } from '$lib/paraglide/messages.js';
 	import { getLocale, type Locale, setLocale } from '$lib/paraglide/runtime';
-	import type { User } from '$lib/server/user';
+	import type { User } from '$lib/server/session';
 
 	import SheetNotification from './sheet-notification.svelte';
 
