@@ -8,7 +8,7 @@ import { keycloak } from '$lib/server/keycloak';
 import {
 	deleteSessionTokenCookie,
 	setSessionTokenCookie,
-	updateSession,
+	updateSessionTokenSet,
 	validateSessionToken
 } from '$lib/server/session';
 
@@ -27,60 +27,71 @@ const handleAuth: Handle = async ({ event, resolve }) => {
 	}
 
 	const token = event.cookies.get('OS_SESSION');
+
 	if (!token) {
-		event.locals.user = null;
 		event.locals.session = null;
 		return resolve(event);
 	}
 
-	const { session, user } = await validateSessionToken(token);
+	const session = await validateSessionToken(token);
 
 	if (session) {
 		setSessionTokenCookie(event.cookies, token, session.expiresAt);
 		event.locals.session = session;
-		event.locals.user = user;
+
+		try {
+			const BUFFER_MS = 30 * 1000;
+			const isNearExpiry =
+				Date.now() >= (session.tokenSet.accessTokenExpiresAt.getTime() ?? 0) - BUFFER_MS;
+
+			if (isNearExpiry) {
+				const tokens = await keycloak.refreshAccessToken(session.tokenSet.refreshToken);
+				const tokenSet = {
+					accessToken: tokens.accessToken(),
+					refreshToken: tokens.refreshToken(),
+					accessTokenExpiresAt: tokens.accessTokenExpiresAt()
+				};
+
+				event.locals.session = await updateSessionTokenSet(session.id, tokenSet);
+			}
+		} catch (err) {
+			console.error('Token refresh failed:', err);
+
+			deleteSessionTokenCookie(event.cookies);
+			event.locals.session = null;
+		}
 	} else {
 		deleteSessionTokenCookie(event.cookies);
 		event.locals.session = null;
-		event.locals.user = null;
 	}
 
 	return resolve(event);
 };
 
 const handleProxy: Handle = async ({ event, resolve }) => {
-	const isApiProxy = event.request.headers.get('x-proxy-target') === 'api';
-	const session = event.locals.session;
-
-	if (!isApiProxy || !session?.accessToken) {
+	if (isFlexibleBooleanTrue(env.BOOTSTRAP_MODE)) {
 		return resolve(event);
 	}
 
-	try {
-		const BUFFER_MS = 30 * 1000;
-		const isNearExpiry = Date.now() >= (session.accessTokenExpiresAt?.getTime() ?? 0) - BUFFER_MS;
+	const isApiProxy = event.request.headers.get('x-proxy-target') === 'api';
+	const session = event.locals.session;
 
-		if (isNearExpiry && session.refreshToken) {
-			const tokens = await keycloak.refreshAccessToken(session.refreshToken);
-			event.locals.session = await updateSession(
-				session.id,
-				tokens.accessToken(),
-				tokens.accessTokenExpiresAt(),
-				tokens.refreshToken()
-			);
-		}
-	} catch (err) {
-		console.error('Token refresh failed:', err);
-		deleteSessionTokenCookie(event.cookies);
-		return new Response('Session Expired', { status: 401 });
+	if (!isApiProxy || !session) {
+		return resolve(event);
 	}
 
 	const targetUrl = new URL(event.url.pathname + event.url.search, env.API_URL);
-	const proxyHeaders = new Headers(event.request.headers);
 
-	proxyHeaders.delete('cookie');
-	proxyHeaders.delete('x-proxy-target');
-	proxyHeaders.set('Authorization', `Bearer ${event.locals.session?.accessToken}`);
+	const proxyHeaders = new Headers();
+	const headersToForward = ['accept', 'content-type', 'user-agent'];
+
+	event.request.headers.forEach((value, key) => {
+		if (headersToForward.includes(key.toLowerCase())) {
+			proxyHeaders.set(key, value);
+		}
+	});
+
+	proxyHeaders.set('Authorization', `Bearer ${session.tokenSet.accessToken}`);
 
 	try {
 		const response = await fetch(targetUrl.toString(), {
@@ -91,10 +102,9 @@ const handleProxy: Handle = async ({ event, resolve }) => {
 		} as RequestInit);
 
 		const responseHeaders = new Headers(response.headers);
+		const headersToClean = ['access-control-allow-origin', 'content-encoding', 'content-length'];
 
-		responseHeaders.delete('content-encoding');
-		responseHeaders.delete('content-length');
-		responseHeaders.delete('access-control-allow-origin');
+		headersToClean.forEach((h) => responseHeaders.delete(h));
 
 		return new Response(response.body, {
 			headers: responseHeaders,

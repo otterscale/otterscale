@@ -1,58 +1,113 @@
 import { sha256 } from '@oslojs/crypto/sha2';
-import { encodeBase32, encodeHexLowerCase } from '@oslojs/encoding';
+import { encodeBase32LowerCaseNoPadding, encodeHexLowerCase } from '@oslojs/encoding';
 import type { Cookies } from '@sveltejs/kit';
-import { eq } from 'drizzle-orm';
 
 import { dev } from '$app/environment';
 
-import { db } from './db';
-import { sessionsTable, usersTable } from './db/schema';
-import type { User } from './user';
+import { redis } from './redis';
 
-export async function validateSessionToken(token: string): Promise<SessionValidationResult> {
+const SESSION_EXPIRY_MS = 1000 * 60 * 60 * 24 * 30; // 30 days
+const SESSION_REFRESH_THRESHOLD_MS = 1000 * 60 * 60 * 24 * 15; // 15 days
+
+export function generateSessionToken(): string {
+	const bytes = new Uint8Array(20);
+	crypto.getRandomValues(bytes);
+	return encodeBase32LowerCaseNoPadding(bytes);
+}
+
+export async function createSession(
+	token: string,
+	user: User,
+	tokenSet: TokenSet
+): Promise<Session> {
 	const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
 
-	const sessions = await db
-		.select()
-		.from(sessionsTable)
-		.innerJoin(usersTable, eq(sessionsTable.userId, usersTable.id))
-		.where(eq(sessionsTable.id, sessionId));
+	const session: Session = {
+		id: sessionId,
+		user,
+		tokenSet,
+		expiresAt: new Date(Date.now() + SESSION_EXPIRY_MS)
+	};
 
-	if (sessions.length === 0) {
-		return { session: null, user: null };
+	await saveSessionToRedis(session);
+
+	return session;
+}
+
+export async function updateSessionTokenSet(
+	sessionId: string,
+	tokenSet: TokenSet
+): Promise<Session | null> {
+	const item = await redis.get(`session:${sessionId}`);
+
+	if (item === null) {
+		return null;
 	}
 
-	const session = sessions[0].sessions;
-	const user = sessions[0].users;
+	const result = JSON.parse(item);
+
+	const session: Session = {
+		id: result.id,
+		user: result.user,
+		tokenSet: tokenSet,
+		expiresAt: result.expiresAt
+	};
+
+	await saveSessionToRedis(session);
+
+	return session;
+}
+
+export async function validateSessionToken(token: string): Promise<Session | null> {
+	const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
+	const item = await redis.get(`session:${sessionId}`);
+
+	if (item === null) {
+		return null;
+	}
+
+	const result = JSON.parse(item);
+
+	const session: Session = {
+		id: result.id,
+		user: result.user,
+		tokenSet: {
+			accessToken: result.tokenSet.accessToken,
+			refreshToken: result.tokenSet.refreshToken,
+			accessTokenExpiresAt: new Date(result.tokenSet.accessTokenExpiresAt)
+		},
+		expiresAt: new Date(result.expiresAt)
+	};
 
 	if (Date.now() >= session.expiresAt.getTime()) {
-		await db.delete(sessionsTable).where(eq(sessionsTable.id, session.id));
-		return { session: null, user: null };
+		await redis.del(`session:${sessionId}`);
+		return null;
 	}
 
-	if (Date.now() >= session.expiresAt.getTime() - 1000 * 60 * 60 * 24 * 15) {
-		const newExpiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24 * 30);
-
-		await db
-			.update(sessionsTable)
-			.set({
-				expiresAt: newExpiresAt
-			})
-			.where(eq(sessionsTable.id, session.id));
-
-		session.expiresAt = newExpiresAt;
+	if (Date.now() >= session.expiresAt.getTime() - SESSION_REFRESH_THRESHOLD_MS) {
+		session.expiresAt = new Date(Date.now() + SESSION_EXPIRY_MS);
+		await saveSessionToRedis(session);
 	}
 
-	return { session, user };
+	return session;
 }
 
 export async function invalidateSession(sessionId: string): Promise<void> {
-	await db.delete(sessionsTable).where(eq(sessionsTable.id, sessionId));
+	await redis.del(`session:${sessionId}`);
 }
 
-// TODO: TTL
-export async function invalidateUserSessions(userId: number): Promise<void> {
-	await db.delete(sessionsTable).where(eq(sessionsTable.userId, userId));
+async function saveSessionToRedis(session: Session) {
+	await redis.set(
+		`session:${session.id}`,
+		JSON.stringify({
+			id: session.id,
+			user: session.user,
+			tokenSet: session.tokenSet,
+			expiresAt: session.expiresAt.getTime()
+		}),
+		'EXAT',
+		Math.floor(session.expiresAt.getTime() / 1000)
+	);
 }
 
 export function setSessionTokenCookie(cookies: Cookies, token: string, expiresAt: Date): void {
@@ -75,72 +130,24 @@ export function deleteSessionTokenCookie(cookies: Cookies): void {
 	});
 }
 
-export function generateSessionToken(): string {
-	const tokenBytes = new Uint8Array(20);
-	crypto.getRandomValues(tokenBytes);
-	const token = encodeBase32(tokenBytes).toLowerCase();
-	return token;
-}
+// Types
+export type Session = {
+	id: string;
+	user: User;
+	tokenSet: TokenSet;
+	expiresAt: Date;
+};
 
-export async function createSession(
-	token: string,
-	userId: number,
-	accessToken: string,
-	accessTokenExpiresAt: Date,
-	refreshToken: string
-): Promise<Session> {
-	const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
-	const session: Session = {
-		id: sessionId,
-		userId,
-		expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30),
-		accessToken,
-		accessTokenExpiresAt,
-		refreshToken
-	};
+export type User = {
+	sub: string;
+	username: string;
+	name: string;
+	email: string;
+	picture: string;
+};
 
-	const sessions = await db
-		.insert(sessionsTable)
-		.values({
-			id: session.id,
-			userId: session.userId,
-			expiresAt: session.expiresAt,
-			accessToken: session.accessToken,
-			accessTokenExpiresAt: session.accessTokenExpiresAt,
-			refreshToken: session.refreshToken
-		})
-		.returning();
-
-	if (sessions.length === 0) {
-		throw new Error('Failed to create session');
-	}
-
-	return sessions[0];
-}
-
-export async function updateSession(
-	sessionId: string,
-	accessToken: string,
-	accessTokenExpiresAt: Date,
-	refreshToken: string
-): Promise<Session> {
-	const sessions = await db
-		.update(sessionsTable)
-		.set({
-			accessToken: accessToken,
-			accessTokenExpiresAt: accessTokenExpiresAt,
-			refreshToken: refreshToken
-		})
-		.where(eq(sessionsTable.id, sessionId))
-		.returning();
-
-	if (sessions.length === 0) {
-		throw new Error('Failed to update session');
-	}
-
-	return sessions[0];
-}
-
-export type Session = typeof sessionsTable.$inferSelect;
-
-type SessionValidationResult = { session: Session; user: User } | { session: null; user: null };
+export type TokenSet = {
+	accessToken: string;
+	refreshToken: string;
+	accessTokenExpiresAt: Date;
+};

@@ -19,7 +19,7 @@ const REQUIRED_ENV_VARS_NORMAL: readonly EnvVar[] = [
 	{ value: env.KEYCLOAK_REALM_URL, name: 'KEYCLOAK_REALM_URL' },
 	{ value: env.KEYCLOAK_CLIENT_ID, name: 'KEYCLOAK_CLIENT_ID' },
 	{ value: env.KEYCLOAK_CLIENT_SECRET, name: 'KEYCLOAK_CLIENT_SECRET' },
-	{ value: env.DATABASE_URL, name: 'DATABASE_URL' }
+	{ value: env.REDIS_URL, name: 'REDIS_URL' }
 ];
 
 const checkRequiredEnvVars = (envVars: readonly EnvVar[]): void => {
@@ -40,7 +40,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 
 	checkRequiredEnvVars(REQUIRED_ENV_VARS_NORMAL);
 
-	if (!locals.session || !locals.user) {
+	if (!locals.session) {
 		throw redirect(307, resolve('/login'));
 	}
 

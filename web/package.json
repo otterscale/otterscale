@@ -15,9 +15,7 @@
 		"lint": "prettier --check . && eslint .",
 		"test:unit": "vitest",
 		"test": "npm run test:unit -- --run && npm run test:e2e",
-		"test:e2e": "playwright test",
-		"db:generate": "drizzle-kit generate",
-		"db:migrate": "drizzle-kit migrate"
+		"test:e2e": "playwright test"
 	},
 	"devDependencies": {
 		"@eslint/compat": "^2.0.0",
@@ -47,7 +45,6 @@
 		"@vitest/coverage-v8": "^4.0.16",
 		"bits-ui": "^2.14.4",
 		"clsx": "^2.1.1",
-		"drizzle-kit": "^0.31.8",
 		"embla-carousel-svelte": "^8.6.0",
 		"eslint": "^9.39.2",
 		"eslint-config-prettier": "^10.1.8",
@@ -103,8 +100,8 @@
 		"arctic": "^3.7.0",
 		"d3-scale": "^4.0.2",
 		"d3-shape": "^3.2.0",
-		"drizzle-orm": "^0.45.1",
 		"highlight.js": "^11.11.1",
+		"ioredis": "^5.8.2",
 		"isomorphic-dompurify": "^2.34.0",
 		"pg": "^8.16.3",
 		"prometheus-query": "^3.5.1",
