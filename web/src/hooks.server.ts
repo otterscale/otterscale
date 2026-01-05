@@ -71,7 +71,8 @@ const handleRefreshToken: Handle = async ({ event, resolve }) => {
 			Date.now() >= (session.tokenSet.accessTokenExpiresAt.getTime() ?? 0) - BUFFER_MS;
 
 		if (isNearExpiry) {
-			const hasLock = await acquireRefreshLock(session.id, 10000); // 10 seconds
+			const REFRESH_LOCK_TTL_MS = 10 * 1000;
+			const hasLock = await acquireRefreshLock(session.id, REFRESH_LOCK_TTL_MS);
 
 			// stale-while-revalidate
 			if (hasLock) {
@@ -142,7 +143,7 @@ const handleProxy: Handle = async ({ event, resolve }) => {
 		} as ResponseInit);
 	} catch (err) {
 		console.error('Proxy Fetch Error:', err);
-		return new Response(`Gateway Error: ${err}`, { status: 502 });
+		return new Response('Gateway Error', { status: 502 });
 	}
 };
 
