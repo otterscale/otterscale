@@ -6,6 +6,7 @@ import { dev } from '$app/environment';
 
 import { redis } from './redis';
 
+const COOKIE_NAME = !dev ? '__Host-OS_SESSION' : 'OS_SESSION';
 const SESSION_EXPIRY_MS = 1000 * 60 * 60 * 24 * 30; // 30 days
 const SESSION_REFRESH_THRESHOLD_MS = 1000 * 60 * 60 * 24 * 15; // 15 days
 
@@ -29,55 +30,24 @@ export async function createSession(
 		expiresAt: new Date(Date.now() + SESSION_EXPIRY_MS)
 	};
 
-	await saveSessionToRedis(session);
+	await setSessionToRedis(session);
 
 	return session;
 }
 
-export async function updateSessionTokenSet(
-	sessionId: string,
-	tokenSet: TokenSet
-): Promise<Session | null> {
-	const item = await redis.get(`session:${sessionId}`);
-
-	if (item === null) {
-		return null;
-	}
-
-	const result = JSON.parse(item);
-
-	const session: Session = {
-		id: result.id,
-		user: result.user,
-		tokenSet: tokenSet,
-		expiresAt: result.expiresAt
-	};
-
-	await saveSessionToRedis(session);
-
-	return session;
+export async function updateSessionTokenSet(sessionId: string, tokenSet: TokenSet) {
+	await redis.hset(`session:${sessionId}`, {
+		tokenSet: JSON.stringify(tokenSet)
+	});
 }
 
 export async function validateSessionToken(token: string): Promise<Session | null> {
 	const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
-	const item = await redis.get(`session:${sessionId}`);
+	const session = await getSessionFromRedis(sessionId);
 
-	if (item === null) {
+	if (session === null) {
 		return null;
 	}
-
-	const result = JSON.parse(item);
-
-	const session: Session = {
-		id: result.id,
-		user: result.user,
-		tokenSet: {
-			accessToken: result.tokenSet.accessToken,
-			refreshToken: result.tokenSet.refreshToken,
-			accessTokenExpiresAt: new Date(result.tokenSet.accessTokenExpiresAt)
-		},
-		expiresAt: new Date(result.expiresAt)
-	};
 
 	if (Date.now() >= session.expiresAt.getTime()) {
 		await redis.del(`session:${sessionId}`);
@@ -86,7 +56,7 @@ export async function validateSessionToken(token: string): Promise<Session | nul
 
 	if (Date.now() >= session.expiresAt.getTime() - SESSION_REFRESH_THRESHOLD_MS) {
 		session.expiresAt = new Date(Date.now() + SESSION_EXPIRY_MS);
-		await saveSessionToRedis(session);
+		await setSessionToRedis(session);
 	}
 
 	return session;
@@ -96,22 +66,42 @@ export async function invalidateSession(sessionId: string): Promise<void> {
 	await redis.del(`session:${sessionId}`);
 }
 
-async function saveSessionToRedis(session: Session) {
-	await redis.set(
-		`session:${session.id}`,
-		JSON.stringify({
-			id: session.id,
-			user: session.user,
-			tokenSet: session.tokenSet,
-			expiresAt: session.expiresAt.getTime()
-		}),
-		'EXAT',
-		Math.floor(session.expiresAt.getTime() / 1000)
-	);
+async function setSessionToRedis(session: Session) {
+	const pipeline = redis.pipeline();
+	pipeline.hset(`session:${session.id}`, {
+		user: JSON.stringify(session.user),
+		tokenSet: JSON.stringify(session.tokenSet),
+		expiresAt: session.expiresAt.getTime().toString()
+	});
+	pipeline.expireat(`session:${session.id}`, Math.floor(session.expiresAt.getTime() / 1000));
+	await pipeline.exec();
+}
+
+async function getSessionFromRedis(sessionId: string): Promise<Session | null> {
+	const data = await redis.hgetall(`session:${sessionId}`);
+	if (!data || Object.keys(data).length === 0) {
+		return null;
+	}
+
+	try {
+		const user = JSON.parse(data.user);
+		const tokenSet = JSON.parse(data.tokenSet);
+		tokenSet.accessTokenExpiresAt = new Date(tokenSet.accessTokenExpiresAt);
+		const expiresAt = new Date(parseInt(data.expiresAt));
+
+		return { id: sessionId, user, tokenSet, expiresAt };
+	} catch {
+		await invalidateSession(sessionId);
+		return null;
+	}
+}
+
+export function getSessionTokenCookie(cookies: Cookies): string | undefined {
+	return cookies.get(COOKIE_NAME);
 }
 
 export function setSessionTokenCookie(cookies: Cookies, token: string, expiresAt: Date): void {
-	cookies.set('OS_SESSION', token, {
+	cookies.set(COOKIE_NAME, token, {
 		httpOnly: true,
 		path: '/',
 		secure: !dev,
@@ -121,7 +111,7 @@ export function setSessionTokenCookie(cookies: Cookies, token: string, expiresAt
 }
 
 export function deleteSessionTokenCookie(cookies: Cookies): void {
-	cookies.set('OS_SESSION', '', {
+	cookies.set(COOKIE_NAME, '', {
 		httpOnly: true,
 		path: '/',
 		secure: !dev,

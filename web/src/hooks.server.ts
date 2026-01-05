@@ -7,6 +7,7 @@ import { paraglideMiddleware } from '$lib/paraglide/server';
 import { keycloak } from '$lib/server/keycloak';
 import {
 	deleteSessionTokenCookie,
+	getSessionTokenCookie,
 	setSessionTokenCookie,
 	updateSessionTokenSet,
 	validateSessionToken
@@ -26,7 +27,7 @@ const handleAuth: Handle = async ({ event, resolve }) => {
 		return resolve(event);
 	}
 
-	const token = event.cookies.get('OS_SESSION');
+	const token = getSessionTokenCookie(event.cookies);
 
 	if (!token) {
 		event.locals.session = null;
@@ -52,7 +53,8 @@ const handleAuth: Handle = async ({ event, resolve }) => {
 					accessTokenExpiresAt: tokens.accessTokenExpiresAt()
 				};
 
-				event.locals.session = await updateSessionTokenSet(session.id, tokenSet);
+				await updateSessionTokenSet(session.id, tokenSet);
+				event.locals.session.tokenSet = tokenSet;
 			}
 		} catch (err) {
 			console.error('Token refresh failed:', err);
@@ -81,16 +83,10 @@ const handleProxy: Handle = async ({ event, resolve }) => {
 	}
 
 	const targetUrl = new URL(event.url.pathname + event.url.search, env.API_URL);
+	const proxyHeaders = new Headers(event.request.headers);
 
-	const proxyHeaders = new Headers();
-	const headersToForward = ['accept', 'content-type', 'user-agent'];
-
-	event.request.headers.forEach((value, key) => {
-		if (headersToForward.includes(key.toLowerCase())) {
-			proxyHeaders.set(key, value);
-		}
-	});
-
+	proxyHeaders.delete('cookie');
+	proxyHeaders.delete('x-proxy-target');
 	proxyHeaders.set('Authorization', `Bearer ${session.tokenSet.accessToken}`);
 
 	try {
@@ -102,9 +98,10 @@ const handleProxy: Handle = async ({ event, resolve }) => {
 		} as RequestInit);
 
 		const responseHeaders = new Headers(response.headers);
-		const headersToClean = ['access-control-allow-origin', 'content-encoding', 'content-length'];
 
-		headersToClean.forEach((h) => responseHeaders.delete(h));
+		responseHeaders.delete('access-control-allow-origin');
+		responseHeaders.delete('content-encoding');
+		responseHeaders.delete('content-length');
 
 		return new Response(response.body, {
 			headers: responseHeaders,
