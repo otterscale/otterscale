@@ -66,7 +66,7 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	bootstrapService := app.NewBootstrapService(useCase)
 	muxBootstrap := mux.NewBootstrap(bootstrapService)
 	jujuJuju := juju.New(configConfig)
-	vaultVault, err := vault.New(configConfig)
+	vaultVault, err := vault.New()
 	if err != nil {
 		return nil, nil, err
 	}
