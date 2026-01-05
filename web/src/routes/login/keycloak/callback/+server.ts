@@ -13,6 +13,12 @@ interface KeycloakIdTokenClaims {
 	email?: string;
 	name?: string;
 	picture?: string;
+	preferred_username?: string;
+	resource_access?: {
+		[key: string]: {
+			roles?: string[];
+		};
+	};
 	[key: string]: unknown;
 }
 
@@ -92,10 +98,11 @@ export async function GET(event: RequestEvent): Promise<Response> {
 	const token = generateSessionToken();
 	const user = {
 		sub: claims.sub,
-		username: (claims.preferred_username as string) ?? '',
+		username: claims.preferred_username ?? '',
 		name: claims.name ?? '',
 		email: claims.email ?? '',
-		picture: claims.picture ?? ''
+		picture: claims.picture ?? '',
+		roles: claims.resource_access?.[env.KEYCLOAK_CLIENT_ID]?.roles ?? []
 	};
 	const tokenSet = {
 		accessToken: tokens.accessToken(),
