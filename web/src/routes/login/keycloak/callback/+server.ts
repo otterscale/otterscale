@@ -102,7 +102,7 @@ export async function GET(event: RequestEvent): Promise<Response> {
 		name: claims.name ?? '',
 		email: claims.email ?? '',
 		picture: claims.picture ?? '',
-		roles: claims.resource_access?.[env.KEYCLOAK_CLIENT_ID]?.roles ?? []
+		roles: claims.resource_access?.[env.KEYCLOAK_CLIENT_ID ?? '']?.roles ?? []
 	};
 	const tokenSet = {
 		accessToken: tokens.accessToken(),
