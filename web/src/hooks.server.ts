@@ -6,8 +6,10 @@ import { isFlexibleBooleanTrue } from '$lib/helper';
 import { paraglideMiddleware } from '$lib/paraglide/server';
 import { keycloak } from '$lib/server/keycloak';
 import {
+	acquireRefreshLock,
 	deleteSessionTokenCookie,
 	getSessionTokenCookie,
+	releaseRefreshLock,
 	setSessionTokenCookie,
 	updateSessionTokenSet,
 	validateSessionToken
@@ -34,37 +36,66 @@ const handleAuth: Handle = async ({ event, resolve }) => {
 		return resolve(event);
 	}
 
-	const session = await validateSessionToken(token);
+	const { session, fresh } = await validateSessionToken(token);
 
 	if (session) {
-		setSessionTokenCookie(event.cookies, token, session.expiresAt);
-		event.locals.session = session;
-
-		try {
-			const BUFFER_MS = 30 * 1000;
-			const isNearExpiry =
-				Date.now() >= (session.tokenSet.accessTokenExpiresAt.getTime() ?? 0) - BUFFER_MS;
-
-			if (isNearExpiry) {
-				const tokens = await keycloak.refreshAccessToken(session.tokenSet.refreshToken);
-				const tokenSet = {
-					accessToken: tokens.accessToken(),
-					refreshToken: tokens.refreshToken(),
-					accessTokenExpiresAt: tokens.accessTokenExpiresAt()
-				};
-
-				await updateSessionTokenSet(session.id, tokenSet);
-				event.locals.session.tokenSet = tokenSet;
-			}
-		} catch (err) {
-			console.error('Token refresh failed:', err);
-
-			deleteSessionTokenCookie(event.cookies);
-			event.locals.session = null;
+		if (fresh) {
+			setSessionTokenCookie(event.cookies, token, session.expiresAt);
 		}
+		event.locals.session = session;
 	} else {
 		deleteSessionTokenCookie(event.cookies);
 		event.locals.session = null;
+	}
+
+	return resolve(event);
+};
+
+const handleRefreshToken: Handle = async ({ event, resolve }) => {
+	if (isFlexibleBooleanTrue(env.BOOTSTRAP_MODE)) {
+		return resolve(event);
+	}
+
+	const token = getSessionTokenCookie(event.cookies);
+
+	if (!token) {
+		event.locals.session = null;
+		return resolve(event);
+	}
+
+	const session = event.locals.session;
+
+	if (session) {
+		const BUFFER_MS = 30 * 1000;
+		const isNearExpiry =
+			Date.now() >= (session.tokenSet.accessTokenExpiresAt.getTime() ?? 0) - BUFFER_MS;
+
+		if (isNearExpiry) {
+			const hasLock = await acquireRefreshLock(session.id, 10000); // 10 seconds
+
+			// stale-while-revalidate
+			if (hasLock) {
+				try {
+					const tokens = await keycloak.refreshAccessToken(session.tokenSet.refreshToken);
+					const tokenSet = {
+						accessToken: tokens.accessToken(),
+						refreshToken: tokens.refreshToken(),
+						accessTokenExpiresAt: tokens.accessTokenExpiresAt()
+					};
+
+					await updateSessionTokenSet(session.id, tokenSet);
+					session.tokenSet = tokenSet;
+					event.locals.session = session;
+				} catch (err) {
+					console.error('Token refresh failed:', err);
+
+					deleteSessionTokenCookie(event.cookies);
+					event.locals.session = null;
+				} finally {
+					await releaseRefreshLock(session.id);
+				}
+			}
+		}
 	}
 
 	return resolve(event);
@@ -99,9 +130,10 @@ const handleProxy: Handle = async ({ event, resolve }) => {
 
 		const responseHeaders = new Headers(response.headers);
 
-		responseHeaders.delete('access-control-allow-origin');
+		responseHeaders.delete('connection');
 		responseHeaders.delete('content-encoding');
 		responseHeaders.delete('content-length');
+		responseHeaders.delete('transfer-encoding');
 
 		return new Response(response.body, {
 			headers: responseHeaders,
@@ -114,4 +146,9 @@ const handleProxy: Handle = async ({ event, resolve }) => {
 	}
 };
 
-export const handle: Handle = sequence(handleParaglide, handleAuth, handleProxy);
+export const handle: Handle = sequence(
+	handleParaglide,
+	handleAuth,
+	handleRefreshToken,
+	handleProxy
+);

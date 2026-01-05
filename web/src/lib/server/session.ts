@@ -10,6 +10,15 @@ const COOKIE_NAME = !dev ? '__Host-OS_SESSION' : 'OS_SESSION';
 const SESSION_EXPIRY_MS = 1000 * 60 * 60 * 24 * 30; // 30 days
 const SESSION_REFRESH_THRESHOLD_MS = 1000 * 60 * 60 * 24 * 15; // 15 days
 
+export async function acquireRefreshLock(sessionId: string, ttlMs: number): Promise<boolean> {
+	const result = await redis.set(`refresh_lock:${sessionId}`, 'locked', 'PX', ttlMs, 'NX');
+	return result === 'OK';
+}
+
+export async function releaseRefreshLock(sessionId: string): Promise<void> {
+	await redis.del(`refresh_lock:${sessionId}`);
+}
+
 export function generateSessionToken(): string {
 	const bytes = new Uint8Array(20);
 	crypto.getRandomValues(bytes);
@@ -41,25 +50,28 @@ export async function updateSessionTokenSet(sessionId: string, tokenSet: TokenSe
 	});
 }
 
-export async function validateSessionToken(token: string): Promise<Session | null> {
+export async function validateSessionToken(
+	token: string
+): Promise<{ session: Session | null; fresh: boolean }> {
 	const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
 	const session = await getSessionFromRedis(sessionId);
 
 	if (session === null) {
-		return null;
+		return { session: null, fresh: false };
 	}
 
 	if (Date.now() >= session.expiresAt.getTime()) {
 		await redis.del(`session:${sessionId}`);
-		return null;
+		return { session: null, fresh: false };
 	}
 
 	if (Date.now() >= session.expiresAt.getTime() - SESSION_REFRESH_THRESHOLD_MS) {
 		session.expiresAt = new Date(Date.now() + SESSION_EXPIRY_MS);
 		await setSessionToRedis(session);
+		return { session: session, fresh: true };
 	}
 
-	return session;
+	return { session: session, fresh: false };
 }
 
 export async function invalidateSession(sessionId: string): Promise<void> {
