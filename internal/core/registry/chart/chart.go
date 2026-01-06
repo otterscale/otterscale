@@ -154,6 +154,9 @@ func (uc *UseCase) syncChart(ctx context.Context, chartRef, remoteOCI string) er
 
 	if strings.HasPrefix(chartRef, registry.OCIScheme) {
 		idx := strings.LastIndexByte(name, ':')
+		if idx < 0 {
+			return fmt.Errorf("OCI chart reference is missing a tag: %s", chartRef)
+		}
 		name = fmt.Sprintf("%s-%s.tgz", name[:idx], name[idx+1:])
 	}
 
@@ -171,13 +174,16 @@ func (uc *UseCase) importChart(ctx context.Context, chartRef, remoteOCI string) 
 	defer os.RemoveAll(destDir)
 
 	if err := uc.chart.Pull(ctx, chartRef, destDir); err != nil {
-		return fmt.Errorf("failed to pull chart: %s", err)
+		return fmt.Errorf("failed to pull chart: %w", err)
 	}
 
 	name := filepath.Base(chartRef)
 
 	if strings.HasPrefix(chartRef, registry.OCIScheme) {
 		idx := strings.LastIndexByte(name, ':')
+		if idx < 0 {
+			return fmt.Errorf("OCI chart reference is missing a tag: %s", chartRef)
+		}
 		name = fmt.Sprintf("%s-%s.tgz", name[:idx], name[idx+1:])
 	}
 
