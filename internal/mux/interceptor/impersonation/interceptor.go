@@ -42,17 +42,10 @@ func NewInterceptor(conf *config.Config) (*Interceptor, error) {
 
 func (i *Interceptor) WrapUnary(next connect.UnaryFunc) connect.UnaryFunc {
 	return func(ctx context.Context, req connect.AnyRequest) (connect.AnyResponse, error) {
-		token, err := extractToken(req.Header())
+		newCtx, err := i.enrichContextWithSubject(ctx, req.Header())
 		if err != nil {
-			return nil, connect.NewError(connect.CodeUnauthenticated, err)
+			return nil, err
 		}
-
-		idToken, err := i.verifier.Verify(ctx, token)
-		if err != nil {
-			return nil, connect.NewError(connect.CodeUnauthenticated, errors.New("invalid token"))
-		}
-
-		newCtx := context.WithValue(ctx, subjectKey, idToken.Subject)
 		return next(newCtx, req)
 	}
 }
@@ -63,19 +56,26 @@ func (i *Interceptor) WrapStreamingClient(next connect.StreamingClientFunc) conn
 
 func (i *Interceptor) WrapStreamingHandler(next connect.StreamingHandlerFunc) connect.StreamingHandlerFunc {
 	return func(ctx context.Context, conn connect.StreamingHandlerConn) error {
-		token, err := extractToken(conn.RequestHeader())
+		newCtx, err := i.enrichContextWithSubject(ctx, conn.RequestHeader())
 		if err != nil {
-			return connect.NewError(connect.CodeUnauthenticated, err)
+			return err
 		}
-
-		idToken, err := i.verifier.Verify(ctx, token)
-		if err != nil {
-			return connect.NewError(connect.CodeUnauthenticated, errors.New("invalid token"))
-		}
-
-		newCtx := context.WithValue(ctx, subjectKey, idToken.Subject)
 		return next(newCtx, conn)
 	}
+}
+
+func (i *Interceptor) enrichContextWithSubject(ctx context.Context, h http.Header) (context.Context, error) {
+	token, err := extractToken(h)
+	if err != nil {
+		return nil, connect.NewError(connect.CodeUnauthenticated, err)
+	}
+
+	idToken, err := i.verifier.Verify(ctx, token)
+	if err != nil {
+		return nil, connect.NewError(connect.CodeUnauthenticated, errors.New("invalid token"))
+	}
+
+	return context.WithValue(ctx, subjectKey, idToken.Subject), nil
 }
 
 func extractToken(h http.Header) (string, error) {
