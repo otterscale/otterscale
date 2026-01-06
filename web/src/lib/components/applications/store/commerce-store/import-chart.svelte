@@ -36,6 +36,8 @@
 		}
 
 		const promise = async () => {
+			open = false;
+
 			const getRegistryURLResponse = await registryClient.getRegistryURL({
 				scope: scope
 			});
@@ -51,7 +53,6 @@
 
 			charts.set(response.charts.sort((p, n) => p.name.localeCompare(n.name)));
 
-			open = false;
 			chartRef = '';
 		};
 
