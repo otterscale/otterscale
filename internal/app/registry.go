@@ -113,6 +113,15 @@ func (s *RegistryService) SyncArtifactHub(ctx context.Context, req *pb.SyncArtif
 	return resp, nil
 }
 
+func (s *RegistryService) ImportChart(ctx context.Context, req *pb.ImportChartRequest) (*emptypb.Empty, error) {
+	if err := s.chart.Import(ctx, req.GetChartRef(), req.GetRegistryUrl()); err != nil {
+		return nil, err
+	}
+
+	resp := &emptypb.Empty{}
+	return resp, nil
+}
+
 func toProtoRepositories(rs []registry.Repository) []*pb.Repository {
 	ret := []*pb.Repository{}
 

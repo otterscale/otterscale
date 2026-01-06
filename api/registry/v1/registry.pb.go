@@ -2291,6 +2291,117 @@ func (b0 SyncArtifactHubRequest_builder) Build() *SyncArtifactHubRequest {
 	return m0
 }
 
+type ImportChartRequest struct {
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_ChartRef    *string                `protobuf:"bytes,1,opt,name=chart_ref,json=chartRef"`
+	xxx_hidden_RegistryUrl *string                `protobuf:"bytes,2,opt,name=registry_url,json=registryUrl"`
+	XXX_raceDetectHookData protoimpl.RaceDetectHookData
+	XXX_presence           [1]uint32
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
+}
+
+func (x *ImportChartRequest) Reset() {
+	*x = ImportChartRequest{}
+	mi := &file_api_registry_v1_registry_proto_msgTypes[17]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ImportChartRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ImportChartRequest) ProtoMessage() {}
+
+func (x *ImportChartRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_registry_v1_registry_proto_msgTypes[17]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *ImportChartRequest) GetChartRef() string {
+	if x != nil {
+		if x.xxx_hidden_ChartRef != nil {
+			return *x.xxx_hidden_ChartRef
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *ImportChartRequest) GetRegistryUrl() string {
+	if x != nil {
+		if x.xxx_hidden_RegistryUrl != nil {
+			return *x.xxx_hidden_RegistryUrl
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *ImportChartRequest) SetChartRef(v string) {
+	x.xxx_hidden_ChartRef = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
+}
+
+func (x *ImportChartRequest) SetRegistryUrl(v string) {
+	x.xxx_hidden_RegistryUrl = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
+}
+
+func (x *ImportChartRequest) HasChartRef() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *ImportChartRequest) HasRegistryUrl() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *ImportChartRequest) ClearChartRef() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_ChartRef = nil
+}
+
+func (x *ImportChartRequest) ClearRegistryUrl() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_RegistryUrl = nil
+}
+
+type ImportChartRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	ChartRef    *string
+	RegistryUrl *string
+}
+
+func (b0 ImportChartRequest_builder) Build() *ImportChartRequest {
+	m0 := &ImportChartRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.ChartRef != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
+		x.xxx_hidden_ChartRef = b.ChartRef
+	}
+	if b.RegistryUrl != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
+		x.xxx_hidden_RegistryUrl = b.RegistryUrl
+	}
+	return m0
+}
+
 type Image_Platform struct {
 	state                   protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Architecture *string                `protobuf:"bytes,1,opt,name=architecture"`
@@ -2306,7 +2417,7 @@ type Image_Platform struct {
 
 func (x *Image_Platform) Reset() {
 	*x = Image_Platform{}
-	mi := &file_api_registry_v1_registry_proto_msgTypes[17]
+	mi := &file_api_registry_v1_registry_proto_msgTypes[18]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2318,7 +2429,7 @@ func (x *Image_Platform) String() string {
 func (*Image_Platform) ProtoMessage() {}
 
 func (x *Image_Platform) ProtoReflect() protoreflect.Message {
-	mi := &file_api_registry_v1_registry_proto_msgTypes[17]
+	mi := &file_api_registry_v1_registry_proto_msgTypes[18]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2501,7 +2612,7 @@ type Image_Config struct {
 
 func (x *Image_Config) Reset() {
 	*x = Image_Config{}
-	mi := &file_api_registry_v1_registry_proto_msgTypes[18]
+	mi := &file_api_registry_v1_registry_proto_msgTypes[19]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2513,7 +2624,7 @@ func (x *Image_Config) String() string {
 func (*Image_Config) ProtoMessage() {}
 
 func (x *Image_Config) ProtoReflect() protoreflect.Message {
-	mi := &file_api_registry_v1_registry_proto_msgTypes[18]
+	mi := &file_api_registry_v1_registry_proto_msgTypes[19]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2722,7 +2833,7 @@ type Image_RootFS struct {
 
 func (x *Image_RootFS) Reset() {
 	*x = Image_RootFS{}
-	mi := &file_api_registry_v1_registry_proto_msgTypes[19]
+	mi := &file_api_registry_v1_registry_proto_msgTypes[20]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2734,7 +2845,7 @@ func (x *Image_RootFS) String() string {
 func (*Image_RootFS) ProtoMessage() {}
 
 func (x *Image_RootFS) ProtoReflect() protoreflect.Message {
-	mi := &file_api_registry_v1_registry_proto_msgTypes[19]
+	mi := &file_api_registry_v1_registry_proto_msgTypes[20]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2814,7 +2925,7 @@ type Chart_Information struct {
 
 func (x *Chart_Information) Reset() {
 	*x = Chart_Information{}
-	mi := &file_api_registry_v1_registry_proto_msgTypes[21]
+	mi := &file_api_registry_v1_registry_proto_msgTypes[22]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2826,7 +2937,7 @@ func (x *Chart_Information) String() string {
 func (*Chart_Information) ProtoMessage() {}
 
 func (x *Chart_Information) ProtoReflect() protoreflect.Message {
-	mi := &file_api_registry_v1_registry_proto_msgTypes[21]
+	mi := &file_api_registry_v1_registry_proto_msgTypes[22]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2926,7 +3037,7 @@ type Chart_Version struct {
 
 func (x *Chart_Version) Reset() {
 	*x = Chart_Version{}
-	mi := &file_api_registry_v1_registry_proto_msgTypes[22]
+	mi := &file_api_registry_v1_registry_proto_msgTypes[23]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2938,7 +3049,7 @@ func (x *Chart_Version) String() string {
 func (*Chart_Version) ProtoMessage() {}
 
 func (x *Chart_Version) ProtoReflect() protoreflect.Message {
-	mi := &file_api_registry_v1_registry_proto_msgTypes[22]
+	mi := &file_api_registry_v1_registry_proto_msgTypes[23]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3070,7 +3181,7 @@ type Chart_Maintainer struct {
 
 func (x *Chart_Maintainer) Reset() {
 	*x = Chart_Maintainer{}
-	mi := &file_api_registry_v1_registry_proto_msgTypes[23]
+	mi := &file_api_registry_v1_registry_proto_msgTypes[24]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3082,7 +3193,7 @@ func (x *Chart_Maintainer) String() string {
 func (*Chart_Maintainer) ProtoMessage() {}
 
 func (x *Chart_Maintainer) ProtoReflect() protoreflect.Message {
-	mi := &file_api_registry_v1_registry_proto_msgTypes[23]
+	mi := &file_api_registry_v1_registry_proto_msgTypes[24]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3218,7 +3329,7 @@ type Chart_Dependency struct {
 
 func (x *Chart_Dependency) Reset() {
 	*x = Chart_Dependency{}
-	mi := &file_api_registry_v1_registry_proto_msgTypes[24]
+	mi := &file_api_registry_v1_registry_proto_msgTypes[25]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3230,7 +3341,7 @@ func (x *Chart_Dependency) String() string {
 func (*Chart_Dependency) ProtoMessage() {}
 
 func (x *Chart_Dependency) ProtoReflect() protoreflect.Message {
-	mi := &file_api_registry_v1_registry_proto_msgTypes[24]
+	mi := &file_api_registry_v1_registry_proto_msgTypes[25]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3591,7 +3702,10 @@ const file_api_registry_v1_registry_proto_rawDesc = "" +
 	"\x1aGetChartInformationRequest\x12\x1b\n" +
 	"\tchart_ref\x18\x01 \x01(\tR\bchartRef\";\n" +
 	"\x16SyncArtifactHubRequest\x12!\n" +
-	"\fregistry_url\x18\x01 \x01(\tR\vregistryUrl2\xbd\b\n" +
+	"\fregistry_url\x18\x01 \x01(\tR\vregistryUrl\"T\n" +
+	"\x12ImportChartRequest\x12\x1b\n" +
+	"\tchart_ref\x18\x01 \x01(\tR\bchartRef\x12!\n" +
+	"\fregistry_url\x18\x02 \x01(\tR\vregistryUrl2\xa9\t\n" +
 	"\x0fRegistryService\x12\x88\x01\n" +
 	"\x0eGetRegistryURL\x12-.otterscale.registry.v1.GetRegistryURLRequest\x1a..otterscale.registry.v1.GetRegistryURLResponse\"\x17\x8a\xdf\xd5\x1d\x12\n" +
 	"\x10registry-enabled\x12\x8e\x01\n" +
@@ -3609,9 +3723,11 @@ const file_api_registry_v1_registry_proto_rawDesc = "" +
 	"\x13GetChartInformation\x122.otterscale.registry.v1.GetChartInformationRequest\x1a).otterscale.registry.v1.Chart.Information\"\x17\x8a\xdf\xd5\x1d\x12\n" +
 	"\x10registry-enabled\x12r\n" +
 	"\x0fSyncArtifactHub\x12..otterscale.registry.v1.SyncArtifactHubRequest\x1a\x16.google.protobuf.Empty\"\x17\x8a\xdf\xd5\x1d\x12\n" +
+	"\x10registry-enabled\x12j\n" +
+	"\vImportChart\x12*.otterscale.registry.v1.ImportChartRequest\x1a\x16.google.protobuf.Empty\"\x17\x8a\xdf\xd5\x1d\x12\n" +
 	"\x10registry-enabledB5Z3github.com/otterscale/otterscale/api/registry/v1;pbb\beditionsp\xe8\a"
 
-var file_api_registry_v1_registry_proto_msgTypes = make([]protoimpl.MessageInfo, 26)
+var file_api_registry_v1_registry_proto_msgTypes = make([]protoimpl.MessageInfo, 27)
 var file_api_registry_v1_registry_proto_goTypes = []any{
 	(*Repository)(nil),                 // 0: otterscale.registry.v1.Repository
 	(*Manifest)(nil),                   // 1: otterscale.registry.v1.Manifest
@@ -3630,33 +3746,34 @@ var file_api_registry_v1_registry_proto_goTypes = []any{
 	(*ListChartVersionsResponse)(nil),  // 14: otterscale.registry.v1.ListChartVersionsResponse
 	(*GetChartInformationRequest)(nil), // 15: otterscale.registry.v1.GetChartInformationRequest
 	(*SyncArtifactHubRequest)(nil),     // 16: otterscale.registry.v1.SyncArtifactHubRequest
-	(*Image_Platform)(nil),             // 17: otterscale.registry.v1.Image.Platform
-	(*Image_Config)(nil),               // 18: otterscale.registry.v1.Image.Config
-	(*Image_RootFS)(nil),               // 19: otterscale.registry.v1.Image.RootFS
-	nil,                                // 20: otterscale.registry.v1.Image.Config.LabelsEntry
-	(*Chart_Information)(nil),          // 21: otterscale.registry.v1.Chart.Information
-	(*Chart_Version)(nil),              // 22: otterscale.registry.v1.Chart.Version
-	(*Chart_Maintainer)(nil),           // 23: otterscale.registry.v1.Chart.Maintainer
-	(*Chart_Dependency)(nil),           // 24: otterscale.registry.v1.Chart.Dependency
-	nil,                                // 25: otterscale.registry.v1.Chart.AnnotationsEntry
-	(*timestamppb.Timestamp)(nil),      // 26: google.protobuf.Timestamp
-	(*emptypb.Empty)(nil),              // 27: google.protobuf.Empty
+	(*ImportChartRequest)(nil),         // 17: otterscale.registry.v1.ImportChartRequest
+	(*Image_Platform)(nil),             // 18: otterscale.registry.v1.Image.Platform
+	(*Image_Config)(nil),               // 19: otterscale.registry.v1.Image.Config
+	(*Image_RootFS)(nil),               // 20: otterscale.registry.v1.Image.RootFS
+	nil,                                // 21: otterscale.registry.v1.Image.Config.LabelsEntry
+	(*Chart_Information)(nil),          // 22: otterscale.registry.v1.Chart.Information
+	(*Chart_Version)(nil),              // 23: otterscale.registry.v1.Chart.Version
+	(*Chart_Maintainer)(nil),           // 24: otterscale.registry.v1.Chart.Maintainer
+	(*Chart_Dependency)(nil),           // 25: otterscale.registry.v1.Chart.Dependency
+	nil,                                // 26: otterscale.registry.v1.Chart.AnnotationsEntry
+	(*timestamppb.Timestamp)(nil),      // 27: google.protobuf.Timestamp
+	(*emptypb.Empty)(nil),              // 28: google.protobuf.Empty
 }
 var file_api_registry_v1_registry_proto_depIdxs = []int32{
 	2,  // 0: otterscale.registry.v1.Manifest.image:type_name -> otterscale.registry.v1.Image
 	3,  // 1: otterscale.registry.v1.Manifest.chart:type_name -> otterscale.registry.v1.Chart
-	26, // 2: otterscale.registry.v1.Image.created_at:type_name -> google.protobuf.Timestamp
-	17, // 3: otterscale.registry.v1.Image.platform:type_name -> otterscale.registry.v1.Image.Platform
-	18, // 4: otterscale.registry.v1.Image.config:type_name -> otterscale.registry.v1.Image.Config
-	19, // 5: otterscale.registry.v1.Image.root_fs:type_name -> otterscale.registry.v1.Image.RootFS
-	23, // 6: otterscale.registry.v1.Chart.maintainers:type_name -> otterscale.registry.v1.Chart.Maintainer
-	25, // 7: otterscale.registry.v1.Chart.annotations:type_name -> otterscale.registry.v1.Chart.AnnotationsEntry
-	24, // 8: otterscale.registry.v1.Chart.dependencies:type_name -> otterscale.registry.v1.Chart.Dependency
+	27, // 2: otterscale.registry.v1.Image.created_at:type_name -> google.protobuf.Timestamp
+	18, // 3: otterscale.registry.v1.Image.platform:type_name -> otterscale.registry.v1.Image.Platform
+	19, // 4: otterscale.registry.v1.Image.config:type_name -> otterscale.registry.v1.Image.Config
+	20, // 5: otterscale.registry.v1.Image.root_fs:type_name -> otterscale.registry.v1.Image.RootFS
+	24, // 6: otterscale.registry.v1.Chart.maintainers:type_name -> otterscale.registry.v1.Chart.Maintainer
+	26, // 7: otterscale.registry.v1.Chart.annotations:type_name -> otterscale.registry.v1.Chart.AnnotationsEntry
+	25, // 8: otterscale.registry.v1.Chart.dependencies:type_name -> otterscale.registry.v1.Chart.Dependency
 	0,  // 9: otterscale.registry.v1.ListRepositoriesResponse.repositories:type_name -> otterscale.registry.v1.Repository
 	1,  // 10: otterscale.registry.v1.ListManifestsResponse.manifests:type_name -> otterscale.registry.v1.Manifest
 	3,  // 11: otterscale.registry.v1.ListChartsResponse.charts:type_name -> otterscale.registry.v1.Chart
-	22, // 12: otterscale.registry.v1.ListChartVersionsResponse.versions:type_name -> otterscale.registry.v1.Chart.Version
-	20, // 13: otterscale.registry.v1.Image.Config.labels:type_name -> otterscale.registry.v1.Image.Config.LabelsEntry
+	23, // 12: otterscale.registry.v1.ListChartVersionsResponse.versions:type_name -> otterscale.registry.v1.Chart.Version
+	21, // 13: otterscale.registry.v1.Image.Config.labels:type_name -> otterscale.registry.v1.Image.Config.LabelsEntry
 	4,  // 14: otterscale.registry.v1.RegistryService.GetRegistryURL:input_type -> otterscale.registry.v1.GetRegistryURLRequest
 	6,  // 15: otterscale.registry.v1.RegistryService.ListRepositories:input_type -> otterscale.registry.v1.ListRepositoriesRequest
 	8,  // 16: otterscale.registry.v1.RegistryService.ListManifests:input_type -> otterscale.registry.v1.ListManifestsRequest
@@ -3665,16 +3782,18 @@ var file_api_registry_v1_registry_proto_depIdxs = []int32{
 	13, // 19: otterscale.registry.v1.RegistryService.ListChartVersions:input_type -> otterscale.registry.v1.ListChartVersionsRequest
 	15, // 20: otterscale.registry.v1.RegistryService.GetChartInformation:input_type -> otterscale.registry.v1.GetChartInformationRequest
 	16, // 21: otterscale.registry.v1.RegistryService.SyncArtifactHub:input_type -> otterscale.registry.v1.SyncArtifactHubRequest
-	5,  // 22: otterscale.registry.v1.RegistryService.GetRegistryURL:output_type -> otterscale.registry.v1.GetRegistryURLResponse
-	7,  // 23: otterscale.registry.v1.RegistryService.ListRepositories:output_type -> otterscale.registry.v1.ListRepositoriesResponse
-	9,  // 24: otterscale.registry.v1.RegistryService.ListManifests:output_type -> otterscale.registry.v1.ListManifestsResponse
-	27, // 25: otterscale.registry.v1.RegistryService.DeleteManifest:output_type -> google.protobuf.Empty
-	12, // 26: otterscale.registry.v1.RegistryService.ListCharts:output_type -> otterscale.registry.v1.ListChartsResponse
-	14, // 27: otterscale.registry.v1.RegistryService.ListChartVersions:output_type -> otterscale.registry.v1.ListChartVersionsResponse
-	21, // 28: otterscale.registry.v1.RegistryService.GetChartInformation:output_type -> otterscale.registry.v1.Chart.Information
-	27, // 29: otterscale.registry.v1.RegistryService.SyncArtifactHub:output_type -> google.protobuf.Empty
-	22, // [22:30] is the sub-list for method output_type
-	14, // [14:22] is the sub-list for method input_type
+	17, // 22: otterscale.registry.v1.RegistryService.ImportChart:input_type -> otterscale.registry.v1.ImportChartRequest
+	5,  // 23: otterscale.registry.v1.RegistryService.GetRegistryURL:output_type -> otterscale.registry.v1.GetRegistryURLResponse
+	7,  // 24: otterscale.registry.v1.RegistryService.ListRepositories:output_type -> otterscale.registry.v1.ListRepositoriesResponse
+	9,  // 25: otterscale.registry.v1.RegistryService.ListManifests:output_type -> otterscale.registry.v1.ListManifestsResponse
+	28, // 26: otterscale.registry.v1.RegistryService.DeleteManifest:output_type -> google.protobuf.Empty
+	12, // 27: otterscale.registry.v1.RegistryService.ListCharts:output_type -> otterscale.registry.v1.ListChartsResponse
+	14, // 28: otterscale.registry.v1.RegistryService.ListChartVersions:output_type -> otterscale.registry.v1.ListChartVersionsResponse
+	22, // 29: otterscale.registry.v1.RegistryService.GetChartInformation:output_type -> otterscale.registry.v1.Chart.Information
+	28, // 30: otterscale.registry.v1.RegistryService.SyncArtifactHub:output_type -> google.protobuf.Empty
+	28, // 31: otterscale.registry.v1.RegistryService.ImportChart:output_type -> google.protobuf.Empty
+	23, // [23:32] is the sub-list for method output_type
+	14, // [14:23] is the sub-list for method input_type
 	14, // [14:14] is the sub-list for extension type_name
 	14, // [14:14] is the sub-list for extension extendee
 	0,  // [0:14] is the sub-list for field type_name
@@ -3695,7 +3814,7 @@ func file_api_registry_v1_registry_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_api_registry_v1_registry_proto_rawDesc), len(file_api_registry_v1_registry_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   26,
+			NumMessages:   27,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
