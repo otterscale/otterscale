@@ -297,4 +297,9 @@ replace (
 	gopkg.in/yaml.v2 => github.com/juju/yaml/v2 v2.0.0
 )
 
-retract v1.0.0-beta.19
+retract (
+	v1.0.0-beta.19
+	v1.0.0-beta.20
+	v1.0.0-beta.21
+	v1.0.0-beta.22
+)
