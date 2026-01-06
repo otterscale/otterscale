@@ -1,4 +1,4 @@
-import type { Handle } from '@sveltejs/kit';
+import { type Handle, redirect } from '@sveltejs/kit';
 import { sequence } from '@sveltejs/kit/hooks';
 
 import { env } from '$env/dynamic/private';
@@ -14,6 +14,21 @@ import {
 	updateSessionTokenSet,
 	validateSessionToken
 } from '$lib/server/session';
+
+const HOP_BY_HOP_HEADERS = [
+	'connection',
+	'keep-alive',
+	'proxy-authenticate',
+	'proxy-authorization',
+	'te',
+	'trailer',
+	'transfer-encoding',
+	'upgrade'
+];
+
+const PROXY_REQUEST_HEADERS_TO_REMOVE = ['cookie', 'host', 'x-proxy-target'];
+
+const PROXY_RESPONSE_HEADERS_TO_REMOVE = ['content-encoding', 'content-length'];
 
 const handleParaglide: Handle = ({ event, resolve }) =>
 	paraglideMiddleware(event.request, ({ request, locale }) => {
@@ -56,17 +71,10 @@ const handleRefreshToken: Handle = async ({ event, resolve }) => {
 		return resolve(event);
 	}
 
-	const token = getSessionTokenCookie(event.cookies);
-
-	if (!token) {
-		event.locals.session = null;
-		return resolve(event);
-	}
-
 	const session = event.locals.session;
 
 	if (session) {
-		const BUFFER_MS = 30 * 1000;
+		const BUFFER_MS = 60 * 1000;
 		const isNearExpiry =
 			Date.now() >= (session.tokenSet.accessTokenExpiresAt.getTime() ?? 0) - BUFFER_MS;
 
@@ -85,6 +93,7 @@ const handleRefreshToken: Handle = async ({ event, resolve }) => {
 					};
 
 					await updateSessionTokenSet(session.id, tokenSet);
+
 					session.tokenSet = tokenSet;
 					event.locals.session = session;
 				} catch (err) {
@@ -102,11 +111,30 @@ const handleRefreshToken: Handle = async ({ event, resolve }) => {
 	return resolve(event);
 };
 
-const handleProxy: Handle = async ({ event, resolve }) => {
-	if (isFlexibleBooleanTrue(env.BOOTSTRAP_MODE)) {
+const handleGuard: Handle = async ({ event, resolve }) => {
+	if (isFlexibleBooleanTrue(env.BOOTSTRAP_MODE) || event.locals.session) {
 		return resolve(event);
 	}
 
+	const isApiProxy = event.request.headers.get('x-proxy-target') === 'api';
+
+	if (isApiProxy) {
+		return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+			status: 401,
+			headers: { 'Content-Type': 'application/json' }
+		});
+	}
+
+	const isPrivatePath = event.route.id?.startsWith('/(auth)/');
+
+	if (isPrivatePath) {
+		throw redirect(303, '/login');
+	}
+
+	return resolve(event);
+};
+
+const handleProxy: Handle = async ({ event, resolve }) => {
 	const isApiProxy = event.request.headers.get('x-proxy-target') === 'api';
 	const session = event.locals.session;
 
@@ -117,8 +145,9 @@ const handleProxy: Handle = async ({ event, resolve }) => {
 	const targetUrl = new URL(event.url.pathname + event.url.search, env.API_URL);
 	const proxyHeaders = new Headers(event.request.headers);
 
-	proxyHeaders.delete('cookie');
-	proxyHeaders.delete('x-proxy-target');
+	HOP_BY_HOP_HEADERS.forEach((header) => proxyHeaders.delete(header));
+	PROXY_REQUEST_HEADERS_TO_REMOVE.forEach((header) => proxyHeaders.delete(header));
+
 	proxyHeaders.set('Authorization', `Bearer ${session.tokenSet.accessToken}`);
 
 	try {
@@ -131,10 +160,8 @@ const handleProxy: Handle = async ({ event, resolve }) => {
 
 		const responseHeaders = new Headers(response.headers);
 
-		responseHeaders.delete('connection');
-		responseHeaders.delete('content-encoding');
-		responseHeaders.delete('content-length');
-		responseHeaders.delete('transfer-encoding');
+		HOP_BY_HOP_HEADERS.forEach((header) => responseHeaders.delete(header));
+		PROXY_RESPONSE_HEADERS_TO_REMOVE.forEach((header) => responseHeaders.delete(header));
 
 		return new Response(response.body, {
 			headers: responseHeaders,
@@ -143,7 +170,10 @@ const handleProxy: Handle = async ({ event, resolve }) => {
 		} as ResponseInit);
 	} catch (err) {
 		console.error('Proxy Fetch Error:', err);
-		return new Response('Gateway Error', { status: 502 });
+		return new Response(JSON.stringify({ error: 'Bad Gateway', details: 'Upstream unreachable' }), {
+			status: 502,
+			headers: { 'Content-Type': 'application/json' }
+		});
 	}
 };
 
@@ -151,5 +181,6 @@ export const handle: Handle = sequence(
 	handleParaglide,
 	handleAuth,
 	handleRefreshToken,
+	handleGuard,
 	handleProxy
 );
