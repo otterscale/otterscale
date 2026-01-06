@@ -31,8 +31,6 @@
 	/>
 </div>
 
-<div class="flex min-h-svh flex-col items-center justify-center bg-muted p-6 md:p-10">
-	<div class="w-full max-w-sm md:max-w-md">
-		<LoginForm />
-	</div>
+<div class="flex h-screen w-full items-center justify-center bg-muted px-4">
+	<LoginForm />
 </div>
