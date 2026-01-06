@@ -6,8 +6,7 @@
 	import { toast } from 'svelte-sonner';
 
 	import { type Chart, RegistryService } from '$lib/api/registry/v1/registry_pb';
-	import { Button } from '$lib/components/ui/button';
-	import { buttonVariants } from '$lib/components/ui/button';
+	import { Button, buttonVariants } from '$lib/components/ui/button';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';
