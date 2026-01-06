@@ -26,7 +26,9 @@ const HOP_BY_HOP_HEADERS = [
 	'upgrade'
 ];
 
-const REMOVE_HEADERS = ['cookie', 'host', 'content-encoding', 'content-length', 'x-proxy-target'];
+const PROXY_REQUEST_HEADERS_TO_REMOVE = ['cookie', 'host', 'x-proxy-target'];
+
+const PROXY_RESPONSE_HEADERS_TO_REMOVE = ['content-encoding', 'content-length'];
 
 const handleParaglide: Handle = ({ event, resolve }) =>
 	paraglideMiddleware(event.request, ({ request, locale }) => {
@@ -114,18 +116,19 @@ const handleGuard: Handle = async ({ event, resolve }) => {
 		return resolve(event);
 	}
 
-	const isPrivatePath = event.route.id?.startsWith('/(auth)/');
 	const isApiProxy = event.request.headers.get('x-proxy-target') === 'api';
-
-	if (isPrivatePath) {
-		throw redirect(303, '/login');
-	}
 
 	if (isApiProxy) {
 		return new Response(JSON.stringify({ error: 'Unauthorized' }), {
 			status: 401,
 			headers: { 'Content-Type': 'application/json' }
 		});
+	}
+
+	const isPrivatePath = event.route.id?.startsWith('/(auth)/');
+
+	if (isPrivatePath) {
+		throw redirect(303, '/login');
 	}
 
 	return resolve(event);
@@ -147,7 +150,7 @@ const handleProxy: Handle = async ({ event, resolve }) => {
 	const proxyHeaders = new Headers(event.request.headers);
 
 	HOP_BY_HOP_HEADERS.forEach((header) => proxyHeaders.delete(header));
-	REMOVE_HEADERS.forEach((header) => proxyHeaders.delete(header));
+	PROXY_REQUEST_HEADERS_TO_REMOVE.forEach((header) => proxyHeaders.delete(header));
 
 	proxyHeaders.set('Authorization', `Bearer ${session.tokenSet.accessToken}`);
 
@@ -162,7 +165,7 @@ const handleProxy: Handle = async ({ event, resolve }) => {
 		const responseHeaders = new Headers(response.headers);
 
 		HOP_BY_HOP_HEADERS.forEach((header) => responseHeaders.delete(header));
-		REMOVE_HEADERS.forEach((header) => responseHeaders.delete(header));
+		PROXY_RESPONSE_HEADERS_TO_REMOVE.forEach((header) => responseHeaders.delete(header));
 
 		return new Response(response.body, {
 			headers: responseHeaders,
