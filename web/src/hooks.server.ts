@@ -135,10 +135,6 @@ const handleGuard: Handle = async ({ event, resolve }) => {
 };
 
 const handleProxy: Handle = async ({ event, resolve }) => {
-	if (isFlexibleBooleanTrue(env.BOOTSTRAP_MODE)) {
-		return resolve(event);
-	}
-
 	const isApiProxy = event.request.headers.get('x-proxy-target') === 'api';
 	const session = event.locals.session;
 
