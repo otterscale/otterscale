@@ -99,6 +99,10 @@ func (uc *UseCase) SyncArtifactHub(ctx context.Context, remoteOCI string) error 
 	return uc.syncCharts(ctx, chartRefs, remoteOCI)
 }
 
+func (uc *UseCase) Import(ctx context.Context, chartRef, remoteOCI string) error {
+	return uc.importChart(ctx, chartRef, remoteOCI)
+}
+
 func (uc *UseCase) fetchChartRefs(ctx context.Context, packages []Package) ([]string, error) {
 	chartRefs := make([]string, len(packages))
 
@@ -156,4 +160,28 @@ func (uc *UseCase) syncChart(ctx context.Context, chartRef, remoteOCI string) er
 	chartPath := filepath.Join(destDir, name)
 
 	return uc.chart.Push(ctx, chartPath, fmt.Sprintf("oci://%s/otterscale", remoteOCI))
+}
+
+// TODO: with repo name
+func (uc *UseCase) importChart(ctx context.Context, chartRef, remoteOCI string) error {
+	destDir, err := os.MkdirTemp("", "chart-import-")
+	if err != nil {
+		return err
+	}
+	defer os.RemoveAll(destDir)
+
+	if err := uc.chart.Pull(ctx, chartRef, destDir); err != nil {
+		return fmt.Errorf("failed to pull chart: %s", err)
+	}
+
+	name := filepath.Base(chartRef)
+
+	if strings.HasPrefix(chartRef, registry.OCIScheme) {
+		idx := strings.LastIndexByte(name, ':')
+		name = fmt.Sprintf("%s-%s.tgz", name[:idx], name[idx+1:])
+	}
+
+	chartPath := filepath.Join(destDir, name)
+
+	return uc.chart.Push(ctx, chartPath, fmt.Sprintf("oci://%s", remoteOCI))
 }

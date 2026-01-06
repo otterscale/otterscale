@@ -58,6 +58,9 @@ const (
 	// RegistryServiceSyncArtifactHubProcedure is the fully-qualified name of the RegistryService's
 	// SyncArtifactHub RPC.
 	RegistryServiceSyncArtifactHubProcedure = "/otterscale.registry.v1.RegistryService/SyncArtifactHub"
+	// RegistryServiceImportChartProcedure is the fully-qualified name of the RegistryService's
+	// ImportChart RPC.
+	RegistryServiceImportChartProcedure = "/otterscale.registry.v1.RegistryService/ImportChart"
 )
 
 // RegistryServiceClient is a client for the otterscale.registry.v1.RegistryService service.
@@ -70,6 +73,7 @@ type RegistryServiceClient interface {
 	ListChartVersions(context.Context, *v1.ListChartVersionsRequest) (*v1.ListChartVersionsResponse, error)
 	GetChartInformation(context.Context, *v1.GetChartInformationRequest) (*v1.Chart_Information, error)
 	SyncArtifactHub(context.Context, *v1.SyncArtifactHubRequest) (*emptypb.Empty, error)
+	ImportChart(context.Context, *v1.ImportChartRequest) (*emptypb.Empty, error)
 }
 
 // NewRegistryServiceClient constructs a client for the otterscale.registry.v1.RegistryService
@@ -131,6 +135,12 @@ func NewRegistryServiceClient(httpClient connect.HTTPClient, baseURL string, opt
 			connect.WithSchema(registryServiceMethods.ByName("SyncArtifactHub")),
 			connect.WithClientOptions(opts...),
 		),
+		importChart: connect.NewClient[v1.ImportChartRequest, emptypb.Empty](
+			httpClient,
+			baseURL+RegistryServiceImportChartProcedure,
+			connect.WithSchema(registryServiceMethods.ByName("ImportChart")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
@@ -144,6 +154,7 @@ type registryServiceClient struct {
 	listChartVersions   *connect.Client[v1.ListChartVersionsRequest, v1.ListChartVersionsResponse]
 	getChartInformation *connect.Client[v1.GetChartInformationRequest, v1.Chart_Information]
 	syncArtifactHub     *connect.Client[v1.SyncArtifactHubRequest, emptypb.Empty]
+	importChart         *connect.Client[v1.ImportChartRequest, emptypb.Empty]
 }
 
 // GetRegistryURL calls otterscale.registry.v1.RegistryService.GetRegistryURL.
@@ -218,6 +229,15 @@ func (c *registryServiceClient) SyncArtifactHub(ctx context.Context, req *v1.Syn
 	return nil, err
 }
 
+// ImportChart calls otterscale.registry.v1.RegistryService.ImportChart.
+func (c *registryServiceClient) ImportChart(ctx context.Context, req *v1.ImportChartRequest) (*emptypb.Empty, error) {
+	response, err := c.importChart.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
+}
+
 // RegistryServiceHandler is an implementation of the otterscale.registry.v1.RegistryService
 // service.
 type RegistryServiceHandler interface {
@@ -229,6 +249,7 @@ type RegistryServiceHandler interface {
 	ListChartVersions(context.Context, *v1.ListChartVersionsRequest) (*v1.ListChartVersionsResponse, error)
 	GetChartInformation(context.Context, *v1.GetChartInformationRequest) (*v1.Chart_Information, error)
 	SyncArtifactHub(context.Context, *v1.SyncArtifactHubRequest) (*emptypb.Empty, error)
+	ImportChart(context.Context, *v1.ImportChartRequest) (*emptypb.Empty, error)
 }
 
 // NewRegistryServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -286,6 +307,12 @@ func NewRegistryServiceHandler(svc RegistryServiceHandler, opts ...connect.Handl
 		connect.WithSchema(registryServiceMethods.ByName("SyncArtifactHub")),
 		connect.WithHandlerOptions(opts...),
 	)
+	registryServiceImportChartHandler := connect.NewUnaryHandlerSimple(
+		RegistryServiceImportChartProcedure,
+		svc.ImportChart,
+		connect.WithSchema(registryServiceMethods.ByName("ImportChart")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/otterscale.registry.v1.RegistryService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case RegistryServiceGetRegistryURLProcedure:
@@ -304,6 +331,8 @@ func NewRegistryServiceHandler(svc RegistryServiceHandler, opts ...connect.Handl
 			registryServiceGetChartInformationHandler.ServeHTTP(w, r)
 		case RegistryServiceSyncArtifactHubProcedure:
 			registryServiceSyncArtifactHubHandler.ServeHTTP(w, r)
+		case RegistryServiceImportChartProcedure:
+			registryServiceImportChartHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -343,4 +372,8 @@ func (UnimplementedRegistryServiceHandler) GetChartInformation(context.Context, 
 
 func (UnimplementedRegistryServiceHandler) SyncArtifactHub(context.Context, *v1.SyncArtifactHubRequest) (*emptypb.Empty, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.registry.v1.RegistryService.SyncArtifactHub is not implemented"))
+}
+
+func (UnimplementedRegistryServiceHandler) ImportChart(context.Context, *v1.ImportChartRequest) (*emptypb.Empty, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.registry.v1.RegistryService.ImportChart is not implemented"))
 }
