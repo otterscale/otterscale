@@ -2,7 +2,6 @@ package ceph
 
 import (
 	"context"
-	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"slices"
@@ -119,17 +118,13 @@ func getSecretData(ctx context.Context, clientset *k8sclient.Clientset, namespac
 	if !ok {
 		return "", errors.New("key not found in secret")
 	}
-	decoded, err := base64.StdEncoding.DecodeString(string(data))
-	if err != nil {
-		return "", err
-	}
 
 	// If the key is "keyring", parse it to extract the client.admin key
 	if key == "keyring" {
-		return parseKeyring(string(decoded))
+		return parseKeyring(string(data))
 	}
 
-	return string(decoded), nil
+	return string(data), nil
 }
 
 func (m *Ceph) newConnection(c connectionConfig) (*rados.Conn, error) {
@@ -270,11 +265,7 @@ func (m *Ceph) getClientConfig(scope string) (clientConfig, error) {
 		if !ok {
 			return "", errors.New(field + " not found in secret")
 		}
-		decoded, err := base64.StdEncoding.DecodeString(string(data))
-		if err != nil {
-			return "", err
-		}
-		return string(decoded), nil
+		return string(data), nil
 	}
 
 	accessKey, err := getField("AccessKey")
