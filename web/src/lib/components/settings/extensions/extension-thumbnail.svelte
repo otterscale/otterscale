@@ -15,6 +15,7 @@
 	import { cn } from '$lib/utils';
 
 	import type { ExtensionsBundleType } from './types';
+	import InstallRookConfig from './install-rook-config.svelte';
 
 	const extensionsBundleConfigurations: Record<
 		ExtensionsBundleType,
@@ -75,9 +76,19 @@
 
 	const installed = $derived($extensions.filter((extension) => extension.current).length);
 	const required = $derived($extensions.length);
-	let open = $state(false);
+	let openConfirmDialog = $state(false);
+	let openConfigDialog = $state(false);
 	let isLoading = $state(false);
+	let extensionArguments = $state<Record<string, Record<string, string>>>({});
 	const isInstallMode = $derived(installed < required);
+
+	function handleInstallClick() {
+		if (isInstallMode && extensionsBundle === 'storage') {
+			openConfigDialog = true;
+		} else {
+			openConfirmDialog = true;
+		}
+	}
 
 	function onConfirm() {
 		isLoading = true;
@@ -90,7 +101,8 @@
 							(extension) =>
 								extension.latest && (isInstallMode ? !extension.current : extension.current)
 						)
-						.map((extension) => extension.latest!)
+						.map((extension) => extension.latest!),
+					arguments: extensionArguments
 				}),
 			{
 				loading: isInstallMode
@@ -116,7 +128,15 @@
 				}
 			}
 		);
-		open = false;
+		openConfirmDialog = false;
+	}
+
+	function handleConfigConfirm(config: Record<string, string>) {
+		extensionArguments = {
+			'rook-ceph-cluster': { values: config }
+		};
+		console.log('Received extension arguments:', extensionArguments);
+		openConfirmDialog = true;
 	}
 </script>
 
@@ -149,15 +169,20 @@
 		</div>
 		<div class="ml-auto flex flex-col items-center justify-between gap-4">
 			<p class="whitespace-nowrap text-muted-foreground">{installed} / {required}</p>
-			<div class="ml-auto">
-				<AlertDialog.Root bind:open>
-					<AlertDialog.Trigger
-						class={cn(buttonVariants({ variant: 'default', size: 'sm' }), 'w-full')}
-						disabled={isLoading}
-						onclick={(e) => e.stopPropagation()}
-					>
-						{isInstallMode ? m.install() : m.extensions_upgrade()}
-					</AlertDialog.Trigger>
+			<div class="ml-auto flex gap-2">
+				<button
+					class={cn(buttonVariants({ variant: 'default', size: 'sm' }), 'w-full')}
+					disabled={isLoading}
+					onclick={(e) => {
+						e.stopPropagation();
+						handleInstallClick();
+					}}
+				>
+					{isInstallMode ? m.install() : m.extensions_upgrade()}
+				</button>
+
+				<AlertDialog.Root bind:open={openConfirmDialog}>
+					<AlertDialog.Trigger class="hidden" />
 					<AlertDialog.Content>
 						<AlertDialog.Header>
 							<AlertDialog.Title>
@@ -181,3 +206,14 @@
 		</div>
 	</div>
 </div>
+
+{#if extensionsBundle === 'storage'}
+	<InstallRookConfig
+		bind:open={openConfigDialog}
+		{scope}
+		{extensionsBundle}
+		{extensions}
+		{updator}
+		onConfirm={handleConfigConfirm}
+	/>
+{/if}

@@ -180,6 +180,10 @@ message ListExtensionsResponse {
 }
 
 message InstallOrUpgradeExtensionsRequest {
+  message ExtensionArguments {
+    map<string, string> values = 1;
+  }
   string scope = 1;
   repeated Extension.Manifest manifests = 2;
+  map<string, ExtensionArguments> arguments = 3;
 }
