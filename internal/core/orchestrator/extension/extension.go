@@ -106,8 +106,8 @@ func (uc *UseCase) getComponentsByType(extType Type) ([]component, error) {
 	}
 }
 
-func (uc *UseCase) InstallOrUpgradeExtensions(ctx context.Context, scope string, manifests []Manifest) error {
-	steps := []func(context.Context, string, []Manifest) error{
+func (uc *UseCase) InstallOrUpgradeExtensions(ctx context.Context, scope string, manifests []Manifest, arguments map[string]map[string]string) error {
+	steps := []func(context.Context, string, []Manifest, map[string]map[string]string) error{
 		uc.precondition,
 		uc.processCRDs,
 		uc.processReleases,
@@ -115,7 +115,7 @@ func (uc *UseCase) InstallOrUpgradeExtensions(ctx context.Context, scope string,
 	}
 
 	for _, step := range steps {
-		if err := step(ctx, scope, manifests); err != nil {
+		if err := step(ctx, scope, manifests, arguments); err != nil {
 			return err
 		}
 	}
@@ -211,8 +211,8 @@ func (uc *UseCase) buildExtensionFromCRD(comp *component, crd *crdComponent, crd
 	return ext, nil
 }
 
-func (uc *UseCase) precondition(ctx context.Context, scope string, manifests []Manifest) error {
-	return uc.processManifests(ctx, scope, manifests, func(ctx context.Context, scope string, comp *component) error {
+func (uc *UseCase) precondition(ctx context.Context, scope string, manifests []Manifest, arguments map[string]map[string]string) error {
+	return uc.processManifests(ctx, scope, manifests, arguments, func(ctx context.Context, scope string, comp *component, arguments map[string]map[string]string) error {
 		for _, dep := range comp.Dependencies {
 			if err := uc.verifyDependency(ctx, scope, dep); err != nil {
 				return err
@@ -238,8 +238,8 @@ func (uc *UseCase) verifyDependency(ctx context.Context, scope, depID string) er
 	return nil
 }
 
-func (uc *UseCase) processCRDs(ctx context.Context, scope string, manifests []Manifest) error {
-	return uc.processManifests(ctx, scope, manifests, func(ctx context.Context, scope string, comp *component) error {
+func (uc *UseCase) processCRDs(ctx context.Context, scope string, manifests []Manifest, arguments map[string]map[string]string) error {
+	return uc.processManifests(ctx, scope, manifests, arguments, func(ctx context.Context, scope string, comp *component, arguments map[string]map[string]string) error {
 		if comp.CRD != nil {
 			return uc.createOrUpdateCRDsFromRef(ctx, scope, comp.CRD)
 		}
@@ -247,11 +247,18 @@ func (uc *UseCase) processCRDs(ctx context.Context, scope string, manifests []Ma
 	})
 }
 
-func (uc *UseCase) processReleases(ctx context.Context, scope string, manifests []Manifest) error {
-	return uc.processManifests(ctx, scope, manifests, func(ctx context.Context, scope string, comp *component) error {
+func (uc *UseCase) processReleases(ctx context.Context, scope string, manifests []Manifest, arguments map[string]map[string]string) error {
+	return uc.processManifests(ctx, scope, manifests, arguments, func(ctx context.Context, scope string, comp *component, arguments map[string]map[string]string) error {
 		if comp.Chart != nil {
 			if err := uc.patchValuesMap(ctx, scope, comp.Chart.ValuesMap); err != nil {
 				return err
+			}
+
+			// Inject extension-specific arguments into Chart ValuesMap
+			if args, ok := arguments[comp.ID]; ok && len(args) > 0 {
+				if err := uc.injectArguments(comp.Chart, args); err != nil {
+					return err
+				}
 			}
 
 			return uc.installOrUpgradeRelease(ctx, scope, comp.Chart)
@@ -260,8 +267,8 @@ func (uc *UseCase) processReleases(ctx context.Context, scope string, manifests 
 	})
 }
 
-func (uc *UseCase) processPostFuncs(ctx context.Context, scope string, manifests []Manifest) error {
-	return uc.processManifests(ctx, scope, manifests, func(ctx context.Context, scope string, comp *component) error {
+func (uc *UseCase) processPostFuncs(ctx context.Context, scope string, manifests []Manifest, arguments map[string]map[string]string) error {
+	return uc.processManifests(ctx, scope, manifests, arguments, func(ctx context.Context, scope string, comp *component, arguments map[string]map[string]string) error {
 		if comp.PostFunc != nil {
 			return comp.PostFunc(uc, ctx, scope)
 		}
@@ -269,7 +276,7 @@ func (uc *UseCase) processPostFuncs(ctx context.Context, scope string, manifests
 	})
 }
 
-func (uc *UseCase) processManifests(ctx context.Context, scope string, manifests []Manifest, fn func(context.Context, string, *component) error) error {
+func (uc *UseCase) processManifests(ctx context.Context, scope string, manifests []Manifest, arguments map[string]map[string]string, fn func(context.Context, string, *component, map[string]map[string]string) error) error {
 	eg, egctx := errgroup.WithContext(ctx)
 
 	for _, manifest := range manifests {
@@ -278,7 +285,7 @@ func (uc *UseCase) processManifests(ctx context.Context, scope string, manifests
 			if err != nil {
 				return err
 			}
-			return fn(egctx, scope, component)
+			return fn(egctx, scope, component, arguments)
 		})
 	}
 
@@ -381,6 +388,18 @@ func (uc *UseCase) patchValuesMap(ctx context.Context, scopeName string, valuesM
 		case "{{ .Scope.UUID }}":
 			valuesMap[key] = scope.UUID
 		}
+	}
+
+	return nil
+}
+
+func (uc *UseCase) injectArguments(chart *chartComponent, args map[string]string) error {
+	if chart.ValuesMap == nil {
+		chart.ValuesMap = make(map[string]string)
+	}
+
+	for key, value := range args {
+		chart.ValuesMap[key] = value
 	}
 
 	return nil

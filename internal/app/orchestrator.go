@@ -100,7 +100,7 @@ func (s *OrchestratorService) ListExtensions(ctx context.Context, req *pb.ListEx
 }
 
 func (s *OrchestratorService) InstallOrUpgradeExtensions(ctx context.Context, req *pb.InstallOrUpgradeExtensionsRequest) (*emptypb.Empty, error) {
-	if err := s.extension.InstallOrUpgradeExtensions(ctx, req.GetScope(), toManifests(req.GetManifests())); err != nil {
+	if err := s.extension.InstallOrUpgradeExtensions(ctx, req.GetScope(), toManifests(req.GetManifests()), toExtensionArguments(req.GetArguments())); err != nil {
 		return nil, err
 	}
 
@@ -116,6 +116,18 @@ func toManifests(ms []*pb.Extension_Manifest) []extension.Manifest {
 			ID:      m.GetId(),
 			Version: m.GetVersion(),
 		})
+	}
+
+	return ret
+}
+
+func toExtensionArguments(args map[string]*pb.InstallOrUpgradeExtensionsRequest_ExtensionArguments) map[string]map[string]string {
+	ret := make(map[string]map[string]string)
+
+	for extensionID, extArgs := range args {
+		if extArgs != nil && len(extArgs.GetValues()) > 0 {
+			ret[extensionID] = extArgs.GetValues()
+		}
 	}
 
 	return ret

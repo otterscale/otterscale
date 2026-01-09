@@ -13,6 +13,8 @@ const (
 const (
 	KubePrometheusStack = "79.9.0"
 	Istio               = "1.28.0"
+	RookCephOperator    = "1.18.8"
+	RookCephCluster     = "1.18.8"
 )
 
 // llm-d Components
