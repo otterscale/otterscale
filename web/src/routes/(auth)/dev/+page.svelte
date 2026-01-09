@@ -58,6 +58,33 @@
 	let objects: Record<string, JsonValue>[] = $state([]);
 	let resources: Resource[] = $state([]);
 	let isMounted = $state(false);
+
+	async function fetchSchema() {
+		const schemaResponse = await resourceService.schema({
+			cluster: 'gpu',
+			group: 'batch',
+			version: 'v1',
+			kind: 'Job'
+		} as SchemaRequest);
+
+		const schema = toJson(StructSchema, schemaResponse);
+
+		description = schema.description;
+		fields = {
+			APIVersion: schema.properties.apiVersion,
+			Kind: schema.properties.kind,
+			Name: schema.properties.metadata.properties.name,
+			Namespace: schema.properties.metadata.properties.namespace,
+			CreationTimestamp: schema.properties.metadata.properties.creationTimestamp,
+			Ready: schema.properties.status.properties.ready,
+			Succeeded: schema.properties.status.properties.succeeded,
+			Terminating: schema.properties.status.properties.terminating,
+			StartTime: schema.properties.status.properties.startTime,
+			CompletionTime: schema.properties.status.properties.completionTime,
+			Suspend: schema.properties.spec.properties.suspend,
+			Object: schema
+		} as unknown as Record<string, FieldSchema>;
+	}
 	async function watchResources() {
 		const watchResourcesStream = resourceService.watch({
 			cluster: 'gpu',
@@ -69,64 +96,30 @@
 
 		for await (const watchResourcesResponse of watchResourcesStream) {
 			if (watchResourcesResponse.resource) {
-				resources = [...resources, watchResourcesResponse.resource];
+				objects = [
+					...objects,
+					{
+						APIVersion: watchResourcesResponse.resource.object.apiVersion,
+						Kind: watchResourcesResponse.resource.object.kind,
+						Name: watchResourcesResponse.resource.object.metadata.name,
+						Namespace: watchResourcesResponse.resource.object.metadata.namespace,
+						CreationTimestamp: watchResourcesResponse.resource.object.metadata.creationTimestamp,
+						Ready: watchResourcesResponse.resource.object.status.ready,
+						Succeeded: watchResourcesResponse.resource.object.status.succeeded,
+						Terminating: watchResourcesResponse.resource.object.status.terminating,
+						StartTime: watchResourcesResponse.resource.object.status.startTime,
+						CompletionTime: watchResourcesResponse.resource.object.status.completionTime,
+						Suspend: watchResourcesResponse.resource.object.spec.suspend,
+						Object: watchResourcesResponse.resource.object
+					} as Record<string, JsonValue>
+				];
 			}
 		}
 	}
 	onMount(async () => {
 		try {
 			watchResources();
-
-			const schemaResponse = await resourceService.schema({
-				cluster: 'gpu',
-				group: 'batch',
-				version: 'v1',
-				kind: 'Job'
-			} as SchemaRequest);
-			const listResourcesResponse = await resourceService.list({
-				cluster: 'gpu',
-				namespace: 'llm-d',
-				group: 'batch',
-				version: 'v1',
-				resource: 'jobs'
-			} as ListRequest);
-
-			const schema = toJson(StructSchema, schemaResponse);
-
-			description = schema.description;
-
-			fields = {
-				APIVersion: schema.properties.apiVersion,
-				Kind: schema.properties.kind,
-				Name: schema.properties.metadata.properties.name,
-				Namespace: schema.properties.metadata.properties.namespace,
-				CreationTimestamp: schema.properties.metadata.properties.creationTimestamp,
-				Ready: schema.properties.status.properties.ready,
-				Succeeded: schema.properties.status.properties.succeeded,
-				Terminating: schema.properties.status.properties.terminating,
-				StartTime: schema.properties.status.properties.startTime,
-				CompletionTime: schema.properties.status.properties.completionTime,
-				Suspend: schema.properties.spec.properties.suspend,
-				Object: schema
-			} as unknown as Record<string, FieldSchema>;
-
-			console.log(5);
-
-			objects = listResourcesResponse.items.map((item) => ({
-				APIVersion: item.object.apiVersion,
-				Kind: item.object.kind,
-				Name: item.object.metadata.name,
-				Namespace: item.object.metadata.namespace,
-				CreationTimestamp: item.object.metadata.creationTimestamp,
-				Ready: item.object.status.ready,
-				Succeeded: item.object.status.succeeded,
-				Terminating: item.object.status.terminating,
-				StartTime: item.object.status.startTime,
-				CompletionTime: item.object.status.completionTime,
-				Suspend: item.object.spec.suspend,
-				Object: item.object
-			})) as unknown as Record<string, JsonValue>[];
-
+			await fetchSchema();
 			isMounted = true;
 		} catch (error) {
 			console.error('Failed to get HTTPRoutes:', error);
