@@ -4,13 +4,15 @@
 
 	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
 
+	import type { FieldSchema } from './types';
+
 	let {
 		ref = $bindable(null),
 		children,
 		field,
 		class: className
 	}: WithElementRef<HTMLAttributes<HTMLDivElement>> & {
-		field: any;
+		field: FieldSchema;
 	} = $props();
 </script>
 
@@ -20,7 +22,7 @@
 			<Tooltip.Trigger>
 				{@render children?.()}
 			</Tooltip.Trigger>
-			<Tooltip.Content class="max-w-xl p-2">
+			<Tooltip.Content>
 				{field.description}
 			</Tooltip.Content>
 		</Tooltip.Root>
