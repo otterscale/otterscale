@@ -58,8 +58,7 @@
 	}
 
 	:global(pre.shiki:not([data-code-overflow] *):not([data-code-overflow])) {
-		@apply overflow-y-auto;
-		max-height: min(100%, 650px);
+		@apply max-h-[77vh] overflow-y-auto;
 	}
 
 	:global(pre.shiki code) {

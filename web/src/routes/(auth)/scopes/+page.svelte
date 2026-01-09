@@ -4,6 +4,7 @@
 	import { getContext, onMount } from 'svelte';
 
 	import { resolve } from '$app/paths';
+	import { page } from '$app/state';
 	import { type Scope, ScopeService } from '$lib/api/scope/v1/scope_pb';
 	import SquareGridImage from '$lib/assets/square-grid.svg';
 	import DialogCreateScope from '$lib/components/layout/dialog-create-scope.svelte';
@@ -104,27 +105,29 @@
 				</a>
 			{/each}
 			<!-- Add Scope Card -->
-			<button onclick={() => (open = true)} class="group col-span-2 cursor-pointer text-left">
-				<Card.Root class="transition-all duration-200 hover:scale-105 hover:shadow-lg">
-					<Card.Header class="gap-0">
-						<div class="flex items-center gap-4">
-							<!-- Add Icon -->
-							<div class="flex size-10 items-center justify-center rounded-lg bg-primary">
-								<Icon icon="ph:plus-bold" class="size-6 text-card" />
-							</div>
+			{#if (page.data.user.roles as string[]).includes('admin')}
+				<button onclick={() => (open = true)} class="group col-span-2 cursor-pointer text-left">
+					<Card.Root class="transition-all duration-200 hover:scale-105 hover:shadow-lg">
+						<Card.Header class="gap-0">
+							<div class="flex items-center gap-4">
+								<!-- Add Icon -->
+								<div class="flex size-10 items-center justify-center rounded-lg bg-primary">
+									<Icon icon="ph:plus-bold" class="size-6 text-card" />
+								</div>
 
-							<!-- Add Scope Info -->
-							<div class="grid content-between">
-								<Card.Title class="text-xl text-nowrap">{m.create()}</Card.Title>
-								<span class="truncate">
-									<Card.Description class="capitalize">{m.new_scope()}</Card.Description>
-								</span>
+								<!-- Add Scope Info -->
+								<div class="grid content-between">
+									<Card.Title class="text-xl text-nowrap">{m.create()}</Card.Title>
+									<span class="truncate">
+										<Card.Description class="capitalize">{m.new_scope()}</Card.Description>
+									</span>
+								</div>
 							</div>
-						</div>
-					</Card.Header>
-				</Card.Root>
-			</button>
-			<DialogCreateScope bind:open />
+						</Card.Header>
+					</Card.Root>
+				</button>
+				<DialogCreateScope bind:open />
+			{/if}
 		</div>
 	{:else}
 		<h2 class="text-center text-3xl font-bold tracking-tight sm:text-4xl">
