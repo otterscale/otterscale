@@ -135,7 +135,6 @@
 		extensionArguments = {
 			'rook-ceph-cluster': { values: config }
 		};
-		console.log('Received extension arguments:', extensionArguments);
 		openConfirmDialog = true;
 	}
 </script>

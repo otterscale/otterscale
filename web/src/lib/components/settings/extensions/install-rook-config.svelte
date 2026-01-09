@@ -140,7 +140,7 @@
 			// Query node_disk_info metric filtered by scope with timeout
 			const diskInfoResponse = await withTimeout(
 				prometheusDriver.instantQuery(
-					`node_disk_info{scope="${scope}",device=~"(^sd[a-z]$)|(^nvme[0-9]+n[0-9]+$)"}`
+					`node_disk_info{scope="${scope}",device=~"(^sd[a-z]$)|(^vd[a-z]$)|(^hd[a-z]$)|(^nvme[0-9]+n[0-9]+$)"}`
 				),
 				10000,
 				'Timeout: Prometheus query took too long'
