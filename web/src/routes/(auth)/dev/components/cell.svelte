@@ -61,7 +61,7 @@
 		<Tooltip.Provider>
 			<Tooltip.Root>
 				<Tooltip.Trigger>
-					{formatTimeAgo(time)}
+					{time && !isNaN(time.getTime()) ? formatTimeAgo(time) : ''}
 				</Tooltip.Trigger>
 				<Tooltip.Content>
 					{time}
