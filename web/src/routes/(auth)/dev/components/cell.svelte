@@ -10,10 +10,6 @@
 	import { Badge } from '$lib/components/ui/badge/index.js';
 	import { buttonVariants } from '$lib/components/ui/button';
 	import * as Sheet from '$lib/components/ui/sheet/index.js';
-	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
-	import { formatTimeAgo } from '$lib/formatter';
-
-	import type { FieldSchema } from './types';
 
 	let {
 		ref = $bindable(null),
@@ -22,7 +18,7 @@
 		class: className
 	}: WithElementRef<HTMLAttributes<HTMLDivElement>> & {
 		object: JsonValue;
-		field: FieldSchema;
+		field: any;
 	} = $props();
 </script>
 
@@ -58,16 +54,20 @@
 	{:else if field?.type === 'string' && field?.format === 'date-time'}
 		{@const data = object as unknown as string}
 		{@const time = new Date(data)}
-		<Tooltip.Provider>
-			<Tooltip.Root>
-				<Tooltip.Trigger>
-					{time && !isNaN(time.getTime()) ? formatTimeAgo(time) : ''}
-				</Tooltip.Trigger>
-				<Tooltip.Content>
-					{time}
-				</Tooltip.Content>
-			</Tooltip.Root>
-		</Tooltip.Provider>
+		{#if time && !isNaN(time.getTime())}
+			{@const year=String(time.getFullYear())}
+			{@const month=String(time.getMonth() + 1).padStart(2, '0')}
+			{@const day=String(time.getDate()).padStart(2, '0')}
+			{@const hour=String(time.getHours()).padStart(2, '0')}
+			{@const minute=String(time.getMinutes()).padStart(2, '0')}
+			{@const second=String(time.getSeconds()).padStart(2, '0')}
+			<p>{year}-{month}-{day} {hour}:{minute}:{second}</p>
+		{/if}
+	{:else if field?.type === 'number' || field?.type === 'integer'}
+		{@const number = object as unknown as number}
+		<p>
+			{number}
+		</p>
 	{:else if field?.type === 'boolean'}
 		{@const data = object as unknown as string}
 		{#if Boolean(data)}

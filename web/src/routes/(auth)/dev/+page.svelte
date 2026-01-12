@@ -26,13 +26,13 @@
 		type SortingState,
 		type VisibilityState
 	} from '@tanstack/table-core';
-	import { createRawSnippet, getContext, onMount } from 'svelte';
+	import { createRawSnippet, getContext, onDestroy, onMount } from 'svelte';
 
 	import {
 		type ListRequest,
-		type Resource,
 		ResourceService,
 		type SchemaRequest,
+		WatchEvent_Type,
 		type WatchRequest
 	} from '$lib/api/resource/v1/resource_pb';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog/index.js';
@@ -48,17 +48,50 @@
 	import { cn } from '$lib/utils';
 
 	import { ExtendedTableCell, ExtendedTableHeader } from './components';
-	import type { FieldSchema } from './components/types';
+
+	function getFields(schema: any): Record<string, JsonValue> {
+		return {
+			APIVersion: schema?.properties?.apiVersion ?? {},
+			Kind: schema?.properties?.kind ?? {},
+			Name: schema?.properties?.metadata?.properties?.name ?? {},
+			Namespace: schema?.properties?.metadata?.properties?.namespace ?? {},
+			CreationTimestamp: schema?.properties?.metadata?.properties?.creationTimestamp ?? {},
+			Ready: schema?.properties?.status?.properties?.ready ?? {},
+			Succeeded: schema?.properties?.status?.properties?.succeeded ?? {},
+			Terminating: schema?.properties?.status?.properties?.terminating ?? {},
+			StartTime: schema?.properties?.status?.properties?.startTime ?? {},
+			CompletionTime: schema?.properties?.status?.properties?.completionTime ?? {},
+			Suspend: schema?.properties?.spec?.properties?.suspend ?? {},
+			Object: schema ?? {}
+		};
+	}
+	function getObject(object: any): Record<string, JsonValue> {
+		return {
+			APIVersion: object?.apiVersion ?? null,
+			Kind: object?.kind ?? null,
+			Name: object?.metadata?.name ?? null,
+			Namespace: object?.metadata?.namespace ?? null,
+			CreationTimestamp: object?.metadata?.creationTimestamp ?? null,
+			Ready: object?.status?.ready ?? null,
+			Succeeded: object?.status?.succeeded ?? null,
+			Terminating: object?.status?.terminating ?? null,
+			StartTime: object?.status?.startTime ?? null,
+			CompletionTime: object?.status?.completionTime ?? null,
+			Suspend: object?.spec?.suspend ?? null,
+			Object: object ?? null
+		};
+	}
 
 	const transport: Transport = getContext('transport');
 	const resourceService = createClient(ResourceService, transport);
 
-	let description: JsonValue = $state({});
-	let fields: Record<string, FieldSchema> = $state({});
-	let objects: Record<string, JsonValue>[] = $state([]);
-	let resources: Resource[] = $state([]);
-	let isMounted = $state(false);
+	const RECONNECT_DELAY_MILLISECOND = 1000;
+	const PAGE_SIZE = 10;
+	
+	let totalCount: number = $state(0);
+	let resourceVersion: string | undefined = $state(undefined);
 
+	let fields: Record<string, JsonValue> = $state({});
 	async function fetchSchema() {
 		const schemaResponse = await resourceService.schema({
 			cluster: 'gpu',
@@ -66,63 +99,147 @@
 			version: 'v1',
 			kind: 'Job'
 		} as SchemaRequest);
+		const schema: any = toJson(StructSchema, schemaResponse);
 
-		const schema = toJson(StructSchema, schemaResponse);
-
-		description = schema.description;
-		fields = {
-			APIVersion: schema.properties.apiVersion,
-			Kind: schema.properties.kind,
-			Name: schema.properties.metadata.properties.name,
-			Namespace: schema.properties.metadata.properties.namespace,
-			CreationTimestamp: schema.properties.metadata.properties.creationTimestamp,
-			Ready: schema.properties.status.properties.ready,
-			Succeeded: schema.properties.status.properties.succeeded,
-			Terminating: schema.properties.status.properties.terminating,
-			StartTime: schema.properties.status.properties.startTime,
-			CompletionTime: schema.properties.status.properties.completionTime,
-			Suspend: schema.properties.spec.properties.suspend,
-			Object: schema
-		} as unknown as Record<string, FieldSchema>;
+		fields = getFields(schema);
 	}
-	async function watchResources() {
-		const watchResourcesStream = resourceService.watch({
-			cluster: 'gpu',
-			namespace: 'llm-d',
-			group: 'batch',
-			version: 'v1',
-			resource: 'jobs'
-		} as WatchRequest);
+	
+	let objects: Record<string, JsonValue>[] = $state([]);
+	let continueToken: string = $state('');
+	let loadedContinueTokens: Set<string> = $state(new Set());
+	let isLoading: boolean = $state(false);
+	async function listResources(receivedContinueToken: string = '') {
+		if (isLoading) {
+			return;
+		}
 
-		for await (const watchResourcesResponse of watchResourcesStream) {
-			if (watchResourcesResponse.resource) {
-				objects = [
-					...objects,
-					{
-						APIVersion: watchResourcesResponse.resource.object.apiVersion,
-						Kind: watchResourcesResponse.resource.object.kind,
-						Name: watchResourcesResponse.resource.object.metadata.name,
-						Namespace: watchResourcesResponse.resource.object.metadata.namespace,
-						CreationTimestamp: watchResourcesResponse.resource.object.metadata.creationTimestamp,
-						Ready: watchResourcesResponse.resource.object.status.ready,
-						Succeeded: watchResourcesResponse.resource.object.status.succeeded,
-						Terminating: watchResourcesResponse.resource.object.status.terminating,
-						StartTime: watchResourcesResponse.resource.object.status.startTime,
-						CompletionTime: watchResourcesResponse.resource.object.status.completionTime,
-						Suspend: watchResourcesResponse.resource.object.spec.suspend,
-						Object: watchResourcesResponse.resource.object
-					} as Record<string, JsonValue>
-				];
+		if (loadedContinueTokens.has(receivedContinueToken)) {
+			return;
+		}
+
+		isLoading = true;
+		try {
+			const response = await resourceService.list({
+				cluster: 'gpu',
+				namespace: 'llm-d',
+				group: 'batch',
+				version: 'v1',
+				resource: 'jobs',
+				limit: BigInt(PAGE_SIZE),
+				continue: receivedContinueToken
+			} as ListRequest);
+			const newObjects = response.items.map((item: any) => getObject(item.object));
+			
+			loadedContinueTokens = new Set([...loadedContinueTokens, receivedContinueToken]);
+			
+			objects = [...objects, ...newObjects];
+			continueToken = response.continue;
+			resourceVersion = response.resourceVersion;
+			
+			const remaining = Number(response.remainingItemCount) || 0;
+			totalCount = objects.length + remaining;
+		} catch (error) {
+			console.error('Failed to list resources:', error);
+		} finally {
+			isLoading = false;
+		}
+	}
+
+	let abortController: AbortController | null = null;
+	async function watchResources() {
+		if (isDestroyed) return;
+
+		abortController = new AbortController();
+
+		const watchResourcesStream = resourceService.watch(
+			{
+				cluster: 'gpu',
+				namespace: 'llm-d',
+				group: 'batch',
+				version: 'v1',
+				resource: 'jobs',
+				resourceVersion
+			} as WatchRequest,
+			{ signal: abortController.signal }
+		);
+
+		try {
+			for await (const watchResourcesResponse of watchResourcesStream) {
+				const response: any = watchResourcesResponse;
+				if (response.resource?.object?.metadata?.resourceVersion) {
+					resourceVersion = response.resource?.object?.metadata?.resourceVersion;
+				}
+
+				if (response.type === WatchEvent_Type.ADDED) {
+					const addedObject = getObject(response.resource.object);
+
+					const existingIndex = objects.findIndex(
+						(object) =>
+							object.Namespace === addedObject.Namespace && object.Name === addedObject.Name
+					);
+
+					if (existingIndex < 0) {
+						objects = [...objects, addedObject];
+					}
+					totalCount += 1
+				} else if (response.type === WatchEvent_Type.MODIFIED) {
+					const modifiedObject = getObject(response.resource.object);
+
+					objects = objects.map((object) =>
+						object.Namespace === modifiedObject.Namespace && object.Name === modifiedObject.Name
+							? modifiedObject
+							: object
+					);
+				} else if (response.type === WatchEvent_Type.DELETED) {
+					const deletedObject = getObject(response.resource.object);
+
+					objects = objects.filter(
+						(object) =>
+							object.Namespace === deletedObject.Namespace && object.Name !== deletedObject.Name
+					);
+					totalCount -= 1
+				} else if (response.type === WatchEvent_Type.BOOKMARK) {
+					resourceVersion = response.resourceVersion;
+				} else {
+					console.log(response);
+				}
+			}
+
+			if (!isDestroyed) {
+				setTimeout(watchResources, RECONNECT_DELAY_MILLISECOND);
+			}
+		} catch (error) {
+			if (error instanceof Error && error.name === 'AbortError') {
+				console.log('Watch stream aborted');
+				return;
+			}
+
+			console.warn('Watch stream error, reconnecting...', error);
+
+			if (!isDestroyed) {
+				setTimeout(watchResources, RECONNECT_DELAY_MILLISECOND);
 			}
 		}
 	}
+
+	let isMounted = $state(false);
 	onMount(async () => {
 		try {
-			watchResources();
+			await listResources();
 			await fetchSchema();
+			watchResources();
 			isMounted = true;
 		} catch (error) {
-			console.error('Failed to get HTTPRoutes:', error);
+			console.error('Failed to initialize:', error);
+		}
+	});
+
+	let isDestroyed = false;
+	onDestroy(() => {
+		isDestroyed = true;
+		if (abortController) {
+			abortController.abort();
+			abortController = null;
 		}
 	});
 
@@ -154,7 +271,7 @@
 					header: () =>
 						renderComponent(ExtendedTableHeader, {
 							children: createRawSnippet(() => ({
-								render: () => key
+								render: () => `<h3>${key}</h3>`
 							})),
 							field: fields[key]
 						}),
@@ -180,7 +297,7 @@
 	let sorting = $state<SortingState>([]);
 	let pagination = $state<PaginationState>({
 		pageIndex: 0,
-		pageSize: 10
+		pageSize: PAGE_SIZE
 	});
 
 	const table = $derived.by(() =>
@@ -209,11 +326,19 @@
 					columnVisibility = updater;
 				}
 			},
-			onPaginationChange: (updater) => {
-				if (typeof updater === 'function') {
-					pagination = updater(pagination);
-				} else {
-					pagination = updater;
+			onPaginationChange: async (updater) => {
+				pagination = typeof updater === 'function' ? updater(pagination) : updater;
+				
+				const requiredObjectCountForCurrentPage = (pagination.pageIndex + 1) * pagination.pageSize;
+				const lastPageIndex = Math.ceil(totalCount / pagination.pageSize) - 1;
+				const isLastPage = pagination.pageIndex >= lastPageIndex;
+				
+				if (isLastPage && continueToken) {
+					while (continueToken) {
+						await listResources(continueToken);
+					}
+				} else if (requiredObjectCountForCurrentPage > objects.length && continueToken) {
+					listResources(continueToken);
 				}
 			},
 			onRowSelectionChange: (updater) => {
@@ -258,7 +383,7 @@
 		table.resetRowSelection();
 	}
 
-	function getAlignment(field: FieldSchema): 'start' | 'center' | 'end' {
+	function getAlignment(field: any): 'start' | 'center' | 'end' {
 		if (
 			field?.type === 'integer' ||
 			field?.type === 'number' ||
@@ -273,10 +398,8 @@
 	}
 </script>
 
-{resources.length}
 <div class="space-y-4">
 	{#if isMounted}
-		{description}
 		<!-- Controllers -->
 		<div class="flex flex-wrap items-center justify-between gap-3">
 			<!-- Filters -->
@@ -501,7 +624,7 @@
 					</span>
 					of
 					<span class="text-foreground">
-						{table.getRowCount().toString()}
+						{totalCount}
 					</span>
 				</p>
 			</div>
@@ -516,8 +639,11 @@
 								size="icon"
 								variant="outline"
 								class="disabled:pointer-events-none disabled:opacity-50"
-								onclick={() => table.firstPage()}
-								disabled={!table.getCanPreviousPage()}
+								onclick={() => {
+									if (pagination.pageIndex > 0) {
+										pagination = { pageIndex: 0, pageSize: PAGE_SIZE };
+									}
+								}}
 								aria-label="Go to first page"
 							>
 								<ChevronFirst size={16} aria-hidden="true" />
@@ -530,7 +656,6 @@
 								variant="outline"
 								class="disabled:pointer-events-none disabled:opacity-50"
 								onclick={() => table.previousPage()}
-								disabled={!table.getCanPreviousPage()}
 								aria-label="Go to previous page"
 							>
 								<ChevronLeft size={16} aria-hidden="true" />
@@ -543,7 +668,6 @@
 								variant="outline"
 								class="disabled:pointer-events-none disabled:opacity-50"
 								onclick={() => table.nextPage()}
-								disabled={!table.getCanNextPage()}
 								aria-label="Go to next page"
 							>
 								<ChevronRight size={16} aria-hidden="true" />
@@ -555,8 +679,7 @@
 								size="icon"
 								variant="outline"
 								class="disabled:pointer-events-none disabled:opacity-50"
-								onclick={() => table.lastPage()}
-								disabled={!table.getCanNextPage()}
+								onclick={() => table.setPageIndex(Math.floor(totalCount / pagination.pageSize))}
 								aria-label="Go to last page"
 							>
 								<ChevronLast size={16} aria-hidden="true" />
