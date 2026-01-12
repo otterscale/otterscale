@@ -20,7 +20,7 @@
 			<Tooltip.Trigger>
 				{@render children?.()}
 			</Tooltip.Trigger>
-			<Tooltip.Content>
+			<Tooltip.Content class="max-w-xl p-2">
 				{field.description}
 			</Tooltip.Content>
 		</Tooltip.Root>
