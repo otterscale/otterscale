@@ -4,15 +4,13 @@
 
 	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
 
-	import type { FieldSchema } from './types';
-
 	let {
 		ref = $bindable(null),
 		children,
 		field,
 		class: className
 	}: WithElementRef<HTMLAttributes<HTMLDivElement>> & {
-		field: FieldSchema;
+		field: any;
 	} = $props();
 </script>
 
