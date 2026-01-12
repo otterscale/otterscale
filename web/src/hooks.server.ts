@@ -44,7 +44,12 @@ const handleAuth: Handle = async ({ event, resolve }) => {
 };
 
 export const handleError: HandleServerError = ({ error, event }) => {
-	console.error('[Server Error] Path:', event.url.pathname, 'Uncaught Exception:', error);
+	console.error({
+		message: '[Server Error] Uncaught Exception',
+		path: event.url.pathname,
+		userId: event.locals.user?.id,
+		error
+	});
 };
 
 export const handle: Handle = sequence(handleParaglide, handleAuth);
