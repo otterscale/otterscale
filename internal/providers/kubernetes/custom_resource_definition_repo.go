@@ -21,7 +21,7 @@ func NewCustomResourceDefinitionRepo(kubernetes *Kubernetes) cluster.CustomResou
 var _ cluster.CustomResourceDefinitionRepo = (*customResourceDefinitionRepo)(nil)
 
 func (r *customResourceDefinitionRepo) List(ctx context.Context, scope, selector string) ([]cluster.CustomResourceDefinition, error) {
-	clientset, err := r.kubernetes.extClientset(scope)
+	clientset, err := r.kubernetes.apiClientset(scope)
 	if err != nil {
 		return nil, err
 	}
@@ -39,7 +39,7 @@ func (r *customResourceDefinitionRepo) List(ctx context.Context, scope, selector
 }
 
 func (r *customResourceDefinitionRepo) Get(ctx context.Context, scope, name string) (*cluster.CustomResourceDefinition, error) {
-	clientset, err := r.kubernetes.extClientset(scope)
+	clientset, err := r.kubernetes.apiClientset(scope)
 	if err != nil {
 		return nil, err
 	}
@@ -50,7 +50,7 @@ func (r *customResourceDefinitionRepo) Get(ctx context.Context, scope, name stri
 }
 
 func (r *customResourceDefinitionRepo) Create(ctx context.Context, scope string, crd *cluster.CustomResourceDefinition) (*cluster.CustomResourceDefinition, error) {
-	clientset, err := r.kubernetes.extClientset(scope)
+	clientset, err := r.kubernetes.apiClientset(scope)
 	if err != nil {
 		return nil, err
 	}
@@ -61,7 +61,7 @@ func (r *customResourceDefinitionRepo) Create(ctx context.Context, scope string,
 }
 
 func (r *customResourceDefinitionRepo) Update(ctx context.Context, scope string, crd *cluster.CustomResourceDefinition) (*cluster.CustomResourceDefinition, error) {
-	clientset, err := r.kubernetes.extClientset(scope)
+	clientset, err := r.kubernetes.apiClientset(scope)
 	if err != nil {
 		return nil, err
 	}
@@ -72,7 +72,7 @@ func (r *customResourceDefinitionRepo) Update(ctx context.Context, scope string,
 }
 
 func (r *customResourceDefinitionRepo) Delete(ctx context.Context, scope, name string) error {
-	clientset, err := r.kubernetes.extClientset(scope)
+	clientset, err := r.kubernetes.apiClientset(scope)
 	if err != nil {
 		return err
 	}

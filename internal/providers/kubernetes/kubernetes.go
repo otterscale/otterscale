@@ -2,7 +2,6 @@ package kubernetes
 
 import (
 	"context"
-	"encoding/base64"
 	"fmt"
 	"os"
 	"sync"
@@ -31,7 +30,7 @@ type Kubernetes struct {
 	kubeConfigPath string
 	configs        sync.Map
 	clientsets     sync.Map
-	extClientsets  sync.Map
+	apiClientsets  sync.Map
 }
 
 func New(conf *config.Config) (*Kubernetes, error) {
@@ -86,18 +85,32 @@ func (m *Kubernetes) GetService(ctx context.Context, scope, namespace, name stri
 	return clientset.CoreV1().Services(namespace).Get(ctx, name, opts)
 }
 
-func (m *Kubernetes) newMicroK8sConfig() (*rest.Config, error) {
-	kubeConfig, err := base64.StdEncoding.DecodeString(m.conf.MicroK8sConfig())
+func (m *Kubernetes) APIExtensionsClientset(scope string) (*clientset.Clientset, error) {
+	return m.apiClientset(scope)
+}
+
+func (m *Kubernetes) Clientset(scope string) (*kubernetes.Clientset, error) {
+	return m.clientset(scope)
+}
+
+func (m *Kubernetes) clientset(scope string) (*kubernetes.Clientset, error) {
+	if v, ok := m.clientsets.Load(scope); ok {
+		return v.(*kubernetes.Clientset), nil
+	}
+
+	config, err := m.newConfig(scope)
 	if err != nil {
 		return nil, err
 	}
 
-	configAPI, err := clientcmd.Load(kubeConfig)
+	clientset, err := kubernetes.NewForConfig(config)
 	if err != nil {
 		return nil, err
 	}
 
-	return clientcmd.NewDefaultClientConfig(*configAPI, &clientcmd.ConfigOverrides{}).ClientConfig()
+	m.clientsets.Store(scope, clientset)
+
+	return clientset, nil
 }
 
 func (m *Kubernetes) getKubeConfig(path string) (*api.Config, error) {
@@ -134,8 +147,38 @@ func (m *Kubernetes) newConfig(scope string) (*rest.Config, error) {
 		return nil, err
 	}
 
-	// Write CA data to temp file for helm
-	if config.CAData != nil {
+	// Write CA data to temp file if needed, but keep CAData for client compatibility
+	if config.CAData != nil && config.CAFile == "" {
+		fileName, err := m.writeCAToFile(config.CAData)
+		if err != nil {
+			return nil, err
+		}
+		config.CAFile = fileName
+		// Keep CAData - don't clear it, both can coexist
+	}
+
+	return config, nil
+}
+
+func (m *Kubernetes) newConfigForAPIExtensions(scope string) (*rest.Config, error) {
+	// For apiextensions clientset with client-cert auth, we need to ensure TLS is configured properly
+	kubeConfigPath := fmt.Sprintf(m.kubeConfigPath, scope)
+
+	kubeConfig, err := m.getKubeConfig(kubeConfigPath)
+	if err != nil {
+		return nil, err
+	}
+
+	config, err := clientcmd.NewDefaultClientConfig(*kubeConfig, &clientcmd.ConfigOverrides{}).ClientConfig()
+	if err != nil {
+		return nil, err
+	}
+
+	// For client certificate auth, ensure Insecure is false and CAData is present
+	config.Insecure = false
+
+	// Write CA data to temp file
+	if config.CAData != nil && config.CAFile == "" {
 		fileName, err := m.writeCAToFile(config.CAData)
 		if err != nil {
 			return nil, err
@@ -151,39 +194,15 @@ func (m *Kubernetes) getConfig(scopeName string) (*rest.Config, error) {
 		return m.newConfig(scopeName)
 	}
 
-	if os.Getenv("OTTERSCALE_CONTAINER") == "true" {
-		return rest.InClusterConfig()
-	}
-
-	return m.newMicroK8sConfig()
+	return rest.InClusterConfig()
 }
 
-func (m *Kubernetes) clientset(scope string) (*kubernetes.Clientset, error) {
-	if v, ok := m.clientsets.Load(scope); ok {
-		return v.(*kubernetes.Clientset), nil
-	}
-
-	config, err := m.Config(scope)
-	if err != nil {
-		return nil, err
-	}
-
-	clientset, err := kubernetes.NewForConfig(config)
-	if err != nil {
-		return nil, err
-	}
-
-	m.clientsets.Store(scope, clientset)
-
-	return clientset, nil
-}
-
-func (m *Kubernetes) extClientset(scope string) (*clientset.Clientset, error) {
-	if v, ok := m.extClientsets.Load(scope); ok {
+func (m *Kubernetes) apiClientset(scope string) (*clientset.Clientset, error) {
+	if v, ok := m.apiClientsets.Load(scope); ok {
 		return v.(*clientset.Clientset), nil
 	}
 
-	config, err := m.Config(scope)
+	config, err := m.newConfigForAPIExtensions(scope)
 	if err != nil {
 		return nil, err
 	}
@@ -193,7 +212,7 @@ func (m *Kubernetes) extClientset(scope string) (*clientset.Clientset, error) {
 		return nil, err
 	}
 
-	m.extClientsets.Store(scope, clientset)
+	m.apiClientsets.Store(scope, clientset)
 
 	return clientset, nil
 }

@@ -55,11 +55,7 @@ func New(conf *config.Config, kubernetes *kubernetes.Kubernetes) *Ceph {
 }
 
 func (m *Ceph) getConnectionConfig(scope string) (connectionConfig, error) {
-	config, err := m.kubernetes.Config(scope)
-	if err != nil {
-		return connectionConfig{}, err
-	}
-	clientset, err := k8sclient.NewForConfig(config)
+	clientset, err := m.kubernetes.Clientset(scope)
 	if err != nil {
 		return connectionConfig{}, err
 	}
@@ -243,11 +239,7 @@ func (m *Ceph) extractObjectKeys(r map[string]any) (accessKey, secretKey string,
 }
 
 func (m *Ceph) getClientConfig(scope string) (clientConfig, error) {
-	config, err := m.kubernetes.Config(scope)
-	if err != nil {
-		return clientConfig{}, err
-	}
-	clientset, err := k8sclient.NewForConfig(config)
+	clientset, err := m.kubernetes.Clientset(scope)
 	if err != nil {
 		return clientConfig{}, err
 	}
