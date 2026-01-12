@@ -1,4 +1,4 @@
-import { type Handle, redirect } from '@sveltejs/kit';
+import { type Handle, type HandleServerError, redirect } from '@sveltejs/kit';
 import { sequence } from '@sveltejs/kit/hooks';
 
 import { env } from '$env/dynamic/private';
@@ -184,3 +184,12 @@ export const handle: Handle = sequence(
 	handleGuard,
 	handleProxy
 );
+
+export const handleError: HandleServerError = ({ error, event }) => {
+	console.error({
+		message: '[Server Error] Uncaught Exception',
+		path: event.url.pathname,
+		username: event.locals.session?.user.username,
+		error
+	});
+};
