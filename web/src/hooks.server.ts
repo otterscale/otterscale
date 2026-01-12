@@ -1,4 +1,4 @@
-import type { Handle } from '@sveltejs/kit';
+import type { Handle, HandleServerError } from '@sveltejs/kit';
 import { sequence } from '@sveltejs/kit/hooks';
 
 import { env } from '$env/dynamic/private';
@@ -41,6 +41,15 @@ const handleAuth: Handle = async ({ event, resolve }) => {
 	event.locals.session = session;
 	event.locals.user = user;
 	return resolve(event);
+};
+
+export const handleError: HandleServerError = ({ error, event }) => {
+	console.error({
+		message: '[Server Error] Uncaught Exception',
+		path: event.url.pathname,
+		userId: event.locals.user?.id,
+		error
+	});
 };
 
 export const handle: Handle = sequence(handleParaglide, handleAuth);
