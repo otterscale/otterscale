@@ -10,6 +10,7 @@
 	import ChevronUp from '@lucide/svelte/icons/chevron-up';
 	import CircleAlert from '@lucide/svelte/icons/circle-alert';
 	import Columns3 from '@lucide/svelte/icons/columns-3';
+	import Download from '@lucide/svelte/icons/download';
 	import Plus from '@lucide/svelte/icons/plus';
 	import Trash from '@lucide/svelte/icons/trash';
 	import {
@@ -29,7 +30,6 @@
 	import { createRawSnippet, getContext, onDestroy, onMount } from 'svelte';
 
 	import {
-		type ListRequest,
 		ResourceService,
 		type SchemaRequest,
 		WatchEvent_Type,
@@ -49,6 +49,7 @@
 
 	import { ExtendedTableCell, ExtendedTableHeader } from './components';
 
+	// eslint-disable-next-line
 	function getFields(schema: any): Record<string, JsonValue> {
 		return {
 			APIVersion: schema?.properties?.apiVersion ?? {},
@@ -65,6 +66,7 @@
 			Object: schema ?? {}
 		};
 	}
+	// eslint-disable-next-line
 	function getObject(object: any): Record<string, JsonValue> {
 		return {
 			APIVersion: object?.apiVersion ?? null,
@@ -81,109 +83,79 @@
 			Object: object ?? null
 		};
 	}
+	const SCHEMA_REQUEST = {
+		cluster: 'gpu',
+		group: 'batch',
+		version: 'v1',
+		kind: 'Job'
+	};
+	const WATCH_REQUEST = {
+		cluster: 'gpu',
+		namespace: 'llm-d',
+		group: 'batch',
+		version: 'v1',
+		resource: 'jobs'
+	};
 
 	const transport: Transport = getContext('transport');
 	const resourceService = createClient(ResourceService, transport);
 
-	const RECONNECT_DELAY_MILLISECOND = 1000;
-	const PAGE_SIZE = 10;
-	
-	let totalCount: number = $state(0);
 	let resourceVersion: string | undefined = $state(undefined);
 
 	let fields: Record<string, JsonValue> = $state({});
 	async function fetchSchema() {
-		const schemaResponse = await resourceService.schema({
-			cluster: 'gpu',
-			group: 'batch',
-			version: 'v1',
-			kind: 'Job'
-		} as SchemaRequest);
+		const schemaResponse = await resourceService.schema(SCHEMA_REQUEST as SchemaRequest);
+		// eslint-disable-next-line
 		const schema: any = toJson(StructSchema, schemaResponse);
-
 		fields = getFields(schema);
 	}
-	
+
+	let isWatching = $state(false);
 	let objects: Record<string, JsonValue>[] = $state([]);
-	let continueToken: string = $state('');
-	let loadedContinueTokens: Set<string> = $state(new Set());
-	let isLoading: boolean = $state(false);
-	async function listResources(receivedContinueToken: string = '') {
-		if (isLoading) {
-			return;
-		}
-
-		if (loadedContinueTokens.has(receivedContinueToken)) {
-			return;
-		}
-
-		isLoading = true;
-		try {
-			const response = await resourceService.list({
-				cluster: 'gpu',
-				namespace: 'llm-d',
-				group: 'batch',
-				version: 'v1',
-				resource: 'jobs',
-				limit: BigInt(PAGE_SIZE),
-				continue: receivedContinueToken
-			} as ListRequest);
-			const newObjects = response.items.map((item: any) => getObject(item.object));
-			
-			loadedContinueTokens = new Set([...loadedContinueTokens, receivedContinueToken]);
-			
-			objects = [...objects, ...newObjects];
-			continueToken = response.continue;
-			resourceVersion = response.resourceVersion;
-			
-			const remaining = Number(response.remainingItemCount) || 0;
-			totalCount = objects.length + remaining;
-		} catch (error) {
-			console.error('Failed to list resources:', error);
-		} finally {
-			isLoading = false;
-		}
-	}
-
 	let abortController: AbortController | null = null;
 	async function watchResources() {
-		if (isDestroyed) return;
-
+		isWatching = true;
 		abortController = new AbortController();
 
+		if (isDestroyed) {
+			isWatching = false;
+			return;
+		}
+
 		const watchResourcesStream = resourceService.watch(
-			{
-				cluster: 'gpu',
-				namespace: 'llm-d',
-				group: 'batch',
-				version: 'v1',
-				resource: 'jobs',
-				resourceVersion
-			} as WatchRequest,
+			{ ...WATCH_REQUEST, resourceVersion } as WatchRequest,
 			{ signal: abortController.signal }
 		);
 
 		try {
 			for await (const watchResourcesResponse of watchResourcesStream) {
+				// eslint-disable-next-line
 				const response: any = watchResourcesResponse;
-				if (response.resource?.object?.metadata?.resourceVersion) {
-					resourceVersion = response.resource?.object?.metadata?.resourceVersion;
+
+				if (response.type === WatchEvent_Type.ERROR) {
+					continue;
 				}
 
-				if (response.type === WatchEvent_Type.ADDED) {
-					const addedObject = getObject(response.resource.object);
+				if (response.type === WatchEvent_Type.BOOKMARK) {
+					resourceVersion = response.resourceVersion as string;
+					continue;
+				}
 
-					const existingIndex = objects.findIndex(
+				resourceVersion = response.resource?.object?.metadata?.resourceVersion;
+
+				if (response.type === WatchEvent_Type.ADDED) {
+					const addedObject = getObject(response.resource?.object);
+
+					const index = objects.findIndex(
 						(object) =>
 							object.Namespace === addedObject.Namespace && object.Name === addedObject.Name
 					);
 
-					if (existingIndex < 0) {
+					if (index < 0) {
 						objects = [...objects, addedObject];
 					}
-					totalCount += 1
 				} else if (response.type === WatchEvent_Type.MODIFIED) {
-					const modifiedObject = getObject(response.resource.object);
+					const modifiedObject = getObject(response.resource?.object);
 
 					objects = objects.map((object) =>
 						object.Namespace === modifiedObject.Namespace && object.Name === modifiedObject.Name
@@ -191,41 +163,30 @@
 							: object
 					);
 				} else if (response.type === WatchEvent_Type.DELETED) {
-					const deletedObject = getObject(response.resource.object);
+					const deletedObject = getObject(response.resource?.object);
 
 					objects = objects.filter(
 						(object) =>
 							object.Namespace === deletedObject.Namespace && object.Name !== deletedObject.Name
 					);
-					totalCount -= 1
-				} else if (response.type === WatchEvent_Type.BOOKMARK) {
-					resourceVersion = response.resourceVersion;
 				} else {
-					console.log(response);
+					console.log('Unknown response type: ', response);
 				}
-			}
-
-			if (!isDestroyed) {
-				setTimeout(watchResources, RECONNECT_DELAY_MILLISECOND);
 			}
 		} catch (error) {
 			if (error instanceof Error && error.name === 'AbortError') {
 				console.log('Watch stream aborted');
+				isWatching = false;
 				return;
 			}
-
-			console.warn('Watch stream error, reconnecting...', error);
-
-			if (!isDestroyed) {
-				setTimeout(watchResources, RECONNECT_DELAY_MILLISECOND);
-			}
+		} finally {
+			isWatching = false;
 		}
 	}
 
 	let isMounted = $state(false);
 	onMount(async () => {
 		try {
-			await listResources();
 			await fetchSchema();
 			watchResources();
 			isMounted = true;
@@ -297,7 +258,7 @@
 	let sorting = $state<SortingState>([]);
 	let pagination = $state<PaginationState>({
 		pageIndex: 0,
-		pageSize: PAGE_SIZE
+		pageSize: 10
 	});
 
 	const table = $derived.by(() =>
@@ -326,19 +287,11 @@
 					columnVisibility = updater;
 				}
 			},
-			onPaginationChange: async (updater) => {
-				pagination = typeof updater === 'function' ? updater(pagination) : updater;
-				
-				const requiredObjectCountForCurrentPage = (pagination.pageIndex + 1) * pagination.pageSize;
-				const lastPageIndex = Math.ceil(totalCount / pagination.pageSize) - 1;
-				const isLastPage = pagination.pageIndex >= lastPageIndex;
-				
-				if (isLastPage && continueToken) {
-					while (continueToken) {
-						await listResources(continueToken);
-					}
-				} else if (requiredObjectCountForCurrentPage > objects.length && continueToken) {
-					listResources(continueToken);
+			onPaginationChange: (updater) => {
+				if (typeof updater === 'function') {
+					pagination = updater(pagination);
+				} else {
+					pagination = updater;
 				}
 			},
 			onRowSelectionChange: (updater) => {
@@ -383,6 +336,13 @@
 		table.resetRowSelection();
 	}
 
+	function handleReload() {
+		if (!isWatching) {
+			watchResources();
+		}
+	}
+
+	// eslint-disable-next-line
 	function getAlignment(field: any): 'start' | 'center' | 'end' {
 		if (
 			field?.type === 'integer' ||
@@ -431,6 +391,13 @@
 			</div>
 			<!-- Accessors -->
 			<div class="flex items-center gap-3">
+				<!-- Reload -->
+				<div class="flex items-center gap-3">
+					<Button onclick={handleReload} disabled={isWatching} variant="outline">
+						<Download class="-ms-1 opacity-60" size={16} aria-hidden="true" />
+						Reload
+					</Button>
+				</div>
 				<!-- Bulk Delete -->
 				{#if table.getSelectedRowModel().rows.length > 0}
 					<AlertDialog.Root>
@@ -624,7 +591,7 @@
 					</span>
 					of
 					<span class="text-foreground">
-						{totalCount}
+						{table.getRowCount().toString()}
 					</span>
 				</p>
 			</div>
@@ -639,11 +606,8 @@
 								size="icon"
 								variant="outline"
 								class="disabled:pointer-events-none disabled:opacity-50"
-								onclick={() => {
-									if (pagination.pageIndex > 0) {
-										pagination = { pageIndex: 0, pageSize: PAGE_SIZE };
-									}
-								}}
+								onclick={() => table.firstPage()}
+								disabled={!table.getCanPreviousPage()}
 								aria-label="Go to first page"
 							>
 								<ChevronFirst size={16} aria-hidden="true" />
@@ -656,6 +620,7 @@
 								variant="outline"
 								class="disabled:pointer-events-none disabled:opacity-50"
 								onclick={() => table.previousPage()}
+								disabled={!table.getCanPreviousPage()}
 								aria-label="Go to previous page"
 							>
 								<ChevronLeft size={16} aria-hidden="true" />
@@ -668,6 +633,7 @@
 								variant="outline"
 								class="disabled:pointer-events-none disabled:opacity-50"
 								onclick={() => table.nextPage()}
+								disabled={!table.getCanNextPage()}
 								aria-label="Go to next page"
 							>
 								<ChevronRight size={16} aria-hidden="true" />
@@ -679,7 +645,8 @@
 								size="icon"
 								variant="outline"
 								class="disabled:pointer-events-none disabled:opacity-50"
-								onclick={() => table.setPageIndex(Math.floor(totalCount / pagination.pageSize))}
+								onclick={() => table.lastPage()}
+								disabled={!table.getCanNextPage()}
 								aria-label="Go to last page"
 							>
 								<ChevronLast size={16} aria-hidden="true" />
