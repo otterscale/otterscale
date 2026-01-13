@@ -22,12 +22,11 @@
 		getPaginationRowModel,
 		getSortedRowModel,
 		type PaginationState,
-		type Row,
 		type RowSelectionState,
 		type SortingState,
 		type VisibilityState
 	} from '@tanstack/table-core';
-	import { createRawSnippet, getContext, onDestroy, onMount } from 'svelte';
+	import { createRawSnippet, getContext, mount, onDestroy, onMount, unmount } from 'svelte';
 
 	import {
 		ResourceService,
@@ -248,7 +247,7 @@
 			id: 'actions',
 			enableHiding: false,
 			enableSorting: false,
-			size: 30
+			size: 40
 		}
 	]);
 
@@ -256,10 +255,7 @@
 	let columnFilters = $state<ColumnFiltersState>([]);
 	let columnVisibility = $state<VisibilityState>({});
 	let sorting = $state<SortingState>([]);
-	let pagination = $state<PaginationState>({
-		pageIndex: 0,
-		pageSize: 10
-	});
+	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 
 	const table = $derived.by(() =>
 		createSvelteTable<JsonObject>({
@@ -267,7 +263,6 @@
 			get data() {
 				return data;
 			},
-			enableSortingRemoval: false,
 			getCoreRowModel: getCoreRowModel(),
 			getFacetedUniqueValues: getFacetedUniqueValues(),
 			getFilteredRowModel: getFilteredRowModel(),
