@@ -677,6 +677,8 @@
 	"network_traffic": "Network Traffic",
 	"dhcp": "DHCP",
 	"dashboard": "Dashboard",
+	"k8s_overview_title": "Kubernetes Overview",
+	"k8s_overview_description": "Monitor your Kubernetes cluster status and resources",
 	"machine_dashboard_description": "Overview of machine resources, usage trends, and analytics for the selected scope.",
 	"machine_dashboard_total_cpu_tooltip": "Total number of CPU cores across all machines.",
 	"machine_dashboard_total_memory_tooltip": "Total amount of memory across all machines.",
