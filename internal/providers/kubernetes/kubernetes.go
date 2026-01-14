@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/base64"
 	"fmt"
+	"log/slog"
 	"os"
 	"sync"
 	"time"
@@ -24,22 +25,25 @@ import (
 	"github.com/otterscale/otterscale/internal/config"
 	"github.com/otterscale/otterscale/internal/core/application/cluster"
 	"github.com/otterscale/otterscale/internal/core/scope"
+	"github.com/otterscale/otterscale/internal/core/secret"
 	"github.com/otterscale/otterscale/internal/providers/juju"
 )
 
 type Kubernetes struct {
-	conf *config.Config
-	juju *juju.Juju
+	conf           *config.Config
+	juju           *juju.Juju
+	kubeConfigRepo secret.KubeConfigRepo
 
 	configs       sync.Map
 	clientsets    sync.Map
 	extClientsets sync.Map
 }
 
-func New(conf *config.Config, juju *juju.Juju) (*Kubernetes, error) {
+func New(conf *config.Config, juju *juju.Juju, kubeConfigRepo secret.KubeConfigRepo) (*Kubernetes, error) {
 	return &Kubernetes{
-		conf: conf,
-		juju: juju,
+		conf:           conf,
+		juju:           juju,
+		kubeConfigRepo: kubeConfigRepo,
 	}, nil
 }
 
@@ -128,12 +132,34 @@ func (m *Kubernetes) newMicroK8sConfig() (*rest.Config, error) {
 	return clientcmd.NewDefaultClientConfig(*configAPI, &clientcmd.ConfigOverrides{}).ClientConfig()
 }
 
-func (m *Kubernetes) getKubeConfig(ctx context.Context, scope, name string) (*api.Config, error) {
-	result, err := m.juju.Run(ctx, scope, name, "get-kubeconfig", nil)
+func (m *Kubernetes) getKubeConfig(ctx context.Context, scopeName, name string) (*api.Config, error) {
+	// Try to get kubeconfig from Vault first
+	kubeConfig, err := m.kubeConfigRepo.GetKubeConfig(ctx, scopeName)
+	if err == nil {
+		return kubeConfig, nil
+	}
+
+	// Fallback to Juju if not found in Vault
+	result, err := m.juju.Run(ctx, scopeName, name, "get-kubeconfig", nil)
 	if err != nil {
 		return nil, err
 	}
-	return clientcmd.Load([]byte(result["kubeconfig"].(string)))
+
+	kubeConfig, err = clientcmd.Load([]byte(result["kubeconfig"].(string)))
+	if err != nil {
+		return nil, err
+	}
+
+	// Store kubeconfig in Vault asynchronously
+	go func() {
+		storeCtx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+		defer cancel()
+		if storeErr := m.kubeConfigRepo.StoreKubeConfig(storeCtx, scopeName, kubeConfig); storeErr != nil {
+			slog.Warn("failed to store kubeconfig in vault", "scope", scopeName, "error", storeErr)
+		}
+	}()
+
+	return kubeConfig, nil
 }
 
 func (m *Kubernetes) writeCAToFile(caData []byte) (string, error) {

@@ -12,6 +12,7 @@ import (
 	"github.com/otterscale/otterscale/internal/providers/maas"
 	"github.com/otterscale/otterscale/internal/providers/registry"
 	"github.com/otterscale/otterscale/internal/providers/samba"
+	"github.com/otterscale/otterscale/internal/providers/vault"
 )
 
 var ProviderSet = wire.NewSet(
@@ -90,4 +91,7 @@ var ProviderSet = wire.NewSet(
 	samba.NewSMBCommonConfigRepo,
 	samba.NewSMBShareRepo,
 	samba.NewSMBSecurityConfigRepo,
+	vault.New,
+	vault.NewSecretRepo,
+	vault.NewKubeConfigRepo,
 )
