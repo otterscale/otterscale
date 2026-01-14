@@ -9,6 +9,11 @@
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import { EnvironmentService, PremiumTier_Level } from '$lib/api/environment/v1/environment_pb';
+	import {
+		type APIResource,
+		type DiscoveryRequest,
+		ResourceService
+	} from '$lib/api/resource/v1/resource_pb';
 	import { type Scope, ScopeService } from '$lib/api/scope/v1/scope_pb';
 	import CreateBookmark from '$lib/components/layout/create-bookmark.svelte';
 	import NavBookmark from '$lib/components/layout/nav-bookmark.svelte';
@@ -48,6 +53,7 @@
 	const transport: Transport = getContext('transport');
 	const scopeClient = createClient(ScopeService, transport);
 	const envClient = createClient(EnvironmentService, transport);
+	const resourceClient = createClient(ResourceService, transport);
 
 	let scopes = $state<Scope[]>([]);
 	let previousScope = $state<string>('');
@@ -75,6 +81,18 @@
 		}
 	}
 
+	let apiResources = $state<APIResource[]>([]);
+	async function fetchAPIResources() {
+		try {
+			const response = await resourceClient.discovery({
+				cluster: 'gpu'
+			} as DiscoveryRequest);
+			apiResources = response.apiResources;
+		} catch (error) {
+			console.error('Failed to fetch discoveries:', error);
+		}
+	}
+
 	async function handleScopeOnSelect(index: number) {
 		const scope = scopes[index];
 		if (!scope) return;
@@ -84,6 +102,7 @@
 
 	async function initialize(scope: string) {
 		try {
+			await fetchAPIResources();
 			await fetchScopes();
 			// Validate scope: if not "OtterScale" and not in the scopes list, redirect to "OtterScale"
 			const isValidScope = scope === 'OtterScale' || scopes.some((s) => s.name === scope);
@@ -119,6 +138,7 @@
 	<title>{current ? `${current.title} - OtterScale` : 'OtterScale'}</title>
 </svelte:head>
 
+{apiResources.length}
 <Sidebar.Provider>
 	<Sidebar.Root variant="inset" collapsible="icon" class="p-3">
 		<Sidebar.Header>
@@ -133,6 +153,7 @@
 		<Sidebar.Content>
 			<NavGeneral scope={activeScope} title={m.platform()} routes={platformRoutes(activeScope)} />
 			<NavGeneral scope={activeScope} title={m.global()} routes={globalRoutes()} />
+
 			<NavBookmark />
 			<NavFooter class="mt-auto" />
 		</Sidebar.Content>
