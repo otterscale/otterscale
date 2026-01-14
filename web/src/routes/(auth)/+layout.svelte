@@ -92,6 +92,7 @@
 			console.error('Failed to fetch discoveries:', error);
 		}
 	}
+	const mapAPIResource = new Map<string, APIResource>(apiResources.map((resource) => [resource.kind, resource]));
 
 	async function handleScopeOnSelect(index: number) {
 		const scope = scopes[index];
@@ -132,13 +133,33 @@
 			initialize(activeScope);
 		}
 	});
+
+	const SidebarConfiguration = [
+		{
+			name: "Role-Based Access Control",
+			resources: [
+				{
+					name: "Role",
+					route: `/$(activeScope)/resources/rbac/roles`,
+					icon: 'ph:key',
+					enabled: true,
+				},
+				{
+					name: "RoleBinding",
+					route: `/$(activeScope)/resources/rbac/rolebindings`,
+					icon: 'ph:key',
+					enabled: true,
+				}
+			]
+		},
+	]
 </script>
 
 <svelte:head>
 	<title>{current ? `${current.title} - OtterScale` : 'OtterScale'}</title>
 </svelte:head>
 
-{apiResources.length}
+
 <Sidebar.Provider>
 	<Sidebar.Root variant="inset" collapsible="icon" class="p-3">
 		<Sidebar.Header>
@@ -154,6 +175,63 @@
 			<NavGeneral scope={activeScope} title={m.platform()} routes={platformRoutes(activeScope)} />
 			<NavGeneral scope={activeScope} title={m.global()} routes={globalRoutes()} />
 
+			{#each SidebarConfiguration as group}
+				<Sidebar.Group>
+					<!-- <Sidebar.GroupLabel>
+						{title}
+					</Sidebar.GroupLabel> -->
+					<Sidebar.Menu>
+						<Collapsible.Root>
+							{#snippet child({ props })}
+								<Sidebar.MenuItem {...props}>
+									<Sidebar.MenuButton
+										tooltipContent={group.name}
+									>
+										{#snippet child({ props })}
+											{#if group.route}
+												<!-- eslint-disable svelte/no-navigation-without-resolve -->
+												<a href={group.route} {...props}>
+													<Icon icon={getPathIcon(resource.route)} />
+													{route.path.title}
+												</a>
+												<!-- eslint-enable svelte/no-navigation-without-resolve -->
+											{:else}
+												<span {...props}>
+													<Icon icon={getPathIcon(resource.route)} />
+													{route.path.title}
+												</span>
+											{/if}
+										{/snippet}
+									</Sidebar.MenuButton>
+										<Collapsible.Trigger>
+											{#snippet child({ props })}
+												<Sidebar.MenuAction {...props} class="data-[state=open]:rotate-90">
+													<Icon icon="ph:caret-right" />
+													<span class="sr-only">Toggle</span>
+												</Sidebar.MenuAction>
+											{/snippet}
+										</Collapsible.Trigger>
+										<Collapsible.Content>
+											<Sidebar.MenuSub>
+												{#each resources as resource (resource.name)}
+													<Sidebar.MenuSubItem>
+														<Sidebar.MenuSubButton
+															href={subRoute.url}
+															aria-disabled={isDisabled(route.path.url)}
+														>
+															<span>{subRoute.title}</span>
+														</Sidebar.MenuSubButton>
+													</Sidebar.MenuSubItem>
+												{/each}
+											</Sidebar.MenuSub>
+										</Collapsible.Content>
+								</Sidebar.MenuItem>
+							{/snippet}
+						</Collapsible.Root>
+					</Sidebar.Menu>
+				</Sidebar.Group>
+			{/each}
+			
 			<NavBookmark />
 			<NavFooter class="mt-auto" />
 		</Sidebar.Content>
