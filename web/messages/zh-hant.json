@@ -676,6 +676,8 @@
 	"network_traffic": "網路流量",
 	"dhcp": "DHCP",
 	"dashboard": "儀表板",
+	"k8s_overview_title": "Kubernetes 概覽",
+	"k8s_overview_description": "監控您的 Kubernetes 叢集狀態和資源",
 	"machine_dashboard_description": "所選範圍的機器資源、使用趨勢和分析概覽。",
 	"machine_dashboard_total_cpu_tooltip": "所有機器的 CPU 核心總數。",
 	"machine_dashboard_total_memory_tooltip": "所有機器的記憶體總量。",
