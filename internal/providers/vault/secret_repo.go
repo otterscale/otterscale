@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/base64"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/otterscale/otterscale/internal/core/secret"
@@ -101,7 +102,11 @@ func (r *secretRepo) List(ctx context.Context, scope string, secretType secret.S
 func (r *secretRepo) Exists(ctx context.Context, scope string, secretType secret.SecretType, name string) (bool, error) {
 	_, err := r.Get(ctx, scope, secretType, name)
 	if err != nil {
-		return false, nil
+		// Only return false for "not found" errors; propagate other errors
+		if strings.Contains(err.Error(), "secret not found") {
+			return false, nil
+		}
+		return false, err
 	}
 	return true, nil
 }
