@@ -55,12 +55,12 @@
 		{@const data = object as unknown as string}
 		{@const time = new Date(data)}
 		{#if time && !isNaN(time.getTime())}
-			{@const year=String(time.getFullYear())}
-			{@const month=String(time.getMonth() + 1).padStart(2, '0')}
-			{@const day=String(time.getDate()).padStart(2, '0')}
-			{@const hour=String(time.getHours()).padStart(2, '0')}
-			{@const minute=String(time.getMinutes()).padStart(2, '0')}
-			{@const second=String(time.getSeconds()).padStart(2, '0')}
+			{@const year = String(time.getFullYear())}
+			{@const month = String(time.getMonth() + 1).padStart(2, '0')}
+			{@const day = String(time.getDate()).padStart(2, '0')}
+			{@const hour = String(time.getHours()).padStart(2, '0')}
+			{@const minute = String(time.getMinutes()).padStart(2, '0')}
+			{@const second = String(time.getSeconds()).padStart(2, '0')}
 			<p>{year}-{month}-{day} {hour}:{minute}:{second}</p>
 		{/if}
 	{:else if field?.type === 'number' || field?.type === 'integer'}

@@ -1,4 +1,6 @@
-import Cell from './cell.svelte';
-import Header from './header.svelte';
+import DynamicalCell from './dynamical-cell.svelte';
+import DynamicalHeader from './dynamical-header.svelte';
+import DynamicalTable from './dynamical-table.svelte';
+import QueryBuilder from './query-builder.svelte';
 
-export { Cell as ExtendedTableCell, Header as ExtendedTableHeader };
+export { DynamicalCell, DynamicalHeader, DynamicalTable, QueryBuilder };
