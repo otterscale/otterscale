@@ -14,7 +14,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file api/fleet/v1/fleet.proto.
  */
 export const file_api_fleet_v1_fleet: GenFile = /*@__PURE__*/
-  fileDesc("ChhhcGkvZmxlZXQvdjEvZmxlZXQucHJvdG8SE290dGVyc2NhbGUuZmxlZXQudjEi8gEKBk1lbWJlchIMCgRuYW1lGAEgASgJEi8KCHByb3ZpZGVyGAIgASgOMh0ub3R0ZXJzY2FsZS5mbGVldC52MS5Qcm92aWRlchI3CgxkaXN0cmlidXRpb24YAyABKA4yIS5vdHRlcnNjYWxlLmZsZWV0LnYxLkRpc3RyaWJ1dGlvbhIuCgpjcmVhdGVkX2F0GAQgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIuCgp1cGRhdGVkX2F0GAUgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIQCgh2ZXJzaW9ucxgGIAMoCSIUChJMaXN0TWVtYmVyc1JlcXVlc3QiQwoTTGlzdE1lbWJlcnNSZXNwb25zZRIsCgdtZW1iZXJzGAEgAygLMhsub3R0ZXJzY2FsZS5mbGVldC52MS5NZW1iZXIioQEKE0ltcG9ydE1lbWJlclJlcXVlc3QSDAoEbmFtZRgBIAEoCRIvCghwcm92aWRlchgCIAEoDjIdLm90dGVyc2NhbGUuZmxlZXQudjEuUHJvdmlkZXISNwoMZGlzdHJpYnV0aW9uGAMgASgOMiEub3R0ZXJzY2FsZS5mbGVldC52MS5EaXN0cmlidXRpb24SEgoKa3ViZWNvbmZpZxgEIAEoDCI3ChNVcGRhdGVNZW1iZXJSZXF1ZXN0EgwKBG5hbWUYASABKAkSEgoKa3ViZWNvbmZpZxgCIAEoDCIjChNEZWxldGVNZW1iZXJSZXF1ZXN0EgwKBG5hbWUYASABKAkqNAoIUHJvdmlkZXISEgoOUFJPVklERVJfTE9DQUwQABIUChBQUk9WSURFUl9SQU5DSEVSEAEqaQoMRGlzdHJpYnV0aW9uEhwKGERJU1RSSUJVVElPTl9VTlNQRUNJRklFRBAAEiMKH0RJU1RSSUJVVElPTl9DSEFSTUVEX0tVQkVSTkVURVMQARIWChJESVNUUklCVVRJT05fVEFMT1MQAjLwAgoMRmxlZXRTZXJ2aWNlEmAKC0xpc3RNZW1iZXJzEicub3R0ZXJzY2FsZS5mbGVldC52MS5MaXN0TWVtYmVyc1JlcXVlc3QaKC5vdHRlcnNjYWxlLmZsZWV0LnYxLkxpc3RNZW1iZXJzUmVzcG9uc2USVQoMSW1wb3J0TWVtYmVyEigub3R0ZXJzY2FsZS5mbGVldC52MS5JbXBvcnRNZW1iZXJSZXF1ZXN0Ghsub3R0ZXJzY2FsZS5mbGVldC52MS5NZW1iZXISVQoMVXBkYXRlTWVtYmVyEigub3R0ZXJzY2FsZS5mbGVldC52MS5VcGRhdGVNZW1iZXJSZXF1ZXN0Ghsub3R0ZXJzY2FsZS5mbGVldC52MS5NZW1iZXISUAoMRGVsZXRlTWVtYmVyEigub3R0ZXJzY2FsZS5mbGVldC52MS5EZWxldGVNZW1iZXJSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5QjJaMGdpdGh1Yi5jb20vb3R0ZXJzY2FsZS9vdHRlcnNjYWxlL2FwaS9mbGVldC92MTtwYmIIZWRpdGlvbnNw6Ac", [file_google_protobuf_empty, file_google_protobuf_timestamp]);
+  fileDesc("ChhhcGkvZmxlZXQvdjEvZmxlZXQucHJvdG8SE290dGVyc2NhbGUuZmxlZXQudjEigAIKBk1lbWJlchIMCgR1dWlkGAEgASgJEgwKBG5hbWUYAiABKAkSLwoIcHJvdmlkZXIYAyABKA4yHS5vdHRlcnNjYWxlLmZsZWV0LnYxLlByb3ZpZGVyEjcKDGRpc3RyaWJ1dGlvbhgEIAEoDjIhLm90dGVyc2NhbGUuZmxlZXQudjEuRGlzdHJpYnV0aW9uEi4KCmNyZWF0ZWRfYXQYBSABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEi4KCnVwZGF0ZWRfYXQYBiABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEhAKCHZlcnNpb25zGAcgAygJIhQKEkxpc3RNZW1iZXJzUmVxdWVzdCJDChNMaXN0TWVtYmVyc1Jlc3BvbnNlEiwKB21lbWJlcnMYASADKAsyGy5vdHRlcnNjYWxlLmZsZWV0LnYxLk1lbWJlciKhAQoTSW1wb3J0TWVtYmVyUmVxdWVzdBIMCgRuYW1lGAEgASgJEi8KCHByb3ZpZGVyGAIgASgOMh0ub3R0ZXJzY2FsZS5mbGVldC52MS5Qcm92aWRlchI3CgxkaXN0cmlidXRpb24YAyABKA4yIS5vdHRlcnNjYWxlLmZsZWV0LnYxLkRpc3RyaWJ1dGlvbhISCgprdWJlY29uZmlnGAQgASgMIjcKE1VwZGF0ZU1lbWJlclJlcXVlc3QSDAoEdXVpZBgBIAEoCRISCgprdWJlY29uZmlnGAIgASgMIiMKE0RlbGV0ZU1lbWJlclJlcXVlc3QSDAoEdXVpZBgBIAEoCSo0CghQcm92aWRlchISCg5QUk9WSURFUl9MT0NBTBAAEhQKEFBST1ZJREVSX1JBTkNIRVIQASppCgxEaXN0cmlidXRpb24SHAoYRElTVFJJQlVUSU9OX1VOU1BFQ0lGSUVEEAASIwofRElTVFJJQlVUSU9OX0NIQVJNRURfS1VCRVJORVRFUxABEhYKEkRJU1RSSUJVVElPTl9UQUxPUxACMvACCgxGbGVldFNlcnZpY2USYAoLTGlzdE1lbWJlcnMSJy5vdHRlcnNjYWxlLmZsZWV0LnYxLkxpc3RNZW1iZXJzUmVxdWVzdBooLm90dGVyc2NhbGUuZmxlZXQudjEuTGlzdE1lbWJlcnNSZXNwb25zZRJVCgxJbXBvcnRNZW1iZXISKC5vdHRlcnNjYWxlLmZsZWV0LnYxLkltcG9ydE1lbWJlclJlcXVlc3QaGy5vdHRlcnNjYWxlLmZsZWV0LnYxLk1lbWJlchJVCgxVcGRhdGVNZW1iZXISKC5vdHRlcnNjYWxlLmZsZWV0LnYxLlVwZGF0ZU1lbWJlclJlcXVlc3QaGy5vdHRlcnNjYWxlLmZsZWV0LnYxLk1lbWJlchJQCgxEZWxldGVNZW1iZXISKC5vdHRlcnNjYWxlLmZsZWV0LnYxLkRlbGV0ZU1lbWJlclJlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHlCMlowZ2l0aHViLmNvbS9vdHRlcnNjYWxlL290dGVyc2NhbGUvYXBpL2ZsZWV0L3YxO3BiYghlZGl0aW9uc3DoBw", [file_google_protobuf_empty, file_google_protobuf_timestamp]);
 
 /**
  * Member represents a managed Kubernetes cluster in the fleet.
@@ -23,32 +23,37 @@ export const file_api_fleet_v1_fleet: GenFile = /*@__PURE__*/
  */
 export type Member = Message<"otterscale.fleet.v1.Member"> & {
   /**
-   * @generated from field: string name = 1;
+   * @generated from field: string uuid = 1;
+   */
+  uuid: string;
+
+  /**
+   * @generated from field: string name = 2;
    */
   name: string;
 
   /**
-   * @generated from field: otterscale.fleet.v1.Provider provider = 2;
+   * @generated from field: otterscale.fleet.v1.Provider provider = 3;
    */
   provider: Provider;
 
   /**
-   * @generated from field: otterscale.fleet.v1.Distribution distribution = 3;
+   * @generated from field: otterscale.fleet.v1.Distribution distribution = 4;
    */
   distribution: Distribution;
 
   /**
-   * @generated from field: google.protobuf.Timestamp created_at = 4;
+   * @generated from field: google.protobuf.Timestamp created_at = 5;
    */
   createdAt?: Timestamp;
 
   /**
-   * @generated from field: google.protobuf.Timestamp updated_at = 5;
+   * @generated from field: google.protobuf.Timestamp updated_at = 6;
    */
   updatedAt?: Timestamp;
 
   /**
-   * @generated from field: repeated string versions = 6;
+   * @generated from field: repeated string versions = 7;
    */
   versions: string[];
 };
@@ -135,9 +140,9 @@ export const ImportMemberRequestSchema: GenMessage<ImportMemberRequest> = /*@__P
  */
 export type UpdateMemberRequest = Message<"otterscale.fleet.v1.UpdateMemberRequest"> & {
   /**
-   * @generated from field: string name = 1;
+   * @generated from field: string uuid = 1;
    */
-  name: string;
+  uuid: string;
 
   /**
    * @generated from field: bytes kubeconfig = 2;
@@ -159,9 +164,9 @@ export const UpdateMemberRequestSchema: GenMessage<UpdateMemberRequest> = /*@__P
  */
 export type DeleteMemberRequest = Message<"otterscale.fleet.v1.DeleteMemberRequest"> & {
   /**
-   * @generated from field: string name = 1;
+   * @generated from field: string uuid = 1;
    */
-  name: string;
+  uuid: string;
 };
 
 /**
