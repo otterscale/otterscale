@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"slices"
 	"strconv"
 	"sync"
@@ -247,6 +248,46 @@ func (m *Ceph) getClientConfig(scope string) (clientConfig, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
+	pods, err := clientset.CoreV1().Pods(cephNamespace).List(ctx, metav1.ListOptions{
+		LabelSelector: "app=rook-ceph-rgw",
+	})
+	if err != nil {
+		return clientConfig{}, err
+	}
+	if len(pods.Items) == 0 {
+		return clientConfig{}, errors.New("no RGW pods found")
+	}
+	nodeIP := pods.Items[0].Status.HostIP
+
+	cephObjectStores, err := clientset.RESTClient().
+		Get().
+		AbsPath("/apis/ceph.rook.io/v1").
+		Namespace(cephNamespace).
+		Resource("cephobjectstores").
+		DoRaw(ctx)
+	if err != nil {
+		return clientConfig{}, err
+	}
+
+	var objectStoreList struct {
+		Items []struct {
+			Spec struct {
+				Gateway struct {
+					Port int `json:"port"`
+				} `json:"gateway"`
+			} `json:"spec"`
+		} `json:"items"`
+	}
+	if err := json.Unmarshal(cephObjectStores, &objectStoreList); err != nil {
+		return clientConfig{}, err
+	}
+	if len(objectStoreList.Items) == 0 {
+		return clientConfig{}, errors.New("no CephObjectStore found")
+	}
+	port := objectStoreList.Items[0].Spec.Gateway.Port
+
+	endpoint := fmt.Sprintf("http://%s:%d", nodeIP, port)
+
 	secret, err := clientset.CoreV1().Secrets(cephNamespace).Get(ctx, cephObjectUserSecret, metav1.GetOptions{})
 	if err != nil {
 		return clientConfig{}, err
@@ -261,10 +302,6 @@ func (m *Ceph) getClientConfig(scope string) (clientConfig, error) {
 	}
 
 	accessKey, err := getField("AccessKey")
-	if err != nil {
-		return clientConfig{}, err
-	}
-	endpoint, err := getField("Endpoint")
 	if err != nil {
 		return clientConfig{}, err
 	}
