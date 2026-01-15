@@ -96,12 +96,12 @@ func (r *releaseRepo) Install(_ context.Context, scope, namespace, name string, 
 		return nil, err
 	}
 
-	values, err := r.toValues(valuesYAML, valuesMap)
+	chart.Values, err = r.toValues(chart, valuesYAML, valuesMap)
 	if err != nil {
 		return nil, err
 	}
 
-	return client.Run(chart, values)
+	return client.Run(chart, nil)
 }
 
 func (r *releaseRepo) Uninstall(_ context.Context, scope, namespace, name string, dryRun bool) (*release.Release, error) {
@@ -143,7 +143,7 @@ func (r *releaseRepo) Upgrade(_ context.Context, scope, namespace, name string, 
 		return nil, err
 	}
 
-	values, err := r.toValues(valuesYAML, valuesMap)
+	values, err := r.toValues(chart, valuesYAML, valuesMap)
 	if err != nil {
 		return nil, err
 	}
@@ -252,13 +252,16 @@ func (r *releaseRepo) newName(name string) string {
 	return strings.ToLower(faker.FirstName() + "-" + faker.Username())
 }
 
-func (r *releaseRepo) toValues(valuesYAML string, valuesMap map[string]string) (map[string]any, error) {
-	values := map[string]any{}
+func (r *releaseRepo) toValues(chart *chart.Chart, valuesYAML string, valuesMap map[string]string) (map[string]any, error) {
+	var values map[string]any
 
 	if valuesYAML != "" {
+		values = map[string]any{}
 		if err := yaml.Unmarshal([]byte(valuesYAML), &values); err != nil {
 			return nil, err
 		}
+	} else {
+		values = chart.Values
 	}
 
 	for k, v := range valuesMap {
