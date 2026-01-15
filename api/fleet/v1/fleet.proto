@@ -39,12 +39,13 @@ enum Distribution {
 
 // Member represents a managed Kubernetes cluster in the fleet.
 message Member {
-  string                    name         = 1;
-  Provider                  provider     = 2;
-  Distribution              distribution = 3;
-  google.protobuf.Timestamp created_at   = 4;
-  google.protobuf.Timestamp updated_at   = 5;
-  repeated string           versions     = 6;
+  string                    uuid         = 1;
+  string                    name         = 2;
+  Provider                  provider     = 3;
+  Distribution              distribution = 4;
+  google.protobuf.Timestamp created_at   = 5;
+  google.protobuf.Timestamp updated_at   = 6;
+  repeated string           versions     = 7;
 }
 
 // ListMembersRequest is the request message for listing fleet members.
@@ -65,11 +66,11 @@ message ImportMemberRequest {
 
 // UpdateMemberRequest updates the kubeconfig of an existing member.
 message UpdateMemberRequest {
-  string name       = 1;
+  string uuid       = 1;
   bytes  kubeconfig = 2;
 }
 
 // DeleteMemberRequest removes a member from the fleet.
 message DeleteMemberRequest {
-  string name = 1;
+  string uuid = 1;
 }

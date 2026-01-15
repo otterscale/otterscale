@@ -114,12 +114,13 @@ func (x Distribution) Number() protoreflect.EnumNumber {
 // Member represents a managed Kubernetes cluster in the fleet.
 type Member struct {
 	state                   protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Name         *string                `protobuf:"bytes,1,opt,name=name"`
-	xxx_hidden_Provider     Provider               `protobuf:"varint,2,opt,name=provider,enum=otterscale.fleet.v1.Provider"`
-	xxx_hidden_Distribution Distribution           `protobuf:"varint,3,opt,name=distribution,enum=otterscale.fleet.v1.Distribution"`
-	xxx_hidden_CreatedAt    *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=created_at,json=createdAt"`
-	xxx_hidden_UpdatedAt    *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=updated_at,json=updatedAt"`
-	xxx_hidden_Versions     []string               `protobuf:"bytes,6,rep,name=versions"`
+	xxx_hidden_Uuid         *string                `protobuf:"bytes,1,opt,name=uuid"`
+	xxx_hidden_Name         *string                `protobuf:"bytes,2,opt,name=name"`
+	xxx_hidden_Provider     Provider               `protobuf:"varint,3,opt,name=provider,enum=otterscale.fleet.v1.Provider"`
+	xxx_hidden_Distribution Distribution           `protobuf:"varint,4,opt,name=distribution,enum=otterscale.fleet.v1.Distribution"`
+	xxx_hidden_CreatedAt    *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=created_at,json=createdAt"`
+	xxx_hidden_UpdatedAt    *timestamppb.Timestamp `protobuf:"bytes,6,opt,name=updated_at,json=updatedAt"`
+	xxx_hidden_Versions     []string               `protobuf:"bytes,7,rep,name=versions"`
 	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
 	XXX_presence            [1]uint32
 	unknownFields           protoimpl.UnknownFields
@@ -151,6 +152,16 @@ func (x *Member) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
+func (x *Member) GetUuid() string {
+	if x != nil {
+		if x.xxx_hidden_Uuid != nil {
+			return *x.xxx_hidden_Uuid
+		}
+		return ""
+	}
+	return ""
+}
+
 func (x *Member) GetName() string {
 	if x != nil {
 		if x.xxx_hidden_Name != nil {
@@ -163,7 +174,7 @@ func (x *Member) GetName() string {
 
 func (x *Member) GetProvider() Provider {
 	if x != nil {
-		if protoimpl.X.Present(&(x.XXX_presence[0]), 1) {
+		if protoimpl.X.Present(&(x.XXX_presence[0]), 2) {
 			return x.xxx_hidden_Provider
 		}
 	}
@@ -172,7 +183,7 @@ func (x *Member) GetProvider() Provider {
 
 func (x *Member) GetDistribution() Distribution {
 	if x != nil {
-		if protoimpl.X.Present(&(x.XXX_presence[0]), 2) {
+		if protoimpl.X.Present(&(x.XXX_presence[0]), 3) {
 			return x.xxx_hidden_Distribution
 		}
 	}
@@ -200,19 +211,24 @@ func (x *Member) GetVersions() []string {
 	return nil
 }
 
+func (x *Member) SetUuid(v string) {
+	x.xxx_hidden_Uuid = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 7)
+}
+
 func (x *Member) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 7)
 }
 
 func (x *Member) SetProvider(v Provider) {
 	x.xxx_hidden_Provider = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 7)
 }
 
 func (x *Member) SetDistribution(v Distribution) {
 	x.xxx_hidden_Distribution = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 7)
 }
 
 func (x *Member) SetCreatedAt(v *timestamppb.Timestamp) {
@@ -227,25 +243,32 @@ func (x *Member) SetVersions(v []string) {
 	x.xxx_hidden_Versions = v
 }
 
-func (x *Member) HasName() bool {
+func (x *Member) HasUuid() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *Member) HasProvider() bool {
+func (x *Member) HasName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *Member) HasDistribution() bool {
+func (x *Member) HasProvider() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+}
+
+func (x *Member) HasDistribution() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
 func (x *Member) HasCreatedAt() bool {
@@ -262,18 +285,23 @@ func (x *Member) HasUpdatedAt() bool {
 	return x.xxx_hidden_UpdatedAt != nil
 }
 
-func (x *Member) ClearName() {
+func (x *Member) ClearUuid() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_Uuid = nil
+}
+
+func (x *Member) ClearName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_Name = nil
 }
 
 func (x *Member) ClearProvider() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Provider = Provider_PROVIDER_LOCAL
 }
 
 func (x *Member) ClearDistribution() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_Distribution = Distribution_DISTRIBUTION_UNSPECIFIED
 }
 
@@ -288,6 +316,7 @@ func (x *Member) ClearUpdatedAt() {
 type Member_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
+	Uuid         *string
 	Name         *string
 	Provider     *Provider
 	Distribution *Distribution
@@ -300,16 +329,20 @@ func (b0 Member_builder) Build() *Member {
 	m0 := &Member{}
 	b, x := &b0, m0
 	_, _ = b, x
+	if b.Uuid != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 7)
+		x.xxx_hidden_Uuid = b.Uuid
+	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 7)
 		x.xxx_hidden_Name = b.Name
 	}
 	if b.Provider != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 7)
 		x.xxx_hidden_Provider = *b.Provider
 	}
 	if b.Distribution != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 7)
 		x.xxx_hidden_Distribution = *b.Distribution
 	}
 	x.xxx_hidden_CreatedAt = b.CreatedAt
@@ -601,7 +634,7 @@ func (b0 ImportMemberRequest_builder) Build() *ImportMemberRequest {
 // UpdateMemberRequest updates the kubeconfig of an existing member.
 type UpdateMemberRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Name        *string                `protobuf:"bytes,1,opt,name=name"`
+	xxx_hidden_Uuid        *string                `protobuf:"bytes,1,opt,name=uuid"`
 	xxx_hidden_Kubeconfig  []byte                 `protobuf:"bytes,2,opt,name=kubeconfig"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
@@ -634,10 +667,10 @@ func (x *UpdateMemberRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *UpdateMemberRequest) GetName() string {
+func (x *UpdateMemberRequest) GetUuid() string {
 	if x != nil {
-		if x.xxx_hidden_Name != nil {
-			return *x.xxx_hidden_Name
+		if x.xxx_hidden_Uuid != nil {
+			return *x.xxx_hidden_Uuid
 		}
 		return ""
 	}
@@ -651,8 +684,8 @@ func (x *UpdateMemberRequest) GetKubeconfig() []byte {
 	return nil
 }
 
-func (x *UpdateMemberRequest) SetName(v string) {
-	x.xxx_hidden_Name = &v
+func (x *UpdateMemberRequest) SetUuid(v string) {
+	x.xxx_hidden_Uuid = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
 }
 
@@ -664,7 +697,7 @@ func (x *UpdateMemberRequest) SetKubeconfig(v []byte) {
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
 }
 
-func (x *UpdateMemberRequest) HasName() bool {
+func (x *UpdateMemberRequest) HasUuid() bool {
 	if x == nil {
 		return false
 	}
@@ -678,9 +711,9 @@ func (x *UpdateMemberRequest) HasKubeconfig() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *UpdateMemberRequest) ClearName() {
+func (x *UpdateMemberRequest) ClearUuid() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_Name = nil
+	x.xxx_hidden_Uuid = nil
 }
 
 func (x *UpdateMemberRequest) ClearKubeconfig() {
@@ -691,7 +724,7 @@ func (x *UpdateMemberRequest) ClearKubeconfig() {
 type UpdateMemberRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Name       *string
+	Uuid       *string
 	Kubeconfig []byte
 }
 
@@ -699,9 +732,9 @@ func (b0 UpdateMemberRequest_builder) Build() *UpdateMemberRequest {
 	m0 := &UpdateMemberRequest{}
 	b, x := &b0, m0
 	_, _ = b, x
-	if b.Name != nil {
+	if b.Uuid != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
-		x.xxx_hidden_Name = b.Name
+		x.xxx_hidden_Uuid = b.Uuid
 	}
 	if b.Kubeconfig != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
@@ -713,7 +746,7 @@ func (b0 UpdateMemberRequest_builder) Build() *UpdateMemberRequest {
 // DeleteMemberRequest removes a member from the fleet.
 type DeleteMemberRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Name        *string                `protobuf:"bytes,1,opt,name=name"`
+	xxx_hidden_Uuid        *string                `protobuf:"bytes,1,opt,name=uuid"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
 	unknownFields          protoimpl.UnknownFields
@@ -745,46 +778,46 @@ func (x *DeleteMemberRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *DeleteMemberRequest) GetName() string {
+func (x *DeleteMemberRequest) GetUuid() string {
 	if x != nil {
-		if x.xxx_hidden_Name != nil {
-			return *x.xxx_hidden_Name
+		if x.xxx_hidden_Uuid != nil {
+			return *x.xxx_hidden_Uuid
 		}
 		return ""
 	}
 	return ""
 }
 
-func (x *DeleteMemberRequest) SetName(v string) {
-	x.xxx_hidden_Name = &v
+func (x *DeleteMemberRequest) SetUuid(v string) {
+	x.xxx_hidden_Uuid = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 1)
 }
 
-func (x *DeleteMemberRequest) HasName() bool {
+func (x *DeleteMemberRequest) HasUuid() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *DeleteMemberRequest) ClearName() {
+func (x *DeleteMemberRequest) ClearUuid() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_Name = nil
+	x.xxx_hidden_Uuid = nil
 }
 
 type DeleteMemberRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Name *string
+	Uuid *string
 }
 
 func (b0 DeleteMemberRequest_builder) Build() *DeleteMemberRequest {
 	m0 := &DeleteMemberRequest{}
 	b, x := &b0, m0
 	_, _ = b, x
-	if b.Name != nil {
+	if b.Uuid != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 1)
-		x.xxx_hidden_Name = b.Name
+		x.xxx_hidden_Uuid = b.Uuid
 	}
 	return m0
 }
@@ -793,16 +826,17 @@ var File_api_fleet_v1_fleet_proto protoreflect.FileDescriptor
 
 const file_api_fleet_v1_fleet_proto_rawDesc = "" +
 	"\n" +
-	"\x18api/fleet/v1/fleet.proto\x12\x13otterscale.fleet.v1\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xb0\x02\n" +
+	"\x18api/fleet/v1/fleet.proto\x12\x13otterscale.fleet.v1\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xc4\x02\n" +
 	"\x06Member\x12\x12\n" +
-	"\x04name\x18\x01 \x01(\tR\x04name\x129\n" +
-	"\bprovider\x18\x02 \x01(\x0e2\x1d.otterscale.fleet.v1.ProviderR\bprovider\x12E\n" +
-	"\fdistribution\x18\x03 \x01(\x0e2!.otterscale.fleet.v1.DistributionR\fdistribution\x129\n" +
+	"\x04uuid\x18\x01 \x01(\tR\x04uuid\x12\x12\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\x129\n" +
+	"\bprovider\x18\x03 \x01(\x0e2\x1d.otterscale.fleet.v1.ProviderR\bprovider\x12E\n" +
+	"\fdistribution\x18\x04 \x01(\x0e2!.otterscale.fleet.v1.DistributionR\fdistribution\x129\n" +
 	"\n" +
-	"created_at\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x129\n" +
+	"created_at\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x129\n" +
 	"\n" +
-	"updated_at\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\x12\x1a\n" +
-	"\bversions\x18\x06 \x03(\tR\bversions\"\x14\n" +
+	"updated_at\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\x12\x1a\n" +
+	"\bversions\x18\a \x03(\tR\bversions\"\x14\n" +
 	"\x12ListMembersRequest\"L\n" +
 	"\x13ListMembersResponse\x125\n" +
 	"\amembers\x18\x01 \x03(\v2\x1b.otterscale.fleet.v1.MemberR\amembers\"\xcb\x01\n" +
@@ -814,12 +848,12 @@ const file_api_fleet_v1_fleet_proto_rawDesc = "" +
 	"kubeconfig\x18\x04 \x01(\fR\n" +
 	"kubeconfig\"I\n" +
 	"\x13UpdateMemberRequest\x12\x12\n" +
-	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1e\n" +
+	"\x04uuid\x18\x01 \x01(\tR\x04uuid\x12\x1e\n" +
 	"\n" +
 	"kubeconfig\x18\x02 \x01(\fR\n" +
 	"kubeconfig\")\n" +
 	"\x13DeleteMemberRequest\x12\x12\n" +
-	"\x04name\x18\x01 \x01(\tR\x04name*4\n" +
+	"\x04uuid\x18\x01 \x01(\tR\x04uuid*4\n" +
 	"\bProvider\x12\x12\n" +
 	"\x0ePROVIDER_LOCAL\x10\x00\x12\x14\n" +
 	"\x10PROVIDER_RANCHER\x10\x01*i\n" +
