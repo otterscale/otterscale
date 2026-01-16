@@ -8,6 +8,7 @@
 	import ChevronUp from '@lucide/svelte/icons/chevron-up';
 	import CircleAlert from '@lucide/svelte/icons/circle-alert';
 	import Columns3 from '@lucide/svelte/icons/columns-3';
+	import Plus from '@lucide/svelte/icons/plus';
 	import Trash from '@lucide/svelte/icons/trash';
 	import {
 		type ColumnDef,
@@ -29,7 +30,12 @@
 	import * as AlertDialog from '$lib/components/ui/alert-dialog/index.js';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { Checkbox } from '$lib/components/ui/checkbox/index.js';
-	import { createSvelteTable, FlexRender, renderComponent } from '$lib/components/ui/data-table';
+	import {
+		createSvelteTable,
+		FlexRender,
+		renderComponent,
+		renderSnippet
+	} from '$lib/components/ui/data-table';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 	import * as Empty from '$lib/components/ui/empty/index.js';
 	import { Label } from '$lib/components/ui/label/index.js';
@@ -45,12 +51,12 @@
 		objects,
 		fields,
 		reload,
-		create
+		rowActions
 	}: {
 		objects: Record<string, JsonValue>[];
 		fields: Record<string, JsonValue>;
 		reload?: Snippet;
-		create?: Snippet;
+		rowActions?: Snippet;
 	} = $props();
 
 	const columns: ColumnDef<Record<string, JsonValue>>[] = [
@@ -93,6 +99,16 @@
 		})),
 		{
 			id: 'actions',
+			cell: ({ row }) => renderSnippet(rowActions, { row }),
+			header: () =>
+				renderSnippet(
+					createRawSnippet(() => {
+						return {
+							render: () => `<span class="sr-only">Actions</span>`
+						};
+					}),
+					{}
+				),
 			enableHiding: false,
 			enableSorting: false,
 			size: 40
@@ -264,10 +280,13 @@
 				</AlertDialog.Root>
 			{/if}
 			<!-- Create -->
-			{@render create()}
+			<Button variant="outline">
+				<Plus class="opacity-60" size={16} aria-hidden="true" />
+				Create
+			</Button>
 
 			<!-- Reload -->
-			{@render reload()}
+			{@render reload?.()}
 		</div>
 		<!-- Filters -->
 		<div class="flex w-full items-center gap-3">

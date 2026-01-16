@@ -7,6 +7,7 @@
 	import type { HTMLAttributes } from 'svelte/elements';
 
 	import * as Code from '$lib/components/custom/code/index.js';
+	import { Badge } from '$lib/components/ui/badge';
 	import { buttonVariants } from '$lib/components/ui/button';
 	import * as Sheet from '$lib/components/ui/sheet/index.js';
 
@@ -45,32 +46,34 @@
 		</Sheet.Root>
 	{:else if field?.type === 'array'}
 		{@const data = object as unknown as JsonValue[]}
-		<!-- {#each data as datum, index (index)}
+		{#each data as datum, index (index)}
 			<Badge variant="outline">
 				{datum}
 			</Badge>
-		{/each} -->
-		{data.length}
+		{/each}
+	{:else if field?.type === 'string' && field?.format === 'date'}
+		{@const data = object as unknown as string}
+		{@const time = new Date(data)}
+		{#if time && !isNaN(time.getTime())}
+			{new Intl.DateTimeFormat('en-CA', {
+				year: 'numeric',
+				month: '2-digit',
+				day: '2-digit'
+			}).format(time)}
+		{/if}
 	{:else if field?.type === 'string' && field?.format === 'date-time'}
 		{@const data = object as unknown as string}
 		{@const time = new Date(data)}
 		{#if time && !isNaN(time.getTime())}
-			{@const year = String(time.getFullYear())}
-			{@const month = String(time.getMonth() + 1).padStart(2, '0')}
-			{@const day = String(time.getDate()).padStart(2, '0')}
-			{@const hour = String(time.getHours()).padStart(2, '0')}
-			{@const minute = String(time.getMinutes()).padStart(2, '0')}
-			{@const second = String(time.getSeconds()).padStart(2, '0')}
-			<p>{year}-{month}-{day} {hour}:{minute}:{second}</p>
-		{/if}
-	{:else if field?.type === 'string' && field?.format === 'date'}
-		{@const data = object as unknown as string}
-		{@const date = new Date(data)}
-		{#if date && !isNaN(date.getTime())}
-			{@const year = String(date.getFullYear())}
-			{@const month = String(date.getMonth() + 1).padStart(2, '0')}
-			{@const day = String(date.getDate()).padStart(2, '0')}
-			<p>{year}-{month}-{day}</p>
+			{new Intl.DateTimeFormat('en-CA', {
+				year: 'numeric',
+				month: '2-digit',
+				day: '2-digit',
+				hour: '2-digit',
+				minute: '2-digit',
+				second: '2-digit',
+				hour12: false
+			}).format(time)}
 		{/if}
 	{:else if field?.type === 'number' || field?.type === 'integer'}
 		{@const number = object as unknown as number}

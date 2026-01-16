@@ -3,7 +3,7 @@
 	import { StructSchema } from '@bufbuild/protobuf/wkt';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import Download from '@lucide/svelte/icons/download';
-	import Plus from '@lucide/svelte/icons/plus';
+	import Ellipsis from '@lucide/svelte/icons/ellipsis';
 	import { getContext, onDestroy, onMount } from 'svelte';
 
 	import {
@@ -15,6 +15,7 @@
 	} from '$lib/api/resource/v1/resource_pb';
 	import DynamicalTable from '$lib/components/dynamical-table/dynamical-table.svelte';
 	import Button from '$lib/components/ui/button/button.svelte';
+	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 
 	let {
 		cluster,
@@ -41,7 +42,7 @@
 			Namespace: schema?.properties?.metadata?.properties?.namespace ?? {},
 			Labels: schema?.properties?.metadata?.properties?.labels ?? {},
 			Annotations: schema?.properties?.metadata?.properties?.annotations ?? {},
-			CreationTimestamp: schema?.properties?.metadata?.properNties?.creationTimestamp ?? {},
+			CreationTimestamp: schema?.properties?.metadata?.properties?.creationTimestamp ?? {},
 			Configuration: schema ?? {}
 		};
 	}
@@ -244,17 +245,51 @@
 
 {#if isMounted}
 	<DynamicalTable {objects} {fields}>
-		{#snippet create()}
-			<Button class="ml-auto" variant="outline">
-				<Plus class="-ms-1 opacity-60" size={16} aria-hidden="true" />
-				Create
-			</Button>
-		{/snippet}
 		{#snippet reload()}
 			<Button onclick={handleReload} disabled={isWatching} variant="outline">
 				<Download class="opacity-60" size={16} />
 				Reload
 			</Button>
+		{/snippet}
+		{#snippet rowActions()}
+			<DropdownMenu.Root>
+				<DropdownMenu.Trigger>
+					{#snippet child({ props })}
+						<div class="flex justify-end">
+							<Button
+								size="icon"
+								variant="ghost"
+								class="shadow-none"
+								aria-label="Edit item"
+								{...props}
+							>
+								<Ellipsis size={16} aria-hidden="true" />
+							</Button>
+						</div>
+					{/snippet}
+				</DropdownMenu.Trigger>
+				<DropdownMenu.Content align="end">
+					<DropdownMenu.Group>
+						<DropdownMenu.Item>
+							View
+							<DropdownMenu.Shortcut>⌘V</DropdownMenu.Shortcut>
+						</DropdownMenu.Item>
+						<DropdownMenu.Item>
+							Edit
+							<DropdownMenu.Shortcut>⌘E</DropdownMenu.Shortcut>
+						</DropdownMenu.Item>
+						<DropdownMenu.Item>
+							Duplicate
+							<DropdownMenu.Shortcut>⌘D</DropdownMenu.Shortcut>
+						</DropdownMenu.Item>
+					</DropdownMenu.Group>
+					<DropdownMenu.Separator />
+					<DropdownMenu.Item class="text-destructive focus:text-destructive">
+						Delete
+						<DropdownMenu.Shortcut>⌘⌫</DropdownMenu.Shortcut>
+					</DropdownMenu.Item>
+				</DropdownMenu.Content>
+			</DropdownMenu.Root>
 		{/snippet}
 	</DynamicalTable>
 {/if}
