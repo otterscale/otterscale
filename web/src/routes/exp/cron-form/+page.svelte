@@ -29,15 +29,14 @@
 	<h1 class="mb-4 text-2xl font-bold">CronJob Form</h1>
 
 	<div class="grid grid-cols-2 gap-8">
-		<div class="rounded border bg-white p-4">
+		<div class="rounded border p-4 bg-card text-card-foreground">
 			<h2 class="mb-4 text-xl">Generated Form (Mode: {mode})</h2>
-			<SchemaForm apiSchema={cronSchema as K8sOpenAPISchema} paths={fields} bind:form bind:mode />
 			<SchemaForm apiSchema={cronSchema as K8sOpenAPISchema} paths={fields} bind:form bind:mode />
 		</div>
 
-		<div class="rounded border bg-gray-50 p-4">
+		<div class="rounded border p-4 bg-muted/50">
 			<h2 class="mb-4 text-xl">Live Values</h2>
-			<pre class="overflow-auto rounded bg-gray-900 p-4 text-green-400">
+			<pre class="overflow-auto rounded bg-zinc-950 p-4 text-xs text-zinc-50 dark:bg-zinc-900">
 {JSON.stringify(formValues, null, 2)}
             </pre>
 

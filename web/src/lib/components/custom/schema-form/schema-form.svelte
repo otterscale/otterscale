@@ -8,6 +8,7 @@
 
 	import { Button } from '$lib/components/ui/button';
 	import * as Tabs from '$lib/components/ui/tabs';
+	import { mode as themeMode } from 'mode-watcher';
 
 	import { buildSchemaFromK8s, type K8sOpenAPISchema } from './converter';
 	import * as defaults from './defaults';
@@ -158,7 +159,7 @@
 						minimap: { enabled: false },
 						scrollBeyondLastLine: false
 					}}
-					theme="vs-dark"
+					theme={themeMode.current === 'dark' ? 'vs-dark' : 'vs'}
 					bind:value={advanceYaml}
 				/>
 			</div>
