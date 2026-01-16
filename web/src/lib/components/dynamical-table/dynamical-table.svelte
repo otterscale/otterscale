@@ -8,7 +8,6 @@
 	import ChevronUp from '@lucide/svelte/icons/chevron-up';
 	import CircleAlert from '@lucide/svelte/icons/circle-alert';
 	import Columns3 from '@lucide/svelte/icons/columns-3';
-	import Plus from '@lucide/svelte/icons/plus';
 	import Trash from '@lucide/svelte/icons/trash';
 	import {
 		type ColumnDef,
@@ -24,9 +23,9 @@
 		type SortingState,
 		type VisibilityState
 	} from '@tanstack/table-core';
+	import jsep from 'jsep';
 	import { createRawSnippet, type Snippet } from 'svelte';
 
-	import type { ListRequest, WatchRequest } from '$lib/api/resource/v1/resource_pb';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog/index.js';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { Checkbox } from '$lib/components/ui/checkbox/index.js';
@@ -40,20 +39,18 @@
 	import { cn } from '$lib/utils';
 
 	import { DynamicalCell, DynamicalHeader } from '.';
-	import QueryBuilder, { checkFilter, type FilterGroup } from './query-builder.svelte';
+	import Query, { evaluate } from './resource-manager-query.svelte';
 
 	let {
-		configuration,
-		schema,
 		objects,
 		fields,
-		reloader
+		reload,
+		create
 	}: {
-		configuration: Pick<ListRequest, keyof ListRequest & keyof WatchRequest>;
-		schema: any;
 		objects: Record<string, JsonValue>[];
 		fields: Record<string, JsonValue>;
-		reloader: Snippet;
+		reload?: Snippet;
+		create?: Snippet;
 	} = $props();
 
 	const columns: ColumnDef<Record<string, JsonValue>>[] = [
@@ -61,6 +58,7 @@
 			id: 'select',
 			header: ({ table }) =>
 				renderComponent(Checkbox, {
+					class: 'm-1',
 					'aria-label': 'Select all',
 					checked: table.getIsAllPageRowsSelected(),
 					indeterminate: table.getIsSomePageRowsSelected() && !table.getIsAllPageRowsSelected(),
@@ -68,6 +66,7 @@
 				}),
 			cell: ({ row }) =>
 				renderComponent(Checkbox, {
+					class: 'm-1',
 					'aria-label': 'Select row',
 					checked: row.getIsSelected(),
 					onCheckedChange: (value) => row.toggleSelected(!!value)
@@ -100,7 +99,8 @@
 		}
 	];
 
-	let globalFilter = $state<FilterGroup>({ logic: 'and', filters: [] });
+	// let globalFilter = $state<FilterGroup>({ logic: 'and', filters: [] });
+	let globalFilter = $state('');
 
 	let rowSelection = $state<RowSelectionState>({});
 	let columnFilters = $state<ColumnFiltersState>([]);
@@ -180,8 +180,15 @@
 				return sorting;
 			}
 		},
-		globalFilterFn: (row, _, filterValue: FilterGroup) => {
-			return checkFilter(row.original, filterValue);
+		globalFilterFn: (row, _, filterValue: string) => {
+			if (!filterValue) return true;
+			try {
+				const ast = jsep(filterValue);
+				return evaluate(ast, row.original);
+			} catch (error) {
+				console.error('Parse error:', error);
+				return true;
+			}
 		}
 	});
 	function handleDeleteRows() {
@@ -207,66 +214,13 @@
 			return 'start';
 		}
 	}
+
+	let expression = $state('');
 </script>
 
-<QueryBuilder bind:node={globalFilter} />
-
-<button
-	onclick={() => {
-		table.setGlobalFilter({ ...globalFilter });
-	}}
->
-	search
-</button>
-
 <div class="space-y-4">
-	<!-- Configuration Info -->
-	<div class="mb-2 rounded border bg-muted p-4 text-sm">
-		<div class="mb-2 flex items-center gap-4">
-			<div>
-				<h1 class="text-lg font-semibold">{configuration.resource}</h1>
-				<h3 class="text-sm text-muted-foreground">
-					{configuration.cluster}
-					{#if configuration.namespace}
-						<span class="mx-1">/</span>{configuration.namespace}
-					{/if}
-				</h3>
-			</div>
-		</div>
-		{#if schema.description}
-			<p class="text-muted-foreground">{schema.description}</p>
-		{/if}
-	</div>
-
 	<!-- Controllers -->
 	<div class="flex flex-wrap items-center justify-between gap-3">
-		<!-- Filters -->
-		<div class="flex items-center gap-3">
-			<DropdownMenu.Root>
-				<DropdownMenu.Trigger>
-					{#snippet child({ props })}
-						<Button variant="outline" {...props}>
-							<Columns3 class="-ms-1 opacity-60" size={16} aria-hidden="true" />
-							View
-						</Button>
-					{/snippet}
-				</DropdownMenu.Trigger>
-				<DropdownMenu.Content align="end">
-					<DropdownMenu.Label>Toggle columns</DropdownMenu.Label>
-					{#each table
-						.getAllColumns()
-						.filter((column) => column.getCanHide()) as column (column.id)}
-						<DropdownMenu.CheckboxItem
-							checked={column.getIsVisible()}
-							closeOnSelect={false}
-							onCheckedChange={(value) => column.toggleVisibility(!!value)}
-						>
-							{column.id}
-						</DropdownMenu.CheckboxItem>
-					{/each}
-				</DropdownMenu.Content>
-			</DropdownMenu.Root>
-		</div>
 		<!-- Accessors -->
 		<div class="flex items-center gap-3">
 			<!-- Bulk Delete -->
@@ -310,12 +264,38 @@
 				</AlertDialog.Root>
 			{/if}
 			<!-- Create -->
-			<Button class="ml-auto" variant="outline">
-				<Plus class="-ms-1 opacity-60" size={16} aria-hidden="true" />
-				Create
-			</Button>
+			{@render create()}
+
 			<!-- Reload -->
-			{@render reloader()}
+			{@render reload()}
+		</div>
+		<!-- Filters -->
+		<div class="flex w-full items-center gap-3">
+			<Query bind:expression {table} />
+			<DropdownMenu.Root>
+				<DropdownMenu.Trigger>
+					{#snippet child({ props })}
+						<Button variant="outline" {...props}>
+							<Columns3 class="-ms-1 opacity-60" size={16} aria-hidden="true" />
+							View
+						</Button>
+					{/snippet}
+				</DropdownMenu.Trigger>
+				<DropdownMenu.Content align="end">
+					<DropdownMenu.Label>Toggle columns</DropdownMenu.Label>
+					{#each table
+						.getAllColumns()
+						.filter((column) => column.getCanHide()) as column (column.id)}
+						<DropdownMenu.CheckboxItem
+							checked={column.getIsVisible()}
+							closeOnSelect={false}
+							onCheckedChange={(value) => column.toggleVisibility(!!value)}
+						>
+							{column.id}
+						</DropdownMenu.CheckboxItem>
+					{/each}
+				</DropdownMenu.Content>
+			</DropdownMenu.Root>
 		</div>
 	</div>
 

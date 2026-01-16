@@ -91,6 +91,9 @@ importers:
       isomorphic-dompurify:
         specifier: ^2.34.0
         version: 2.35.0
+      jsep:
+        specifier: ^1.4.0
+        version: 1.4.0
       pg:
         specifier: ^8.16.3
         version: 8.16.3
@@ -2228,6 +2231,10 @@ packages:
     peerDependenciesMeta:
       canvas:
         optional: true
+
+  jsep@1.4.0:
+    resolution: {integrity: sha512-B7qPcEVE3NVkmSJbaYxvv4cHkVW7DQsZz13pUMrfS8z8Q/BuShN+gcTXrUlPiGqM2/t/EEaI030bpxMqY8gMlw==}
+    engines: {node: '>= 10.16.0'}
 
   json-buffer@3.0.1:
     resolution: {integrity: sha512-4bV5BfR2mqfQTJm+V5tPPdf+ZpuhiIvTuAB5g8kcrXOZpTT/QwwVRWBywX1ozr6lEuPdbHxwaJlm9G6mI2sfSQ==}
@@ -5497,6 +5504,8 @@ snapshots:
       - bufferutil
       - supports-color
       - utf-8-validate
+
+  jsep@1.4.0: {}
 
   json-buffer@3.0.1: {}
 

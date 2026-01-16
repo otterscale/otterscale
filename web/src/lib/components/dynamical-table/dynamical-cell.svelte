@@ -7,7 +7,6 @@
 	import type { HTMLAttributes } from 'svelte/elements';
 
 	import * as Code from '$lib/components/custom/code/index.js';
-	import { Badge } from '$lib/components/ui/badge/index.js';
 	import { buttonVariants } from '$lib/components/ui/button';
 	import * as Sheet from '$lib/components/ui/sheet/index.js';
 
@@ -46,11 +45,12 @@
 		</Sheet.Root>
 	{:else if field?.type === 'array'}
 		{@const data = object as unknown as JsonValue[]}
-		{#each data as datum, index (index)}
+		<!-- {#each data as datum, index (index)}
 			<Badge variant="outline">
 				{datum}
 			</Badge>
-		{/each}
+		{/each} -->
+		{data.length}
 	{:else if field?.type === 'string' && field?.format === 'date-time'}
 		{@const data = object as unknown as string}
 		{@const time = new Date(data)}
@@ -63,11 +63,18 @@
 			{@const second = String(time.getSeconds()).padStart(2, '0')}
 			<p>{year}-{month}-{day} {hour}:{minute}:{second}</p>
 		{/if}
+	{:else if field?.type === 'string' && field?.format === 'date'}
+		{@const data = object as unknown as string}
+		{@const date = new Date(data)}
+		{#if date && !isNaN(date.getTime())}
+			{@const year = String(date.getFullYear())}
+			{@const month = String(date.getMonth() + 1).padStart(2, '0')}
+			{@const day = String(date.getDate()).padStart(2, '0')}
+			<p>{year}-{month}-{day}</p>
+		{/if}
 	{:else if field?.type === 'number' || field?.type === 'integer'}
 		{@const number = object as unknown as number}
-		<p>
-			{number}
-		</p>
+		{number}
 	{:else if field?.type === 'boolean'}
 		{@const data = object as unknown as string}
 		{#if Boolean(data)}
@@ -75,7 +82,11 @@
 		{:else}
 			<X class="inline-block text-destructive" />
 		{/if}
+	{:else if object}
+		<p class="truncate">
+			{object}
+		</p>
 	{:else}
-		{object}
+		<p class="text-muted-foreground">no data</p>
 	{/if}
 </div>

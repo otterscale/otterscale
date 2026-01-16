@@ -3,6 +3,7 @@
 	import { StructSchema } from '@bufbuild/protobuf/wkt';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import Download from '@lucide/svelte/icons/download';
+	import Plus from '@lucide/svelte/icons/plus';
 	import { getContext, onDestroy, onMount } from 'svelte';
 
 	import {
@@ -12,30 +13,36 @@
 		WatchEvent_Type,
 		type WatchRequest
 	} from '$lib/api/resource/v1/resource_pb';
-	import { Button } from '$lib/components/ui/button/index.js';
+	import DynamicalTable from '$lib/components/dynamical-table/dynamical-table.svelte';
+	import Button from '$lib/components/ui/button/button.svelte';
 
-	import DynamicalTable from './components/dynamical-table.svelte';
+	let {
+		cluster,
+		group,
+		version,
+		kind,
+		resource,
+		namespace
+	}: {
+		cluster: string;
+		group: string;
+		version: string;
+		kind: string;
+		resource: string;
+		namespace?: string;
+	} = $props();
 
-	const configuration = {
-		cluster: 'gpu',
-		group: 'batch',
-		namespace: 'llm-d',
-		version: 'v1',
-		kind: 'Job',
-		resource: 'jobs'
-	};
-	// eslint-disable-next-line
+	const transport: Transport = getContext('transport');
+	const resourceClient = createClient(ResourceService, transport);
+
 	function getFields(schema: any): Record<string, JsonValue> {
 		return {
 			Name: schema?.properties?.metadata?.properties?.name ?? {},
 			Namespace: schema?.properties?.metadata?.properties?.namespace ?? {},
-			CreationTimestamp: schema?.properties?.metadata?.properties?.creationTimestamp ?? {},
-			Succeeded: schema?.properties?.status?.properties?.succeeded ?? {},
-			Terminating: schema?.properties?.status?.properties?.terminating ?? {},
-			StartTime: schema?.properties?.status?.properties?.startTime ?? {},
-			CompletionTime: schema?.properties?.status?.properties?.completionTime ?? {},
-			Suspend: schema?.properties?.spec?.properties?.suspend ?? {},
-			Object: schema ?? {}
+			Labels: schema?.properties?.metadata?.properties?.labels ?? {},
+			Annotations: schema?.properties?.metadata?.properties?.annotations ?? {},
+			CreationTimestamp: schema?.properties?.metadata?.properNties?.creationTimestamp ?? {},
+			Configuration: schema ?? {}
 		};
 	}
 	// eslint-disable-next-line
@@ -43,32 +50,27 @@
 		return {
 			Name: object?.metadata?.name ?? null,
 			Namespace: object?.metadata?.namespace ?? null,
+			Labels: object?.metadata?.labels ?? null,
+			Annotations: object?.metadata?.annotations ?? null,
 			CreationTimestamp: object?.metadata?.creationTimestamp ?? null,
-			Succeeded: object?.status?.succeeded ?? null,
-			Terminating: object?.status?.terminating ?? null,
-			StartTime: object?.status?.startTime ?? null,
-			CompletionTime: object?.status?.completionTime ?? null,
-			Suspend: object?.spec?.suspend ?? null,
-			Object: object ?? null
+			Configuration: object ?? null
 		};
 	}
-
-	const transport: Transport = getContext('transport');
-	const resourceService = createClient(ResourceService, transport);
 
 	// eslint-disable-next-line
 	let schema: any = $state({});
 	let fields: Record<string, JsonValue> = $state({});
 	async function fetchSchema() {
 		try {
-			const schemaResponse = await resourceService.schema({
-				version: configuration.version,
-				group: configuration.group,
-				cluster: configuration.cluster,
-				kind: configuration.kind
+			const schemaResponse = await resourceClient.schema({
+				cluster: cluster,
+				group: group,
+				version: version,
+				kind: kind
 			} as SchemaRequest);
 
 			schema = toJson(StructSchema, schemaResponse);
+			console.log(schema);
 			fields = getFields(schema);
 		} catch (error) {
 			console.error('Failed to fetch schema:', error);
@@ -92,13 +94,13 @@
 		try {
 			let continueToken: string | undefined = undefined;
 			do {
-				const response = await resourceService.list(
+				const response = await resourceClient.list(
 					{
-						version: configuration.version,
-						group: configuration.group,
-						cluster: configuration.cluster,
-						namespace: configuration.namespace,
-						resource: configuration.resource,
+						cluster: cluster,
+						namespace: namespace,
+						group: group,
+						version: version,
+						resource: resource,
 						limit: BigInt(10),
 						continue: continueToken
 					} as ListRequest,
@@ -137,13 +139,13 @@
 		isWatching = true;
 		watchAbortController = new AbortController();
 		try {
-			const watchResourcesStream = resourceService.watch(
+			const watchResourcesStream = resourceClient.watch(
 				{
-					version: configuration.version,
-					group: configuration.group,
-					cluster: configuration.cluster,
-					namespace: configuration.namespace,
-					resource: configuration.resource,
+					cluster: cluster,
+					namespace: namespace,
+					group: group,
+					version: version,
+					resource: resource,
 					resourceVersion: resourceVersion
 				} as WatchRequest,
 				{ signal: watchAbortController.signal }
@@ -241,8 +243,14 @@
 </script>
 
 {#if isMounted}
-	<DynamicalTable {configuration} {schema} {objects} {fields}>
-		{#snippet reloader()}
+	<DynamicalTable {objects} {fields}>
+		{#snippet create()}
+			<Button class="ml-auto" variant="outline">
+				<Plus class="-ms-1 opacity-60" size={16} aria-hidden="true" />
+				Create
+			</Button>
+		{/snippet}
+		{#snippet reload()}
 			<Button onclick={handleReload} disabled={isWatching} variant="outline">
 				<Download class="opacity-60" size={16} />
 				Reload

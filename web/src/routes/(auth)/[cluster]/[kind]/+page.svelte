@@ -1,48 +1,113 @@
 <script lang="ts">
 	import { createClient, type Transport } from '@connectrpc/connect';
-	import { getContext, onMount } from 'svelte';
+	import { getContext } from 'svelte';
 
 	import { page } from '$app/state';
 	import {
 		type APIResource,
 		type DiscoveryRequest,
+		type ListRequest,
 		ResourceService
 	} from '$lib/api/resource/v1/resource_pb';
+	import ResourceManager from '$lib/components/dynamical-table/resource-manager.svelte';
+	import ResourcePicker from '$lib/components/dynamical-table/resource-picker.svelte';
+
+	const cluster = $derived(page.params.cluster ?? '');
+	const group = $derived(page.url.searchParams.get('group') ?? '');
+	const version = $derived(page.url.searchParams.get('version') ?? '');
+	const kind = $derived(page.params.kind ?? '');
 
 	const transport: Transport = getContext('transport');
-	const resourceClient = createClient(ResourceService, transport);
+	const client = createClient(ResourceService, transport);
 
 	let apiResources = $state<APIResource[]>([]);
-	async function fetchAPIResources() {
-		try {
-			const response = await resourceClient.discovery({
-				cluster: page.params.cluster
-			} as DiscoveryRequest);
-			apiResources = response.apiResources;
-		} catch (error) {
-			console.error('Failed to fetch discoveries:', error);
-		}
-	}
-	const resources = $derived(
-		apiResources.filter(
-			(resource) =>
-				resource.group === page.url.searchParams.get('group') &&
-				resource.version === page.url.searchParams.get('version') &&
-				resource.kind === page.params.kind
+	let selectedAPIResourceResource = $state('');
+	const selectedAPIResource = $derived(
+		apiResources.find(
+			(apiResource) =>
+				apiResource &&
+				apiResource.group === group &&
+				apiResource.version === version &&
+				apiResource.kind === kind &&
+				apiResource.resource === selectedAPIResourceResource
 		)
 	);
+	async function fetchAPIResources() {
+		const response = await client.discovery({
+			cluster: cluster
+		} as DiscoveryRequest);
 
-	let isMounted = $state(false);
-	onMount(async () => {
-		try {
-			await fetchAPIResources();
-			isMounted = true;
-		} catch (error) {
-			console.error('Error in fetcing api resources:', error);
-		}
-	});
+		apiResources = response.apiResources.filter(
+			(apiResource) =>
+				apiResource &&
+				apiResource.group === group &&
+				apiResource.version === version &&
+				apiResource.kind === kind
+		);
+		return apiResources;
+	}
+
+	let selectedNamespaceMetadataName = $state(page.url.searchParams.get('namespace') ?? '');
+	async function fetchNamespaces() {
+		const response = await client.list({
+			cluster: cluster,
+			resource: 'namespaces',
+			version: 'v1'
+		} as ListRequest);
+		console.log(response);
+		return response.items.map((item) => item.object);
+	}
 </script>
 
-{#if isMounted}
-	<pre>{JSON.stringify(resources, null, 2)}</pre>
-{/if}
+{#key cluster + group + version + kind}
+	{#await fetchAPIResources() then apiResources}
+		{@const apiResourceOptions = apiResources.map((apiResource) => ({
+			icon: 'lucide:list',
+			label: apiResource.resource,
+			value: apiResource.resource,
+			description: `${apiResource.group}/${apiResource.version}/${apiResource.kind}`
+		}))}
+		{@const [initialAPIResourceOption] = apiResourceOptions}
+		<div class="space-y-4">
+			<div class="flex items-center gap-2">
+				<ResourcePicker
+					class="w-fit"
+					bind:value={selectedAPIResourceResource}
+					initialValue={initialAPIResourceOption.value}
+					options={apiResourceOptions}
+				/>
+				{#if selectedAPIResource && selectedAPIResource.namespaced}
+					{#await fetchNamespaces() then namespaces}
+						{@const namespaceOptions = namespaces.map((namespace: any) => ({
+							icon: 'lucide:list',
+							label: namespace?.metadata?.name,
+							value: namespace?.metadata?.name,
+							description: namespace?.status?.phase
+						}))}
+						{@const [initialNamespaceOptions] = namespaceOptions}
+						<ResourcePicker
+							class="w-fit"
+							bind:value={selectedNamespaceMetadataName}
+							initialValue={initialNamespaceOptions.value}
+							options={namespaceOptions}
+						/>
+					{/await}
+				{/if}
+			</div>
+			{#if selectedAPIResource}
+				{#key selectedAPIResourceResource + selectedNamespaceMetadataName}
+					<ResourceManager
+						{cluster}
+						{group}
+						{version}
+						{kind}
+						resource={selectedAPIResourceResource}
+						namespace={selectedAPIResource.namespaced ? selectedNamespaceMetadataName : undefined}
+					/>
+				{/key}
+			{/if}
+		</div>
+	{:catch}
+		Error
+	{/await}
+{/key}
