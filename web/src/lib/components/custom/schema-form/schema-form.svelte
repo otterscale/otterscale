@@ -1,12 +1,12 @@
 <script lang="ts">
 	import type { FormState } from '@sjsf/form';
-	import { BasicForm, createForm, getValueSnapshot } from '@sjsf/form';
+	import { Content, createForm, Form, getValueSnapshot, setFormContext } from '@sjsf/form';
 	import { setThemeContext } from '@sjsf/shadcn4-theme';
 	import * as components from '@sjsf/shadcn4-theme/new-york';
 	import yaml from 'js-yaml';
-	import { onMount } from 'svelte';
 	import Monaco from 'svelte-monaco';
 
+	import { Button } from '$lib/components/ui/button';
 	import * as Tabs from '$lib/components/ui/tabs';
 
 	import { buildSchemaFromK8s, type K8sOpenAPISchema } from './converter';
@@ -36,57 +36,89 @@
 		onModeChange
 	}: Props = $props();
 
+	// Set theme context for this component tree
+	setThemeContext({ components });
+
 	// Build subset schema for basic mode
 	const formConfig = $derived(buildSchemaFromK8s(apiSchema, paths));
 
-	// Full schema for advance mode (YAML editor)
+	// Reactive states
+	let initialValue = $state(initialData ?? formConfig.initialValue);
 	let advanceYaml = $state('');
+	let yamlParseError = $state<string | null>(null);
+	let ref: HTMLFormElement | undefined;
 
-	// Initialize form on mount
-	onMount(() => {
-		initializeForm(initialData ?? formConfig.initialValue);
+	// Create form instance
+	form = createForm<Record<string, unknown>>({
+		...defaults,
+		idPrefix: 'k8s-schema-form',
+		initialValue,
+		schema: formConfig.schema,
+		uiSchema: formConfig.uiSchema,
+		onSubmit: handleFormSubmit
 	});
+	setFormContext(form);
+	syncFormToYaml();
 
-	// Helper to create form instance
-	function initializeForm(value: Record<string, unknown>) {
-		form = createForm<Record<string, unknown>>({
-			...defaults,
-			idPrefix: 'k8s-schema-form',
-			initialValue: value,
-			schema: formConfig.schema,
-			uiSchema: formConfig.uiSchema,
-			onSubmit: (data) => console.log('Form submitted', data)
-		});
+	// Sync form values to YAML editor
+	function syncFormToYaml() {
+		try {
+			advanceYaml = yaml.dump(form ? getValueSnapshot(form) : initialValue, {
+				indent: 2,
+				lineWidth: -1
+			});
+		} catch (error) {
+			console.error(`Error during syncing form to YAML:`, error);
+		}
 	}
 
-	// Sync YAML back to form when switching from advance to basic
+	// Sync YAML back to form
 	function syncYamlToForm() {
 		try {
+			yamlParseError = null;
 			const parsed = yaml.load(advanceYaml) as Record<string, unknown> | null;
+
 			if (parsed && typeof parsed === 'object') {
-				initializeForm(parsed);
+				Object.assign(initialValue, parsed);
 			}
-		} catch (e) {
-			console.error('Failed to parse YAML:', e);
+		} catch (error) {
+			const errorMsg = `Invalid YAML: ${error instanceof Error ? error.message : 'Unknown error'}`;
+			yamlParseError = errorMsg;
+			console.error(`Error during parsing YAML:`, error);
 		}
 	}
 
-	function handleModeChange(newMode: string) {
-		// Sync form values to YAML when switching to advance mode
-		if (newMode === 'advance' && form) {
-			const currentValues = getValueSnapshot(form);
-			advanceYaml = yaml.dump(currentValues, { indent: 2, lineWidth: -1 });
+	// Handle form submission
+	function handleFormSubmit(data: Record<string, unknown>) {
+		try {
+			// Display submitted form data
+			console.log('Form submitted with data:', data);
+
+			// Custom submission logic can be added here
+			onModeChange?.(mode);
+		} catch (error) {
+			console.error(`Error during form submission:`, error);
 		}
-		// Sync YAML back to form when switching to basic mode
-		if (newMode === 'basic' && advanceYaml) {
+	}
+
+	// Handle mode changes
+	function handleModeChange(newMode: string) {
+		const targetMode = newMode as 'basic' | 'advance';
+
+		if (targetMode === 'basic' && mode === 'advance') {
 			syncYamlToForm();
 		}
-		mode = newMode as 'basic' | 'advance';
+
+		mode = targetMode;
 		onModeChange?.(mode);
 	}
 
-	// Set theme context for this component tree
-	setThemeContext({ components });
+	// Reactive effects
+	$effect(() => {
+		if (form && mode === 'basic') {
+			syncFormToYaml();
+		}
+	});
 </script>
 
 <div class="schema-form-container">
@@ -102,12 +134,22 @@
 	<Tabs.Root value={mode}>
 		<Tabs.Content value="basic">
 			{#if form}
-				<BasicForm {form} />
+				<Form bind:ref>
+					<Content />
+				</Form>
 			{/if}
 		</Tabs.Content>
 
-		<Tabs.Content value="advance" class="h-[50vh]">
-			<div class="h-full rounded border">
+		<Tabs.Content value="advance">
+			<div class="h-[70vh] rounded border">
+				{#if yamlParseError}
+					<div
+						class="mb-2 rounded bg-red-100 p-2 text-sm text-red-700 dark:bg-red-900/20 dark:text-red-400"
+					>
+						{yamlParseError}
+					</div>
+				{/if}
+
 				<Monaco
 					options={{
 						language: 'yaml',
@@ -122,4 +164,16 @@
 			</div>
 		</Tabs.Content>
 	</Tabs.Root>
+
+	<Button
+		class="mt-6 w-full"
+		onclick={() => {
+			if (mode === 'advance') {
+				syncYamlToForm();
+			}
+			ref?.requestSubmit();
+		}}
+	>
+		Submit
+	</Button>
 </div>

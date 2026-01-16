@@ -18,6 +18,7 @@
 
 	// Using $derived to reactively get values from the form store
 	const formValues = $derived(form ? getValueSnapshot(form) : {});
+	const initialData = { spec: { runStrategy: '123' } };
 </script>
 
 <div class="container mx-auto py-10">
@@ -26,7 +27,13 @@
 	<div class="grid grid-cols-2 gap-8">
 		<div class="rounded border bg-white p-4">
 			<h2 class="mb-4 text-xl">Generated Form (Mode: {mode})</h2>
-			<SchemaForm apiSchema={vmSchema as K8sOpenAPISchema} paths={fields} bind:form bind:mode />
+			<SchemaForm
+				apiSchema={vmSchema as K8sOpenAPISchema}
+				paths={fields}
+				{initialData}
+				bind:form
+				bind:mode
+			/>
 		</div>
 
 		<div class="rounded border bg-gray-50 p-4">
