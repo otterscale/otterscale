@@ -3,8 +3,8 @@
 	import { StructSchema } from '@bufbuild/protobuf/wkt';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import Download from '@lucide/svelte/icons/download';
-	import Ellipsis from '@lucide/svelte/icons/ellipsis';
-	import { createRawSnippet, getContext, onDestroy, onMount } from 'svelte';
+	import Plus from '@lucide/svelte/icons/plus';
+	import { getContext, onDestroy, onMount } from 'svelte';
 
 	import {
 		type ListRequest,
@@ -15,7 +15,9 @@
 	} from '$lib/api/resource/v1/resource_pb';
 	import DynamicalTable from '$lib/components/dynamical-table/dynamical-table.svelte';
 	import Button from '$lib/components/ui/button/button.svelte';
-	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
+
+	import ResourceActions from './resource-actions.svelte';
+	import ResourceCreate from './resource-create.svelte';
 
 	let {
 		cluster,
@@ -43,43 +45,18 @@
 			Labels: schema?.properties?.metadata?.properties?.labels ?? {},
 			Annotations: schema?.properties?.metadata?.properties?.annotations ?? {},
 			CreateTime: schema?.properties?.metadata?.properties?.creationTimestamp ?? {},
-			Specification: { type: 'array' },
 			Configuration: schema ?? {}
 		};
 	}
 	// eslint-disable-next-line
 	function getObject(object: any, fields: Record<string, JsonValue>): Record<string, JsonValue> {
 		return {
-			Name: {
-				data: object?.metadata?.name ?? null
-			},
-			Namespace: {
-				data: object?.metadata?.namespace ?? null
-			},
-			Labels: {
-				data: object?.metadata?.labels ?? null
-			},
-			Annotations: {
-				data: object?.metadata?.annotations ?? null
-			},
-			CreateTime: {
-				data: object?.metadata?.creationTimestamp ?? null
-			},
-			Specification: {
-				data: [
-					{ key: 1, value: 1 },
-					{ key: 2, value: 2 }
-				],
-				snippet: createRawSnippet(() => {
-					return {
-						render: () =>
-							`<a href="http://ots.phison.com">${`${object?.metadata?.name} otterscale`}</a>`
-					};
-				})
-			},
-			Configuration: {
-				data: object ?? null
-			}
+			Name: object?.metadata?.name ?? null,
+			Namespace: object?.metadata?.namespace ?? null,
+			Labels: object?.metadata?.labels ?? null,
+			Annotations: object?.metadata?.annotations ?? null,
+			CreateTime: object?.metadata?.creationTimestamp ?? null,
+			Configuration: object ?? null
 		};
 	}
 
@@ -269,51 +246,17 @@
 
 {#if isMounted}
 	<DynamicalTable {objects} {fields}>
+		{#snippet create()}
+			<ResourceCreate {resource} />
+		{/snippet}
 		{#snippet reload()}
 			<Button onclick={handleReload} disabled={isWatching} variant="outline">
 				<Download class="opacity-60" size={16} />
 				Reload
 			</Button>
 		{/snippet}
-		{#snippet rowActions({ row }: {})}
-			<DropdownMenu.Root>
-				<DropdownMenu.Trigger>
-					{#snippet child({ props })}
-						<div class="flex justify-end">
-							<Button
-								size="icon"
-								variant="ghost"
-								class="shadow-none"
-								aria-label="Edit item"
-								{...props}
-							>
-								<Ellipsis size={16} aria-hidden="true" />
-							</Button>
-						</div>
-					{/snippet}
-				</DropdownMenu.Trigger>
-				<DropdownMenu.Content align="end">
-					<DropdownMenu.Group>
-						<DropdownMenu.Item>
-							View
-							<DropdownMenu.Shortcut>⌘V</DropdownMenu.Shortcut>
-						</DropdownMenu.Item>
-						<DropdownMenu.Item>
-							Edit
-							<DropdownMenu.Shortcut>⌘E</DropdownMenu.Shortcut>
-						</DropdownMenu.Item>
-						<DropdownMenu.Item>
-							Duplicate
-							<DropdownMenu.Shortcut>⌘D</DropdownMenu.Shortcut>
-						</DropdownMenu.Item>
-					</DropdownMenu.Group>
-					<DropdownMenu.Separator />
-					<DropdownMenu.Item class="text-destructive focus:text-destructive">
-						Delete
-						<DropdownMenu.Shortcut>⌘⌫</DropdownMenu.Shortcut>
-					</DropdownMenu.Item>
-				</DropdownMenu.Content>
-			</DropdownMenu.Root>
+		{#snippet rowActions({ row })}
+			<ResourceActions {row} />
 		{/snippet}
 	</DynamicalTable>
 {/if}

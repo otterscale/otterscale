@@ -8,7 +8,6 @@
 	import ChevronUp from '@lucide/svelte/icons/chevron-up';
 	import CircleAlert from '@lucide/svelte/icons/circle-alert';
 	import Columns3 from '@lucide/svelte/icons/columns-3';
-	import Plus from '@lucide/svelte/icons/plus';
 	import Trash from '@lucide/svelte/icons/trash';
 	import {
 		type ColumnDef,
@@ -45,18 +44,20 @@
 	import { cn } from '$lib/utils';
 
 	import { DynamicalCell, DynamicalHeader } from '.';
-	import Query, { evaluate } from './resource-manager-query.svelte';
+	import DynamicalTableQuery, { evaluate } from './dynamical-table-query.svelte';
 
 	let {
 		objects,
 		fields,
+		create,
 		reload,
 		rowActions
 	}: {
 		objects: Record<string, JsonValue>[];
 		fields: Record<string, JsonValue>;
+		create?: Snippet;
 		reload?: Snippet;
-		rowActions?: Snippet;
+		rowActions?: Snippet<[{ row: Row<Record<string, JsonValue>> }]>;
 	} = $props();
 
 	const columns: ColumnDef<Record<string, JsonValue>>[] = [
@@ -99,7 +100,7 @@
 		})),
 		{
 			id: 'actions',
-			cell: ({ row }) => renderSnippet(rowActions, { row }),
+			cell: ({ row }) => renderSnippet(rowActions, { row: row }),
 			header: () =>
 				renderSnippet(
 					createRawSnippet(() => {
@@ -115,7 +116,6 @@
 		}
 	];
 
-	// let globalFilter = $state<FilterGroup>({ logic: 'and', filters: [] });
 	let globalFilter = $state('');
 
 	let rowSelection = $state<RowSelectionState>({});
@@ -283,17 +283,14 @@
 				</AlertDialog.Root>
 			{/if}
 			<!-- Create -->
-			<Button variant="outline">
-				<Plus class="opacity-60" size={16} aria-hidden="true" />
-				Create
-			</Button>
+			{@render create?.()}
 
 			<!-- Reload -->
 			{@render reload?.()}
 		</div>
 		<!-- Filters -->
 		<div class="flex w-full items-center gap-3">
-			<Query bind:expression {table} />
+			<DynamicalTableQuery bind:expression {table} />
 			<DropdownMenu.Root>
 				<DropdownMenu.Trigger>
 					{#snippet child({ props })}

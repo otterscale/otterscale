@@ -8,7 +8,6 @@
 	import Monaco from 'svelte-monaco';
 	import { stringify } from 'yaml';
 
-	import { Badge } from '$lib/components/ui/badge';
 	import { buttonVariants } from '$lib/components/ui/button';
 	import * as Sheet from '$lib/components/ui/sheet/index.js';
 
@@ -27,7 +26,7 @@
 	{#if field?.snippet}
 		{@render field.snippet()}
 	{:else if field?.type === 'object'}
-		{@const data = object['data'] as JsonObject}
+		{@const data = object as JsonObject}
 		<Sheet.Root>
 			<Sheet.Trigger class={buttonVariants({ variant: 'outline' })}>
 				<FileCode />
@@ -55,17 +54,17 @@
 			</Sheet.Content>
 		</Sheet.Root>
 	{:else if field?.type === 'array'}
-		{@render ArrayCell({ data: object.data })}
+		{@render ArrayCell({ data: object })}
 	{:else if field?.type === 'string' && field?.format === 'date'}
-		{@render DateCell({ data: new Date(object.data) })}
+		{@render DateCell({ data: new Date(object) })}
 	{:else if field?.type === 'string' && field?.format === 'date-time'}
-		{@render DatetimeCell({ data: new Date(object.data) })}
+		{@render DatetimeCell({ data: new Date(object) })}
 	{:else if field?.type === 'number' || field?.type === 'integer'}
-		{@render NumberCell({ data: Number(object.data) })}
+		{@render NumberCell({ data: Number(object) })}
 	{:else if field?.type === 'boolean'}
-		{@render BooleanCell({ data: Boolean(object.data) })}
-	{:else if object['data']}
-		{@render TextCell({ data: object.data })}
+		{@render BooleanCell({ data: Boolean(object) })}
+	{:else if object}
+		{@render TextCell({ data: object })}
 	{:else}
 		{@render EmptyCell()}
 	{/if}
