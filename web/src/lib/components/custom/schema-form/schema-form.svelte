@@ -53,7 +53,7 @@
 	// We must convert "Map" objects (which we transformed to Arrays in schema) 
 	// from K8s format (Object) to Form format (Array of Key-Value)
 	let initialValue = $state(
-		k8sToFormData(initialData ?? formConfig.initialValue, formConfig.mapPaths)
+		k8sToFormData(initialData ?? formConfig.initialValue, formConfig.transformationMappings)
 	);
 	let advanceYaml = $state('');
 	let yamlParseError = $state<string | null>(null);
@@ -76,7 +76,7 @@
 		try {
 			const rawData = form ? getValueSnapshot(form) : initialValue;
 			// Convert Form Format (Array Maps) -> K8s Format (Object Maps)
-			const k8sData = formDataToK8s(rawData, formConfig.mapPaths);
+			const k8sData = formDataToK8s(rawData, formConfig.transformationMappings);
 			
 			advanceYaml = yaml.dump(k8sData, {
 				indent: 2,
@@ -95,7 +95,7 @@
 
 			if (parsed && typeof parsed === 'object') {
 				// Convert K8s Format -> Form Format
-				const formData = k8sToFormData(parsed, formConfig.mapPaths);
+				const formData = k8sToFormData(parsed, formConfig.transformationMappings);
 				Object.assign(initialValue, formData);
 			}
 		} catch (error) {
@@ -109,7 +109,7 @@
 	function handleFormSubmit(data: Record<string, unknown>) {
 		try {
 			// Convert Form Format -> K8s Format before submitting
-			const k8sData = formDataToK8s(data, formConfig.mapPaths);
+			const k8sData = formDataToK8s(data, formConfig.transformationMappings);
 
 			// Display submitted form data
 			console.log('Form submitted with data:', k8sData);

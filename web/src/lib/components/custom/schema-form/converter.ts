@@ -22,7 +22,7 @@ export interface SchemaFormConfig {
 	schema: Schema;
 	uiSchema: UiSchemaRoot;
 	initialValue: Record<string, unknown>;
-	mapPaths: string[];
+	transformationMappings: Record<string, string>; // K8s Path -> Form Path
 }
 
 export interface PathOptions {
@@ -34,7 +34,7 @@ export interface PathOptions {
  * Subsets the full OpenAPI schema to include only the specified paths.
  * @param fullSchema The full OpenAPI V3 schema object
  * @param paths Array of dot-notation paths to include (e.g. "metadata.name", "spec.running")
- * @returns An object containing { schema, uiSchema, initialValue, mapPaths }
+ * @returns An object containing { schema, uiSchema, initialValue, transformationMappings }
  */
 export function buildSchemaFromK8s(
 	fullSchema: K8sOpenAPISchema,
@@ -48,7 +48,8 @@ export function buildSchemaFromK8s(
 	};
 
 	const uiSchema: UiSchemaRoot = {};
-	const mapPaths: string[] = [];
+	const initialValue: Record<string, unknown> = {};
+	const transformationMappings: Record<string, string> = {};
 
 	const pathKeys = Array.isArray(paths) ? paths : Object.keys(paths);
 	const pathOptions = Array.isArray(paths) ? {} : paths;
@@ -71,7 +72,7 @@ export function buildSchemaFromK8s(
 				if (!currentTarget.items) {
 					currentTarget.items = { type: 'object', properties: {} };
 				}
-				// Only proceed if items is a Schema object (not boolean or array)
+				// Only proceed if items is a Schema object
 				if (typeof currentTarget.items === 'object' && !Array.isArray(currentTarget.items)) {
 					currentTarget = currentTarget.items as Schema;
 				}
@@ -89,24 +90,6 @@ export function buildSchemaFromK8s(
 			}
 			const sourceProp = currentSource.properties[part];
 			const isLeaf = i === parts.length - 1;
-
-			// Update UI Schema
-			if (!currentUiTarget[part]) {
-				currentUiTarget[part] = {};
-			}
-
-			if (isLeaf) {
-				if (Array.isArray(sourceProp.enum)) {
-					currentUiTarget[part]['ui:components'] = { stringField: 'enumField' };
-				} else if (
-					sourceProp.type === 'array' &&
-					sourceProp.items &&
-					!Array.isArray(sourceProp.items) &&
-					Array.isArray(sourceProp.items.enum)
-				) {
-					currentUiTarget[part]['ui:components'] = { arrayField: 'multiEnumField' };
-				}
-			}
 
 			// Ensure Target Properties exists
 			if (!currentTarget.properties) {
@@ -133,37 +116,66 @@ export function buildSchemaFromK8s(
 			// Check if this property is a Map (object with additionalProperties)
 			const isMap = sourceProp.type === 'object' && !!sourceProp.additionalProperties;
 
-			// Prepare Target Property
-			if (!currentTarget.properties[part]) {
-				if (isLeaf) {
-					let newProp: Schema;
+			// HOISTING LOGIC:
+			// If it is a Map, we hoist it to avoid nested object update issues in the form library.
+			if ((isLeaf || isMap) && isMap) {
+				// It's a Map. Hoist it.
+				const formPath = path.replace(/\./g, '_'); // e.g. metadata_annotations
+				transformationMappings[path] = formPath;
 
-					if (isMap) {
-						// Transform Map to Array of Key-Value
-						mapPaths.push(path);
-						const valueSchema = (typeof sourceProp.additionalProperties === 'object'
-							? sourceProp.additionalProperties
-							: {}) as Schema;
+				const valueSchema = (typeof sourceProp.additionalProperties === 'object'
+					? sourceProp.additionalProperties
+					: {}) as Schema;
 
-						newProp = {
-							type: 'array',
-							items: {
-								type: 'object',
-								properties: {
-									key: { type: 'string', title: 'Key' },
-									value: { ...valueSchema, title: 'Value' }
-								}
-							}
-						};
-					} else {
-						// Leaf: Full Copy
-						newProp = { ...sourceProp } as Schema;
-						// Ensure properties is initialized for objects, otherwise some form generators won't render the map
-						if (newProp.type === 'object' && !newProp.properties) {
-							newProp.properties = {};
+				const newProp: Schema = {
+					type: 'array',
+					items: {
+						type: 'object',
+						properties: {
+							key: { type: 'string', title: 'Key' },
+							value: { ...valueSchema, title: 'Value' }
 						}
 					}
+				};
+				applyOptions(newProp, sourceProp, true);
 
+				// Add to ROOT schema properties
+				if (!rootSchema.properties) rootSchema.properties = {};
+				rootSchema.properties[formPath] = newProp;
+				
+				// Initial Value for Source to ensure correct initialization
+				setByPath(initialValue, path, {});
+
+				// Stop processing this path
+				break; 
+			}
+
+			// Standard Logic (Non-Hoist)
+			// Manage UI Schema for non-hoisted
+			if (!currentUiTarget[part]) {
+				currentUiTarget[part] = {};
+			}
+			
+			if (isLeaf) {
+				if (Array.isArray(sourceProp.enum)) {
+					currentUiTarget[part]['ui:components'] = { stringField: 'enumField' };
+				} else if (
+					sourceProp.type === 'array' &&
+					sourceProp.items &&
+					!Array.isArray(sourceProp.items) &&
+					Array.isArray(sourceProp.items.enum)
+				) {
+					currentUiTarget[part]['ui:components'] = { arrayField: 'multiEnumField' };
+				}
+			}
+
+			if (!currentTarget.properties[part]) {
+				if (isLeaf) {
+					// Leaf: Full Copy
+					const newProp = { ...sourceProp } as Schema;
+					if (newProp.type === 'object' && !newProp.properties) {
+						newProp.properties = {};
+					}
 					applyOptions(newProp, sourceProp, true);
 					currentTarget.properties[part] = newProp;
 				} else {
@@ -176,49 +188,44 @@ export function buildSchemaFromK8s(
 					} else {
 						currentTarget.properties[part] = {
 							type: 'object',
-							properties: {}
+							properties: {},
+							additionalProperties: true // Keep this for safety
 						};
 					}
-					// Apply intermediate options (mostly just ensuring no description)
 					applyOptions(currentTarget.properties[part] as Schema, sourceProp, false);
 				}
-			} else if (isLeaf) {
-				// Exists but we're at leaf - upgrade to full copy (or transformed map)
-				if (isMap) {
-					mapPaths.push(path);
-					const valueSchema = (typeof sourceProp.additionalProperties === 'object'
-						? sourceProp.additionalProperties
-						: {}) as Schema;
-					
-					const newProp: Schema = {
-						type: 'array',
-						items: {
-							type: 'object',
-							properties: {
-								key: { type: 'string', title: 'Key' },
-								value: { ...valueSchema, title: 'Value' }
-							}
-						}
-					};
-					applyOptions(newProp, sourceProp, true);
-					currentTarget.properties[part] = newProp;
-				} else {
-					const newProp = { ...sourceProp } as Schema;
-					if (newProp.type === 'object' && !newProp.properties) {
-						newProp.properties = {};
-					}
-					applyOptions(newProp, sourceProp, true);
-					currentTarget.properties[part] = newProp;
+			} 
+			else if (isLeaf) {
+				const target = currentTarget.properties[part] as Schema;
+				applyOptions(target, sourceProp, true);
+			}
+
+			// Initial Value Generation (for non-hoisted)
+			if (isLeaf) {
+				const defaultValue = sourceProp.default !== undefined
+					? sourceProp.default
+					: getDefaultByType(sourceProp.type);
+
+				if (defaultValue !== undefined) {
+					setByPath(initialValue, path, defaultValue);
 				}
 			}
 
-			// Handle Required (for both leaf and intermediate)
+			// Handle Required
 			const isRequired =
 				Array.isArray(currentSource.required) && currentSource.required.includes(part);
 			if (isRequired) {
-				if (!currentTarget.required) currentTarget.required = [];
-				if (!currentTarget.required.includes(part)) {
-					currentTarget.required.push(part);
+				if (path in transformationMappings) {
+					const formPath = transformationMappings[path];
+					if (!rootSchema.required) rootSchema.required = [];
+					if (!rootSchema.required.includes(formPath)) {
+						rootSchema.required.push(formPath);
+					}
+				} else {
+					if (!currentTarget.required) currentTarget.required = [];
+					if (!currentTarget.required.includes(part)) {
+						currentTarget.required.push(part);
+					}
 				}
 			}
 
@@ -232,7 +239,19 @@ export function buildSchemaFromK8s(
 		}
 	}
 
-	return { schema: rootSchema, uiSchema, initialValue: {}, mapPaths };
+	return { schema: rootSchema, uiSchema, initialValue, transformationMappings };
+}
+
+function getDefaultByType(type: unknown): unknown {
+	switch (type) {
+		case 'string': return '';
+		case 'boolean': return false;
+		case 'integer':
+		case 'number': return 0;
+		case 'array': return [];
+		case 'object': return {};
+		default: return undefined;
+	}
 }
 
 /**
@@ -257,43 +276,61 @@ function setByPath(obj: any, path: string, value: any): void {
 }
 
 /**
- * Converts K8s Object data (Standard) to Form data (Array-based Maps)
+ * Deletes nested property by dot path
  */
+function deleteByPath(obj: any, path: string): void {
+	const parts = path.split('.');
+	let current = obj;
+	for (let i = 0; i < parts.length - 1; i++) {
+		const part = parts[i];
+		if (!current[part]) return;
+		current = current[part];
+	}
+	delete current[parts[parts.length - 1]];
+}
 
 /**
- * Converts K8s Object data (Standard) to Form data (Array-based Maps)
+ * Converts K8s Object data (Standard) to Form data (Flattened/Mapped)
  */
-export function k8sToFormData(data: unknown, mapPaths: string[]): Record<string, unknown> {
+export function k8sToFormData(data: unknown, mappings: Record<string, string>): Record<string, unknown> {
 	if (!data || typeof data !== 'object' || Array.isArray(data)) return {};
 	// Deep clone simple data
 	const formData = JSON.parse(JSON.stringify(data));
 
-	for (const path of mapPaths) {
-		const originalValue = getByPath(formData, path);
+	for (const [k8sPath, formPath] of Object.entries(mappings)) {
+		const originalValue = getByPath(formData, k8sPath);
+		
+		// If the value exists, move it to formPath and transform it
 		if (originalValue && typeof originalValue === 'object' && !Array.isArray(originalValue)) {
 			// Convert Object {k:v} to Array [{key:k, value:v}]
 			const arrayValue = Object.entries(originalValue).map(([key, value]) => ({
 				key,
 				value
 			}));
-			setByPath(formData, path, arrayValue);
+			// Set at Form Path (Hoisted)
+			formData[formPath] = arrayValue;
+			
+			// Remove the original nested path to avoid duplication
+			deleteByPath(formData, k8sPath);
 		} else if (originalValue === undefined || originalValue === null) {
-			// Ensure it is initialized as array if missing (optional, but good for UI)
-			setByPath(formData, path, []);
+			formData[formPath] = [];
+			// Also ensure original path is removed if it existed as null/undefined
+			deleteByPath(formData, k8sPath);
 		}
 	}
 	return formData;
 }
 
 /**
- * Converts Form data (Array-based Maps) back to K8s Object data
+ * Converts Form data (Flattened/Mapped) back to K8s Object data
  */
-export function formDataToK8s(formData: unknown, mapPaths: string[]): Record<string, unknown> {
+export function formDataToK8s(formData: unknown, mappings: Record<string, string>): Record<string, unknown> {
 	if (!formData || typeof formData !== 'object' || Array.isArray(formData)) return {};
 	const k8sData = JSON.parse(JSON.stringify(formData));
 
-	for (const path of mapPaths) {
-		const arrayValue = getByPath(k8sData, path);
+	for (const [k8sPath, formPath] of Object.entries(mappings)) {
+		const arrayValue = k8sData[formPath]; // Get from Hoisted
+		
 		if (Array.isArray(arrayValue)) {
 			// Convert Array [{key:k, value:v}] to Object {k:v}
 			const objectValue = arrayValue.reduce((acc: Record<string, any>, item: any) => {
@@ -302,7 +339,10 @@ export function formDataToK8s(formData: unknown, mapPaths: string[]): Record<str
 				}
 				return acc;
 			}, {});
-			setByPath(k8sData, path, objectValue);
+			setByPath(k8sData, k8sPath, objectValue); // Put back to Deep
+			
+			// Remove Hoisted key from output
+			delete k8sData[formPath];
 		}
 	}
 	return k8sData;
