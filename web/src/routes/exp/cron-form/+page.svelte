@@ -14,11 +14,14 @@
 		'metadata.annotations': { title: 'Annotations' },
 		'apiVersion': {},
 		'spec.schedule': { title: 'Cron Schedule', showDescription: true },
-		'spec.concurrencyPolicy': {},
+		'spec.concurrencyPolicy': { title: 'Concurrency Policy' },
 		'spec.timeZone': {},
 		'spec.startingDeadlineSeconds': {},
 		'spec.successfulJobsHistoryLimit': {},
-		'spec.failedJobsHistoryLimit': {}
+		'spec.failedJobsHistoryLimit': {},
+		'spec.jobTemplate.spec.template.spec.containers.name': { },
+		'spec.jobTemplate.spec.template.spec.containers.image': { },
+		'spec.jobTemplate.spec.template.spec.containers.imagePullPolicy': { }
 	};
 
 	// Using $derived to reactively get values from the form store

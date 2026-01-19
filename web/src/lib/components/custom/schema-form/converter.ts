@@ -58,6 +58,7 @@ export function buildSchemaFromK8s(
 		const parts = path.split('.');
 		let currentSource: K8sOpenAPISchema = fullSchema;
 		let currentTarget: Schema = rootSchema;
+		let currentUiTarget: any = uiSchema;
 
 		for (let i = 0; i < parts.length; i++) {
 			const part = parts[i];
@@ -74,6 +75,11 @@ export function buildSchemaFromK8s(
 				if (typeof currentTarget.items === 'object' && !Array.isArray(currentTarget.items)) {
 					currentTarget = currentTarget.items as Schema;
 				}
+
+				if (!currentUiTarget.items) {
+					currentUiTarget.items = {};
+				}
+				currentUiTarget = currentUiTarget.items;
 			}
 
 			// Locate in Source
@@ -82,13 +88,30 @@ export function buildSchemaFromK8s(
 				break;
 			}
 			const sourceProp = currentSource.properties[part];
+			const isLeaf = i === parts.length - 1;
+
+			// Update UI Schema
+			if (!currentUiTarget[part]) {
+				currentUiTarget[part] = {};
+			}
+
+			if (isLeaf) {
+				if (Array.isArray(sourceProp.enum)) {
+					currentUiTarget[part]['ui:components'] = { stringField: 'enumField' };
+				} else if (
+					sourceProp.type === 'array' &&
+					sourceProp.items &&
+					!Array.isArray(sourceProp.items) &&
+					Array.isArray(sourceProp.items.enum)
+				) {
+					currentUiTarget[part]['ui:components'] = { arrayField: 'multiEnumField' };
+				}
+			}
 
 			// Ensure Target Properties exists
 			if (!currentTarget.properties) {
 				currentTarget.properties = {};
 			}
-
-			const isLeaf = i === parts.length - 1;
 
 			// Function to apply common transformations (title, description)
 			const applyOptions = (target: Schema, src: K8sOpenAPISchema, isLeafNode: boolean) => {
@@ -205,34 +228,11 @@ export function buildSchemaFromK8s(
 			if (typeof targetProp === 'object' && targetProp !== null) {
 				currentTarget = targetProp as Schema;
 			}
+			currentUiTarget = currentUiTarget[part];
 		}
 	}
 
-	const initialValue = generateInitialValue(rootSchema);
-
-	return { schema: rootSchema, uiSchema, initialValue, mapPaths };
-}
-
-function generateInitialValue(schema: Schema): Record<string, unknown> {
-	if (schema.type === 'object' && schema.properties) {
-		const obj: Record<string, unknown> = {};
-		for (const [key, prop] of Object.entries(schema.properties)) {
-			if (typeof prop === 'object' && prop !== null) {
-				const val = generateInitialValue(prop as Schema);
-				if (val !== undefined && Object.keys(val).length > 0) {
-					obj[key] = val;
-				}
-			}
-		}
-		return obj;
-	} else if (schema.type === 'array') {
-		// For array, default is empty array
-		return {};
-	}
-	if (schema.default !== undefined) {
-		return { value: schema.default };
-	}
-	return {};
+	return { schema: rootSchema, uiSchema, initialValue: {}, mapPaths };
 }
 
 /**
