@@ -259,8 +259,12 @@ function setByPath(obj: any, path: string, value: any): void {
 /**
  * Converts K8s Object data (Standard) to Form data (Array-based Maps)
  */
-export function k8sToFormData(data: Record<string, unknown>, mapPaths: string[]): Record<string, unknown> {
-	if (!data) return {};
+
+/**
+ * Converts K8s Object data (Standard) to Form data (Array-based Maps)
+ */
+export function k8sToFormData(data: unknown, mapPaths: string[]): Record<string, unknown> {
+	if (!data || typeof data !== 'object' || Array.isArray(data)) return {};
 	// Deep clone simple data
 	const formData = JSON.parse(JSON.stringify(data));
 
@@ -274,9 +278,9 @@ export function k8sToFormData(data: Record<string, unknown>, mapPaths: string[])
 			}));
 			setByPath(formData, path, arrayValue);
 		} else if (originalValue === undefined || originalValue === null) {
-            // Ensure it is initialized as array if missing (optional, but good for UI)
-            setByPath(formData, path, []);
-        }
+			// Ensure it is initialized as array if missing (optional, but good for UI)
+			setByPath(formData, path, []);
+		}
 	}
 	return formData;
 }
@@ -284,8 +288,8 @@ export function k8sToFormData(data: Record<string, unknown>, mapPaths: string[])
 /**
  * Converts Form data (Array-based Maps) back to K8s Object data
  */
-export function formDataToK8s(formData: Record<string, unknown>, mapPaths: string[]): Record<string, unknown> {
-	if (!formData) return {};
+export function formDataToK8s(formData: unknown, mapPaths: string[]): Record<string, unknown> {
+	if (!formData || typeof formData !== 'object' || Array.isArray(formData)) return {};
 	const k8sData = JSON.parse(JSON.stringify(formData));
 
 	for (const path of mapPaths) {
@@ -303,3 +307,4 @@ export function formDataToK8s(formData: Record<string, unknown>, mapPaths: strin
 	}
 	return k8sData;
 }
+
