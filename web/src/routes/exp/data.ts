@@ -64,6 +64,7 @@ export const schema = {
 export type CreateUser = FromSchema<typeof schema>;
 
 export const uiSchema: UiSchemaRoot = {
+	
 	'ui:options': {
 		layouts: {
 			'object-properties': {
@@ -72,7 +73,8 @@ export const uiSchema: UiSchemaRoot = {
 		},
 		translations: {
 			submit: 'Register'
-		}
+		},
+		order: ['email', 'name', 'age', 'country', 'experience', 'skills', 'bio', 'startDate', 'resume']
 	},
 	name: {
 		'ui:options': {

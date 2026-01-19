@@ -23,6 +23,11 @@ export interface SchemaFormConfig {
 	initialValue: Record<string, unknown>;
 }
 
+export interface PathOptions {
+	title?: string;
+	showDescription?: boolean;
+}
+
 /**
  * Subsets the full OpenAPI schema to include only the specified paths.
  * @param fullSchema The full OpenAPI V3 schema object
@@ -31,19 +36,22 @@ export interface SchemaFormConfig {
  */
 export function buildSchemaFromK8s(
 	fullSchema: K8sOpenAPISchema,
-	paths: string[]
+	paths: string[] | Record<string, PathOptions>
 ): SchemaFormConfig {
 	const rootSchema: Schema = {
 		type: 'object',
 		properties: {},
 		required: [],
-		title: fullSchema.title ?? '',
-		description: fullSchema.description ?? ''
+		title: fullSchema.title ?? ''
 	};
 
 	const uiSchema: UiSchemaRoot = {};
 
-	for (const path of paths) {
+	const pathKeys = Array.isArray(paths) ? paths : Object.keys(paths);
+	const pathOptions = Array.isArray(paths) ? {} : paths;
+
+	for (const path of pathKeys) {
+		const options = pathOptions[path] || {};
 		const parts = path.split('.');
 		let currentSource: K8sOpenAPISchema = fullSchema;
 		let currentTarget: Schema = rootSchema;
@@ -79,32 +87,52 @@ export function buildSchemaFromK8s(
 
 			const isLeaf = i === parts.length - 1;
 
+			// Function to apply common transformations (title, description)
+			const applyOptions = (target: Schema, src: K8sOpenAPISchema, isLeafNode: boolean) => {
+				// Title: Use options.title if leaf and provided, else source title
+				if (isLeafNode && options.title) {
+					target.title = options.title;
+				} else {
+					target.title = src.title;
+				}
+
+				// Description: Default to NONE. Only show if leaf and showDescription is true.
+				if (isLeafNode && options.showDescription) {
+					target.description = src.description;
+				} else {
+					delete target.description;
+				}
+			};
+
 			// Prepare Target Property
 			if (!currentTarget.properties[part]) {
 				if (isLeaf) {
 					// Leaf: Full Copy
-					currentTarget.properties[part] = { ...sourceProp } as SchemaDefinition;
+					const newProp = { ...sourceProp } as Schema;
+					applyOptions(newProp, sourceProp, true);
+					currentTarget.properties[part] = newProp;
 				} else {
 					// Intermediate: Skeleton
 					if (sourceProp.type === 'array') {
 						currentTarget.properties[part] = {
 							type: 'array',
-							title: sourceProp.title,
-							description: sourceProp.description,
 							items: { type: 'object', properties: {} }
 						};
 					} else {
 						currentTarget.properties[part] = {
 							type: 'object',
-							title: sourceProp.title,
-							description: sourceProp.description,
 							properties: {}
 						};
 					}
+					// Apply intermediate options (mostly just ensuring no description)
+					applyOptions(currentTarget.properties[part] as Schema, sourceProp, false);
 				}
 			} else if (isLeaf) {
-				// Exists but we're at leaf - upgrade to full copy
-				currentTarget.properties[part] = { ...sourceProp } as SchemaDefinition;
+				// Exists but we're at leaf - upgrade to full copy (or apply options to existing?)
+				// If it was created as a skeleton, we replace it with full copy but valid options
+				const newProp = { ...sourceProp } as Schema;
+				applyOptions(newProp, sourceProp, true);
+				currentTarget.properties[part] = newProp;
 			}
 
 			// Handle Required (for both leaf and intermediate)

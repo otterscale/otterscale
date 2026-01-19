@@ -1,28 +1,30 @@
 <script lang="ts">
 	import { type FormState, getValueSnapshot } from '@sjsf/form';
 
-	import { type K8sOpenAPISchema, SchemaForm } from '$lib/components/custom/schema-form';
+	import { type K8sOpenAPISchema, type PathOptions, SchemaForm } from '$lib/components/custom/schema-form';
 
 	import cronSchema from './cron_api.json';
 
 	let form = $state<FormState<Record<string, unknown>> | undefined>();
 	let mode = $state<'basic' | 'advance'>('basic');
 
-	const fields = [
-		'metadata.namespace',
-		'metadata.name',
-		'metadata.annotations',
-		'spec.schedule',
-		'apiVersion',
-		'spec.concurrencyPolicy',
-		'spec.timeZone',
-		'spec.startingDeadlineSeconds',
-		'spec.successfulJobsHistoryLimit',
-		'spec.failedJobsHistoryLimit'
-	];
+	const fields: Record<string, PathOptions> = {
+		'metadata.namespace': { title: 'Namespace' },
+		'metadata.name': { title: 'Name' },
+		'metadata.annotations': {},
+		'apiVersion': {},
+		'spec.schedule': { title: 'Cron Schedule', showDescription: true },
+		'spec.concurrencyPolicy': {},
+		'spec.timeZone': {},
+		'spec.startingDeadlineSeconds': {},
+		'spec.successfulJobsHistoryLimit': {},
+		'spec.failedJobsHistoryLimit': {}
+	};
 
 	// Using $derived to reactively get values from the form store
 	const formValues = $derived(form ? getValueSnapshot(form) : {});
+	
+	const fieldKeys = Object.keys(fields);
 </script>
 
 <div class="container mx-auto py-10">
@@ -42,7 +44,7 @@
 
 			<h2 class="mt-4 mb-2 text-xl">Selected Paths</h2>
 			<ul class="list-inside list-disc text-sm">
-				{#each fields as field (field)}
+				{#each fieldKeys as field (field)}
 					<li><code>{field}</code></li>
 				{/each}
 			</ul>

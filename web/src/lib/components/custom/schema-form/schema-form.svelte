@@ -10,14 +10,14 @@
 	import * as Tabs from '$lib/components/ui/tabs';
 	import { mode as themeMode } from 'mode-watcher';
 
-	import { buildSchemaFromK8s, type K8sOpenAPISchema } from './converter';
+	import { buildSchemaFromK8s, type K8sOpenAPISchema, type PathOptions } from './converter';
 	import * as defaults from './defaults';
 
 	interface Props {
 		/** The full K8s OpenAPI V3 Schema */
 		apiSchema: K8sOpenAPISchema;
 		/** Paths to include in basic mode (dot notation, e.g. "spec.running") */
-		paths: string[];
+		paths: string[] | Record<string, PathOptions>;
 		/** Allow binding the form instance back to parent */
 		form?: FormState<Record<string, unknown>>;
 		/** Optional initial value override */
