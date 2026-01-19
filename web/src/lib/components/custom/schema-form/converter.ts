@@ -59,8 +59,15 @@ export function buildSchemaFromK8s(
 		let currentTarget: Schema = rootSchema;
 		let currentUiTarget: any = uiSchema;
 
+		// Track cumulative path to identify implicit nodes
+		let cumulativePath = '';
+
 		for (let i = 0; i < parts.length; i++) {
 			const part = parts[i];
+			cumulativePath = cumulativePath ? `${cumulativePath}.${part}` : part;
+
+			// Check if this current path node is explicitly requested by the user
+			const isExplicit = pathKeys.includes(cumulativePath);
 
 			// Handling implicit array traversal:
 			// If currentSource is an Array, we expect to find the property inside 'items'
@@ -97,7 +104,7 @@ export function buildSchemaFromK8s(
 			// Function to apply common transformations (title, description)
 			const applyOptions = (target: Schema, src: K8sOpenAPISchema, isLeafNode: boolean) => {
 				// Title: Use options.title if leaf and provided, else source title
-				if (isLeafNode && options.title) {
+				if (options.title) {
 					target.title = options.title;
 				} else {
 					target.title = src.title;
@@ -151,6 +158,12 @@ export function buildSchemaFromK8s(
 				currentUiTarget[part] = {};
 			}
 			
+			// Logic to hide labels:
+			// 1. Implicit intermediate nodes (!isExplicit): Always hide to avoid clutter.
+			if (!isExplicit) {
+				currentUiTarget[part]['ui:options'] = { label: false };
+			}
+			
 			if (isLeaf) {
 				if (Array.isArray(sourceProp.enum)) {
 					currentUiTarget[part]['ui:components'] = { stringField: 'enumField' };
@@ -164,9 +177,11 @@ export function buildSchemaFromK8s(
 				}
 			}
 
+			const isTerminalLeaf = isLeaf && !pathKeys.some(k => k !== cumulativePath && k.startsWith(cumulativePath + '.'));
+
 			if (!currentTarget.properties[part]) {
-				if (isLeaf) {
-					// Leaf: Full Copy
+				if (isTerminalLeaf) {
+					// Terminal Leaf: Full deep copy because no children are customised below this point
 					const newProp = { ...sourceProp } as Schema;
 					if (newProp.type === 'object' && !newProp.properties) {
 						newProp.properties = {};
@@ -174,7 +189,7 @@ export function buildSchemaFromK8s(
 					applyOptions(newProp, sourceProp, true);
 					currentTarget.properties[part] = newProp;
 				} else {
-					// Intermediate: Skeleton
+					// Intermediate (Implicit OR Explicit Parent): Skeleton only
 					if (sourceProp.type === 'array') {
 						currentTarget.properties[part] = {
 							type: 'array',
@@ -187,7 +202,13 @@ export function buildSchemaFromK8s(
 							additionalProperties: true // Keep this for safety
 						};
 					}
+					
+					// Intermediate nodes: If implicit, remove title to "hide" it visually in some renderers,
+					// combined with ui:options: { label: false } above.
 					applyOptions(currentTarget.properties[part] as Schema, sourceProp, false);
+					if (!isExplicit) {
+						(currentTarget.properties[part] as Schema).title = '';
+					}
 				}
 			} 
 			else if (isLeaf) {

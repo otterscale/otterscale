@@ -9,6 +9,7 @@
 	let mode = $state<'basic' | 'advance'>('basic');
 
 	const fields: Record<string, PathOptions> = {
+		// 'metadata': {},
 		'metadata.namespace': { title: 'Namespace' },
 		'metadata.name': { title: 'Name' },
 		'metadata.annotations': { title: 'Annotations' },
@@ -19,6 +20,7 @@
 		'spec.startingDeadlineSeconds': {},
 		'spec.successfulJobsHistoryLimit': {},
 		'spec.failedJobsHistoryLimit': {},
+		'spec.jobTemplate.spec.template.spec.containers': {title: 'Containers'},
 		'spec.jobTemplate.spec.template.spec.containers.name': { },
 		'spec.jobTemplate.spec.template.spec.containers.image': { },
 		'spec.jobTemplate.spec.template.spec.containers.imagePullPolicy': { }
