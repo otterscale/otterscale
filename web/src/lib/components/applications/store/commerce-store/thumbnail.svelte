@@ -25,10 +25,10 @@
 			</span>
 		{/if}
 		<Item.Root class="p-0">
-			<Avatar.Root class="m-2 size-8">
-				<Avatar.Image src={chart.icon} class="object-contain" />
+			<Avatar.Root class="size-10 overflow-hidden rounded-none">
+				<Avatar.Image src={chart.icon} class="h-full w-full object-contain" />
 				<Avatar.Fallback>
-					<Icon icon={fuzzLogosIcon(chart.name, 'fluent-emoji-flat:otter')} class="size-8" />
+					<Icon icon={fuzzLogosIcon(chart.name, 'fluent-emoji-flat:otter')} class="size-10" />
 				</Avatar.Fallback>
 			</Avatar.Root>
 			<Item.Content class="text-left">
