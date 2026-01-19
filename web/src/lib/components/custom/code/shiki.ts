@@ -20,6 +20,6 @@ export const highlighter = createHighlighterCore({
 		import('@shikijs/themes/github-light-default'),
 		import('@shikijs/themes/github-dark-default')
 	],
-	langs: Object.values(bundledLanguages),
+	langs: Object.entries(bundledLanguages).map(([_, lang]) => lang),
 	engine: createJavaScriptRegexEngine()
 });

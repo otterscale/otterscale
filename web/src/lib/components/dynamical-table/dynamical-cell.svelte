@@ -5,8 +5,9 @@
 	import type { JsonObject, JsonValue } from '@openfeature/server-sdk';
 	import { type WithElementRef } from 'bits-ui';
 	import type { HTMLAttributes } from 'svelte/elements';
+	import Monaco from 'svelte-monaco';
+	import { stringify } from 'yaml';
 
-	import * as Code from '$lib/components/custom/code/index.js';
 	import { Badge } from '$lib/components/ui/badge';
 	import { buttonVariants } from '$lib/components/ui/button';
 	import * as Sheet from '$lib/components/ui/sheet/index.js';
@@ -17,79 +18,105 @@
 		field,
 		class: className
 	}: WithElementRef<HTMLAttributes<HTMLDivElement>> & {
-		object: JsonValue;
+		object: any;
 		field: any;
 	} = $props();
 </script>
 
 <div class={className}>
-	{#if field?.type === 'object'}
-		{@const data = object as JsonObject}
+	{#if field?.snippet}
+		{@render field.snippet()}
+	{:else if field?.type === 'object'}
+		{@const data = object['data'] as JsonObject}
 		<Sheet.Root>
 			<Sheet.Trigger class={buttonVariants({ variant: 'outline' })}>
 				<FileCode />
 			</Sheet.Trigger>
-			<Sheet.Content side="right" class="flex h-full max-w-[62vw] min-w-[50vw] flex-col p-6">
-				<Sheet.Header class="shrink-0">
+			<Sheet.Content side="right" class="flex h-full max-w-[62vw] min-w-[50vw] flex-col p-4">
+				<Sheet.Header class="shrink-0 space-y-4">
 					<Sheet.Title>YAML</Sheet.Title>
 					<Sheet.Description>
 						{field.description}
 					</Sheet.Description>
 				</Sheet.Header>
-				<Code.Root
-					class="border-none bg-transparent wrap-break-word whitespace-pre-wrap"
-					lang="json"
-					code={JSON.stringify(data, null, 2)}
-					hideLines
-				/>
+				<div class="h-full p-4 pt-0">
+					<Monaco
+						value={stringify(data)}
+						options={{
+							language: 'yaml',
+							padding: { top: 24 },
+							automaticLayout: true,
+							domReadOnly: true,
+							readOnly: true
+						}}
+						theme="vs-dark"
+					/>
+				</div>
 			</Sheet.Content>
 		</Sheet.Root>
 	{:else if field?.type === 'array'}
-		{@const data = object as unknown as JsonValue[]}
-		{#each data as datum, index (index)}
-			<Badge variant="outline">
-				{datum}
-			</Badge>
-		{/each}
+		{@render ArrayCell({ data: object.data })}
 	{:else if field?.type === 'string' && field?.format === 'date'}
-		{@const data = object as unknown as string}
-		{@const time = new Date(data)}
-		{#if time && !isNaN(time.getTime())}
-			{new Intl.DateTimeFormat('en-CA', {
-				year: 'numeric',
-				month: '2-digit',
-				day: '2-digit'
-			}).format(time)}
-		{/if}
+		{@render DateCell({ data: new Date(object.data) })}
 	{:else if field?.type === 'string' && field?.format === 'date-time'}
-		{@const data = object as unknown as string}
-		{@const time = new Date(data)}
-		{#if time && !isNaN(time.getTime())}
-			{new Intl.DateTimeFormat('en-CA', {
-				year: 'numeric',
-				month: '2-digit',
-				day: '2-digit',
-				hour: '2-digit',
-				minute: '2-digit',
-				second: '2-digit',
-				hour12: false
-			}).format(time)}
-		{/if}
+		{@render DatetimeCell({ data: new Date(object.data) })}
 	{:else if field?.type === 'number' || field?.type === 'integer'}
-		{@const number = object as unknown as number}
-		{number}
+		{@render NumberCell({ data: Number(object.data) })}
 	{:else if field?.type === 'boolean'}
-		{@const data = object as unknown as string}
-		{#if Boolean(data)}
-			<Circle class="inline-block text-primary" />
-		{:else}
-			<X class="inline-block text-destructive" />
-		{/if}
-	{:else if object}
-		<p class="truncate">
-			{object}
-		</p>
+		{@render BooleanCell({ data: Boolean(object.data) })}
+	{:else if object['data']}
+		{@render TextCell({ data: object.data })}
 	{:else}
-		<p class="text-muted-foreground">no data</p>
+		{@render EmptyCell()}
 	{/if}
 </div>
+
+{#snippet ArrayCell({ data }: { data: JsonValue[] })}
+	{data.length}
+{/snippet}
+
+{#snippet DateCell({ data }: { data: Date })}
+	{#if data && !isNaN(data.getTime())}
+		{new Intl.DateTimeFormat('en-CA', {
+			year: 'numeric',
+			month: '2-digit',
+			day: '2-digit'
+		}).format(data)}
+	{/if}
+{/snippet}
+
+{#snippet DatetimeCell({ data }: { data: Date })}
+	{#if data && !isNaN(data.getTime())}
+		{new Intl.DateTimeFormat('en-CA', {
+			year: 'numeric',
+			month: '2-digit',
+			day: '2-digit',
+			hour: '2-digit',
+			minute: '2-digit',
+			second: '2-digit',
+			hour12: false
+		}).format(data)}
+	{/if}
+{/snippet}
+
+{#snippet NumberCell({ data }: { data: number })}
+	{data}
+{/snippet}
+
+{#snippet BooleanCell({ data }: { data: boolean })}
+	{#if data === true}
+		<Circle class="inline-block size-4 text-primary" />
+	{:else if data === false}
+		<X class="inline-block size-6 text-destructive" />
+	{/if}
+{/snippet}
+
+{#snippet TextCell({ data }: { data: string })}
+	<p class="truncate">
+		{data}
+	</p>
+{/snippet}
+
+{#snippet EmptyCell()}
+	<p class="text-muted-foreground">no data</p>
+{/snippet}

@@ -215,6 +215,9 @@
 		);
 		table.resetRowSelection();
 	}
+	function handleResetFilter() {
+		expression = '';
+	}
 
 	// eslint-disable-next-line
 	function getAlignment(field: any): 'start' | 'center' | 'end' {
@@ -391,30 +394,29 @@
 								</Table.Cell>
 							{/each}
 						</Table.Row>
-					{:else}
-						<Table.Row>
-							<Table.Cell colspan={columns.length} class="h-24 text-center">
-								<Empty.Root>
-									<Empty.Header>
-										<Empty.Media variant="icon">
-											<Columns3 size={32} class="opacity-60" aria-hidden="true" />
-										</Empty.Media>
-										<Empty.Title>No Resources Found</Empty.Title>
-										<Empty.Description>
-											No records found. Please adjust your filters or initiate a new resource to
-											populate this table.
-										</Empty.Description>
-									</Empty.Header>
-									<Empty.Content>
-										<div class="flex gap-2">
-											<Button size="sm">Reset</Button>
-											<Button variant="outline" size="sm">Create</Button>
-										</div>
-									</Empty.Content>
-								</Empty.Root>
-							</Table.Cell>
-						</Table.Row>
 					{/each}
+				{:else}
+					<Table.Row>
+						<Table.Cell colspan={columns.length} class="h-full text-center">
+							<Empty.Root>
+								<Empty.Header>
+									<Empty.Media variant="icon">
+										<Columns3 size={32} class="opacity-60" aria-hidden="true" />
+									</Empty.Media>
+									<Empty.Title>No Resources Found</Empty.Title>
+									<Empty.Description>
+										No resources found. Please adjust your filters or initiate a new resource to
+										populate this table.
+									</Empty.Description>
+								</Empty.Header>
+								<Empty.Content>
+									<div class="flex gap-2">
+										<Button onclick={handleResetFilter}>Reset</Button>
+									</div>
+								</Empty.Content>
+							</Empty.Root>
+						</Table.Cell>
+					</Table.Row>
 				{/if}
 			</Table.Body>
 		</Table.Root>

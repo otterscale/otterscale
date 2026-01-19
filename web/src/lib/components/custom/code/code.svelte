@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { box } from 'svelte-toolbelt';
 
-	import { codeVariants } from '$lib/components/custom/code';
-	import { cn } from '$lib/utils';
+	import { cn } from '$lib/utils.js';
 
+	import { codeVariants } from '.';
 	import { useCode } from './code.svelte.js';
 	import type { CodeRootProps } from './types';
 
@@ -28,7 +28,6 @@
 </script>
 
 <div {...rest} bind:this={ref} class={cn(codeVariants({ variant }), className)}>
-	<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 	{@html codeState.highlighted}
 	{@render children?.()}
 </div>
@@ -58,7 +57,8 @@
 	}
 
 	:global(pre.shiki:not([data-code-overflow] *):not([data-code-overflow])) {
-		@apply max-h-[77vh] overflow-y-auto;
+		@apply overflow-y-auto;
+		max-height: min(100%, 650px);
 	}
 
 	:global(pre.shiki code) {

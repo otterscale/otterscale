@@ -32,7 +32,7 @@
 				apiResource.resource === selectedAPIResourceResource
 		)
 	);
-	async function fetchAPIResources() {
+	async function fetchAPIResources(cluster: string, group: string, version: string, kind: string) {
 		const response = await client.discovery({
 			cluster: cluster
 		} as DiscoveryRequest);
@@ -48,19 +48,18 @@
 	}
 
 	let selectedNamespaceMetadataName = $state(page.url.searchParams.get('namespace') ?? '');
-	async function fetchNamespaces() {
+	async function fetchNamespaces(cluster: string) {
 		const response = await client.list({
 			cluster: cluster,
 			resource: 'namespaces',
 			version: 'v1'
 		} as ListRequest);
-		console.log(response);
 		return response.items.map((item) => item.object);
 	}
 </script>
 
 {#key cluster + group + version + kind}
-	{#await fetchAPIResources() then apiResources}
+	{#await fetchAPIResources(cluster, group, version, kind) then apiResources}
 		{@const apiResourceOptions = apiResources.map((apiResource) => ({
 			icon: 'lucide:list',
 			label: apiResource.resource,
@@ -77,7 +76,7 @@
 					options={apiResourceOptions}
 				/>
 				{#if selectedAPIResource && selectedAPIResource.namespaced}
-					{#await fetchNamespaces() then namespaces}
+					{#await fetchNamespaces(cluster) then namespaces}
 						{@const namespaceOptions = namespaces.map((namespace: any) => ({
 							icon: 'lucide:list',
 							label: namespace?.metadata?.name,
@@ -96,14 +95,11 @@
 			</div>
 			{#if selectedAPIResource}
 				{#key selectedAPIResourceResource + selectedNamespaceMetadataName}
-					<ResourceManager
-						{cluster}
-						{group}
-						{version}
-						{kind}
-						resource={selectedAPIResourceResource}
-						namespace={selectedAPIResource.namespaced ? selectedNamespaceMetadataName : undefined}
-					/>
+					{@const resource = selectedAPIResourceResource}
+					{@const namespace = selectedAPIResource.namespaced
+						? selectedNamespaceMetadataName
+						: undefined}
+					<ResourceManager {cluster} {group} {version} {kind} {resource} {namespace} />
 				{/key}
 			{/if}
 		</div>

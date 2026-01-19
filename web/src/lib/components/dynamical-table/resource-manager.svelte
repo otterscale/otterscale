@@ -4,7 +4,7 @@
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import Download from '@lucide/svelte/icons/download';
 	import Ellipsis from '@lucide/svelte/icons/ellipsis';
-	import { getContext, onDestroy, onMount } from 'svelte';
+	import { createRawSnippet, getContext, onDestroy, onMount } from 'svelte';
 
 	import {
 		type ListRequest,
@@ -42,19 +42,44 @@
 			Namespace: schema?.properties?.metadata?.properties?.namespace ?? {},
 			Labels: schema?.properties?.metadata?.properties?.labels ?? {},
 			Annotations: schema?.properties?.metadata?.properties?.annotations ?? {},
-			CreationTimestamp: schema?.properties?.metadata?.properties?.creationTimestamp ?? {},
+			CreateTime: schema?.properties?.metadata?.properties?.creationTimestamp ?? {},
+			Specification: { type: 'array' },
 			Configuration: schema ?? {}
 		};
 	}
 	// eslint-disable-next-line
-	function getObject(object: any): Record<string, JsonValue> {
+	function getObject(object: any, fields: Record<string, JsonValue>): Record<string, JsonValue> {
 		return {
-			Name: object?.metadata?.name ?? null,
-			Namespace: object?.metadata?.namespace ?? null,
-			Labels: object?.metadata?.labels ?? null,
-			Annotations: object?.metadata?.annotations ?? null,
-			CreationTimestamp: object?.metadata?.creationTimestamp ?? null,
-			Configuration: object ?? null
+			Name: {
+				data: object?.metadata?.name ?? null
+			},
+			Namespace: {
+				data: object?.metadata?.namespace ?? null
+			},
+			Labels: {
+				data: object?.metadata?.labels ?? null
+			},
+			Annotations: {
+				data: object?.metadata?.annotations ?? null
+			},
+			CreateTime: {
+				data: object?.metadata?.creationTimestamp ?? null
+			},
+			Specification: {
+				data: [
+					{ key: 1, value: 1 },
+					{ key: 2, value: 2 }
+				],
+				snippet: createRawSnippet(() => {
+					return {
+						render: () =>
+							`<a href="http://ots.phison.com">${`${object?.metadata?.name} otterscale`}</a>`
+					};
+				})
+			},
+			Configuration: {
+				data: object ?? null
+			}
 		};
 	}
 
@@ -71,7 +96,6 @@
 			} as SchemaRequest);
 
 			schema = toJson(StructSchema, schemaResponse);
-			console.log(schema);
 			fields = getFields(schema);
 		} catch (error) {
 			console.error('Failed to fetch schema:', error);
@@ -111,7 +135,7 @@
 				resourceVersion = response.resourceVersion;
 				continueToken = response.continue;
 
-				const newObjects = response.items.map((item) => getObject(item.object));
+				const newObjects = response.items.map((item) => getObject(item.object, fields));
 				objects = [...objects, ...newObjects];
 
 				if (listAbortController.signal.aborted) {
@@ -168,7 +192,7 @@
 				resourceVersion = response.resource?.object?.metadata?.resourceVersion;
 
 				if (response.type === WatchEvent_Type.ADDED) {
-					const addedObject = getObject(response.resource?.object);
+					const addedObject = getObject(response.resource?.object, fields);
 
 					const index = objects.findIndex(
 						(object) =>
@@ -179,7 +203,7 @@
 						objects = [...objects, addedObject];
 					}
 				} else if (response.type === WatchEvent_Type.MODIFIED) {
-					const modifiedObject = getObject(response.resource?.object);
+					const modifiedObject = getObject(response.resource?.object, fields);
 
 					objects = objects.map((object) =>
 						object.Namespace === modifiedObject.Namespace && object.Name === modifiedObject.Name
@@ -187,7 +211,7 @@
 							: object
 					);
 				} else if (response.type === WatchEvent_Type.DELETED) {
-					const deletedObject = getObject(response.resource?.object);
+					const deletedObject = getObject(response.resource?.object, fields);
 
 					objects = objects.filter(
 						(object) =>
@@ -251,7 +275,7 @@
 				Reload
 			</Button>
 		{/snippet}
-		{#snippet rowActions()}
+		{#snippet rowActions({ row }: {})}
 			<DropdownMenu.Root>
 				<DropdownMenu.Trigger>
 					{#snippet child({ props })}
