@@ -11,7 +11,7 @@
 	const fields: Record<string, PathOptions> = {
 		'metadata.namespace': { title: 'Namespace' },
 		'metadata.name': { title: 'Name' },
-		'metadata.annotations': {},
+		'metadata.annotations': { title: 'Annotations' },
 		'apiVersion': {},
 		'spec.schedule': { title: 'Cron Schedule', showDescription: true },
 		'spec.concurrencyPolicy': {},

@@ -10,7 +10,13 @@
 	import * as Tabs from '$lib/components/ui/tabs';
 	import { mode as themeMode } from 'mode-watcher';
 
-	import { buildSchemaFromK8s, type K8sOpenAPISchema, type PathOptions } from './converter';
+	import {
+		buildSchemaFromK8s,
+		formDataToK8s,
+		k8sToFormData,
+		type K8sOpenAPISchema,
+		type PathOptions
+	} from './converter';
 	import * as defaults from './defaults';
 
 	interface Props {
@@ -44,7 +50,11 @@
 	const formConfig = $derived(buildSchemaFromK8s(apiSchema, paths));
 
 	// Reactive states
-	let initialValue = $state(initialData ?? formConfig.initialValue);
+	// We must convert "Map" objects (which we transformed to Arrays in schema) 
+	// from K8s format (Object) to Form format (Array of Key-Value)
+	let initialValue = $state(
+		k8sToFormData(initialData ?? formConfig.initialValue, formConfig.mapPaths)
+	);
 	let advanceYaml = $state('');
 	let yamlParseError = $state<string | null>(null);
 	let ref: HTMLFormElement | undefined;
@@ -64,7 +74,11 @@
 	// Sync form values to YAML editor
 	function syncFormToYaml() {
 		try {
-			advanceYaml = yaml.dump(form ? getValueSnapshot(form) : initialValue, {
+			const rawData = form ? getValueSnapshot(form) : initialValue;
+			// Convert Form Format (Array Maps) -> K8s Format (Object Maps)
+			const k8sData = formDataToK8s(rawData, formConfig.mapPaths);
+			
+			advanceYaml = yaml.dump(k8sData, {
 				indent: 2,
 				lineWidth: -1
 			});
@@ -80,7 +94,9 @@
 			const parsed = yaml.load(advanceYaml) as Record<string, unknown> | null;
 
 			if (parsed && typeof parsed === 'object') {
-				Object.assign(initialValue, parsed);
+				// Convert K8s Format -> Form Format
+				const formData = k8sToFormData(parsed, formConfig.mapPaths);
+				Object.assign(initialValue, formData);
 			}
 		} catch (error) {
 			const errorMsg = `Invalid YAML: ${error instanceof Error ? error.message : 'Unknown error'}`;
@@ -92,8 +108,11 @@
 	// Handle form submission
 	function handleFormSubmit(data: Record<string, unknown>) {
 		try {
+			// Convert Form Format -> K8s Format before submitting
+			const k8sData = formDataToK8s(data, formConfig.mapPaths);
+
 			// Display submitted form data
-			console.log('Form submitted with data:', data);
+			console.log('Form submitted with data:', k8sData);
 
 			// Custom submission logic can be added here
 			onModeChange?.(mode);

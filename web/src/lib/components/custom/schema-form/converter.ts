@@ -13,6 +13,7 @@ export interface K8sOpenAPISchema {
 	enum?: string[];
 	format?: string;
 	nullable?: boolean;
+	additionalProperties?: K8sOpenAPISchema | boolean;
 	[key: string]: unknown;
 }
 
@@ -21,6 +22,7 @@ export interface SchemaFormConfig {
 	schema: Schema;
 	uiSchema: UiSchemaRoot;
 	initialValue: Record<string, unknown>;
+	mapPaths: string[];
 }
 
 export interface PathOptions {
@@ -32,7 +34,7 @@ export interface PathOptions {
  * Subsets the full OpenAPI schema to include only the specified paths.
  * @param fullSchema The full OpenAPI V3 schema object
  * @param paths Array of dot-notation paths to include (e.g. "metadata.name", "spec.running")
- * @returns An object containing { schema, uiSchema, initialValue }
+ * @returns An object containing { schema, uiSchema, initialValue, mapPaths }
  */
 export function buildSchemaFromK8s(
 	fullSchema: K8sOpenAPISchema,
@@ -46,6 +48,7 @@ export function buildSchemaFromK8s(
 	};
 
 	const uiSchema: UiSchemaRoot = {};
+	const mapPaths: string[] = [];
 
 	const pathKeys = Array.isArray(paths) ? paths : Object.keys(paths);
 	const pathOptions = Array.isArray(paths) ? {} : paths;
@@ -104,11 +107,40 @@ export function buildSchemaFromK8s(
 				}
 			};
 
+			// Check if this property is a Map (object with additionalProperties)
+			const isMap = sourceProp.type === 'object' && !!sourceProp.additionalProperties;
+
 			// Prepare Target Property
 			if (!currentTarget.properties[part]) {
 				if (isLeaf) {
-					// Leaf: Full Copy
-					const newProp = { ...sourceProp } as Schema;
+					let newProp: Schema;
+
+					if (isMap) {
+						// Transform Map to Array of Key-Value
+						mapPaths.push(path);
+						const valueSchema = (typeof sourceProp.additionalProperties === 'object'
+							? sourceProp.additionalProperties
+							: {}) as Schema;
+
+						newProp = {
+							type: 'array',
+							items: {
+								type: 'object',
+								properties: {
+									key: { type: 'string', title: 'Key' },
+									value: { ...valueSchema, title: 'Value' }
+								}
+							}
+						};
+					} else {
+						// Leaf: Full Copy
+						newProp = { ...sourceProp } as Schema;
+						// Ensure properties is initialized for objects, otherwise some form generators won't render the map
+						if (newProp.type === 'object' && !newProp.properties) {
+							newProp.properties = {};
+						}
+					}
+
 					applyOptions(newProp, sourceProp, true);
 					currentTarget.properties[part] = newProp;
 				} else {
@@ -128,11 +160,33 @@ export function buildSchemaFromK8s(
 					applyOptions(currentTarget.properties[part] as Schema, sourceProp, false);
 				}
 			} else if (isLeaf) {
-				// Exists but we're at leaf - upgrade to full copy (or apply options to existing?)
-				// If it was created as a skeleton, we replace it with full copy but valid options
-				const newProp = { ...sourceProp } as Schema;
-				applyOptions(newProp, sourceProp, true);
-				currentTarget.properties[part] = newProp;
+				// Exists but we're at leaf - upgrade to full copy (or transformed map)
+				if (isMap) {
+					mapPaths.push(path);
+					const valueSchema = (typeof sourceProp.additionalProperties === 'object'
+						? sourceProp.additionalProperties
+						: {}) as Schema;
+					
+					const newProp: Schema = {
+						type: 'array',
+						items: {
+							type: 'object',
+							properties: {
+								key: { type: 'string', title: 'Key' },
+								value: { ...valueSchema, title: 'Value' }
+							}
+						}
+					};
+					applyOptions(newProp, sourceProp, true);
+					currentTarget.properties[part] = newProp;
+				} else {
+					const newProp = { ...sourceProp } as Schema;
+					if (newProp.type === 'object' && !newProp.properties) {
+						newProp.properties = {};
+					}
+					applyOptions(newProp, sourceProp, true);
+					currentTarget.properties[part] = newProp;
+				}
 			}
 
 			// Handle Required (for both leaf and intermediate)
@@ -156,7 +210,7 @@ export function buildSchemaFromK8s(
 
 	const initialValue = generateInitialValue(rootSchema);
 
-	return { schema: rootSchema, uiSchema, initialValue };
+	return { schema: rootSchema, uiSchema, initialValue, mapPaths };
 }
 
 function generateInitialValue(schema: Schema): Record<string, unknown> {
@@ -179,4 +233,73 @@ function generateInitialValue(schema: Schema): Record<string, unknown> {
 		return { value: schema.default };
 	}
 	return {};
+}
+
+/**
+ * Access nested property by dot path
+ */
+function getByPath(obj: any, path: string): any {
+	return path.split('.').reduce((acc, part) => acc && acc[part], obj);
+}
+
+/**
+ * Set nested property by dot path, creating objects as needed
+ */
+function setByPath(obj: any, path: string, value: any): void {
+	const parts = path.split('.');
+	let current = obj;
+	for (let i = 0; i < parts.length - 1; i++) {
+		const part = parts[i];
+		if (!current[part]) current[part] = {};
+		current = current[part];
+	}
+	current[parts[parts.length - 1]] = value;
+}
+
+/**
+ * Converts K8s Object data (Standard) to Form data (Array-based Maps)
+ */
+export function k8sToFormData(data: Record<string, unknown>, mapPaths: string[]): Record<string, unknown> {
+	if (!data) return {};
+	// Deep clone simple data
+	const formData = JSON.parse(JSON.stringify(data));
+
+	for (const path of mapPaths) {
+		const originalValue = getByPath(formData, path);
+		if (originalValue && typeof originalValue === 'object' && !Array.isArray(originalValue)) {
+			// Convert Object {k:v} to Array [{key:k, value:v}]
+			const arrayValue = Object.entries(originalValue).map(([key, value]) => ({
+				key,
+				value
+			}));
+			setByPath(formData, path, arrayValue);
+		} else if (originalValue === undefined || originalValue === null) {
+            // Ensure it is initialized as array if missing (optional, but good for UI)
+            setByPath(formData, path, []);
+        }
+	}
+	return formData;
+}
+
+/**
+ * Converts Form data (Array-based Maps) back to K8s Object data
+ */
+export function formDataToK8s(formData: Record<string, unknown>, mapPaths: string[]): Record<string, unknown> {
+	if (!formData) return {};
+	const k8sData = JSON.parse(JSON.stringify(formData));
+
+	for (const path of mapPaths) {
+		const arrayValue = getByPath(k8sData, path);
+		if (Array.isArray(arrayValue)) {
+			// Convert Array [{key:k, value:v}] to Object {k:v}
+			const objectValue = arrayValue.reduce((acc: Record<string, any>, item: any) => {
+				if (item && item.key) {
+					acc[item.key] = item.value;
+				}
+				return acc;
+			}, {});
+			setByPath(k8sData, path, objectValue);
+		}
+	}
+	return k8sData;
 }
