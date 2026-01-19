@@ -53,7 +53,7 @@
 	// We must convert "Map" objects (which we transformed to Arrays in schema) 
 	// from K8s format (Object) to Form format (Array of Key-Value)
 	let initialValue = $state(
-		k8sToFormData(initialData ?? formConfig.initialValue, formConfig.transformationMappings)
+		k8sToFormData(initialData, formConfig.transformationMappings)
 	);
 	let advanceYaml = $state('');
 	let yamlParseError = $state<string | null>(null);

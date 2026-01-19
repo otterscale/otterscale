@@ -21,7 +21,6 @@ export interface K8sOpenAPISchema {
 export interface SchemaFormConfig {
 	schema: Schema;
 	uiSchema: UiSchemaRoot;
-	initialValue: Record<string, unknown>;
 	transformationMappings: Record<string, string>; // K8s Path -> Form Path
 }
 
@@ -34,7 +33,7 @@ export interface PathOptions {
  * Subsets the full OpenAPI schema to include only the specified paths.
  * @param fullSchema The full OpenAPI V3 schema object
  * @param paths Array of dot-notation paths to include (e.g. "metadata.name", "spec.running")
- * @returns An object containing { schema, uiSchema, initialValue, transformationMappings }
+ * @returns An object containing { schema, uiSchema, transformationMappings }
  */
 export function buildSchemaFromK8s(
 	fullSchema: K8sOpenAPISchema,
@@ -48,7 +47,6 @@ export function buildSchemaFromK8s(
 	};
 
 	const uiSchema: UiSchemaRoot = {};
-	const initialValue: Record<string, unknown> = {};
 	const transformationMappings: Record<string, string> = {};
 
 	const pathKeys = Array.isArray(paths) ? paths : Object.keys(paths);
@@ -143,9 +141,6 @@ export function buildSchemaFromK8s(
 				if (!rootSchema.properties) rootSchema.properties = {};
 				rootSchema.properties[formPath] = newProp;
 				
-				// Initial Value for Source to ensure correct initialization
-				setByPath(initialValue, path, {});
-
 				// Stop processing this path
 				break; 
 			}
@@ -200,17 +195,6 @@ export function buildSchemaFromK8s(
 				applyOptions(target, sourceProp, true);
 			}
 
-			// Initial Value Generation (for non-hoisted)
-			if (isLeaf) {
-				const defaultValue = sourceProp.default !== undefined
-					? sourceProp.default
-					: getDefaultByType(sourceProp.type);
-
-				if (defaultValue !== undefined) {
-					setByPath(initialValue, path, defaultValue);
-				}
-			}
-
 			// Handle Required
 			const isRequired =
 				Array.isArray(currentSource.required) && currentSource.required.includes(part);
@@ -239,7 +223,7 @@ export function buildSchemaFromK8s(
 		}
 	}
 
-	return { schema: rootSchema, uiSchema, initialValue, transformationMappings };
+	return { schema: rootSchema, uiSchema, transformationMappings };
 }
 
 function getDefaultByType(type: unknown): unknown {
@@ -253,6 +237,8 @@ function getDefaultByType(type: unknown): unknown {
 		default: return undefined;
 	}
 }
+
+
 
 /**
  * Access nested property by dot path
