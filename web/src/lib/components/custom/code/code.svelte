@@ -28,6 +28,7 @@
 </script>
 
 <div {...rest} bind:this={ref} class={cn(codeVariants({ variant }), className)}>
+	<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 	{@html codeState.highlighted}
 	{@render children?.()}
 </div>

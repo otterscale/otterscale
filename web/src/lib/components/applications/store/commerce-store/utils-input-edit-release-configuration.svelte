@@ -18,7 +18,7 @@
 	import * as Resizable from '$lib/components/ui/resizable';
 	import { Skeleton } from '$lib/components/ui/skeleton/index.js';
 	import * as Tabs from '$lib/components/ui/tabs';
-	import { documentation, m } from '$lib/paraglide/messages';
+	import { m } from '$lib/paraglide/messages';
 
 	import Unstruct from './utils/dynamic-input.svelte';
 
