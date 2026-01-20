@@ -17,7 +17,9 @@
 		field,
 		class: className
 	}: WithElementRef<HTMLAttributes<HTMLDivElement>> & {
+		// eslint-disable-next-line
 		object: any;
+		// eslint-disable-next-line
 		field: any;
 	} = $props();
 </script>

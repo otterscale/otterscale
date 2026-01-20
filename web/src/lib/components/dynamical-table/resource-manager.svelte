@@ -7,6 +7,7 @@
 	import Trash from '@lucide/svelte/icons/trash';
 	import type { Table } from '@tanstack/table-core';
 	import { getContext, onDestroy, onMount } from 'svelte';
+	import { toast } from 'svelte-sonner';
 
 	import {
 		type ListRequest,
@@ -42,6 +43,7 @@
 	const transport: Transport = getContext('transport');
 	const resourceClient = createClient(ResourceService, transport);
 
+	// eslint-disable-next-line
 	function getFields(schema: any): Record<string, JsonValue> {
 		return {
 			Name: schema?.properties?.metadata?.properties?.name ?? {},
@@ -124,9 +126,10 @@
 				}
 			} while (continueToken);
 		} catch (error) {
-			if (error instanceof Error && error.name === 'AbortError') {
-				console.log('List aborted');
-				return;
+			if (error instanceof Error && error.name === 'ConnectError') {
+				if (error.cause === 'Aborted due to component destroyed.') {
+					return;
+				}
 			}
 
 			console.error('Failed to list resources:', error);
@@ -134,6 +137,11 @@
 			return null;
 		} finally {
 			isListing = false;
+			if (listAbortController?.signal.aborted) {
+				toast.info('Resource listing was cancelled.');
+			} else {
+				toast.warning('Resource listing has stopped unexpectedly. Please try again.');
+			}
 			listAbortController = null;
 		}
 	}
@@ -203,14 +211,26 @@
 				}
 			}
 		} catch (error) {
-			if (error instanceof Error && error.name === 'AbortError') {
-				console.log('Watch stream aborted');
-				return;
+			if (error instanceof Error && error.name === 'ConnectError') {
+				if (error.cause === 'Aborted due to component destroyed.') {
+					return;
+				}
 			}
 
 			console.error('Failed to watch resources:', error);
 		} finally {
 			isWatching = false;
+			if (watchAbortController?.signal.aborted) {
+				toast.info('Resource watching was cancelled.');
+			} else {
+				toast.warning('Resource watching has stopped unexpectedly. Please try again.', {
+					action: {
+						label: 'Reload',
+						onClick: handleReload
+					},
+					duration: 13 * 1000
+				});
+			}
 			watchAbortController = null;
 		}
 	}
@@ -232,11 +252,11 @@
 	onDestroy(() => {
 		isDestroyed = true;
 		if (listAbortController) {
-			listAbortController.abort();
+			listAbortController.abort('Aborted due to component destroyed.');
 			listAbortController = null;
 		}
 		if (watchAbortController) {
-			watchAbortController.abort();
+			watchAbortController.abort('Aborted due to component destroyed.');
 			watchAbortController = null;
 		}
 	});
