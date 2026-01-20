@@ -3,6 +3,7 @@
 	import FileCode from '@lucide/svelte/icons/file-code';
 	import X from '@lucide/svelte/icons/x';
 	import type { JsonObject, JsonValue } from '@openfeature/server-sdk';
+	import type { Column, Row } from '@tanstack/table-core';
 	import { type WithElementRef } from 'bits-ui';
 	import type { HTMLAttributes } from 'svelte/elements';
 	import Monaco from 'svelte-monaco';
@@ -13,32 +14,35 @@
 
 	let {
 		ref = $bindable(null),
-		object,
-		field,
+		column,
+		row,
+		fields,
+		children,
 		class: className
 	}: WithElementRef<HTMLAttributes<HTMLDivElement>> & {
-		// eslint-disable-next-line
-		object: any;
-		// eslint-disable-next-line
-		field: any;
+		column: Column<Record<string, JsonValue>>;
+		row: Row<Record<string, JsonValue>>;
+		fields: Record<string, { description: string; type: string; format: string }>;
 	} = $props();
 </script>
 
 <div class={className}>
-	{#if field?.type === 'object'}
-		{@render ObjectCell({ data: object })}
-	{:else if field?.type === 'array'}
-		{@render ArrayCell({ data: object })}
-	{:else if field?.type === 'string' && field?.format === 'date'}
-		{@render DateCell({ data: new Date(object) })}
-	{:else if field?.type === 'string' && field?.format === 'date-time'}
-		{@render DatetimeCell({ data: new Date(object) })}
-	{:else if field?.type === 'number' || field?.type === 'integer'}
-		{@render NumberCell({ data: Number(object) })}
-	{:else if field?.type === 'boolean'}
-		{@render BooleanCell({ data: Boolean(object) })}
-	{:else if object}
-		{@render TextCell({ data: object })}
+	{#if children}
+		{@render children()}
+	{:else if fields[column.id].type === 'object'}
+		{@render ObjectCell({ data: row.original[column.id] as JsonObject })}
+	{:else if fields[column.id].type === 'array'}
+		{@render ArrayCell({ data: row.original[column.id] as JsonValue[] })}
+	{:else if fields[column.id].type === 'string' && fields[column.id].format === 'date'}
+		{@render DateCell({ data: new Date(String(row.original[column.id])) })}
+	{:else if fields[column.id].type === 'string' && fields[column.id].format === 'date-time'}
+		{@render DatetimeCell({ data: new Date(String(row.original[column.id])) })}
+	{:else if fields[column.id].type === 'number' || fields[column.id].type === 'integer'}
+		{@render NumberCell({ data: Number(row.original[column.id]) })}
+	{:else if fields[column.id].type === 'boolean'}
+		{@render BooleanCell({ data: Boolean(row.original[column.id]) })}
+	{:else if row.original[column.id]}
+		{@render TextCell({ data: String(row.original[column.id]) })}
 	{:else}
 		{@render EmptyCell()}
 	{/if}
@@ -53,7 +57,7 @@
 			<Sheet.Header class="shrink-0 space-y-4">
 				<Sheet.Title>YAML</Sheet.Title>
 				<Sheet.Description>
-					{field.description}
+					{fields[column.id].description}
 				</Sheet.Description>
 			</Sheet.Header>
 			<div class="h-full p-4 pt-0">

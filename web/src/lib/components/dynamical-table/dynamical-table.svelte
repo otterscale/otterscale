@@ -7,6 +7,7 @@
 	import ChevronRight from '@lucide/svelte/icons/chevron-right';
 	import ChevronUp from '@lucide/svelte/icons/chevron-up';
 	import Columns3 from '@lucide/svelte/icons/columns-3';
+	import Eraser from '@lucide/svelte/icons/eraser';
 	import {
 		type ColumnDef,
 		type ColumnFiltersState,
@@ -41,12 +42,12 @@
 	import * as Table from '$lib/components/ui/table';
 	import { cn } from '$lib/utils';
 
-	import { DynamicalTableCell, DynamicalTableHeader } from '.';
 	import DynamicalTableQuery, { evaluate } from './dynamical-table-query.svelte';
 
 	let {
 		objects,
 		fields,
+		columnDefinitions,
 		create,
 		bulkDelete,
 		reload,
@@ -56,6 +57,7 @@
 	}: {
 		objects: Record<string, JsonValue>[];
 		fields: Record<string, JsonValue>;
+		columnDefinitions: ColumnDef<Record<string, JsonValue>>[];
 		create?: Snippet;
 		bulkDelete?: Snippet<[{ table: TanStackTabke<Record<string, JsonValue>> }]>;
 		rowActions?: Snippet<[{ row: Row<Record<string, JsonValue>> }]>;
@@ -84,22 +86,7 @@
 			enableSorting: false,
 			size: 30
 		},
-		...Object.keys(fields).map((key) => ({
-			accessorKey: key,
-			header: () =>
-				renderComponent(DynamicalTableHeader, {
-					children: createRawSnippet(() => ({
-						render: () => `<h3>${key}</h3>`
-					})),
-					field: fields[key]
-				}),
-			cell: ({ row }: { row: Row<Record<string, JsonValue>> }) =>
-				renderComponent(DynamicalTableCell, {
-					object: row.original[key],
-					field: fields[key]
-				}),
-			enableSorting: true
-		})),
+		...columnDefinitions,
 		{
 			id: 'actions',
 			cell: ({ row }) => renderSnippet(rowActions, { row: row }),
@@ -373,9 +360,10 @@
 									</Empty.Description>
 								</Empty.Header>
 								<Empty.Content>
-									<div class="flex gap-2">
-										<Button onclick={handleResetFilter}>Reset</Button>
-									</div>
+									<Button onclick={handleResetFilter}>
+										<Eraser size={16} class="opacity-60" />
+										Reset
+									</Button>
 								</Empty.Content>
 							</Empty.Root>
 						</Table.Cell>
