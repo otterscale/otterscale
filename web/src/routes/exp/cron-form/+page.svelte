@@ -1,7 +1,11 @@
 <script lang="ts">
 	import { type FormState, getValueSnapshot } from '@sjsf/form';
 
-	import { type K8sOpenAPISchema, type PathOptions, SchemaForm } from '$lib/components/custom/schema-form';
+	import {
+		type K8sOpenAPISchema,
+		type PathOptions,
+		SchemaForm
+	} from '$lib/components/custom/schema-form';
 
 	import cronSchema from './cron_api.json';
 
@@ -13,22 +17,30 @@
 		'metadata.namespace': { title: 'Namespace' },
 		'metadata.name': { title: 'Name' },
 		'metadata.annotations': { title: 'Annotations' },
-		'apiVersion': {},
+		apiVersion: {},
 		'spec.schedule': { title: 'Cron Schedule', showDescription: true },
 		'spec.concurrencyPolicy': { title: 'Concurrency Policy' },
 		'spec.timeZone': {},
 		'spec.startingDeadlineSeconds': {},
 		'spec.successfulJobsHistoryLimit': {},
 		'spec.failedJobsHistoryLimit': {},
-		'spec.jobTemplate.spec.template.spec.containers': {title: 'Containers'},
-		'spec.jobTemplate.spec.template.spec.containers.name': { },
-		'spec.jobTemplate.spec.template.spec.containers.image': { },
-		'spec.jobTemplate.spec.template.spec.containers.imagePullPolicy': { }
+		'spec.suspend': {
+			uiSchema: {
+				'ui:components': {
+					checkboxWidget: 'switchWidget'
+				}
+			}
+		},
+		'spec.jobTemplate.spec.template.spec.containers': { title: 'Containers' },
+		'spec.jobTemplate.spec.template.spec.containers.name': {},
+		'spec.jobTemplate.spec.template.spec.containers.image': {},
+		'spec.jobTemplate.spec.template.spec.containers.imagePullPolicy': {}
+		// 'spec.jobTemplate.spec.template.spec.containers.lifecycle.postStart': {}
 	};
 
 	// Using $derived to reactively get values from the form store
 	const formValues = $derived(form ? getValueSnapshot(form) : {});
-	
+
 	const fieldKeys = Object.keys(fields);
 </script>
 
@@ -36,12 +48,12 @@
 	<h1 class="mb-4 text-2xl font-bold">CronJob Form</h1>
 
 	<div class="grid grid-cols-2 gap-8">
-		<div class="rounded border p-4 bg-card text-card-foreground">
+		<div class="rounded border bg-card p-4 text-card-foreground">
 			<h2 class="mb-4 text-xl">Generated Form (Mode: {mode})</h2>
 			<SchemaForm apiSchema={cronSchema as K8sOpenAPISchema} paths={fields} bind:form bind:mode />
 		</div>
 
-		<div class="rounded border p-4 bg-muted/50">
+		<div class="rounded border bg-muted/50 p-4">
 			<h2 class="mb-4 text-xl">Live Values</h2>
 			<pre class="overflow-auto rounded bg-zinc-950 p-4 text-xs text-zinc-50 dark:bg-zinc-900">
 {JSON.stringify(formValues, null, 2)}

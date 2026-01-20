@@ -4,17 +4,17 @@
 	import { setThemeContext } from '@sjsf/shadcn4-theme';
 	import * as components from '@sjsf/shadcn4-theme/new-york';
 	import yaml from 'js-yaml';
+	import { mode as themeMode } from 'mode-watcher';
 	import Monaco from 'svelte-monaco';
 
 	import { Button } from '$lib/components/ui/button';
 	import * as Tabs from '$lib/components/ui/tabs';
-	import { mode as themeMode } from 'mode-watcher';
 
 	import {
 		buildSchemaFromK8s,
 		formDataToK8s,
-		k8sToFormData,
 		type K8sOpenAPISchema,
+		k8sToFormData,
 		type PathOptions
 	} from './converter';
 	import * as defaults from './defaults';
@@ -50,11 +50,9 @@
 	const formConfig = $derived(buildSchemaFromK8s(apiSchema, paths));
 
 	// Reactive states
-	// We must convert "Map" objects (which we transformed to Arrays in schema) 
+	// We must convert "Map" objects (which we transformed to Arrays in schema)
 	// from K8s format (Object) to Form format (Array of Key-Value)
-	let initialValue = $state(
-		k8sToFormData(initialData, formConfig.transformationMappings)
-	);
+	let initialValue = $state(k8sToFormData(initialData, formConfig.transformationMappings));
 	let advanceYaml = $state('');
 	let yamlParseError = $state<string | null>(null);
 	let ref: HTMLFormElement | undefined;
@@ -77,7 +75,7 @@
 			const rawData = form ? getValueSnapshot(form) : initialValue;
 			// Convert Form Format (Array Maps) -> K8s Format (Object Maps)
 			const k8sData = formDataToK8s(rawData, formConfig.transformationMappings);
-			
+
 			advanceYaml = yaml.dump(k8sData, {
 				indent: 2,
 				lineWidth: -1

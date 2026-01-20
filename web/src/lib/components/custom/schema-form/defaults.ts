@@ -10,6 +10,7 @@ import '@sjsf/shadcn4-theme/extra-widgets/checkboxes-include';
 import '@sjsf/shadcn4-theme/extra-widgets/radio-include';
 import '@sjsf/shadcn4-theme/extra-widgets/file-include';
 import '@sjsf/shadcn4-theme/extra-widgets/date-picker-include';
+import '@sjsf/shadcn4-theme/extra-widgets/switch-include';
 
 export { createFormIdBuilder as idBuilder } from '@sjsf/form/id-builders/modern';
 export { createFormMerger as merger } from '@sjsf/form/mergers/modern';
