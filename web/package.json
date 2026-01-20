@@ -100,9 +100,11 @@
 		"arctic": "^3.7.0",
 		"d3-scale": "^4.0.2",
 		"d3-shape": "^3.2.0",
+		"filtrex": "^3.1.0",
 		"highlight.js": "^11.11.1",
 		"ioredis": "^5.8.2",
 		"isomorphic-dompurify": "^2.34.0",
+		"jsep": "^1.4.0",
 		"pg": "^8.16.3",
 		"prometheus-query": "^3.5.1",
 		"rehype-highlight": "^7.0.2",
@@ -110,7 +112,8 @@
 		"shiki": "^3.20.0",
 		"svelte-exmarkdown": "^5.0.2",
 		"svelte-monaco": "^1.0.4",
-		"svelte-toolbelt": "^0.10.6"
+		"svelte-toolbelt": "^0.10.6",
+		"yaml": "^2.8.2"
 	},
 	"pnpm": {
 		"overrides": {
