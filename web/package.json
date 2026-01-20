@@ -105,6 +105,7 @@
 		"ioredis": "^5.8.2",
 		"isomorphic-dompurify": "^2.34.0",
 		"jsep": "^1.4.0",
+		"lodash": "^4.17.21",
 		"pg": "^8.16.3",
 		"prometheus-query": "^3.5.1",
 		"rehype-highlight": "^7.0.2",

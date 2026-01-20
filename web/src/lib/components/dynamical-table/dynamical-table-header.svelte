@@ -28,7 +28,7 @@
 					<h3>{column.id}</h3>
 				{/if}
 			</Tooltip.Trigger>
-			{#if fields[column.id].description}
+			{#if fields[column.id]?.description}
 				<Tooltip.Content>
 					<p class="max-w-3xl truncate">{fields[column.id].description}</p>
 				</Tooltip.Content>

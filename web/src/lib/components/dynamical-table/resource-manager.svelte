@@ -7,7 +7,8 @@
 	import Trash from '@lucide/svelte/icons/trash';
 	import type { Column, Table } from '@tanstack/table-core';
 	import { type Row } from '@tanstack/table-core';
-	import { createRawSnippet, getContext, onDestroy, onMount } from 'svelte';
+	import lodash from 'lodash';
+	import { getContext, onDestroy, onMount } from 'svelte';
 	import { toast } from 'svelte-sonner';
 
 	import {
@@ -49,26 +50,27 @@
 	const resourceClient = createClient(ResourceService, transport);
 
 	function getFields(
+		// eslint-disable-next-line
 		schema: any
 	): Record<string, { description: string; type: string; format: string }> {
 		return {
-			Name: schema?.properties?.metadata?.properties?.name ?? {},
-			Namespace: schema?.properties?.metadata?.properties?.namespace ?? {},
-			Labels: schema?.properties?.metadata?.properties?.labels ?? {},
-			Annotations: schema?.properties?.metadata?.properties?.annotations ?? {},
-			CreateTime: schema?.properties?.metadata?.properties?.creationTimestamp ?? {},
-			Configuration: schema ?? {}
+			Name: lodash.get(schema, 'properties.metadata.properties.name'),
+			Namespace: lodash.get(schema, 'properties.metadata.properties.namespace'),
+			Labels: lodash.get(schema, 'properties.metadata.properties.labels'),
+			Annotations: lodash.get(schema, 'properties.metadata.properties.annotations'),
+			CreateTime: lodash.get(schema, 'properties.metadata.properties.creationTimestamp'),
+			Configuration: schema
 		};
 	}
 	// eslint-disable-next-line
 	function getObject(object: any): Record<string, JsonValue> {
 		return {
-			Name: object?.metadata?.name ?? null,
-			Namespace: object?.metadata?.namespace ?? null,
-			Labels: object?.metadata?.labels ?? null,
-			Annotations: object?.metadata?.annotations ?? null,
-			CreateTime: object?.metadata?.creationTimestamp ?? null,
-			Configuration: object ?? null
+			Name: lodash.get(object, 'metadata.name'),
+			Namespace: lodash.get(object, 'metadata.namespace'),
+			Labels: lodash.get(object, 'metadata.labels'),
+			Annotations: lodash.get(object, 'metadata.annotations'),
+			CreateTime: lodash.get(object, 'metadata.creationTimestamp '),
+			Configuration: object
 		};
 	}
 	const columnDefinitions = [
@@ -136,7 +138,6 @@
 		},
 		{
 			id: 'Link',
-
 			cell: ({ row }: { row: Row<Record<string, JsonValue>> }) =>
 				renderComponent(LinkCell, {
 					display: 'Link' + row.original.Name,
