@@ -1,7 +1,7 @@
 import type { WithChildren, WithoutChildren } from 'bits-ui';
 import type { HTMLAttributes } from 'svelte/elements';
 
-import type { CopyButtonPropsWithoutHTML } from '$lib/components/ui/copy-button/types';
+import type { CopyButtonPropsWithoutHTML } from '$lib/components/custom/copy-button/types';
 
 import type { CodeVariant } from '.';
 import type { SupportedLanguage } from './shiki';
