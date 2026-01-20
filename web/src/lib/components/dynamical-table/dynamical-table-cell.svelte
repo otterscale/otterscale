@@ -23,36 +23,8 @@
 </script>
 
 <div class={className}>
-	{#if field?.snippet}
-		{@render field.snippet()}
-	{:else if field?.type === 'object'}
-		{@const data = object as JsonObject}
-		<Sheet.Root>
-			<Sheet.Trigger class={buttonVariants({ variant: 'outline' })}>
-				<FileCode />
-			</Sheet.Trigger>
-			<Sheet.Content side="right" class="flex h-full max-w-[62vw] min-w-[50vw] flex-col p-4">
-				<Sheet.Header class="shrink-0 space-y-4">
-					<Sheet.Title>YAML</Sheet.Title>
-					<Sheet.Description>
-						{field.description}
-					</Sheet.Description>
-				</Sheet.Header>
-				<div class="h-full p-4 pt-0">
-					<Monaco
-						value={stringify(data)}
-						options={{
-							language: 'yaml',
-							padding: { top: 24 },
-							automaticLayout: true,
-							domReadOnly: true,
-							readOnly: true
-						}}
-						theme="vs-dark"
-					/>
-				</div>
-			</Sheet.Content>
-		</Sheet.Root>
+	{#if field?.type === 'object'}
+		{@render ObjectCell({ data: object })}
 	{:else if field?.type === 'array'}
 		{@render ArrayCell({ data: object })}
 	{:else if field?.type === 'string' && field?.format === 'date'}
@@ -69,6 +41,35 @@
 		{@render EmptyCell()}
 	{/if}
 </div>
+
+{#snippet ObjectCell({ data }: { data: JsonObject })}
+	<Sheet.Root>
+		<Sheet.Trigger class={buttonVariants({ variant: 'outline' })}>
+			<FileCode />
+		</Sheet.Trigger>
+		<Sheet.Content side="right" class="flex h-full max-w-[62vw] min-w-[50vw] flex-col p-4">
+			<Sheet.Header class="shrink-0 space-y-4">
+				<Sheet.Title>YAML</Sheet.Title>
+				<Sheet.Description>
+					{field.description}
+				</Sheet.Description>
+			</Sheet.Header>
+			<div class="h-full p-4 pt-0">
+				<Monaco
+					value={stringify(data)}
+					options={{
+						language: 'yaml',
+						padding: { top: 24 },
+						automaticLayout: true,
+						domReadOnly: true,
+						readOnly: true
+					}}
+					theme="vs-dark"
+				/>
+			</div>
+		</Sheet.Content>
+	</Sheet.Root>
+{/snippet}
 
 {#snippet ArrayCell({ data }: { data: JsonValue[] })}
 	{data.length}

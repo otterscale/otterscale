@@ -6,9 +6,7 @@
 	import ChevronLeft from '@lucide/svelte/icons/chevron-left';
 	import ChevronRight from '@lucide/svelte/icons/chevron-right';
 	import ChevronUp from '@lucide/svelte/icons/chevron-up';
-	import CircleAlert from '@lucide/svelte/icons/circle-alert';
 	import Columns3 from '@lucide/svelte/icons/columns-3';
-	import Trash from '@lucide/svelte/icons/trash';
 	import {
 		type ColumnDef,
 		type ColumnFiltersState,
@@ -21,12 +19,12 @@
 		type Row,
 		type RowSelectionState,
 		type SortingState,
+		type Table as TanStackTabke,
 		type VisibilityState
 	} from '@tanstack/table-core';
 	import jsep from 'jsep';
 	import { createRawSnippet, type Snippet } from 'svelte';
 
-	import * as AlertDialog from '$lib/components/ui/alert-dialog/index.js';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { Checkbox } from '$lib/components/ui/checkbox/index.js';
 	import {
@@ -43,21 +41,25 @@
 	import * as Table from '$lib/components/ui/table';
 	import { cn } from '$lib/utils';
 
-	import { DynamicalCell, DynamicalHeader } from '.';
+	import { DynamicalTableCell, DynamicalTableHeader } from '.';
 	import DynamicalTableQuery, { evaluate } from './dynamical-table-query.svelte';
 
 	let {
 		objects,
 		fields,
 		create,
+		bulkDelete,
 		reload,
-		rowActions
+		rowActions = createRawSnippet(() => ({
+			render: () => ''
+		}))
 	}: {
 		objects: Record<string, JsonValue>[];
 		fields: Record<string, JsonValue>;
 		create?: Snippet;
-		reload?: Snippet;
+		bulkDelete?: Snippet<[{ table: TanStackTabke<Record<string, JsonValue>> }]>;
 		rowActions?: Snippet<[{ row: Row<Record<string, JsonValue>> }]>;
+		reload: Snippet;
 	} = $props();
 
 	const columns: ColumnDef<Record<string, JsonValue>>[] = [
@@ -85,14 +87,14 @@
 		...Object.keys(fields).map((key) => ({
 			accessorKey: key,
 			header: () =>
-				renderComponent(DynamicalHeader, {
+				renderComponent(DynamicalTableHeader, {
 					children: createRawSnippet(() => ({
 						render: () => `<h3>${key}</h3>`
 					})),
 					field: fields[key]
 				}),
 			cell: ({ row }: { row: Row<Record<string, JsonValue>> }) =>
-				renderComponent(DynamicalCell, {
+				renderComponent(DynamicalTableCell, {
 					object: row.original[key],
 					field: fields[key]
 				}),
@@ -207,14 +209,7 @@
 			}
 		}
 	});
-	function handleDeleteRows() {
-		const selectedRows = table.getSelectedRowModel().rows;
-		objects = objects.filter(
-			(object) =>
-				!selectedRows.some((row) => row.original && object && row.original.id === object.id)
-		);
-		table.resetRowSelection();
-	}
+
 	function handleResetFilter() {
 		expression = '';
 	}
@@ -233,91 +228,74 @@
 			return 'start';
 		}
 	}
+	// eslint-disable-next-line
+	function getHeaderAlignment(field: any): string {
+		const alignment = getAlignment(field);
+		switch (alignment) {
+			case 'start':
+				return 'justify-start';
+			case 'center':
+				return 'justify-center';
+			case 'end':
+			default:
+				return 'justify-end';
+		}
+	}
+	// eslint-disable-next-line
+	function getCellAlignment(field: any): string {
+		const alignment = getAlignment(field);
+		switch (alignment) {
+			case 'start':
+				return 'text-start';
+			case 'center':
+				return 'text-center';
+			case 'end':
+			default:
+				return 'text-end';
+		}
+	}
 
 	let expression = $state('');
 </script>
 
 <div class="space-y-4">
 	<!-- Controllers -->
-	<div class="flex flex-wrap items-center justify-between gap-3">
-		<!-- Accessors -->
-		<div class="flex items-center gap-3">
-			<!-- Bulk Delete -->
-			{#if table.getSelectedRowModel().rows.length > 0}
-				<AlertDialog.Root>
-					<AlertDialog.Trigger>
-						{#snippet child({ props })}
-							<Button class="ml-auto" variant="outline" {...props}>
-								<Trash class="-ms-1 opacity-60" size={16} aria-hidden="true" />
-								Delete
-								<span
-									class="-me-1 inline-flex h-5 max-h-full items-center rounded border bg-background px-1 font-[inherit] text-[0.625rem] font-medium text-muted-foreground/70"
-								>
-									{table.getSelectedRowModel().rows.length}
-								</span>
-							</Button>
-						{/snippet}
-					</AlertDialog.Trigger>
-					<AlertDialog.Content>
-						<div class="flex flex-col gap-2 max-sm:items-center sm:flex-row sm:gap-4">
-							<div
-								class="flex size-9 shrink-0 items-center justify-center rounded-full border"
-								aria-hidden="true"
-							>
-								<CircleAlert class="opacity-80" size={16} />
-							</div>
-							<AlertDialog.Header>
-								<AlertDialog.Title>Are you absolutely sure?</AlertDialog.Title>
-								<AlertDialog.Description>
-									This action cannot be undone. This will permanently delete
-									{table.getSelectedRowModel().rows.length} selected
-									{table.getSelectedRowModel().rows.length === 1 ? 'row' : 'rows'}.
-								</AlertDialog.Description>
-							</AlertDialog.Header>
-						</div>
-						<AlertDialog.Footer>
-							<AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
-							<AlertDialog.Action onclick={handleDeleteRows}>Delete</AlertDialog.Action>
-						</AlertDialog.Footer>
-					</AlertDialog.Content>
-				</AlertDialog.Root>
-			{/if}
-			<!-- Create -->
+	<!-- Accessors -->
+	<div class="flex w-full items-center gap-4">
+		<div>
 			{@render create?.()}
-
-			<!-- Reload -->
-			{@render reload?.()}
+			{@render bulkDelete?.({ table })}
 		</div>
-		<!-- Filters -->
-		<div class="flex w-full items-center gap-3">
-			<DynamicalTableQuery bind:expression {table} />
-			<DropdownMenu.Root>
-				<DropdownMenu.Trigger>
-					{#snippet child({ props })}
-						<Button variant="outline" {...props}>
-							<Columns3 class="-ms-1 opacity-60" size={16} aria-hidden="true" />
-							View
-						</Button>
-					{/snippet}
-				</DropdownMenu.Trigger>
-				<DropdownMenu.Content align="end">
-					<DropdownMenu.Label>Toggle columns</DropdownMenu.Label>
-					{#each table
-						.getAllColumns()
-						.filter((column) => column.getCanHide()) as column (column.id)}
-						<DropdownMenu.CheckboxItem
-							checked={column.getIsVisible()}
-							closeOnSelect={false}
-							onCheckedChange={(value) => column.toggleVisibility(!!value)}
-						>
-							{column.id}
-						</DropdownMenu.CheckboxItem>
-					{/each}
-				</DropdownMenu.Content>
-			</DropdownMenu.Root>
+		<div class="ml-auto">
+			{@render reload()}
 		</div>
 	</div>
-
+	<!-- Filters -->
+	<div class="flex w-full items-center gap-4">
+		<DynamicalTableQuery bind:expression {table} />
+		<DropdownMenu.Root>
+			<DropdownMenu.Trigger>
+				{#snippet child({ props })}
+					<Button variant="outline" {...props}>
+						<Columns3 class="-ms-1 opacity-60" size={16} aria-hidden="true" />
+						View
+					</Button>
+				{/snippet}
+			</DropdownMenu.Trigger>
+			<DropdownMenu.Content align="end">
+				<DropdownMenu.Label>Toggle columns</DropdownMenu.Label>
+				{#each table.getAllColumns().filter((column) => column.getCanHide()) as column (column.id)}
+					<DropdownMenu.CheckboxItem
+						checked={column.getIsVisible()}
+						closeOnSelect={false}
+						onCheckedChange={(value) => column.toggleVisibility(!!value)}
+					>
+						{column.id}
+					</DropdownMenu.CheckboxItem>
+				{/each}
+			</DropdownMenu.Content>
+		</DropdownMenu.Root>
+	</div>
 	<!-- Table -->
 	<div class="overflow-hidden rounded-md border bg-background">
 		<Table.Root class="table-fixed">
@@ -331,11 +309,7 @@
 										class={cn(
 											header.column.getCanSort() &&
 												'flex h-full cursor-pointer items-center justify-between gap-2 select-none',
-											getAlignment(fields[header.column.id]) === 'start'
-												? 'justify-start'
-												: getAlignment(fields[header.column.id]) === 'center'
-													? 'justify-center'
-													: 'justify-end'
+											getHeaderAlignment(fields[header.column.id])
 										)}
 										onclick={header.column.getToggleSortingHandler()}
 										onkeydown={(e) => {
@@ -378,15 +352,7 @@
 					{#each table.getRowModel().rows as row (row.id)}
 						<Table.Row data-state={row.getIsSelected() && 'selected'}>
 							{#each row.getVisibleCells() as cell (cell.id)}
-								<Table.Cell
-									class={cn(
-										getAlignment(fields[cell.column.id]) === 'start'
-											? 'text-left'
-											: getAlignment(fields[cell.column.id]) === 'center'
-												? 'text-center'
-												: 'text-right'
-									)}
-								>
+								<Table.Cell class={getCellAlignment(fields[cell.column.id])}>
 									<FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
 								</Table.Cell>
 							{/each}

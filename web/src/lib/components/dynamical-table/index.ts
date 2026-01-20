@@ -1,5 +1,5 @@
-import DynamicalCell from './dynamical-cell.svelte';
-import DynamicalHeader from './dynamical-header.svelte';
 import DynamicalTable from './dynamical-table.svelte';
+import DynamicalTableCell from './dynamical-table-cell.svelte';
+import DynamicalTableHeader from './dynamical-table-header.svelte';
 
-export { DynamicalCell, DynamicalHeader, DynamicalTable };
+export { DynamicalTable, DynamicalTableCell, DynamicalTableHeader };

@@ -2,8 +2,10 @@
 	import { type JsonValue, toJson } from '@bufbuild/protobuf';
 	import { StructSchema } from '@bufbuild/protobuf/wkt';
 	import { createClient, type Transport } from '@connectrpc/connect';
+	import CircleAlert from '@lucide/svelte/icons/circle-alert';
 	import Download from '@lucide/svelte/icons/download';
-	import Plus from '@lucide/svelte/icons/plus';
+	import Trash from '@lucide/svelte/icons/trash';
+	import type { Table } from '@tanstack/table-core';
 	import { getContext, onDestroy, onMount } from 'svelte';
 
 	import {
@@ -14,8 +16,10 @@
 		type WatchRequest
 	} from '$lib/api/resource/v1/resource_pb';
 	import DynamicalTable from '$lib/components/dynamical-table/dynamical-table.svelte';
+	import * as AlertDialog from '$lib/components/ui/alert-dialog/index.js';
 	import Button from '$lib/components/ui/button/button.svelte';
 
+	import Separator from '../ui/separator/separator.svelte';
 	import ResourceActions from './resource-actions.svelte';
 	import ResourceCreate from './resource-create.svelte';
 
@@ -236,7 +240,14 @@
 			watchAbortController = null;
 		}
 	});
-
+	function handleDeleteRows(table: Table<Record<string, JsonValue>>) {
+		const selectedRows = table.getSelectedRowModel().rows;
+		objects = objects.filter(
+			(object) =>
+				!selectedRows.some((row) => row.original && object && row.original.id === object.id)
+		);
+		table.resetRowSelection();
+	}
 	function handleReload() {
 		if (!isWatching) {
 			watchResources();
@@ -246,6 +257,45 @@
 
 {#if isMounted}
 	<DynamicalTable {objects} {fields}>
+		{#snippet bulkDelete({ table })}
+			{#if table.getSelectedRowModel().rows.length > 0}
+				<AlertDialog.Root>
+					<AlertDialog.Trigger>
+						{#snippet child({ props })}
+							<Button class="ml-auto text-destructive" variant="outline" {...props}>
+								<Trash class="-ms-1 opacity-60" size={16} aria-hidden="true" />
+								Delete
+								<Separator orientation="vertical" />
+								{table.getSelectedRowModel().rows.length}
+							</Button>
+						{/snippet}
+					</AlertDialog.Trigger>
+					<AlertDialog.Content>
+						<div class="flex flex-col gap-2 max-sm:items-center sm:flex-row sm:gap-4">
+							<div
+								class="flex size-9 shrink-0 items-center justify-center rounded-full border"
+								aria-hidden="true"
+							>
+								<CircleAlert class="opacity-80" size={16} />
+							</div>
+							<AlertDialog.Header>
+								<AlertDialog.Title>Are you absolutely sure?</AlertDialog.Title>
+								<AlertDialog.Description>
+									This action cannot be undone. This will permanently delete
+									{table.getSelectedRowModel().rows.length} selected
+									{table.getSelectedRowModel().rows.length === 1 ? 'row' : 'rows'}.
+								</AlertDialog.Description>
+							</AlertDialog.Header>
+						</div>
+						<AlertDialog.Footer>
+							<AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
+							<AlertDialog.Action onclick={() => handleDeleteRows(table)}>Delete</AlertDialog.Action
+							>
+						</AlertDialog.Footer>
+					</AlertDialog.Content>
+				</AlertDialog.Root>
+			{/if}
+		{/snippet}
 		{#snippet create()}
 			<ResourceCreate {resource} />
 		{/snippet}
