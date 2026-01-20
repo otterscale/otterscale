@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { createClient, type Transport } from '@connectrpc/connect';
-	import Icon from '@iconify/svelte';
 	import { getContext } from 'svelte';
 
 	import { page } from '$app/state';
