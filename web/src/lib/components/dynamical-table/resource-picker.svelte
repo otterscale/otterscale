@@ -2,7 +2,6 @@
 	import Icon from '@iconify/svelte';
 	import ChevronDown from '@lucide/svelte/icons/chevron-down';
 	import SearchAlert from '@lucide/svelte/icons/search-alert';
-	import { onDestroy, onMount } from 'svelte';
 
 	import { Button } from '$lib/components/ui/button';
 	import * as Command from '$lib/components/ui/command';
@@ -12,18 +11,23 @@
 
 	let {
 		value = $bindable(),
-		initialValue,
 		options,
+		onSelect,
 		class: className
 	}: {
-		value: string;
-		initialValue: string;
+		value?: string;
 		options: {
 			icon: string;
 			label: string;
 			value: string;
 			description: string;
 		}[];
+		onSelect?: (option: {
+			icon: string;
+			label: string;
+			value: string;
+			description: string;
+		}) => void;
 		class?: string;
 	} = $props();
 
@@ -40,13 +44,6 @@
 	function handleReset() {
 		if (searchTerm) searchTerm = '';
 	}
-
-	onMount(() => {
-		value = initialValue;
-	});
-	onDestroy(() => {
-		value = '';
-	});
 </script>
 
 <Popover.Root bind:open>
@@ -95,10 +92,16 @@
 				</Command.Empty>
 				<Command.Group>
 					{#each options as option (option.value)}
-						<Command.Item value={option.value} onSelect={() => handleSelect(option.value)}>
+						<Command.Item
+							value={option.value}
+							onSelect={() => {
+								handleSelect(option.value);
+								onSelect?.(option);
+							}}
+						>
 							<Item.Root size="sm" class="w-full p-0">
-								<Item.Media variant="icon">
-									<Icon icon={option.icon} class="size-4" />
+								<Item.Media class="p-1">
+									<Icon icon={option.icon} class="size-5" />
 								</Item.Media>
 								<Item.Content class="gap-0.5">
 									<Item.Title class="text-xs">{option.label}</Item.Title>

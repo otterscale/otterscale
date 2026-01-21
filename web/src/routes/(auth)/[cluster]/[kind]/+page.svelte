@@ -1,7 +1,10 @@
 <script lang="ts">
+	import type { JsonObject } from '@bufbuild/protobuf';
 	import { createClient, type Transport } from '@connectrpc/connect';
-	import { getContext } from 'svelte';
+	import lodash from 'lodash';
+	import { getContext, type Snippet } from 'svelte';
 
+	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
 	import {
 		type APIResource,
@@ -17,22 +20,13 @@
 	const group = $derived(page.url.searchParams.get('group') ?? '');
 	const version = $derived(page.url.searchParams.get('version') ?? '');
 	const kind = $derived(page.params.kind ?? '');
+	const resource = $derived(page.url.searchParams.get('resource') ?? '');
+	const namespace = $derived(page.url.searchParams.get('namespace') ?? '');
 
 	const transport: Transport = getContext('transport');
 	const client = createClient(ResourceService, transport);
 
 	let apiResources = $state<APIResource[]>([]);
-	let selectedAPIResourceResource = $state('');
-	const selectedAPIResource = $derived(
-		apiResources.find(
-			(apiResource) =>
-				apiResource &&
-				apiResource.group === group &&
-				apiResource.version === version &&
-				apiResource.kind === kind &&
-				apiResource.resource === selectedAPIResourceResource
-		)
-	);
 	async function fetchAPIResources(cluster: string, group: string, version: string, kind: string) {
 		const response = await client.discovery({
 			cluster: cluster
@@ -47,8 +41,17 @@
 		);
 		return apiResources;
 	}
+	const selectedAPIResource = $derived(
+		apiResources.find(
+			(apiResource) =>
+				apiResource &&
+				apiResource.group === group &&
+				apiResource.version === version &&
+				apiResource.kind === kind &&
+				apiResource.resource === resource
+		)
+	);
 
-	let selectedNamespaceMetadataName = $state(page.url.searchParams.get('namespace') ?? '');
 	async function fetchNamespaces(cluster: string) {
 		const response = await client.list({
 			cluster: cluster,
@@ -62,12 +65,11 @@
 {#key cluster + group + version + kind}
 	{#await fetchAPIResources(cluster, group, version, kind) then apiResources}
 		{@const apiResourceOptions = apiResources.map((apiResource) => ({
-			icon: 'lucide:list',
+			icon: 'ph:user',
 			label: apiResource.resource,
 			value: apiResource.resource,
 			description: `${apiResource.group}/${apiResource.version}/${apiResource.kind}`
 		}))}
-		{@const [initialAPIResourceOption] = apiResourceOptions}
 		<div class="space-y-4">
 			<div class="flex items-end justify-between gap-4">
 				<Item.Root class="p-0">
@@ -81,38 +83,47 @@
 						</Item.Description>
 					</Item.Content>
 				</Item.Root>
-				<div class="flex items-center gap-4">
+				<div class="flex flex-row-reverse items-center gap-4">
 					<ResourcePicker
 						class="w-fit"
-						bind:value={selectedAPIResourceResource}
-						initialValue={initialAPIResourceOption.value}
+						value={resource}
 						options={apiResourceOptions}
+						onSelect={(option) => {
+							page.url.searchParams.set('resource', option.value);
+							// eslint-disable-next-line svelte/no-navigation-without-resolve
+							goto(page.url.href);
+						}}
 					/>
 					{#if selectedAPIResource && selectedAPIResource.namespaced}
 						{#await fetchNamespaces(cluster) then namespaces}
-							{@const namespaceOptions = namespaces.map((namespace: any) => ({
-								icon: 'lucide:list',
-								label: namespace?.metadata?.name,
-								value: namespace?.metadata?.name,
-								description: namespace?.status?.phase
-							}))}
-							{@const [initialNamespaceOptions] = namespaceOptions}
+							{@const namespaceOptions = namespaces
+								.sort((previous: JsonObject | undefined, next: JsonObject | undefined) =>
+									lodash
+										.get(previous, 'metadata.name', '')
+										.localeCompare(lodash.get(next, 'metadata.name', ''))
+								)
+								.map((namespace: JsonObject | undefined) => ({
+									icon: 'ph:cube',
+									label: lodash.get(namespace, 'metadata.name', ''),
+									value: lodash.get(namespace, 'metadata.name', ''),
+									description: lodash.get(namespace, 'status.phase', '')
+								}))}
 							<ResourcePicker
 								class="w-fit"
-								bind:value={selectedNamespaceMetadataName}
-								initialValue={initialNamespaceOptions.value}
+								value={namespace}
 								options={namespaceOptions}
+								onSelect={(option) => {
+									page.url.searchParams.set('namespace', option.value);
+									// eslint-disable-next-line svelte/no-navigation-without-resolve
+									goto(page.url.href);
+								}}
 							/>
 						{/await}
 					{/if}
 				</div>
 			</div>
 			{#if selectedAPIResource}
-				{#key selectedAPIResourceResource + selectedNamespaceMetadataName}
-					{@const resource = selectedAPIResourceResource}
-					{@const namespace = selectedAPIResource.namespaced
-						? selectedNamespaceMetadataName
-						: undefined}
+				{#key resource + namespace}
 					<ResourceManager {cluster} {group} {version} {kind} {resource} {namespace} />
 				{/key}
 			{/if}

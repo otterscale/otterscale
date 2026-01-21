@@ -110,10 +110,12 @@
 	const mapGroupVersionKindToAPIResource = $derived(
 		apiResources.reduce(
 			(map, resource) => {
-				map[`${resource.group}/${resource.version}/${resource.kind}`] = resource;
+				const key = `${resource.group}/${resource.version}/${resource.kind}`;
+				if (!map[key]) map[key] = [];
+				map[key].push(resource);
 				return map;
 			},
-			{} as Record<string, APIResource>
+			{} as Record<string, APIResource[]>
 		)
 	);
 	const apiResourcesByKindByVersionByGroup = $derived(
@@ -280,11 +282,12 @@
 														{/if}
 													</Sidebar.MenuSub>
 													{#each version.kinds as kind, index (index)}
+														{@const [firstResource] = Object.values(kind.resources)}
 														<Sidebar.MenuSub>
 															<Sidebar.MenuSubItem>
 																<Sidebar.MenuSubButton
 																	href={resolve(
-																		`/${activeScope}/${kind.name}?group=${group.name}&version=${version.name}`
+																		`/${activeScope}/${kind.name}?group=${group.name}&version=${version.name}&resource=${firstResource.resource}`
 																	)}
 																	aria-disabled={!kind.enabled}
 																>

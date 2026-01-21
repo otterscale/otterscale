@@ -26,7 +26,6 @@
 
 	import Separator from '../ui/separator/separator.svelte';
 	import { DynamicalTableCell, DynamicalTableHeader } from '.';
-	import LinkCell from './cells/link-cell.svelte';
 	import ResourceActions from './resource-actions.svelte';
 	import ResourceCreate from './resource-create.svelte';
 
@@ -137,11 +136,45 @@
 				row['Annotations'] ? Object.keys(row['Annotations']).length : null
 		},
 		{
-			id: 'Link',
-			cell: ({ row }: { row: Row<Record<string, JsonValue>> }) =>
-				renderComponent(LinkCell, {
-					display: 'Link' + row.original.Name,
-					hyperlink: 'http://ots.phison.com'
+			id: 'Labels',
+			header: ({ column }: { column: Column<Record<string, JsonValue>> }) =>
+				renderComponent(DynamicalTableHeader, {
+					column: column,
+					fields: fields
+				}),
+			cell: ({
+				column,
+				row
+			}: {
+				column: Column<Record<string, JsonValue>>;
+				row: Row<Record<string, JsonValue>>;
+			}) =>
+				renderComponent(DynamicalTableCell, {
+					row: row,
+					column: column,
+					fields: fields
+				}),
+			accessorFn: (row: Record<string, JsonValue>) =>
+				row['Labels'] ? Object.keys(row['Labels']).length : null
+		},
+		{
+			id: 'Configuration',
+			header: ({ column }: { column: Column<Record<string, JsonValue>> }) =>
+				renderComponent(DynamicalTableHeader, {
+					column: column,
+					fields: fields
+				}),
+			cell: ({
+				column,
+				row
+			}: {
+				column: Column<Record<string, JsonValue>>;
+				row: Row<Record<string, JsonValue>>;
+			}) =>
+				renderComponent(DynamicalTableCell, {
+					row: row,
+					column: column,
+					fields: fields
 				})
 		}
 	];
