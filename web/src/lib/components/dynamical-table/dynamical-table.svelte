@@ -278,28 +278,32 @@
 			<DropdownMenu.Content align="end">
 				<DropdownMenu.Label>Toggle columns</DropdownMenu.Label>
 				{#each table.getAllColumns().filter((column) => column.getCanHide()) as column (column.id)}
-					<DropdownMenu.CheckboxItem
-						checked={column.getIsVisible()}
+					<DropdownMenu.Item
+						class={column.getIsVisible()
+							? 'text-primary **:text-primary'
+							: 'text-muted-foreground/50 **:text-muted-foreground/50'}
 						closeOnSelect={false}
-						onCheckedChange={(value) => column.toggleVisibility(!!value)}
+						onSelect={() => column.toggleVisibility(!column.getIsVisible())}
 					>
 						{@const type = lodash.get(fields, `${column.id}.type`)}
 						{@const format = lodash.get(fields, `${column.id}.format`)}
-						{#if type === 'boolean'}
-							<Binary />
-						{:else if type === 'number' || type === 'integer'}
-							<Hash />
-						{:else if type === 'string' && (format === 'date' || format === 'date-time')}
-							<Clock />
-						{:else if type === 'string'}
-							<Type />
-						{:else if type === 'array'}
-							<Braces />
-						{:else if type === 'object'}
-							<Braces />
-						{/if}
+						<div>
+							{#if type === 'boolean'}
+								<Binary />
+							{:else if type === 'number' || type === 'integer'}
+								<Hash />
+							{:else if type === 'string' && (format === 'date' || format === 'date-time')}
+								<Clock />
+							{:else if type === 'string'}
+								<Type />
+							{:else if type === 'array'}
+								<Braces />
+							{:else if type === 'object'}
+								<Braces />
+							{/if}
+						</div>
 						{column.id}
-					</DropdownMenu.CheckboxItem>
+					</DropdownMenu.Item>
 				{/each}
 			</DropdownMenu.Content>
 		</DropdownMenu.Root>
