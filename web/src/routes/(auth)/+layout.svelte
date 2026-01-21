@@ -180,7 +180,7 @@
 		}
 	});
 
-	const enabledKinds = ['Role', 'RoleBinding', 'ClusterRole', 'ClusterRoleBinding'];
+	const enabledKinds = ['Role', 'RoleBinding', 'ClusterRole', 'ClusterRoleBinding', 'Pod'];
 	const resources = $derived([
 		{
 			name: 'Manifests',

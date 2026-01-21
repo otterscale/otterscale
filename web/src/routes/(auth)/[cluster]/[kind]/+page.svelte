@@ -39,6 +39,7 @@
 				apiResource.version === version &&
 				apiResource.kind === kind
 		);
+		console.log(apiResources);
 		return apiResources;
 	}
 	const selectedAPIResource = $derived(
@@ -122,11 +123,9 @@
 					{/if}
 				</div>
 			</div>
-			{#if selectedAPIResource}
-				{#key resource + namespace}
-					<ResourceManager {cluster} {group} {version} {kind} {resource} {namespace} />
-				{/key}
-			{/if}
+			{#key resource + namespace}
+				<ResourceManager {cluster} {group} {version} {kind} {resource} {namespace} />
+			{/key}
 		</div>
 	{:catch}
 		Error

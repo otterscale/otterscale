@@ -68,7 +68,7 @@
 			Namespace: lodash.get(object, 'metadata.namespace'),
 			Labels: lodash.get(object, 'metadata.labels'),
 			Annotations: lodash.get(object, 'metadata.annotations'),
-			CreateTime: lodash.get(object, 'metadata.creationTimestamp '),
+			CreateTime: lodash.get(object, 'metadata.creationTimestamp'),
 			Configuration: object
 		};
 	}
@@ -91,7 +91,8 @@
 					row: row,
 					column: column,
 					fields: fields
-				})
+				}),
+			accessorKey: 'Name'
 		},
 		{
 			id: 'Namespace',
@@ -111,7 +112,8 @@
 					row: row,
 					column: column,
 					fields: fields
-				})
+				}),
+			accessorKey: 'Namespace'
 		},
 		{
 			id: 'Annotations',
@@ -158,6 +160,27 @@
 				row['Labels'] ? Object.keys(row['Labels']).length : null
 		},
 		{
+			id: 'CreateTime',
+			header: ({ column }: { column: Column<Record<string, JsonValue>> }) =>
+				renderComponent(DynamicalTableHeader, {
+					column: column,
+					fields: fields
+				}),
+			cell: ({
+				column,
+				row
+			}: {
+				column: Column<Record<string, JsonValue>>;
+				row: Row<Record<string, JsonValue>>;
+			}) =>
+				renderComponent(DynamicalTableCell, {
+					row: row,
+					column: column,
+					fields: fields
+				}),
+			accessorKey: 'CreateTime'
+		},
+		{
 			id: 'Configuration',
 			header: ({ column }: { column: Column<Record<string, JsonValue>> }) =>
 				renderComponent(DynamicalTableHeader, {
@@ -175,7 +198,8 @@
 					row: row,
 					column: column,
 					fields: fields
-				})
+				}),
+			accessorKey: 'Configuration'
 		}
 	];
 

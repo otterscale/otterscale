@@ -1,13 +1,18 @@
 <script lang="ts">
 	import { type JsonObject, type JsonValue } from '@bufbuild/protobuf';
+	import Binary from '@lucide/svelte/icons/binary';
+	import Braces from '@lucide/svelte/icons/braces';
 	import ChevronDown from '@lucide/svelte/icons/chevron-down';
 	import ChevronFirst from '@lucide/svelte/icons/chevron-first';
 	import ChevronLast from '@lucide/svelte/icons/chevron-last';
 	import ChevronLeft from '@lucide/svelte/icons/chevron-left';
 	import ChevronRight from '@lucide/svelte/icons/chevron-right';
 	import ChevronUp from '@lucide/svelte/icons/chevron-up';
+	import Clock from '@lucide/svelte/icons/clock';
 	import Columns3 from '@lucide/svelte/icons/columns-3';
 	import Eraser from '@lucide/svelte/icons/eraser';
+	import Hash from '@lucide/svelte/icons/hash';
+	import Type from '@lucide/svelte/icons/type';
 	import {
 		type ColumnDef,
 		type ColumnFiltersState,
@@ -24,6 +29,7 @@
 		type VisibilityState
 	} from '@tanstack/table-core';
 	import jsep from 'jsep';
+	import lodash from 'lodash';
 	import { createRawSnippet, type Snippet } from 'svelte';
 
 	import { Button } from '$lib/components/ui/button/index.js';
@@ -277,6 +283,21 @@
 						closeOnSelect={false}
 						onCheckedChange={(value) => column.toggleVisibility(!!value)}
 					>
+						{@const type = lodash.get(fields, `${column.id}.type`)}
+						{@const format = lodash.get(fields, `${column.id}.format`)}
+						{#if type === 'boolean'}
+							<Binary />
+						{:else if type === 'number' || type === 'integer'}
+							<Hash />
+						{:else if type === 'string' && (format === 'date' || format === 'date-time')}
+							<Clock />
+						{:else if type === 'string'}
+							<Type />
+						{:else if type === 'array'}
+							<Braces />
+						{:else if type === 'object'}
+							<Braces />
+						{/if}
 						{column.id}
 					</DropdownMenu.CheckboxItem>
 				{/each}

@@ -18,14 +18,15 @@
 	import { stringify } from 'yaml';
 
 	import * as Code from '$lib/components/custom/code/index.js';
-	import { Button, buttonVariants } from '$lib/components/ui/button';
+	import { Button } from '$lib/components/ui/button';
 	import * as Collapsible from '$lib/components/ui/collapsible';
 	import * as Empty from '$lib/components/ui/empty/index.js';
 	import * as Item from '$lib/components/ui/item';
 	import * as Sheet from '$lib/components/ui/sheet/index.js';
 	import * as Table from '$lib/components/ui/table/index.js';
 	import * as Tabs from '$lib/components/ui/tabs/index.js';
-	import { cn } from '$lib/utils';
+	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
+	import { now } from '$lib/stores/now';
 
 	let {
 		ref = $bindable(null),
@@ -46,6 +47,31 @@
 		} catch {
 			return value;
 		}
+	}
+
+	function getRelativeTime(now: number, timestamp: number) {
+		const milliseconds = timestamp;
+
+		const seconds = Math.floor((now - milliseconds) / 1000);
+		if (seconds < 60) return { value: seconds, unit: 'second' };
+
+		const minutes = Math.floor(seconds / 60);
+		if (minutes < 60) return { value: minutes, unit: 'minute' };
+
+		const hours = Math.floor(minutes / 60);
+		if (hours < 24) return { value: hours, unit: 'hour' };
+
+		const days = Math.floor(hours / 24);
+		if (days < 7) return { value: days, unit: 'day' };
+
+		const weeks = Math.floor(days / 7);
+		if (weeks < 5) return { value: weeks, unit: 'week' };
+
+		const months = Math.floor(days / 30);
+		if (months < 12) return { value: months, unit: 'month' };
+
+		const years = Math.floor(days / 365);
+		return { value: years, unit: 'year' };
 	}
 </script>
 
@@ -146,15 +172,13 @@
 															<FileText />
 														{/if}
 													</Item.Media>
-													<Item.Content class="text-left">
+													<Item.Content class="min-w-0 flex-1 text-left">
 														<Item.Title class="w-full">
 															{key}
 														</Item.Title>
-														{#if value}
-															<Item.Description>
-																{value}
-															</Item.Description>
-														{/if}
+														<Item.Description class="wrap-break-words breaks-all">
+															{value}
+														</Item.Description>
 													</Item.Content>
 												</Item.Root>
 											</Collapsible.Trigger>
@@ -174,26 +198,30 @@
 							</div>
 						</Tabs.Content>
 						<Tabs.Content value="table">
-							<Table.Root>
-								<Table.Header>
-									<Table.Row>
-										<Table.Head>Key</Table.Head>
-										<Table.Head>Value</Table.Head>
-									</Table.Row>
-								</Table.Header>
-								<Table.Body>
-									{#each Object.entries(data) as [key, value], index (index)}
-										<Table.Row>
-											<Table.Cell>{key}</Table.Cell>
-											<Table.Cell
-												class="line-clamp-2 text-sm leading-normal font-normal text-balance text-muted-foreground"
-											>
-												{value}
-											</Table.Cell>
+							<div>
+								<Table.Root class="[&_td:first-child]:rounded-l-lg [&_td:last-child]:rounded-r-lg">
+									<Table.Header>
+										<Table.Row class="hover:[&>th,td]:bg-transparent!">
+											<Table.Head>Key</Table.Head>
+											<Table.Head>Value</Table.Head>
 										</Table.Row>
-									{/each}
-								</Table.Body>
-							</Table.Root>
+									</Table.Header>
+									<Table.Body>
+										{#each Object.entries(data) as [key, value], index (index)}
+											<Table.Row class="border-none align-top">
+												<Table.Cell class="align-top">{key}</Table.Cell>
+												<Table.Cell class="align-top">
+													<p
+														class="wrap-break-words max-w-3xl text-sm leading-normal font-normal text-balance break-all text-muted-foreground"
+													>
+														{value}
+													</p>
+												</Table.Cell>
+											</Table.Row>
+										{/each}
+									</Table.Body>
+								</Table.Root>
+							</div>
 						</Tabs.Content>
 					</Tabs.Root>
 				{/if}
@@ -233,15 +261,27 @@
 
 {#snippet DatetimeCell({ data }: { data: Date })}
 	{#if data && !isNaN(data.getTime())}
-		{new Intl.DateTimeFormat('en-CA', {
-			year: 'numeric',
-			month: '2-digit',
-			day: '2-digit',
-			hour: '2-digit',
-			minute: '2-digit',
-			second: '2-digit',
-			hour12: false
-		}).format(data)}
+		{@const { value, unit } = getRelativeTime($now, data.getTime())}
+		<Tooltip.Provider>
+			<Tooltip.Root>
+				<Tooltip.Trigger>
+					{value}
+					{unit}
+				</Tooltip.Trigger>
+				<Tooltip.Content>
+					{new Intl.DateTimeFormat('en-CA', {
+						year: 'numeric',
+						month: '2-digit',
+						day: '2-digit',
+						hour: '2-digit',
+						minute: '2-digit',
+						second: '2-digit',
+						hour12: false,
+						timeZoneName: 'longOffset'
+					}).format(data)}
+				</Tooltip.Content>
+			</Tooltip.Root>
+		</Tooltip.Provider>
 	{/if}
 {/snippet}
 
