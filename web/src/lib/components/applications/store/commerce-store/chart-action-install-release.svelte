@@ -152,8 +152,10 @@
 					</SingleSelect.Content>
 				</SingleSelect.Root>
 			</Form.Field>
-
 			<Form.Field>
+				<Form.Label>
+					{m.configuration()}
+				</Form.Label>
 				{#key request.chartRef}
 					<ReleaseValuesInputEdit
 						chartRef={request.chartRef}
