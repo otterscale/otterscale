@@ -907,5 +907,6 @@
 	"jobs": "Jobs",
 	"active": "Active",
 	"try_next_version": "Try our next version",
-	"switch_to_classic": "Switch to classic"
+	"switch_to_classic": "Switch to classic",
+	"workspace": "Workspace"
 }

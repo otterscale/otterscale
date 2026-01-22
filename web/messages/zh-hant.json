@@ -906,5 +906,6 @@
 	"jobs": "Jobs",
 	"active": "Active",
 	"try_next_version": "搶先體驗新版",
-	"switch_to_classic": "切換回舊版"
+	"switch_to_classic": "切換回舊版",
+	"workspace": "工作空間"
 }
