@@ -162,9 +162,9 @@
 				</Button>
 			</Item.Actions>
 			<Item.Footer class="justift-start flex flex-col items-start">
-				<!-- Labels -->
 				<div class="grid grid-cols-[auto_1fr] gap-2">
-					<div class="relative">
+					<!-- Labels -->
+					<div class="relative row-start-1 w-fit">
 						<Label class="self-start p-1 text-xs font-black">Labels</Label>
 						<Badge
 							class="absolute -top-1 -right-1 flex size-4 items-center justify-center rounded-full border-background text-[10px]"
@@ -172,7 +172,7 @@
 							{Object.entries(object.metadata?.labels).length}
 						</Badge>
 					</div>
-					<div class="flex flex-wrap gap-2">
+					<div class="row-start-1 flex flex-wrap gap-2">
 						{#each Object.entries(object.metadata?.labels).slice(0, 3) as [key, value], index (index)}
 							<Badge variant="outline" class="bg-secondary/30 font-mono text-xs">
 								<p class="text-muted-foreground">{key}</p>
@@ -184,10 +184,9 @@
 							+{Object.entries(object.metadata?.labels).length - 3}
 						{/if}
 					</div>
-				</div>
-				<!-- Annotations -->
-				<div class="grid grid-cols-[auto_1fr] gap-2">
-					<div class="relative">
+
+					<!-- Annotations -->
+					<div class="relative row-start-2 w-fit">
 						<Label class="self-start p-1 text-xs font-black">Annotations</Label>
 						<Badge
 							class="absolute -top-1 -right-1 flex size-4 items-center justify-center rounded-full border-background text-[10px]"
@@ -195,7 +194,7 @@
 							{Object.entries(object.metadata?.annotations).length}
 						</Badge>
 					</div>
-					<div class="flex flex-wrap gap-2">
+					<div class="row-start-2 flex flex-wrap gap-2">
 						{#each Object.entries(object.metadata?.annotations).slice(0, 3) as [key, value], index (index)}
 							<Badge variant="outline" class="bg-secondary/30 font-mono text-xs">
 								<p class="text-muted-foreground">{key}</p>
