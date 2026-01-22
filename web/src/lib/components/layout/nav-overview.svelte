@@ -15,6 +15,7 @@
 			name: string;
 			url: string;
 			icon: Component;
+			edit: boolean;
 		}[];
 	} = $props();
 	const sidebar = useSidebar();
@@ -44,32 +45,34 @@
 						<!-- eslint-enable svelte/no-navigation-without-resolve -->
 					{/snippet}
 				</Sidebar.MenuButton>
-				<DropdownMenu.Root>
-					<DropdownMenu.Trigger>
-						{#snippet child({ props })}
-							<Sidebar.MenuAction showOnHover {...props}>
-								<EllipsisIcon />
-								<span class="sr-only">More</span>
-							</Sidebar.MenuAction>
-						{/snippet}
-					</DropdownMenu.Trigger>
-					<DropdownMenu.Content
-						class="rounded-lg"
-						side={sidebar.isMobile ? 'bottom' : 'right'}
-						align={sidebar.isMobile ? 'end' : 'start'}
-					>
-						<!-- eslint-disable svelte/no-navigation-without-resolve -->
-						<DropdownMenu.Item
-							onclick={() => {
-								goto('/?edit');
-							}}
+				{#if item.edit}
+					<DropdownMenu.Root>
+						<DropdownMenu.Trigger>
+							{#snippet child({ props })}
+								<Sidebar.MenuAction showOnHover {...props}>
+									<EllipsisIcon />
+									<span class="sr-only">More</span>
+								</Sidebar.MenuAction>
+							{/snippet}
+						</DropdownMenu.Trigger>
+						<DropdownMenu.Content
+							class="rounded-lg"
+							side={sidebar.isMobile ? 'bottom' : 'right'}
+							align={sidebar.isMobile ? 'end' : 'start'}
 						>
-							<PencilIcon class="text-muted-foreground" />
-							<span>{m.edit()}</span>
-						</DropdownMenu.Item>
-						<!-- eslint-enable svelte/no-navigation-without-resolve -->
-					</DropdownMenu.Content>
-				</DropdownMenu.Root>
+							<!-- eslint-disable svelte/no-navigation-without-resolve -->
+							<DropdownMenu.Item
+								onclick={() => {
+									goto('#?edit');
+								}}
+							>
+								<PencilIcon class="text-muted-foreground" />
+								<span>{m.edit()}</span>
+							</DropdownMenu.Item>
+							<!-- eslint-enable svelte/no-navigation-without-resolve -->
+						</DropdownMenu.Content>
+					</DropdownMenu.Root>
+				{/if}
 			</Sidebar.MenuItem>
 		{/each}
 		{#if hasMoreItems}
