@@ -2,13 +2,7 @@ package ceph
 
 import (
 	"context"
-	"fmt"
 	"regexp"
-	"slices"
-	"strings"
-	"sync"
-
-	"github.com/ceph/go-ceph/rados"
 
 	"github.com/otterscale/otterscale/internal/core/storage/file"
 )
@@ -46,59 +40,69 @@ func (r *subvolumeRepo) List(_ context.Context, scope, volume, group string) ([]
 
 	subvolumes := []file.Subvolume{}
 
-	for _, dumpName := range dumpNames {
-		info, err := getSubvolume(conn, volume, dumpName.Name, group)
+	for i := range dumpNames {
+		info, err := getSubvolume(conn, volume, group, dumpNames[i].Name)
 		if err != nil {
 			return nil, err
 		}
-		subvolumes = append(subvolumes, *r.toSubvolume(dumpName.Name, info))
+		subvolumes = append(subvolumes, *r.toSubvolume(volume, group, dumpNames[i].Name, info))
 	}
 
 	return subvolumes, nil
 }
 
-func (r *subvolumeRepo) Get(_ context.Context, scope, volume, subvolume, group string) (*file.Subvolume, error) {
+func (r *subvolumeRepo) Get(_ context.Context, scope, volume, group, subvolume string) (*file.Subvolume, error) {
 	conn, err := r.ceph.connection(scope)
 	if err != nil {
 		return nil, err
 	}
 
-	dump, err := getSubvolume(conn, volume, subvolume, group)
+	info, err := getSubvolume(conn, volume, group, subvolume)
 	if err != nil {
 		return nil, err
 	}
 
-	return r.toSubvolume(subvolume, dump), nil
+	return r.toSubvolume(volume, group, subvolume, info), nil
 }
 
-func (r *subvolumeRepo) Create(_ context.Context, scope, volume, subvolume, group string, size uint64) error {
+func (r *subvolumeRepo) Create(_ context.Context, scope, volume, group, subvolume string, size *file.Bytes, uid, gid *uint32, mode *file.UnixMode, poolLayout *string, isNamespaceIsolated *bool) error {
+	conn, err := r.ceph.connection(scope)
+	if err != nil {
+		return err
+	}
+	var cephSize *uint64
+	if size != nil {
+		v := uint64(*size)
+		cephSize = &v
+	}
+	var subvolumeMode *uint32
+	if mode != nil {
+		v := uint32(*mode)
+		subvolumeMode = &v
+	}
+
+	return createSubvolume(conn, volume, group, subvolume, cephSize, uid, gid, subvolumeMode, poolLayout, isNamespaceIsolated)
+}
+
+func (r *subvolumeRepo) Resize(_ context.Context, scope, volume, group, subvolume string, newSize file.Bytes, noShrink *bool) error {
 	conn, err := r.ceph.connection(scope)
 	if err != nil {
 		return err
 	}
 
-	return createSubvolume(conn, volume, subvolume, group, size)
+	return resizeSubvolume(conn, volume, group, subvolume, uint64(newSize), noShrink)
 }
 
-func (r *subvolumeRepo) Resize(_ context.Context, scope, volume, subvolume, group string, size uint64) error {
+func (r *subvolumeRepo) Delete(_ context.Context, scope, volume, group, subvolume string, isForce *bool) error {
 	conn, err := r.ceph.connection(scope)
 	if err != nil {
 		return err
 	}
 
-	return resizeSubvolume(conn, volume, subvolume, group, size)
+	return removeSubvolume(conn, volume, group, subvolume, isForce)
 }
 
-func (r *subvolumeRepo) Delete(_ context.Context, scope, volume, subvolume, group string) error {
-	conn, err := r.ceph.connection(scope)
-	if err != nil {
-		return err
-	}
-
-	return removeSubvolume(conn, volume, subvolume, group)
-}
-
-func (r *subvolumeRepo) ListExportClients(_ context.Context, scope, pool string) (map[string][]string, error) {
+/*func (r *subvolumeRepo) ListExportClients(_ context.Context, scope, pool string) (map[string][]string, error) {
 	conn, err := r.ceph.connection(scope)
 	if err != nil {
 		return nil, err
@@ -170,18 +174,57 @@ func (r *subvolumeRepo) exportIndex(ioctx *rados.IOContext, index string) (path 
 	}
 
 	return path, clients, nil
-}
+}*/
 
-func (r *subvolumeRepo) toSubvolume(name string, info *subvolumeInfo) *file.Subvolume {
-	quota, _ := parseQuota(info.BytesQuota)
+func (r *subvolumeRepo) toSubvolume(volume, group, subvolume string, info *subvolumeInfo) *file.Subvolume {
+	if info == nil {
+		return nil
+	}
+
+	used := uint64(info.BytesUsed)
+	var quotaPtr *file.Bytes
+	var quota uint64
+	if info.BytesQuota != nil && uint64(*info.BytesQuota) > 0 {
+		quota = uint64(*info.BytesQuota)
+		q := file.Bytes(quota)
+		quotaPtr = &q
+	}
+
+	var usage float64
+	if quota > 0 {
+		usage = float64(used) / float64(quota)
+	}
+
+	features := make([]file.Feature, 0, len(info.Features))
+	for _, f := range info.Features {
+		features = append(features, file.Feature(f))
+	}
 
 	return &file.Subvolume{
-		Name:      name,
-		Path:      info.Path,
-		Mode:      fmt.Sprintf("%o", info.Mode),
-		PoolName:  info.DataPool,
-		Quota:     quota,
-		Used:      info.BytesUsed,
-		CreatedAt: info.CreatedAt.Time,
+		Key: file.SubvolumeKey{
+			VolumeName:    volume,
+			GroupName:     group,
+			SubvolumeName: subvolume,
+		},
+		Info: file.SubvolumeInfo{
+			Path:         info.Path,
+			State:        file.SubvolumeState(info.State),
+			UID:          info.UID,
+			GID:          info.GID,
+			Mode:         file.UnixMode(info.Mode),
+			BytesPercent: usage,
+			BytesUsed:    file.Bytes(used),
+			BytesQuota:   quotaPtr,
+
+			DataPool:      info.DataPool,
+			PoolNamespace: info.PoolNamespace,
+
+			Atime:     info.Atime.Time,
+			Mtime:     info.Mtime.Time,
+			Ctime:     info.Ctime.Time,
+			CreatedAt: info.CreatedAt.Time,
+
+			Features: features,
+		},
 	}
 }

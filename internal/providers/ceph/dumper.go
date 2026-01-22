@@ -167,13 +167,112 @@ type names struct {
 	Name string `json:"name,omitempty"`
 }
 
+type Bytes uint64
+type UnixMode uint32
+
+type SubvolumeState string
+type Feature string
+
 type subvolumeInfo struct {
-	Path       string            `json:"path,omitempty"`
-	DataPool   string            `json:"data_pool,omitempty"`
-	Mode       int               `json:"mode,omitempty"`
-	BytesQuota any               `json:"bytes_quota,omitempty"`
-	BytesUsed  uint64            `json:"bytes_used,omitempty"`
-	CreatedAt  cephSubvolumeTime `json:"created_at,omitempty"`
+	Path  string         `json:"path,omitempty"`
+	State SubvolumeState `json:"state,omitempty"`
+	UID   uint32         `json:"uid,omitempty"`
+	GID   uint32         `json:"gid,omitempty"`
+	Mode  UnixMode       `json:"mode,omitempty"`
+
+	BytesPercent string `json:"bytes_percent,omitempty"`
+	BytesUsed    Bytes  `json:"bytes_used,omitempty"`
+	BytesQuota   *Bytes `json:"bytes_quota,omitempty"` // nil = unlimited
+
+	DataPool      string `json:"data_pool,omitempty"`
+	PoolNamespace string `json:"pool_namespace,omitempty"`
+
+	Atime     cephSubvolumeTime `json:"atime,omitempty"`
+	Mtime     cephSubvolumeTime `json:"mtime,omitempty"`
+	Ctime     cephSubvolumeTime `json:"ctime,omitempty"`
+	CreatedAt cephSubvolumeTime `json:"created_at,omitempty"`
+
+	Features []Feature `json:"features,omitempty"`
+}
+
+type SquashMode string
+
+const (
+	NoneSquash       SquashMode = "None"
+	RootSquash       SquashMode = "Root"
+	AllSquash        SquashMode = "All"
+	RootIDSquash     SquashMode = "RootId"
+	NoRootSquash                = NoneSquash
+	Unspecifiedquash SquashMode = ""
+)
+
+// SecType indicates the kind of security/authentication to be used by an export.
+type SecType string
+
+const (
+	SysSec   SecType = "sys"
+	NoneSec  SecType = "none"
+	Krb5Sec  SecType = "krb5"
+	Krb5iSec SecType = "krb5i"
+	Krb5pSec SecType = "krb5p"
+)
+
+// CephFSExportSpec is used to specify parameters to create a CephFS based export.
+type CephFSExportSpec struct {
+	FileSystemName string     `json:"fsname"`
+	ClusterID      string     `json:"cluster_id"`
+	PseudoPath     string     `json:"pseudo_path"`
+	Path           string     `json:"path,omitempty"`
+	ReadOnly       bool       `json:"readonly"`
+	ClientAddr     []string   `json:"client_addr,omitempty"`
+	Squash         SquashMode `json:"squash,omitempty"`
+	SecType        []SecType  `json:"sectype,omitempty"`
+}
+
+// ExportResult is returned along with newly created exports.
+type ExportResult struct {
+	Bind           string `json:"bind"`
+	FileSystemName string `json:"fs"`
+	Path           string `json:"path"`
+	ClusterID      string `json:"cluster"`
+	Mode           string `json:"mode"`
+}
+
+type cephFSExportFields struct {
+	Prefix string `json:"prefix"`
+	Format string `json:"format"`
+
+	CephFSExportSpec
+}
+
+// FSALInfo describes NFS-Ganesha specific FSAL properties of an export.
+type FSALInfo struct {
+	Name           string `json:"name"`
+	UserID         string `json:"user_id"`
+	FileSystemName string `json:"fs_name"`
+}
+
+// ClientInfo describes per-client parameters of an export.
+type ClientInfo struct {
+	Addresses  []string   `json:"addresses"`
+	AccessType string     `json:"access_type"`
+	Squash     SquashMode `json:"squash"`
+}
+
+// ExportInfo describes an NFS export.
+type ExportInfo struct {
+	ExportID      int64        `json:"export_id"`
+	Path          string       `json:"path"`
+	ClusterID     string       `json:"cluster_id"`
+	PseudoPath    string       `json:"pseudo"`
+	AccessType    string       `json:"access_type"`
+	Squash        SquashMode   `json:"squash"`
+	SecurityLabel bool         `json:"security_label"`
+	Protocols     []int        `json:"protocols"`
+	Transports    []string     `json:"transports"`
+	FSAL          FSALInfo     `json:"fsal"`
+	Clients       []ClientInfo `json:"clients"`
+	SecType       []SecType    `json:"sectype"`
 }
 
 type subvolumeSnapshotInfo struct {
@@ -571,7 +670,7 @@ func listSubvolumes(conn *rados.Conn, volume, group string) ([]names, error) {
 	return names, nil
 }
 
-func getSubvolume(conn *rados.Conn, volume, subvolume, group string) (*subvolumeInfo, error) {
+func getSubvolume(conn *rados.Conn, volume, group, subvolume string) (*subvolumeInfo, error) {
 	cmd := map[string]string{
 		"prefix":   "fs subvolume info",
 		"vol_name": volume,
@@ -582,7 +681,6 @@ func getSubvolume(conn *rados.Conn, volume, subvolume, group string) (*subvolume
 	if group != "" {
 		cmd["group_name"] = group
 	}
-
 	var info subvolumeInfo
 
 	if err := monCommandWithUnmarshal(conn, cmd, &info); err != nil {
@@ -592,7 +690,7 @@ func getSubvolume(conn *rados.Conn, volume, subvolume, group string) (*subvolume
 	return &info, nil
 }
 
-func createSubvolume(conn *rados.Conn, volume, subvolume, group string, size uint64) error {
+func createSubvolume(conn *rados.Conn, volume, group, subvolume string, size *uint64, uid, gid, mode *uint32, poolLayout *string, isNamespaceIsolated *bool) error {
 	cmd := map[string]any{
 		"prefix":   "fs subvolume create",
 		"vol_name": volume,
@@ -604,6 +702,24 @@ func createSubvolume(conn *rados.Conn, volume, subvolume, group string, size uin
 	if group != "" {
 		cmd["group_name"] = group
 	}
+	if size != nil {
+		cmd["size"] = *size
+	}
+	if uid != nil {
+		cmd["uid"] = *uid
+	}
+	if gid != nil {
+		cmd["gid"] = *gid
+	}
+	if mode != nil {
+		cmd["mode"] = *mode
+	}
+	if poolLayout != nil && *poolLayout != "" {
+		cmd["pool_layout"] = *poolLayout
+	}
+	if isNamespaceIsolated != nil {
+		cmd["namespace_isolated"] = *isNamespaceIsolated
+	}
 
 	if _, err := monCommand(conn, cmd); err != nil {
 		return err
@@ -612,12 +728,12 @@ func createSubvolume(conn *rados.Conn, volume, subvolume, group string, size uin
 	return nil
 }
 
-func resizeSubvolume(conn *rados.Conn, volume, subvolume, group string, size uint64) error {
+func resizeSubvolume(conn *rados.Conn, volume, group, subvolume string, newSize uint64, noShrink *bool) error {
 	cmd := map[string]any{
 		"prefix":   "fs subvolume resize",
 		"vol_name": volume,
 		"sub_name": subvolume,
-		"new_size": size,
+		"new_size": newSize,
 		"format":   "json",
 	}
 
@@ -625,6 +741,10 @@ func resizeSubvolume(conn *rados.Conn, volume, subvolume, group string, size uin
 		cmd["group_name"] = group
 	}
 
+	if noShrink != nil {
+		cmd["no_shrink"] = *noShrink
+	}
+
 	if _, err := monCommand(conn, cmd); err != nil {
 		return err
 	}
@@ -632,7 +752,7 @@ func resizeSubvolume(conn *rados.Conn, volume, subvolume, group string, size uin
 	return nil
 }
 
-func removeSubvolume(conn *rados.Conn, volume, subvolume, group string) error {
+func removeSubvolume(conn *rados.Conn, volume, group, subvolume string, isForce *bool) error {
 	cmd := map[string]any{
 		"prefix":   "fs subvolume rm",
 		"vol_name": volume,
@@ -642,6 +762,10 @@ func removeSubvolume(conn *rados.Conn, volume, subvolume, group string) error {
 
 	if group != "" {
 		cmd["group_name"] = group
+	}
+
+	if isForce != nil {
+		cmd["force"] = *isForce
 	}
 
 	if _, err := monCommand(conn, cmd); err != nil {
@@ -813,3 +937,84 @@ func removeSubvolumeGroup(conn *rados.Conn, volume, group string) error {
 
 	return nil
 }
+
+/*func createCephFSExport(conn *rados.Conn, spec CephFSExportSpec) (*ExportResult, error) {
+	f := &cephFSExportFields{
+		Prefix:           "nfs export create cephfs",
+		Format:           "json",
+		CephFSExportSpec: spec,
+	}
+
+	resp, err := monCommand(conn, f)
+	if err != nil {
+		return nil, err
+	}
+
+	var r ExportResult
+	if err := json.Unmarshal(resp, &r); err != nil {
+		return nil, err
+	}
+	return &r, nil
+}
+
+func getNFSExport(conn *rados.Conn, clusterID, pseudoPath string) (*ExportInfo, error) {
+	cmd := map[string]string{
+		"prefix":      "nfs export info",
+		"cluster_id":  clusterID,
+		"pseudo_path": pseudoPath,
+		"format":      "json",
+	}
+
+	var info ExportInfo
+
+	if err := monCommandWithUnmarshal(conn, cmd, &info); err != nil {
+		return nil, err
+	}
+
+	return &info, nil
+}
+
+func listDetailedExports(conn *rados.Conn, clusterID string) ([]ExportInfo, error) {
+	cmd := map[string]any{
+		"prefix":     "nfs export ls",
+		"detailed":   "true",
+		"format":     "json",
+		"cluster_id": clusterID,
+	}
+
+	resp, err := monCommand(conn, cmd)
+	if err != nil {
+		return nil, err
+	}
+
+	var l []ExportInfo
+	if err := json.Unmarshal(resp, &l); err != nil {
+		return nil, err
+	}
+	return l, nil
+}
+
+func updateNFSExport(conn *rados.Conn, spec CephFSExportSpec) error {
+	cmd := map[string]any{
+		"prefix":         "nfs export apply",
+		CephFSExportSpec: spec,
+	}
+
+	if _, err := monCommand(conn, cmd); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func removeExport(conn *rados.Conn, clusterID, pseudoPath string) error {
+	cmd := map[string]any{
+		"prefix":      "nfs export rm",
+		"format":      "json",
+		"cluster_id":  clusterID,
+		"pseudo_path": pseudoPath,
+	}
+
+	_, err := monCommand(conn, cmd)
+	return err
+}*/

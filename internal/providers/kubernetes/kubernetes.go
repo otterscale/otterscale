@@ -22,7 +22,7 @@ import (
 	"github.com/otterscale/otterscale/internal/core/scope"
 )
 
-var kubeConfigPath string = "/root/.kube/%s/config"
+var kubeConfigPath string = "/home/phison/george/%s/config"
 
 type Kubernetes struct {
 	conf *config.Config

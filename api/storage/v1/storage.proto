@@ -123,6 +123,12 @@ service StorageService {
     };
   };
 
+  rpc GetSubvolume(GetSubvolumeRequest) returns (Subvolume) {
+    option (otterscale.api.feature) = {
+      name: "distributed-storage-enabled"
+    };
+  };
+
   rpc UpdateSubvolume(UpdateSubvolumeRequest) returns (Subvolume) {
     option (otterscale.api.feature) = {
       name: "distributed-storage-enabled"
@@ -135,7 +141,31 @@ service StorageService {
     };
   };
 
-  rpc GrantSubvolumeExportAccess(GrantSubvolumeExportAccessRequest) returns (google.protobuf.Empty) {
+  rpc CreateNFSExport(CreateNFSExportRequest) returns (NFSExport) {
+    option (otterscale.api.feature) = {
+      name: "distributed-storage-enabled"
+    };
+  };
+
+  rpc GetNFSExport(GetNFSExportRequest) returns (NFSExport) {
+    option (otterscale.api.feature) = {
+      name: "distributed-storage-enabled"
+    };
+  };
+
+  rpc UpdateNFSExport(UpdateNFSExportRequest) returns (NFSExport) {
+    option (otterscale.api.feature) = {
+      name: "distributed-storage-enabled"
+    };
+  };
+
+  rpc DeleteNFSExport(DeleteNFSExportRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "distributed-storage-enabled"
+    };
+  };
+
+  /*rpc GrantSubvolumeExportAccess(GrantSubvolumeExportAccessRequest) returns (google.protobuf.Empty) {
     option (otterscale.api.feature) = {
       name: "distributed-storage-enabled"
     };
@@ -145,9 +175,9 @@ service StorageService {
     option (otterscale.api.feature) = {
       name: "distributed-storage-enabled"
     };
-  };
+  };*/
 
-  rpc CreateSubvolumeSnapshot(CreateSubvolumeSnapshotRequest) returns (Subvolume.Snapshot) {
+  /*rpc CreateSubvolumeSnapshot(CreateSubvolumeSnapshotRequest) returns (Subvolume.Snapshot) {
     option (otterscale.api.feature) = {
       name: "distributed-storage-enabled"
     };
@@ -157,7 +187,7 @@ service StorageService {
     option (otterscale.api.feature) = {
       name: "distributed-storage-enabled"
     };
-  };
+  };*/
 
   rpc ListSubvolumeGroups(ListSubvolumeGroupsRequest) returns (ListSubvolumeGroupsResponse) {
     option (otterscale.api.feature) = {
@@ -310,10 +340,10 @@ message Pool {
   string name = 2;
   bool updating = 3;
   Type type = 11;
-  bool ec_overwrites = 21;      // erasure
-  uint64 data_chunks = 22;      // erasure k
-  uint64 coding_chunks = 23;    // erasure m
-  uint64 replicated_size = 31;  // replicated
+  bool ec_overwrites = 21; // erasure
+  uint64 data_chunks = 22; // erasure k
+  uint64 coding_chunks = 23; // erasure m
+  uint64 replicated_size = 31; // replicated
   uint64 quota_bytes = 41;
   uint64 quota_objects = 42;
   uint64 used_bytes = 43;
@@ -355,32 +385,133 @@ message Volume {
   google.protobuf.Timestamp created_at = 11;
 }
 
+message SubvolumeInfo {
+  enum SubvolumeState  {
+    SUBVOLUME_STATE_UNSPECIFIED = 0;
+    SUBVOLUME_STATE_INIT = 1;
+    SUBVOLUME_STATE_PENDING = 2;
+    SUBVOLUME_STATE_IN_PROGRESS = 3;
+    SUBVOLUME_STATE_FAILED = 4;
+    SUBVOLUME_STATE_COMPLETE = 5;
+    SUBVOLUME_STATE_CANCELED = 6;
+    SUBVOLUME_STATE_SNAPSHOT_RETAINED = 7;
+  }
+  enum Feature {
+    FEATURE_UNSPECIFIED = 0;
+    FEATURE_SNAPSHOT_CLONE = 1;
+    FEATURE_SNAPSHOT_AUTOPROTECT = 2;
+    FEATURE_SNAPSHOT_RETENTION = 3;
+  }
+  string path = 1;
+  SubvolumeState state = 2;
+  uint32 uid = 3 [features.field_presence = EXPLICIT];
+  uint32 gid = 4 [features.field_presence = EXPLICIT];
+  uint32 mode = 5 [features.field_presence = EXPLICIT];  
+  double bytes_percent = 6 [features.field_presence = EXPLICIT];
+  uint64 bytes_used = 7;
+  uint64 bytes_quota = 8 [features.field_presence = EXPLICIT];
+  string data_pool = 9;
+  string pool_namespace = 10;
+  google.protobuf.Timestamp atime = 11;
+  google.protobuf.Timestamp mtime = 12;
+  google.protobuf.Timestamp ctime = 13;
+  google.protobuf.Timestamp created_at = 14;
+  repeated Feature features = 15;
+}
+
 message Subvolume {
-  message Snapshot {
-    string name = 1;
-    string has_pending_clones = 2;
-    google.protobuf.Timestamp created_at = 11;
-  }
-  message Export {
-    string ip = 1;
-    string path = 2;
-    repeated string clients = 3;
-    string command = 11;
-  }
-  string name = 1;
+  string volume_name = 1;
+  string group_name = 2;
+  string subvolume_name = 3;
+  SubvolumeInfo info = 4;
+}
+
+message SubvolumeListItem {
+  string subvolume_name = 1;
+  SubvolumeInfo info = 2;
+}
+
+enum NfsProtocol {
+  NFS_PROTOCOL_UNSPECIFIED = 0;
+  NFS_PROTOCOL_V3 = 1;
+  NFS_PROTOCOL_V4 = 2;
+}
+
+enum NfsAccessType {
+  NFS_ACCESS_TYPE_UNSPECIFIED = 0;
+  NFS_ACCESS_TYPE_NONE = 1;
+  NFS_ACCESS_TYPE_RW = 2;
+  NFS_ACCESS_TYPE_RO = 3;
+}
+
+enum NfsSquash {
+  NFS_SQUASH_UNSPECIFIED = 0;
+  NFS_SQUASH_NONE = 1;
+  NFS_SQUASH_ROOT = 2;
+  NFS_SQUASH_ALL = 3;
+  NFS_SQUASH_ROOTID = 4;
+}
+
+enum NfsTransport {
+  NFS_TRANSPORT_UNSPECIFIED = 0;
+  NFS_TRANSPORT_TCP = 1;
+  NFS_TRANSPORT_UDP = 2;
+}
+
+enum NfsSecType {
+  NFS_SECTYPE_UNSPECIFIED = 0;
+  NFS_SECTYPE_SYS = 1;
+  NFS_SECTYPE_NONE = 2;
+  NFS_SECTYPE_KRB5 = 3;
+  NFS_SECTYPE_KRB5I = 4;
+  NFS_SECTYPE_KRB5P = 5;
+}
+
+message NfsClientRule {
+  repeated string address = 1; // CIDR / IP / hostname
+  NfsAccessType access_type = 2; // optional if you want inheritance
+  NfsSquash squash = 3; // optional if you want inheritance
+}
+
+message CephFsTarget {
+  string file_system_name = 1;
+  string group_name = 2;
+  string subvolume_name = 3;
+}
+
+message NFSExportSpec {
+  string cluster_id = 1;
+  CephFsTarget cephfs = 2;
+  bool enable_security_label = 3;
+  repeated NfsProtocol protocols = 4; // empty is all secect
+  string pseudo_path = 5;
+  NfsAccessType access_type = 6;
+  NfsSquash squash = 7;
+  repeated NfsTransport transports = 8; //empty is all secect
+  repeated NfsClientRule clients = 9;
+  repeated NfsSecType sectypes = 10;
+}
+
+message NFSExportInfo {
+  bool enable_security_label = 1;
   string path = 2;
-  string mode = 11;  // oct
-  string pool_name = 12;
-  uint64 quota_bytes = 21;
-  uint64 used_bytes = 22;
-  google.protobuf.Timestamp created_at = 31;
-  Export export = 51;
-  repeated Snapshot snapshots = 101;
+  repeated NfsProtocol protocols = 3; 
+  string pseudo_path = 4;
+  NfsAccessType access_type = 5;
+  NfsSquash squash = 6;
+  repeated NfsTransport transports = 7; 
+  repeated NfsClientRule clients = 8;
+  repeated NfsSecType sectypes = 9;
+}
+
+message NFSExport {
+  NFSExportSpec spec = 1; 
+  NFSExportInfo info = 2;
 }
 
 message SubvolumeGroup {
   string name = 1;
-  string mode = 11;  // oct
+  string mode = 11; // oct
   string pool_name = 12;
   uint64 quota_bytes = 21;
   uint64 used_bytes = 22;
@@ -504,8 +635,8 @@ message CreatePoolRequest {
   reserved 2;
   string pool_name = 3;
   Pool.Type type = 11;
-  bool ec_overwrites = 21;      // erasure
-  uint64 replicated_size = 31;  // replicated
+  bool ec_overwrites = 21; // erasure
+  uint64 replicated_size = 31; // replicated
   uint64 quota_bytes = 41;
   uint64 quota_objects = 42;
   repeated Pool.Application applications = 61;
@@ -631,8 +762,19 @@ message CreateSubvolumeRequest {
   string volume_name = 3;
   string group_name = 4;
   string subvolume_name = 5;
-  uint64 quota_bytes = 11;
-  bool export = 101;
+  uint64 size = 6 [features.field_presence = EXPLICIT];
+  uint32 uid = 7 [features.field_presence = EXPLICIT];
+  uint32 gid = 8 [features.field_presence = EXPLICIT];
+  uint32 mode = 9 [features.field_presence = EXPLICIT];
+  string pool_layout = 10 [features.field_presence = EXPLICIT];
+  bool is_namespace_isolated = 11 [features.field_presence = EXPLICIT];
+}
+
+message GetSubvolumeRequest {
+  string scope = 1;
+  string volume_name = 2;
+  string group_name = 3;
+  string subvolume_name = 4;
 }
 
 message UpdateSubvolumeRequest {
@@ -641,7 +783,8 @@ message UpdateSubvolumeRequest {
   string volume_name = 3;
   string group_name = 4;
   string subvolume_name = 5;
-  uint64 quota_bytes = 11;
+  uint64 new_size = 6;
+  bool no_shrink = 7 [features.field_presence = EXPLICIT];
 }
 
 message DeleteSubvolumeRequest {
@@ -650,6 +793,7 @@ message DeleteSubvolumeRequest {
   string volume_name = 3;
   string group_name = 4;
   string subvolume_name = 5;
+  bool is_force = 6   [features.field_presence = EXPLICIT];
 }
 
 message GrantSubvolumeExportAccessRequest {
@@ -850,4 +994,61 @@ message ValidateSMBUserResponse {
     ENTITY_TYPE_GROUP = 2;
   }
   EntityType entity_type = 1;
+}
+
+message ListNFSExportsRequest {
+  string scope = 1;
+  string cluster_id = 2;
+}
+
+message ListNFSExportsResponse {
+  repeated NFSExport nfs_exports = 1;
+}
+
+message CreateNFSExportRequest {
+  string scope = 1;
+  string cluster_id = 2;
+  string file_system_name = 3;
+  string group_name = 4;
+  string subvolume_name = 5;
+  bool enable_security_label = 6;
+  bool enable_protocol_nfs_v3 = 7;
+  bool enable_protocol_nfs_v4 = 8;
+  string pseudo_path = 9;
+  NfsAccessType access_type = 10;
+  NfsSquash squash = 11;
+  bool enable_transport_udp = 12;
+  bool enable_transport_tcp = 13;
+  repeated NfsClientRule clients = 14;
+  repeated NfsSecType sectypes = 15;
+}
+
+message GetNFSExportRequest {
+  string scope = 1;
+  string cluster_id = 2;
+  string pseudo_path = 3;
+}
+
+message UpdateNFSExportRequest {
+  string scope = 1;
+  string cluster_id = 2;
+  string file_system_name = 3;
+  string group_name = 4;
+  string subvolume_name = 5;
+  bool enable_security_label = 6;
+  bool enable_protocol_nfs_v3 = 7;
+  bool enable_protocol_nfs_v4 = 8;
+  string pseudo_path = 9;
+  NfsAccessType access_type = 10;
+  NfsSquash squash = 11;
+  bool enable_transport_udp = 12;
+  bool enable_transport_tcp = 13;
+  repeated NfsClientRule clients = 14;
+  repeated NfsSecType sectypes = 15;
+}
+
+message DeleteNFSExportRequest {
+  string scope = 1;
+  string cluster_id = 2;
+  string pseudo_path = 3;
 }

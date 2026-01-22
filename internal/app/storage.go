@@ -244,7 +244,51 @@ func (s *StorageService) ListSubvolumes(ctx context.Context, req *pb.ListSubvolu
 }
 
 func (s *StorageService) CreateSubvolume(ctx context.Context, req *pb.CreateSubvolumeRequest) (*pb.Subvolume, error) {
-	subvolume, err := s.file.CreateSubvolume(ctx, req.GetScope(), req.GetVolumeName(), req.GetSubvolumeName(), req.GetGroupName(), req.GetQuotaBytes(), req.GetExport())
+	var (
+		sizePtr *file.Bytes
+		uidPtr  *uint32
+		gidPtr  *uint32
+		modePtr *file.UnixMode
+		poolPtr *string
+		nsPtr   *bool
+	)
+
+	if req.HasSize() {
+		v := file.Bytes(req.GetSize())
+		sizePtr = &v
+	}
+	if req.HasUid() {
+		v := req.GetUid()
+		uidPtr = &v
+	}
+	if req.HasGid() {
+		v := req.GetGid()
+		gidPtr = &v
+	}
+	if req.HasMode() {
+		v := file.UnixMode(req.GetMode())
+		modePtr = &v
+	}
+	if req.HasPoolLayout() {
+		v := req.GetPoolLayout()
+		poolPtr = &v
+	}
+	if req.HasIsNamespaceIsolated() {
+		v := req.GetIsNamespaceIsolated()
+		nsPtr = &v
+	}
+
+	subvolume, err := s.file.CreateSubvolume(ctx, req.GetScope(), req.GetVolumeName(), req.GetGroupName(), req.GetSubvolumeName(), sizePtr, uidPtr, gidPtr, modePtr, poolPtr, nsPtr)
+	if err != nil {
+		return nil, err
+	}
+
+	resp := toProtoSubvolume(subvolume)
+	return resp, nil
+}
+
+func (s *StorageService) GetSubvolume(ctx context.Context, req *pb.GetSubvolumeRequest) (*pb.Subvolume, error) {
+	subvolume, err := s.file.GetSubvolume(ctx, req.GetScope(), req.GetVolumeName(), req.GetGroupName(), req.GetSubvolumeName())
 	if err != nil {
 		return nil, err
 	}
@@ -254,7 +298,13 @@ func (s *StorageService) CreateSubvolume(ctx context.Context, req *pb.CreateSubv
 }
 
 func (s *StorageService) UpdateSubvolume(ctx context.Context, req *pb.UpdateSubvolumeRequest) (*pb.Subvolume, error) {
-	subvolume, err := s.file.UpdateSubvolume(ctx, req.GetScope(), req.GetVolumeName(), req.GetSubvolumeName(), req.GetGroupName(), req.GetQuotaBytes())
+	var noShrinkPtr *bool
+	if req.HasNoShrink() {
+		v := req.GetNoShrink()
+		noShrinkPtr = &v
+	}
+
+	subvolume, err := s.file.UpdateSubvolume(ctx, req.GetScope(), req.GetVolumeName(), req.GetGroupName(), req.GetSubvolumeName(), file.Bytes(req.GetNewSize()), noShrinkPtr)
 	if err != nil {
 		return nil, err
 	}
@@ -264,7 +314,12 @@ func (s *StorageService) UpdateSubvolume(ctx context.Context, req *pb.UpdateSubv
 }
 
 func (s *StorageService) DeleteSubvolume(ctx context.Context, req *pb.DeleteSubvolumeRequest) (*emptypb.Empty, error) {
-	if err := s.file.DeleteSubvolume(ctx, req.GetScope(), req.GetVolumeName(), req.GetSubvolumeName(), req.GetGroupName()); err != nil {
+	var isForcePtr *bool
+	if req.HasIsForce() {
+		v := req.GetIsForce()
+		isForcePtr = &v
+	}
+	if err := s.file.DeleteSubvolume(ctx, req.GetScope(), req.GetVolumeName(), req.GetGroupName(), req.GetSubvolumeName(), isForcePtr); err != nil {
 		return nil, err
 	}
 
@@ -272,7 +327,7 @@ func (s *StorageService) DeleteSubvolume(ctx context.Context, req *pb.DeleteSubv
 	return resp, nil
 }
 
-func (s *StorageService) GrantSubvolumeExportAccess(ctx context.Context, req *pb.GrantSubvolumeExportAccessRequest) (*emptypb.Empty, error) {
+/*func (s *StorageService) GrantSubvolumeExportAccess(ctx context.Context, req *pb.GrantSubvolumeExportAccessRequest) (*emptypb.Empty, error) {
 	if err := s.file.GrantSubvolumeClient(ctx, req.GetScope(), req.GetSubvolumeName(), req.GetClientIp()); err != nil {
 		return nil, err
 	}
@@ -288,9 +343,9 @@ func (s *StorageService) RevokeSubvolumeExportAccess(ctx context.Context, req *p
 
 	resp := &emptypb.Empty{}
 	return resp, nil
-}
+}*/
 
-func (s *StorageService) CreateSubvolumeSnapshot(ctx context.Context, req *pb.CreateSubvolumeSnapshotRequest) (*pb.Subvolume_Snapshot, error) {
+/*func (s *StorageService) CreateSubvolumeSnapshot(ctx context.Context, req *pb.CreateSubvolumeSnapshotRequest) (*pb.Subvolume_Snapshot, error) {
 	snapshot, err := s.file.CreateSubvolumeSnapshot(ctx, req.GetScope(), req.GetVolumeName(), req.GetSubvolumeName(), req.GetGroupName(), req.GetSnapshotName())
 	if err != nil {
 		return nil, err
@@ -298,16 +353,16 @@ func (s *StorageService) CreateSubvolumeSnapshot(ctx context.Context, req *pb.Cr
 
 	resp := toProtoSubvolumeSnapshot(snapshot)
 	return resp, nil
-}
+}*/
 
-func (s *StorageService) DeleteSubvolumeSnapshot(ctx context.Context, req *pb.DeleteSubvolumeSnapshotRequest) (*emptypb.Empty, error) {
+/*func (s *StorageService) DeleteSubvolumeSnapshot(ctx context.Context, req *pb.DeleteSubvolumeSnapshotRequest) (*emptypb.Empty, error) {
 	if err := s.file.DeleteSubvolumeSnapshot(ctx, req.GetScope(), req.GetVolumeName(), req.GetSubvolumeName(), req.GetGroupName(), req.GetSnapshotName()); err != nil {
 		return nil, err
 	}
 
 	resp := &emptypb.Empty{}
 	return resp, nil
-}
+}*/
 
 func (s *StorageService) ListSubvolumeGroups(ctx context.Context, req *pb.ListSubvolumeGroupsRequest) (*pb.ListSubvolumeGroupsResponse, error) {
 	groups, err := s.file.ListSubvolumeGroups(ctx, req.GetScope(), req.GetVolumeName())
@@ -880,35 +935,91 @@ func toProtoVolume(v *file.Volume) *pb.Volume {
 }
 
 func toProtoSubvolumes(ss []file.Subvolume) []*pb.Subvolume {
-	ret := []*pb.Subvolume{}
-
+	ret := make([]*pb.Subvolume, 0, len(ss))
 	for i := range ss {
-		ret = append(ret, toProtoSubvolume(&ss[i]))
+		if p := toProtoSubvolume(&ss[i]); p != nil {
+			ret = append(ret, p)
+		}
 	}
-
 	return ret
 }
 
 func toProtoSubvolume(s *file.Subvolume) *pb.Subvolume {
+	if s == nil {
+		return nil
+	}
 	ret := &pb.Subvolume{}
-	ret.SetName(s.Name)
-	ret.SetPath(s.Path)
-	ret.SetMode(s.Mode)
-	ret.SetPoolName(s.PoolName)
-	ret.SetQuotaBytes(s.Quota)
-	ret.SetUsedBytes(s.Used)
-	ret.SetCreatedAt(timestamppb.New(s.CreatedAt))
+	ret.SetVolumeName(s.Key.VolumeName)
+	ret.SetGroupName(s.Key.GroupName)
+	ret.SetSubvolumeName(s.Key.SubvolumeName)
 
-	if s.Export != nil {
-		ret.SetExport(toProtoSubvolumeExport(s.Export))
+	info := &pb.SubvolumeInfo{}
+	info.SetPath(s.Info.Path)
+	info.SetState(cephStateToPB(string(s.Info.State)))
+
+	info.SetUid(s.Info.UID)
+	info.SetGid(s.Info.GID)
+	info.SetMode(uint32(s.Info.Mode))
+
+	info.SetBytesPercent(s.Info.BytesPercent)
+	info.SetBytesUsed(uint64(s.Info.BytesUsed))
+	if s.Info.BytesQuota != nil {
+		info.SetBytesQuota(uint64(*s.Info.BytesQuota))
 	}
 
-	ret.SetSnapshots(toProtoSubvolumeSnapshots(s.Snapshots))
+	info.SetDataPool(s.Info.DataPool)
+	info.SetPoolNamespace(s.Info.PoolNamespace)
 
+	info.SetAtime(timestamppb.New(s.Info.Atime))
+	info.SetMtime(timestamppb.New(s.Info.Mtime))
+	info.SetCtime(timestamppb.New(s.Info.Ctime))
+	info.SetCreatedAt(timestamppb.New(s.Info.CreatedAt))
+
+	info.SetFeatures(toProtoSubvolumeFeatures(s.Info.Features))
+
+	ret.SetInfo(info)
 	return ret
 }
 
-func toProtoSubvolumeExport(e *file.SubvolumeExport) *pb.Subvolume_Export {
+func cephStateToPB(s string) pb.SubvolumeInfo_SubvolumeState {
+	switch strings.ToLower(strings.TrimSpace(s)) {
+	case "init":
+		return pb.SubvolumeInfo_SUBVOLUME_STATE_INIT
+	case "pending":
+		return pb.SubvolumeInfo_SUBVOLUME_STATE_PENDING
+	case "in_progress", "in-progress", "inprogress":
+		return pb.SubvolumeInfo_SUBVOLUME_STATE_IN_PROGRESS
+	case "failed", "fail", "error":
+		return pb.SubvolumeInfo_SUBVOLUME_STATE_FAILED
+	case "complete", "completed", "ready":
+		return pb.SubvolumeInfo_SUBVOLUME_STATE_COMPLETE
+	case "canceled", "cancelled", "cancel":
+		return pb.SubvolumeInfo_SUBVOLUME_STATE_CANCELED
+	case "snapshot_retained", "snapshot-retained":
+		return pb.SubvolumeInfo_SUBVOLUME_STATE_SNAPSHOT_RETAINED
+	default:
+		return pb.SubvolumeInfo_SUBVOLUME_STATE_UNSPECIFIED
+	}
+}
+
+func toProtoSubvolumeFeatures(fs []file.Feature) []pb.SubvolumeInfo_Feature {
+	ret := make([]pb.SubvolumeInfo_Feature, 0, len(fs))
+	for _, f := range fs {
+		switch strings.ToLower(string(f)) {
+		case "snapshot-clone":
+			ret = append(ret, pb.SubvolumeInfo_Feature(pb.SubvolumeInfo_FEATURE_SNAPSHOT_CLONE))
+		case "snapshot-autoprotect":
+			ret = append(ret, pb.SubvolumeInfo_Feature(pb.SubvolumeInfo_FEATURE_SNAPSHOT_AUTOPROTECT))
+		case "snapshot-retention":
+			ret = append(ret, pb.SubvolumeInfo_Feature(pb.SubvolumeInfo_FEATURE_SNAPSHOT_RETENTION))
+		default:
+			ret = append(ret, pb.SubvolumeInfo_Feature(pb.SubvolumeInfo_FEATURE_UNSPECIFIED))
+		}
+	}
+	return ret
+}
+
+/*func toProtoSubvolumeExport(e *file.SubvolumeExport) *pb.Subvolume_Export {
 	if len(e.Clients) == 0 {
 		return nil
 	}
@@ -919,9 +1030,9 @@ func toProtoSubvolumeExport(e *file.SubvolumeExport) *pb.Subvolume_Export {
 	ret.SetClients(e.Clients)
 	ret.SetCommand(e.Command)
 	return ret
-}
+}*/
 
-func toProtoSubvolumeSnapshots(ss []file.SubvolumeSnapshot) []*pb.Subvolume_Snapshot {
+/*func toProtoSubvolumeSnapshots(ss []file.SubvolumeSnapshot) []*pb.Subvolume_Snapshot {
 	ret := []*pb.Subvolume_Snapshot{}
 
 	for i := range ss {
@@ -937,7 +1048,7 @@ func toProtoSubvolumeSnapshot(s *file.SubvolumeSnapshot) *pb.Subvolume_Snapshot 
 	ret.SetHasPendingClones(s.HasPendingClones)
 	ret.SetCreatedAt(timestamppb.New(s.CreatedAt))
 	return ret
-}
+}*/
 
 func toProtoSubvolumeGroups(ss []file.SubvolumeGroup) []*pb.SubvolumeGroup {
 	ret := []*pb.SubvolumeGroup{}
@@ -1240,3 +1351,164 @@ func toProtoEntityType(et smb.EntityType) pb.ValidateSMBUserResponse_EntityType 
 		return pb.ValidateSMBUserResponse_ENTITY_TYPE_UNKNOWN
 	}
 }
+
+/*func (s *StorageService) ListNFSExports(ctx context.Context, req *pb.ListNFSExportsRequest) (*pb.ListNFSExportsResponse, error) {
+	exps, err := s.file.ListNFSExports(ctx, req.GetScope(), req.GetClusterId())
+	if err != nil {
+		return nil, err
+	}
+
+	out := make([]*pb.NFSExport, 0, len(exps))
+	for i := range exps {
+		out = append(out, toProtoNFSExport(&exps[i]))
+	}
+
+	return &pb.ListNFSExportsResponse{
+		NFSExports: out,
+	}, nil
+}
+
+func (s *StorageService) CreateNFSExport(ctx context.Context, req *pb.CreateNFSExportRequest) (*pb.NFSExport, error) {
+	exp, err := s.file.CreateNFSExport(ctx, req.GetScope(), req.GetClusterId(), req.GetFileSystemName(), req.GetGroupName(), req.GetSubvolumeName(), req.GetPseudoPath(), req.GetEnableSecurityLabel(), req.GetAccessType(), req.GetSquash(), req.GetEnableProtocolNfsV3(), req.GetEnableProtocolNfsV4(), req.GetEnableTransportUdp(), req.GetEnableTransportTcp(), req.GetClients(), req.GetSectypes())
+	if err != nil {
+		return nil, err
+	}
+	return toProtoNFSExport(exp), nil
+}
+
+func (s *StorageService) GetNFSExport(ctx context.Context, req *pb.GetNFSExportRequest) (*pb.NfsExport, error) {
+
+	exp, err := s.file.GetNFSExport(ctx, req.GetScope(), req.GetClusterId(), req.GetPseudoPath())
+	if err != nil {
+		return nil, err
+	}
+	return toProtoNFSExport(exp), nil
+}
+
+func (s *StorageService) UpdateNFSExport(ctx context.Context, req *pb.UpdateNFSExportRequest) (*pb.NFSExport, error) {
+
+	exp, err := s.file.UpdateNFSExport(ctx, req.GetScope(), req.GetClusterId(), req.GetFileSystemName(), req.GetGroupName(), req.GetSubvolumeName(), req.GetPseudoPath(), req.GetEnableSecurityLabel(), req.GetAccessType(), req.GetSquash(), req.GetEnableProtocolNfsV3(), req.GetEnableProtocolNfsV4(), req.GetEnableTransportUdp(), req.GetEnableTransportTcp(), req.GetClients(), req.GetSectypes())
+	if err != nil {
+		return nil, err
+	}
+	return toProtoNFSExport(exp), nil
+}
+
+func (s *StorageService) DeleteNFSExport(ctx context.Context, req *pb.DeleteNfsExportRequest) (*emptypb.Empty, error) {
+	if err := s.file.DeleteNFSExport(ctx, req.GetScope(), req.GetClusterId(), req.GetPseudoPath()); err != nil {
+		return nil, err
+	}
+	return &emptypb.Empty{}, nil
+}
+
+func toFileAccessType(v pb.NfsAccessType) file.AccessType {
+	switch v {
+	case pb.NfsAccessType_NFS_ACCESS_TYPE_RW:
+		return file.AccessTypeRW
+	case pb.NfsAccessType_NFS_ACCESS_TYPE_RO:
+		return file.AccessTypeRO
+	case pb.NfsAccessType_NFS_ACCESS_TYPE_MDONLY:
+		return file.AccessTypeMDOnly
+	default:
+		return file.AccessTypeUnspecified
+	}
+}
+
+func toFileSquash(v pb.NfsSquash) file.Squash {
+	switch v {
+	case pb.NfsSquash_NFS_SQUASH_NONE:
+		return file.SquashNone
+	case pb.NfsSquash_NFS_SQUASH_ROOT:
+		return file.SquashRoot
+	case pb.NfsSquash_NFS_SQUASH_ALL:
+		return file.SquashAll
+	case pb.NfsSquash_NFS_SQUASH_ROOTID:
+		return file.SquashRootID
+	default:
+		return file.SquashUnspecified
+	}
+}
+
+func toFileClients(v []*pb.NfsClientRule) []file.Client {
+	out := make([]file.Client, 0, len(v))
+	for _, r := range v {
+		if r == nil {
+			continue
+		}
+		out = append(out, file.Client{
+			Addresses:  []string{r.GetAddress()},
+			AccessType: toFileAccessType(r.GetAccessType()),
+			Squash:     toFileSquash(r.GetSquash()),
+		})
+	}
+	return out
+}
+
+func toProtoNfsExport(e *file.NFSExport) *pb.NFSExport {
+	if e == nil {
+		return nil
+	}
+	return &pb.NFSExport{
+		Spec: &pb.NFSExportSpec{
+			ClusterId: e.ClusterID,
+			Cephfs: &pb.CephFsTarget{
+				FileSystemName: e.FileSystemName,
+				GroupName:      e.GroupName,
+				SubName:        e.SubName,
+			},
+			EnableSecurityLabel: e.EnableSecurityLabel,
+			Protocols:           toProtoNfsProtocols(e.Protocols),
+			PseudoPath:          e.PseudoPath,
+			AccessType:          pb.NfsAccessType(e.AccessType),
+			Squash:              pb.NfsSquash(e.Squash),
+			Transports:          toProtoNfsTransports(e.Transports),
+			Clients:             toProtoNfsClientRules(e.Clients),
+			Sectypes:            toProtoNfsSecTypes(e.SecTypes),
+		},
+		Info: &pb.NFSExportInfo{
+			EnableSecurityLabel: e.EnableSecurityLabel,
+			Path:                e.Path,
+			Protocols:           toProtoNfsProtocols(e.Protocols),
+			PseudoPath:          e.PseudoPath,
+			AccessType:          pb.NfsAccessType(e.AccessType),
+			Squash:              pb.NfsSquash(e.Squash),
+			Transports:          toProtoNfsTransports(e.Transports),
+			Clients:             toProtoNfsClientRules(e.Clients),
+			Sectypes:            toProtoNfsSecTypes(e.SecTypes),
+		},
+	}
+}
+
+func toProtoNfsProtocols(v []file.NFSProtocol) []pb.NfsProtocol {
+	out := make([]pb.NfsProtocol, 0, len(v))
+	for _, x := range v {
+		out = append(out, pb.NfsProtocol(x))
+	}
+	return out
+}
+func toProtoNfsTransports(v []file.NFSTransport) []pb.NfsTransport {
+	out := make([]pb.NfsTransport, 0, len(v))
+	for _, x := range v {
+		out = append(out, pb.NfsTransport(x))
+	}
+	return out
+}
+func toProtoNfsSecTypes(v []file.NFSSecType) []pb.NfsSecType {
+	out := make([]pb.NfsSecType, 0, len(v))
+	for _, x := range v {
+		out = append(out, pb.NfsSecType(x))
+	}
+	return out
+}
+func toProtoNfsClientRules(v []file.NFSClientRule) []*pb.NfsClientRule {
+	out := make([]*pb.NfsClientRule, 0, len(v))
+	for i := range v {
+		r := v[i]
+		out = append(out, &pb.NfsClientRule{
+			Address:    r.Address,
+			AccessType: pb.NfsAccessType(r.AccessType),
+			Squash:     pb.NfsSquash(r.Squash),
+		})
+	}
+	return out
+}*/

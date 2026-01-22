@@ -222,6 +222,41 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/otterscale.application.v1.ListConfigMapsResponse'
+  /otterscale.application.v1.ApplicationService/ListJobs:
+    post:
+      tags:
+        - ApplicationService
+      summary: ListJobs
+      operationId: ApplicationService_ListJobs
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.application.v1.ListJobsRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/otterscale.application.v1.ListJobsResponse'
   /otterscale.application.v1.ApplicationService/ListNamespaces:
     post:
       tags:
@@ -4214,41 +4249,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/otterscale.storage.v1.SubvolumeGroup'
-  /otterscale.storage.v1.StorageService/CreateSubvolumeSnapshot:
-    post:
-      tags:
-        - StorageService
-      summary: CreateSubvolumeSnapshot
-      operationId: StorageService_CreateSubvolumeSnapshot
-      parameters:
-        - name: Connect-Protocol-Version
-          in: header
-          required: true
-          schema:
-            $ref: '#/components/schemas/connect-protocol-version'
-        - name: Connect-Timeout-Ms
-          in: header
-          schema:
-            $ref: '#/components/schemas/connect-timeout-header'
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/otterscale.storage.v1.CreateSubvolumeSnapshotRequest'
-        required: true
-      responses:
-        default:
-          description: Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/connect.error'
-        "200":
-          description: Success
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/otterscale.storage.v1.Subvolume.Snapshot'
   /otterscale.storage.v1.StorageService/CreateUser:
     post:
       tags:
@@ -4529,41 +4529,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/google.protobuf.Empty'
-  /otterscale.storage.v1.StorageService/DeleteSubvolumeSnapshot:
-    post:
-      tags:
-        - StorageService
-      summary: DeleteSubvolumeSnapshot
-      operationId: StorageService_DeleteSubvolumeSnapshot
-      parameters:
-        - name: Connect-Protocol-Version
-          in: header
-          required: true
-          schema:
-            $ref: '#/components/schemas/connect-protocol-version'
-        - name: Connect-Timeout-Ms
-          in: header
-          schema:
-            $ref: '#/components/schemas/connect-timeout-header'
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/otterscale.storage.v1.DeleteSubvolumeSnapshotRequest'
-        required: true
-      responses:
-        default:
-          description: Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/connect.error'
-        "200":
-          description: Success
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/google.protobuf.Empty'
   /otterscale.storage.v1.StorageService/DeleteUser:
     post:
       tags:
@@ -4669,6 +4634,41 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/otterscale.storage.v1.DoSMARTResponse'
+  /otterscale.storage.v1.StorageService/GetSubvolume:
+    post:
+      tags:
+        - StorageService
+      summary: GetSubvolume
+      operationId: StorageService_GetSubvolume
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.storage.v1.GetSubvolumeRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/otterscale.storage.v1.Subvolume'
   /otterscale.storage.v1.StorageService/GrantSubvolumeExportAccess:
     post:
       tags:
@@ -5857,9 +5857,11 @@ components:
         restarts:
           type: string
           title: restarts
-        lastCondition:
-          title: last_condition
-          $ref: '#/components/schemas/otterscale.application.v1.Application.Condition'
+        conditions:
+          type: array
+          items:
+            $ref: '#/components/schemas/otterscale.application.v1.Application.Condition'
+          title: conditions
         createdAt:
           title: created_at
           $ref: '#/components/schemas/google.protobuf.Timestamp'
@@ -6107,6 +6109,77 @@ components:
           title: name
       title: GetApplicationRequest
       additionalProperties: false
+    otterscale.application.v1.Job:
+      type: object
+      properties:
+        name:
+          type: string
+          title: name
+        namespace:
+          type: string
+          title: namespace
+        active:
+          type: integer
+          title: active
+          format: int32
+        ready:
+          type: integer
+          title: ready
+          format: int32
+        succeeded:
+          type: integer
+          title: succeeded
+          format: int32
+        failed:
+          type: integer
+          title: failed
+          format: int32
+        terminating:
+          type: integer
+          title: terminating
+          format: int32
+        conditions:
+          type: array
+          items:
+            $ref: '#/components/schemas/otterscale.application.v1.Job.Condition'
+          title: conditions
+        startedAt:
+          title: started_at
+          $ref: '#/components/schemas/google.protobuf.Timestamp'
+        completedAt:
+          title: completed_at
+          $ref: '#/components/schemas/google.protobuf.Timestamp'
+        createdAt:
+          title: created_at
+          $ref: '#/components/schemas/google.protobuf.Timestamp'
+        deletedAt:
+          title: deleted_at
+          $ref: '#/components/schemas/google.protobuf.Timestamp'
+      title: Job
+      additionalProperties: false
+    otterscale.application.v1.Job.Condition:
+      type: object
+      properties:
+        type:
+          type: string
+          title: type
+        status:
+          type: string
+          title: status
+        reason:
+          type: string
+          title: reason
+        message:
+          type: string
+          title: message
+        probedAt:
+          title: probed_at
+          $ref: '#/components/schemas/google.protobuf.Timestamp'
+        transitionedAt:
+          title: transitioned_at
+          $ref: '#/components/schemas/google.protobuf.Timestamp'
+      title: Condition
+      additionalProperties: false
     otterscale.application.v1.ListApplicationsRequest:
       type: object
       properties:
@@ -6148,6 +6221,27 @@ components:
             $ref: '#/components/schemas/otterscale.application.v1.ConfigMap'
           title: config_maps
       title: ListConfigMapsResponse
+      additionalProperties: false
+    otterscale.application.v1.ListJobsRequest:
+      type: object
+      properties:
+        scope:
+          type: string
+          title: scope
+        namespace:
+          type: string
+          title: namespace
+      title: ListJobsRequest
+      additionalProperties: false
+    otterscale.application.v1.ListJobsResponse:
+      type: object
+      properties:
+        jobs:
+          type: array
+          items:
+            $ref: '#/components/schemas/otterscale.application.v1.Job'
+          title: jobs
+      title: ListJobsResponse
       additionalProperties: false
     otterscale.application.v1.ListNamespacesRequest:
       type: object
@@ -7538,9 +7632,6 @@ components:
         name:
           type: string
           title: name
-        namespace:
-          type: string
-          title: namespace
         cpuCores:
           type: integer
           title: cpu_cores
@@ -7685,9 +7776,11 @@ components:
         persistentVolumeClaim:
           title: persistent_volume_claim
           $ref: '#/components/schemas/otterscale.application.v1.Application.PersistentVolumeClaim'
-        lastCondition:
-          title: last_condition
-          $ref: '#/components/schemas/otterscale.instance.v1.DataVolume.Condition'
+        conditions:
+          type: array
+          items:
+            $ref: '#/components/schemas/otterscale.instance.v1.DataVolume.Condition'
+          title: conditions
       title: DataVolume
       additionalProperties: false
     otterscale.instance.v1.DataVolume.Condition:
@@ -7731,6 +7824,13 @@ components:
         - TYPE_BLANK_IMAGE
         - TYPE_HTTP_URL
         - TYPE_EXISTING_PERSISTENT_VOLUME_CLAIM
+    otterscale.instance.v1.DataVolumeFilter:
+      type: string
+      title: DataVolumeFilter
+      enum:
+        - ALL
+        - BOOTABLE
+        - NON_BOOTABLE
     otterscale.instance.v1.DeleteDataVolumeRequest:
       type: object
       properties:
@@ -7751,9 +7851,6 @@ components:
         scope:
           type: string
           title: scope
-        namespace:
-          type: string
-          title: namespace
         name:
           type: string
           title: name
@@ -7886,9 +7983,6 @@ components:
         scope:
           type: string
           title: scope
-        namespace:
-          type: string
-          title: namespace
         name:
           type: string
           title: name
@@ -7914,9 +8008,6 @@ components:
         name:
           type: string
           title: name
-        namespace:
-          type: string
-          title: namespace
         cpuCores:
           type: integer
           title: cpu_cores
@@ -7943,9 +8034,9 @@ components:
         namespace:
           type: string
           title: namespace
-        bootImage:
-          type: boolean
-          title: boot_image
+        filter:
+          title: filter
+          $ref: '#/components/schemas/otterscale.instance.v1.DataVolumeFilter'
       title: ListDataVolumesRequest
       additionalProperties: false
     otterscale.instance.v1.ListDataVolumesResponse:
@@ -7964,9 +8055,6 @@ components:
         scope:
           type: string
           title: scope
-        namespace:
-          type: string
-          title: namespace
         includeClusterWide:
           type: boolean
           title: include_cluster_wide
@@ -8214,9 +8302,11 @@ components:
         createdAt:
           title: created_at
           $ref: '#/components/schemas/google.protobuf.Timestamp'
-        lastCondition:
-          title: last_condition
-          $ref: '#/components/schemas/otterscale.application.v1.Application.Condition'
+        conditions:
+          type: array
+          items:
+            $ref: '#/components/schemas/otterscale.application.v1.Application.Condition'
+          title: conditions
       title: Clone
       additionalProperties: false
     otterscale.instance.v1.VirtualMachine.Disk:
@@ -8294,9 +8384,11 @@ components:
         createdAt:
           title: created_at
           $ref: '#/components/schemas/google.protobuf.Timestamp'
-        lastCondition:
-          title: last_condition
-          $ref: '#/components/schemas/otterscale.application.v1.Application.Condition'
+        conditions:
+          type: array
+          items:
+            $ref: '#/components/schemas/otterscale.application.v1.Application.Condition'
+          title: conditions
       title: Restore
       additionalProperties: false
     otterscale.instance.v1.VirtualMachine.Snapshot:
@@ -8320,9 +8412,11 @@ components:
         createdAt:
           title: created_at
           $ref: '#/components/schemas/google.protobuf.Timestamp'
-        lastCondition:
-          title: last_condition
-          $ref: '#/components/schemas/otterscale.application.v1.Application.Condition'
+        conditions:
+          type: array
+          items:
+            $ref: '#/components/schemas/otterscale.application.v1.Application.Condition'
+          title: conditions
       title: Snapshot
       additionalProperties: false
     otterscale.machine.v1.AddMachineTagsRequest:
@@ -9667,7 +9761,46 @@ components:
           items:
             $ref: '#/components/schemas/otterscale.orchestrator.v1.Extension.Manifest'
           title: manifests
+        arguments:
+          type: object
+          title: arguments
+          additionalProperties:
+            title: value
+            $ref: '#/components/schemas/otterscale.orchestrator.v1.InstallOrUpgradeExtensionsRequest.ExtensionArguments'
       title: InstallOrUpgradeExtensionsRequest
+      additionalProperties: false
+    otterscale.orchestrator.v1.InstallOrUpgradeExtensionsRequest.ArgumentsEntry:
+      type: object
+      properties:
+        key:
+          type: string
+          title: key
+        value:
+          title: value
+          $ref: '#/components/schemas/otterscale.orchestrator.v1.InstallOrUpgradeExtensionsRequest.ExtensionArguments'
+      title: ArgumentsEntry
+      additionalProperties: false
+    otterscale.orchestrator.v1.InstallOrUpgradeExtensionsRequest.ExtensionArguments:
+      type: object
+      properties:
+        values:
+          type: object
+          title: values
+          additionalProperties:
+            type: string
+            title: value
+      title: ExtensionArguments
+      additionalProperties: false
+    otterscale.orchestrator.v1.InstallOrUpgradeExtensionsRequest.ExtensionArguments.ValuesEntry:
+      type: object
+      properties:
+        key:
+          type: string
+          title: key
+        value:
+          type: string
+          title: value
+      title: ValuesEntry
       additionalProperties: false
     otterscale.orchestrator.v1.ListExtensionsRequest:
       type: object
@@ -10603,15 +10736,27 @@ components:
         subvolumeName:
           type: string
           title: subvolume_name
-        quotaBytes:
+        size:
           type:
             - integer
             - string
-          title: quota_bytes
+          title: size
           format: int64
-        export:
+        uid:
+          type: integer
+          title: uid
+        gid:
+          type: integer
+          title: gid
+        mode:
+          type: integer
+          title: mode
+        poolLayout:
+          type: string
+          title: pool_layout
+        isNamespaceIsolated:
           type: boolean
-          title: export
+          title: is_namespace_isolated
       title: CreateSubvolumeRequest
       additionalProperties: false
     otterscale.storage.v1.CreateSubvolumeSnapshotRequest:
@@ -10744,6 +10889,9 @@ components:
         subvolumeName:
           type: string
           title: subvolume_name
+        isForce:
+          type: boolean
+          title: is_force
       title: DeleteSubvolumeRequest
       additionalProperties: false
     otterscale.storage.v1.DeleteSubvolumeSnapshotRequest:
@@ -10833,6 +10981,23 @@ components:
             type: string
           title: lines
       title: Output
+      additionalProperties: false
+    otterscale.storage.v1.GetSubvolumeRequest:
+      type: object
+      properties:
+        scope:
+          type: string
+          title: scope
+        volumeName:
+          type: string
+          title: volume_name
+        groupName:
+          type: string
+          title: group_name
+        subvolumeName:
+          type: string
+          title: subvolume_name
+      title: GetSubvolumeRequest
       additionalProperties: false
     otterscale.storage.v1.GrantSubvolumeExportAccessRequest:
       type: object
@@ -11099,7 +11264,7 @@ components:
         subvolumes:
           type: array
           items:
-            $ref: '#/components/schemas/otterscale.storage.v1.Subvolume'
+            $ref: '#/components/schemas/otterscale.storage.v1.SubvolumeListItem'
           title: subvolumes
       title: ListSubvolumesResponse
       additionalProperties: false
@@ -11500,76 +11665,13 @@ components:
     otterscale.storage.v1.Subvolume:
       type: object
       properties:
-        name:
-          type: string
-          title: name
-        path:
-          type: string
-          title: path
-        mode:
-          type: string
-          title: mode
-          description: oct
-        poolName:
-          type: string
-          title: pool_name
-        quotaBytes:
-          type:
-            - integer
-            - string
-          title: quota_bytes
-          format: int64
-        usedBytes:
-          type:
-            - integer
-            - string
-          title: used_bytes
-          format: int64
-        createdAt:
-          title: created_at
-          $ref: '#/components/schemas/google.protobuf.Timestamp'
-        export:
-          title: export
-          $ref: '#/components/schemas/otterscale.storage.v1.Subvolume.Export'
-        snapshots:
-          type: array
-          items:
-            $ref: '#/components/schemas/otterscale.storage.v1.Subvolume.Snapshot'
-          title: snapshots
+        spec:
+          title: spec
+          $ref: '#/components/schemas/otterscale.storage.v1.SubvolumeSpec'
+        info:
+          title: info
+          $ref: '#/components/schemas/otterscale.storage.v1.SubvolumeInfo'
       title: Subvolume
-      additionalProperties: false
-    otterscale.storage.v1.Subvolume.Export:
-      type: object
-      properties:
-        ip:
-          type: string
-          title: ip
-        path:
-          type: string
-          title: path
-        clients:
-          type: array
-          items:
-            type: string
-          title: clients
-        command:
-          type: string
-          title: command
-      title: Export
-      additionalProperties: false
-    otterscale.storage.v1.Subvolume.Snapshot:
-      type: object
-      properties:
-        name:
-          type: string
-          title: name
-        hasPendingClones:
-          type: string
-          title: has_pending_clones
-        createdAt:
-          title: created_at
-          $ref: '#/components/schemas/google.protobuf.Timestamp'
-      title: Snapshot
       additionalProperties: false
     otterscale.storage.v1.SubvolumeGroup:
       type: object
@@ -11600,6 +11702,132 @@ components:
           title: created_at
           $ref: '#/components/schemas/google.protobuf.Timestamp'
       title: SubvolumeGroup
+      additionalProperties: false
+    otterscale.storage.v1.SubvolumeInfo:
+      type: object
+      properties:
+        path:
+          type: string
+          title: path
+        state:
+          title: state
+          $ref: '#/components/schemas/otterscale.storage.v1.SubvolumeInfo.SubvolumeState'
+        uid:
+          type: integer
+          title: uid
+        gid:
+          type: integer
+          title: gid
+        mode:
+          type: integer
+          title: mode
+        bytesPercent:
+          type: number
+          title: bytes_percent
+          format: double
+        bytesUsed:
+          type:
+            - integer
+            - string
+          title: bytes_used
+          format: int64
+        bytesQuota:
+          type:
+            - integer
+            - string
+          title: bytes_quota
+          format: int64
+        dataPool:
+          type: string
+          title: data_pool
+        poolNamespace:
+          type: string
+          title: pool_namespace
+        atime:
+          title: atime
+          $ref: '#/components/schemas/google.protobuf.Timestamp'
+        mtime:
+          title: mtime
+          $ref: '#/components/schemas/google.protobuf.Timestamp'
+        ctime:
+          title: ctime
+          $ref: '#/components/schemas/google.protobuf.Timestamp'
+        createdAt:
+          title: created_at
+          $ref: '#/components/schemas/google.protobuf.Timestamp'
+        features:
+          type: array
+          items:
+            $ref: '#/components/schemas/otterscale.storage.v1.SubvolumeInfo.Feature'
+          title: features
+      title: SubvolumeInfo
+      additionalProperties: false
+    otterscale.storage.v1.SubvolumeInfo.Feature:
+      type: string
+      title: Feature
+      enum:
+        - FEATURE_UNSPECIFIED
+        - FEATURE_SNAPSHOT_CLONE
+        - FEATURE_SNAPSHOT_AUTOPROTECT
+        - FEATURE_SNAPSHOT_RETENTION
+    otterscale.storage.v1.SubvolumeInfo.SubvolumeState:
+      type: string
+      title: SubvolumeState
+      enum:
+        - SUBVOLUME_STATE_UNSPECIFIED
+        - SUBVOLUME_STATE_INIT
+        - SUBVOLUME_STATE_PENDING
+        - SUBVOLUME_STATE_IN_PROGRESS
+        - SUBVOLUME_STATE_FAILED
+        - SUBVOLUME_STATE_COMPLETE
+        - SUBVOLUME_STATE_CANCELED
+        - SUBVOLUME_STATE_SNAPSHOT_RETAINED
+    otterscale.storage.v1.SubvolumeListItem:
+      type: object
+      properties:
+        subvolumeName:
+          type: string
+          title: subvolume_name
+        info:
+          title: info
+          $ref: '#/components/schemas/otterscale.storage.v1.SubvolumeInfo'
+      title: SubvolumeListItem
+      additionalProperties: false
+    otterscale.storage.v1.SubvolumeSpec:
+      type: object
+      properties:
+        volumeName:
+          type: string
+          title: volume_name
+        groupName:
+          type: string
+          title: group_name
+        subvolumeName:
+          type: string
+          title: subvolume_name
+          description: oct
+        size:
+          type:
+            - integer
+            - string
+          title: size
+          format: int64
+        uid:
+          type: integer
+          title: uid
+        gid:
+          type: integer
+          title: gid
+        mode:
+          type: integer
+          title: mode
+        poolLayout:
+          type: string
+          title: pool_layout
+        isNamespaceIsolated:
+          type: boolean
+          title: is_namespace_isolated
+      title: SubvolumeSpec
       additionalProperties: false
     otterscale.storage.v1.UnprotectImageSnapshotRequest:
       type: object
@@ -11757,12 +11985,15 @@ components:
         subvolumeName:
           type: string
           title: subvolume_name
-        quotaBytes:
+        newSize:
           type:
             - integer
             - string
-          title: quota_bytes
+          title: new_size
           format: int64
+        noShrink:
+          type: boolean
+          title: no_shrink
       title: UpdateSubvolumeRequest
       additionalProperties: false
     otterscale.storage.v1.UpdateUserRequest:
