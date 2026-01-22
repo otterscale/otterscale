@@ -154,14 +154,13 @@
 			</Form.Field>
 
 			<Form.Field>
-				<Form.Label>
-					{m.configuration()}
-				</Form.Label>
-				<ReleaseValuesInputEdit
-					chartRef={versionReference}
-					bind:valuesYaml={request.valuesYaml}
-					bind:valuesMap={request.valuesMap}
-				/>
+				{#key request.chartRef}
+					<ReleaseValuesInputEdit
+						chartRef={request.chartRef}
+						bind:valuesYaml={request.valuesYaml}
+						bind:valuesMap={request.valuesMap}
+					/>
+				{/key}
 			</Form.Field>
 		</Form.Fieldset>
 
