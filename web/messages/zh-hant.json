@@ -904,5 +904,7 @@
 	"validate_lower_alphanum_dash_dot": "必須由小寫字母、數字、'-' 或 '.' 組成，可以 '.' 開頭。",
 	"validate_max_length": "必須少於 {max} 個字元。",
 	"jobs": "Jobs",
-	"active": "Active"
+	"active": "Active",
+	"try_next_version": "搶先體驗新版",
+	"switch_to_classic": "切換回舊版"
 }
