@@ -17,9 +17,9 @@
 	import * as Item from '$lib/components/ui/item';
 
 	const cluster = $derived(page.params.cluster ?? '');
+	const kind = $derived(page.params.kind ?? '');
 	const group = $derived(page.url.searchParams.get('group') ?? '');
 	const version = $derived(page.url.searchParams.get('version') ?? '');
-	const kind = $derived(page.params.kind ?? '');
 	const resource = $derived(page.url.searchParams.get('resource') ?? '');
 	const namespace = $derived(page.url.searchParams.get('namespace') ?? '');
 
@@ -79,14 +79,14 @@
 							{kind}
 						</Item.Title>
 						<Item.Description class="text-base">
-							{cluster}
 							{group}/{version}
 						</Item.Description>
 					</Item.Content>
 				</Item.Root>
-				<div class="flex flex-row-reverse items-center gap-4">
+				<div class="flex flex-row-reverse items-center gap-2">
 					<ResourcePicker
 						class="w-fit"
+						resource="resource"
 						value={resource}
 						options={apiResourceOptions}
 						onSelect={(option) => {
@@ -111,6 +111,7 @@
 								}))}
 							<ResourcePicker
 								class="w-fit"
+								resource="namespace"
 								value={namespace}
 								options={namespaceOptions}
 								onSelect={(option) => {

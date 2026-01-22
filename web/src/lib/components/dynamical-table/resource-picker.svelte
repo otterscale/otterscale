@@ -11,11 +11,13 @@
 
 	let {
 		value = $bindable(),
+		resource,
 		options,
 		onSelect,
 		class: className
 	}: {
 		value?: string;
+		resource: string;
 		options: {
 			icon: string;
 			label: string;
@@ -62,7 +64,7 @@
 						<span class="truncate">{selectedOption.label}</span>
 					</span>
 				{:else}
-					<span class="text-muted-foreground">Select</span>
+					<span class="text-muted-foreground">{resource}</span>
 				{/if}
 				<ChevronDown size={16} class="shrink-0 text-muted-foreground/80" aria-hidden="true" />
 			</Button>

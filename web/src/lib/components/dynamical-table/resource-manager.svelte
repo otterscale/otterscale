@@ -3,7 +3,7 @@
 	import { StructSchema } from '@bufbuild/protobuf/wkt';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import CircleAlert from '@lucide/svelte/icons/circle-alert';
-	import Download from '@lucide/svelte/icons/download';
+	import CloudBackup from '@lucide/svelte/icons/cloud-backup';
 	import Trash from '@lucide/svelte/icons/trash';
 	import type { Column, Table } from '@tanstack/table-core';
 	import { type Row } from '@tanstack/table-core';
@@ -406,8 +406,7 @@
 					<AlertDialog.Trigger>
 						{#snippet child({ props })}
 							<Button class="ml-auto text-destructive" variant="outline" {...props}>
-								<Trash class="-ms-1 opacity-60" size={16} aria-hidden="true" />
-								Delete
+								<Trash class="opacity-60" size={16} aria-hidden="true" />
 								<Separator orientation="vertical" />
 								{table.getSelectedRowModel().rows.length}
 							</Button>
@@ -445,11 +444,9 @@
 		{#snippet reload()}
 			<Button onclick={handleReload} disabled={isWatching} variant="outline">
 				{#if isWatching}
-					<Spinner />
-					Loading
+					<Spinner class="opacity-60" size={16} />
 				{:else}
-					<Download class="opacity-60" size={16} />
-					Reload
+					<CloudBackup class="opacity-60" size={16} />
 				{/if}
 			</Button>
 		{/snippet}

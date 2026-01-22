@@ -253,25 +253,14 @@
 
 <div class="space-y-4">
 	<!-- Controllers -->
-	<!-- Accessors -->
-	<div class="flex w-full items-center gap-4">
-		<div>
-			{@render create?.()}
-			{@render bulkDelete?.({ table })}
-		</div>
-		<div class="ml-auto">
-			{@render reload()}
-		</div>
-	</div>
-	<!-- Filters -->
-	<div class="flex w-full items-center gap-4">
+	<div class="flex w-full items-center gap-2">
+		<!-- Filters -->
 		<DynamicalTableQuery bind:expression {table} />
 		<DropdownMenu.Root>
 			<DropdownMenu.Trigger>
 				{#snippet child({ props })}
 					<Button variant="outline" {...props}>
 						<Columns3 class="-ms-1 opacity-60" size={16} aria-hidden="true" />
-						View
 					</Button>
 				{/snippet}
 			</DropdownMenu.Trigger>
@@ -307,6 +296,14 @@
 				{/each}
 			</DropdownMenu.Content>
 		</DropdownMenu.Root>
+		<!-- Accessors -->
+		<div>
+			{@render create?.()}
+			{@render bulkDelete?.({ table })}
+		</div>
+		<div class="ml-auto">
+			{@render reload()}
+		</div>
 	</div>
 	<!-- Table -->
 	<div class="overflow-hidden rounded-md border bg-background">
