@@ -23,7 +23,7 @@
 			<Sidebar.MenuItem>
 				<Sidebar.MenuButton size="sm" tooltipContent={m.documentation()}>
 					{#snippet child({ props })}
-						<a href="https://otterscale.github.io" target="_blank" {...props}>
+						<a href="https://otterscale.com" target="_blank" {...props}>
 							<BookOpenIcon />
 							<span>{m.documentation()}</span>
 						</a>
