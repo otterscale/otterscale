@@ -38,6 +38,7 @@
 		fields: GroupedFields;
 		initialData?: Record<string, unknown>;
 		mode?: 'basic' | 'advance';
+		title?: string;
 		onModeChange?: (mode: 'basic' | 'advance') => void;
 		onSubmit?: (data: Record<string, unknown>) => Promise<void> | void;
 	}
@@ -47,6 +48,7 @@
 		fields,
 		initialData,
 		mode = $bindable('basic'),
+		title,
 		onModeChange,
 		onSubmit
 	}: Props = $props();
@@ -185,18 +187,23 @@
 </script>
 
 <div class="multi-step-schema-form-container">
-	<div class="mb-4 flex items-center justify-end">
-		<Tabs.Root value={mode} onValueChange={handleModeChange}>
-			<Tabs.List>
-				<Tabs.Trigger value="basic">Basic</Tabs.Trigger>
-				<Tabs.Trigger value="advance">Advance</Tabs.Trigger>
-			</Tabs.List>
-		</Tabs.Root>
+	<div class="relative mb-6 flex items-center justify-center py-2">
+		{#if title}
+			<h1 class="text-2xl font-bold">{title}</h1>
+		{/if}
+		<div class="absolute right-0">
+			<Tabs.Root value={mode} onValueChange={handleModeChange}>
+				<Tabs.List>
+					<Tabs.Trigger value="basic">Basic</Tabs.Trigger>
+					<Tabs.Trigger value="advance">Advance</Tabs.Trigger>
+				</Tabs.List>
+			</Tabs.Root>
+		</div>
 	</div>
 
 	<Tabs.Root value={mode}>
 		<Tabs.Content value="basic">
-			<div class="mb-8">
+			<div class="mb-6">
 				<div class="flex items-center justify-between">
 					{#each stepNames as stepName, index (stepName)}
 						<div class="flex flex-1 items-center">

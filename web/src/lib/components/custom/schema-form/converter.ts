@@ -1,4 +1,4 @@
-import { deepMerge, deleteByPath,getByPath, setByPath } from './utils';
+import { deepMerge, deleteByPath, getByPath, setByPath } from './utils';
 
 /** K8s OpenAPI Schema type */
 export interface K8sOpenAPISchema {
@@ -116,7 +116,7 @@ export function buildSchemaFromK8s(
 			} else {
 				currentSource = currentSource.properties[part];
 			}
-			
+
 			const sourceProp = currentSource;
 			const isLeaf = i === parts.length - 1;
 
@@ -315,8 +315,6 @@ export function buildSchemaFromK8s(
 
 	return { schema: rootSchema, uiSchema, transformationMappings };
 }
-
-
 
 /**
  * Converts K8s Object data (Standard) to Form data (Flattened/Mapped)

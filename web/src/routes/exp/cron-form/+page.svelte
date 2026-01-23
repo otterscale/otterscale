@@ -13,7 +13,7 @@
 		'Basic Metadata': {
 			'metadata.namespace': { title: 'Namespace' },
 			'metadata.name': { title: 'Name' },
-			'metadata.labels.app': { title: 'App Label' },
+			'metadata.labels.app': { title: 'App Label' }
 		},
 		// Step 2: CronJob Spec
 		'CronJob Spec': {
@@ -43,10 +43,18 @@
 			'spec.jobTemplate.spec.template.spec.containers.command': { title: 'Command' },
 			'spec.jobTemplate.spec.template.spec.containers.args': { title: 'Arguments' },
 			'spec.jobTemplate.spec.template.spec.containers.env': { title: 'Environment Variables' },
-			'spec.jobTemplate.spec.template.spec.containers.resources.requests.cpu': { title: 'Requests CPU' },
-			'spec.jobTemplate.spec.template.spec.containers.resources.requests.memory': { title: 'Requests Memory' },
-			'spec.jobTemplate.spec.template.spec.containers.resources.limits.cpu': { title: 'Limits CPU' },
-			'spec.jobTemplate.spec.template.spec.containers.resources.limits.memory': { title: 'Limits Memory' },
+			'spec.jobTemplate.spec.template.spec.containers.resources.requests.cpu': {
+				title: 'Requests CPU'
+			},
+			'spec.jobTemplate.spec.template.spec.containers.resources.requests.memory': {
+				title: 'Requests Memory'
+			},
+			'spec.jobTemplate.spec.template.spec.containers.resources.limits.cpu': {
+				title: 'Limits CPU'
+			},
+			'spec.jobTemplate.spec.template.spec.containers.resources.limits.memory': {
+				title: 'Limits Memory'
+			},
 			'spec.jobTemplate.spec.template.spec.containers.imagePullPolicy': {
 				title: 'Image Pull Policy'
 			}
@@ -60,15 +68,13 @@
 </script>
 
 <div class="container mx-auto py-10">
-	<h1 class="mb-4 text-2xl font-bold">CronJob Form</h1>
-
 	<!-- Multi-Step Form -->
 	<div class="mb-12">
-		<h2 class="mb-4 text-xl font-semibold">Multi-Step Schema Form</h2>
 		<div class="rounded border bg-card p-4 text-card-foreground">
 			<MultiStepSchemaForm
 				apiSchema={cronSchema as K8sOpenAPISchema}
 				fields={groupedFields}
+				title="CronJob Form"
 				onSubmit={handleMultiStepSubmit}
 			/>
 		</div>

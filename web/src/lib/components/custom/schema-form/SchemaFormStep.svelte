@@ -1,7 +1,6 @@
 <script lang="ts">
 	import type { FormState } from '@sjsf/form';
 	import { Content, Form, setFormContext } from '@sjsf/form';
-
 	import { type Snippet } from 'svelte';
 
 	interface Props {
