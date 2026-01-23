@@ -17,6 +17,7 @@
 			items?: {
 				title: string;
 				url: string;
+				disabled?: boolean;
 			}[];
 		}[];
 	} = $props();
@@ -46,7 +47,7 @@
 							<Sidebar.MenuSub>
 								{#each item.items ?? [] as subItem (subItem.title)}
 									<Sidebar.MenuSubItem>
-										<Sidebar.MenuSubButton>
+										<Sidebar.MenuSubButton aria-disabled={subItem.disabled}>
 											{#snippet child({ props })}
 												<!-- eslint-disable svelte/no-navigation-without-resolve -->
 												<a href={subItem.url} {...props}>
