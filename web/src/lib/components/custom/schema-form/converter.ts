@@ -92,6 +92,9 @@ export function buildSchemaFromK8s(
 			}
 
 			// Locate in Source
+			// Capture parent source for checking 'required' later
+			const parentSource = currentSource;
+
 			if (!currentSource.properties?.[part]) {
 				// Check if current source is a Map (has additionalProperties schema)
 				if (
@@ -284,7 +287,7 @@ export function buildSchemaFromK8s(
 
 			// Handle Required
 			const isRequired =
-				Array.isArray(currentSource.required) && currentSource.required.includes(part);
+				Array.isArray(parentSource.required) && parentSource.required.includes(part);
 			if (isRequired) {
 				if (path in transformationMappings) {
 					const formPath = transformationMappings[path];

@@ -124,7 +124,9 @@
 	}
 
 	function goToStep(index: number) {
-		currentStep = index;
+		if (index <= currentStep) {
+			currentStep = index;
+		}
 	}
 
 	function syncMasterDataToYaml() {
@@ -201,7 +203,7 @@
 							<button
 								type="button"
 								class={cn(
-									'flex h-10 w-10 items-center justify-center rounded-full border-2 text-sm font-medium transition-all hover:border-primary hover:text-primary',
+									'flex h-10 w-10 items-center justify-center rounded-full border-2 text-sm font-medium transition-all',
 									index < currentStep
 										? 'border-primary bg-primary text-primary-foreground'
 										: index === currentStep
@@ -209,6 +211,7 @@
 											: 'border-muted bg-muted text-muted-foreground'
 								)}
 								onclick={() => goToStep(index)}
+								disabled={index > currentStep}
 							>
 								{#if index < currentStep}
 									<Check class="h-5 w-5" />
