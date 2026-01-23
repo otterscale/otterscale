@@ -235,7 +235,6 @@
 								{#each scopes as scope, index (index)}
 									<DropdownMenu.RadioItem value={scope.uuid}>{scope.name}</DropdownMenu.RadioItem>
 								{/each}
-								<DropdownMenu.RadioItem value="bbb">"bbb"</DropdownMenu.RadioItem>
 							</DropdownMenu.RadioGroup>
 						</DropdownMenu.Group>
 					</DropdownMenu.Content>

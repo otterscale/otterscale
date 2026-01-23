@@ -87,6 +87,7 @@ const handleRefreshToken: Handle = async ({ event, resolve }) => {
 				try {
 					const tokens = await keycloak.refreshAccessToken(session.tokenSet.refreshToken);
 					const tokenSet = {
+						idToken: tokens.idToken(),
 						accessToken: tokens.accessToken(),
 						refreshToken: tokens.refreshToken(),
 						accessTokenExpiresAt: tokens.accessTokenExpiresAt()
