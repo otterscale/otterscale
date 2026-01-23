@@ -154,6 +154,7 @@
 	"under_development_description": "我們的精靈正在施展魔法！",
 	"current_version": "目前版本：{version}",
 	"load_average": "平均負載",
+	"password": "Password",
 	"scope_selector_loading": "載入中",
 	"scope_selector_loading_description": "正在載入範圍並檢查環境...",
 	"scope_selector": "選擇範圍",

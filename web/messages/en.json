@@ -154,6 +154,7 @@
 	"under_development_description": "Our elves are working their magic!",
 	"current_version": "Current Version: {version}",
 	"load_average": "Load Average",
+	"password": "Password",
 	"scope_selector_loading": "Loading",
 	"scope_selector_loading_description": "Loading scopes and checking environment ...",
 	"scope_selector": "Select Scope",
