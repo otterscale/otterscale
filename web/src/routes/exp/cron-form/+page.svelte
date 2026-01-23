@@ -34,7 +34,8 @@
 		'spec.jobTemplate.spec.template.spec.containers': { title: 'Containers' },
 		'spec.jobTemplate.spec.template.spec.containers.name': {},
 		'spec.jobTemplate.spec.template.spec.containers.image': {},
-		'spec.jobTemplate.spec.template.spec.containers.imagePullPolicy': {}
+		'spec.jobTemplate.spec.template.spec.containers.imagePullPolicy': {},
+		'spec.jobTemplate.spec.template.spec.containers.resources.requests': {}
 		// 'spec.jobTemplate.spec.template.spec.containers.lifecycle.postStart': {}
 	};
 

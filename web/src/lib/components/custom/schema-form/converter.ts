@@ -25,6 +25,7 @@ export interface SchemaFormConfig {
 
 export interface PathOptions {
 	title?: string;
+	required?: boolean;
 	showDescription?: boolean;
 	uiSchema?: Record<string, unknown>;
 }
@@ -117,6 +118,14 @@ export function buildSchemaFromK8s(
 					target.description = src.description;
 				} else {
 					delete target.description;
+				}
+
+				// Handle Required
+				if (options.required) {
+					if (!currentTarget.required) currentTarget.required = [];
+					if (!currentTarget.required.includes(part)) {
+						currentTarget.required.push(part);
+					}
 				}
 			};
 

@@ -32,6 +32,8 @@
 		mode?: 'basic' | 'advance';
 		/** Callback when mode changes */
 		onModeChange?: (mode: 'basic' | 'advance') => void;
+		/** Callback when submit button is clicked */
+		onSubmit?: () => Promise<void> | void;
 	}
 
 	let {
@@ -40,7 +42,8 @@
 		form = $bindable(),
 		initialData,
 		mode = $bindable('basic'),
-		onModeChange
+		onModeChange,
+		onSubmit
 	}: Props = $props();
 
 	// Set theme context for this component tree
@@ -48,7 +51,7 @@
 
 	// Build subset schema for basic mode
 	const formConfig = $derived(buildSchemaFromK8s(apiSchema, paths));
-
+	console.log(formConfig);
 	// Reactive states
 	// We must convert "Map" objects (which we transformed to Arrays in schema)
 	// from K8s format (Object) to Form format (Array of Key-Value)
@@ -113,7 +116,11 @@
 			console.log('Form submitted with data:', k8sData);
 
 			// Custom submission logic can be added here
-			onModeChange?.(mode);
+			if (onSubmit) {
+				onSubmit();
+			} else {
+				onModeChange?.(mode);
+			}
 		} catch (error) {
 			console.error(`Error during form submission:`, error);
 		}
@@ -189,6 +196,8 @@
 			if (mode === 'advance') {
 				syncYamlToForm();
 			}
+			// Always trigger native form submission to let AJV validation run.
+			// The passed 'onSubmit' will be called inside handleFormSubmit ONLY if validation passes.
 			ref?.requestSubmit();
 		}}
 	>
