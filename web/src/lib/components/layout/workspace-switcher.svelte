@@ -99,7 +99,7 @@
 	let ActiveIcon = $derived(getWorkspaceIcon(activeWorkspace?.metadata?.name));
 
 	function onSelect(index: number) {
-		if (index > workspaces.length - 1) {
+		if (index >= workspaces.length) {
 			return;
 		}
 		activeWorkspace = workspaces[index];

@@ -67,7 +67,7 @@ export const navData = {
 			icon: TerminalIcon,
 			items: [
 				{
-					title: 'Jupyer',
+					title: 'Jupyter',
 					url: '#',
 					disabled: true
 				}

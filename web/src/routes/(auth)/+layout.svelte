@@ -58,7 +58,7 @@
 			scopes = response.scopes.filter((scope) => scope.name !== 'cos');
 			// TODO: scopes is empty
 			if (scopes.length > 0) {
-				activeScope = scopes[0].uuid;
+				activeScope = scopes[0].name;
 			}
 		} catch (error) {
 			console.error('Failed to fetch scopes:', error);
@@ -68,7 +68,7 @@
 	async function fetchWorkspaces() {
 		try {
 			const response = await resourceClient.list({
-				cluster: 'aaa',
+				cluster: activeScope,
 				group: 'tenant.otterscale.io',
 				version: 'v1alpha1',
 				resource: 'workspaces',
@@ -76,12 +76,12 @@
 			});
 			workspaces = response.items.map((item) => item.object as TenantOtterscaleIoV1Alpha1Workspace);
 		} catch (error) {
-			console.error('Failed to fetch scopes:', error);
+			console.error('Failed to fetch workspaces:', error);
 		}
 	}
 
-	async function onValueChange(id: string) {
-		const scope = scopes.find((s) => s.uuid === id);
+	async function onValueChange(name: string) {
+		const scope = scopes.find((s) => s.name === name);
 		if (!scope) return;
 
 		await goto(resolve('/(auth)/scope/[scope]', { scope: scope.name }));
@@ -95,8 +95,6 @@
 			await fetchWorkspaces();
 
 			isMounted = true;
-
-			await onValueChange(activeScope);
 		} catch (error) {
 			console.error('Failed to initialize:', error);
 		}
@@ -133,12 +131,8 @@
 					<NavMain label="Reliability" items={navData.reliability} />
 					<NavMain label="System" items={navData.system} />
 				{:else}
-					<NavGeneral
-						scope={activeScope}
-						title={m.platform()}
-						routes={platformRoutes(activeScope)}
-					/>
-					<NavGeneral scope={activeScope} title={m.global()} routes={globalRoutes()} />
+					<NavGeneral title={m.platform()} routes={platformRoutes(activeScope)} />
+					<NavGeneral title={m.global()} routes={globalRoutes()} />
 				{/if}
 			{:else}
 				<div class="relative flex w-full min-w-0 flex-col space-y-4 px-4 py-2">
@@ -176,7 +170,6 @@
 		<Button
 			class="mx-auto w-full text-xs text-muted-foreground"
 			variant="link"
-			href="#"
 			onclick={() => (next = !next)}
 		>
 			{#if next}
@@ -233,7 +226,7 @@
 							<DropdownMenu.Separator />
 							<DropdownMenu.RadioGroup bind:value={activeScope} {onValueChange}>
 								{#each scopes as scope, index (index)}
-									<DropdownMenu.RadioItem value={scope.uuid}>{scope.name}</DropdownMenu.RadioItem>
+									<DropdownMenu.RadioItem value={scope.name}>{scope.name}</DropdownMenu.RadioItem>
 								{/each}
 							</DropdownMenu.RadioGroup>
 						</DropdownMenu.Group>
