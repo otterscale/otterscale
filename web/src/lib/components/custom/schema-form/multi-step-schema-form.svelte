@@ -20,10 +20,10 @@
 		type PathOptions,
 		type SchemaFormConfig
 	} from './converter';
-	import SchemaFormStep from './SchemaFormStep.svelte';
 	import * as defaults from './defaults';
+	import SchemaFormStep from './SchemaFormStep.svelte';
+	import { deepMerge } from './utils';
 
-	/** Grouped fields: Record<StepName, Record<Path, PathOptions>> */
 	export type GroupedFields = Record<string, Record<string, PathOptions>>;
 
 	interface StepFormData {
@@ -34,17 +34,11 @@
 	}
 
 	interface Props {
-		/** The full K8s OpenAPI V3 Schema */
 		apiSchema: K8sOpenAPISchema;
-		/** Grouped paths by step: { 'Step Name': { 'path.to.field': { title: 'Field' } } } */
 		fields: GroupedFields;
-		/** Optional initial value override */
 		initialData?: Record<string, unknown>;
-		/** Current mode: 'basic' | 'advance' */
 		mode?: 'basic' | 'advance';
-		/** Callback when mode changes */
 		onModeChange?: (mode: 'basic' | 'advance') => void;
-		/** Callback when final submit is clicked with accumulated data */
 		onSubmit?: (data: Record<string, unknown>) => Promise<void> | void;
 	}
 
@@ -57,30 +51,24 @@
 		onSubmit
 	}: Props = $props();
 
-	// Set theme context for this component tree
 	setThemeContext({ components });
 
-	// Step state management
 	let currentStep = $state(0);
 	let masterData = $state<Record<string, unknown>>({});
 	let stepForms = $state<StepFormData[]>([]);
 	let advanceYaml = $state('');
 	let yamlParseError = $state<string | null>(null);
 
-	// Derived values
 	const stepNames = $derived(Object.keys(fields));
 	const totalSteps = $derived(stepNames.length);
 	const isFirstStep = $derived(currentStep === 0);
 	const isLastStep = $derived(currentStep === totalSteps - 1);
 
-	// Build forms for each step
 	$effect(() => {
 		const forms: StepFormData[] = [];
 
 		for (const [stepName, paths] of Object.entries(fields)) {
 			const formConfig = buildSchemaFromK8s(apiSchema, paths);
-
-			// Convert initial data using the step's transformation mappings
 			const stepInitialValue = k8sToFormData(initialData, formConfig.transformationMappings);
 
 			const form = createForm<Record<string, unknown>>({
@@ -92,38 +80,27 @@
 				onSubmit: (data) => handleStepSubmit(stepName, data, formConfig)
 			});
 
-			forms.push({
-				stepName,
-				paths,
-				formConfig,
-				form
-			});
+			forms.push({ stepName, paths, formConfig, form });
 		}
 
 		stepForms = forms;
 
-		// Initialize masterData with initial data
 		if (initialData) {
 			masterData = { ...initialData };
 		}
 	});
 
-	// Handle individual step submission
 	function handleStepSubmit(
 		stepName: string,
 		data: Record<string, unknown>,
 		formConfig: SchemaFormConfig
 	) {
-		// Convert form data to K8s format
 		const k8sData = formDataToK8s(data, formConfig.transformationMappings);
-
-		// Deep merge into master data
 		masterData = deepMerge(masterData, k8sData);
 
 		console.log(`Step "${stepName}" submitted:`, k8sData);
 		console.log('Master data:', masterData);
 
-		// Move to next step or finish
 		if (isLastStep) {
 			handleFinalSubmit();
 		} else {
@@ -131,9 +108,7 @@
 		}
 	}
 
-	// Handle final submission
 	async function handleFinalSubmit() {
-		// Ensure we have the latest data from all steps, as user might have jumped around
 		collectAllFormData();
 		console.log('Final submission with data:', masterData);
 
@@ -142,52 +117,16 @@
 		}
 	}
 
-	// Navigate to previous step
 	function goBack() {
 		if (!isFirstStep) {
 			currentStep--;
 		}
 	}
 
-	// Navigate to specific step
 	function goToStep(index: number) {
 		currentStep = index;
 	}
 
-
-
-	// Deep merge utility
-	function deepMerge(
-		target: Record<string, unknown>,
-		source: Record<string, unknown>
-	): Record<string, unknown> {
-		const result = { ...target };
-
-		for (const key of Object.keys(source)) {
-			const sourceValue = source[key];
-			const targetValue = result[key];
-
-			if (
-				sourceValue &&
-				typeof sourceValue === 'object' &&
-				!Array.isArray(sourceValue) &&
-				targetValue &&
-				typeof targetValue === 'object' &&
-				!Array.isArray(targetValue)
-			) {
-				result[key] = deepMerge(
-					targetValue as Record<string, unknown>,
-					sourceValue as Record<string, unknown>
-				);
-			} else {
-				result[key] = sourceValue;
-			}
-		}
-
-		return result;
-	}
-
-	// Sync master data to YAML editor
 	function syncMasterDataToYaml() {
 		try {
 			advanceYaml = yaml.dump(masterData, {
@@ -199,7 +138,6 @@
 		}
 	}
 
-	// Sync YAML back to master data
 	function syncYamlToMasterData() {
 		try {
 			yamlParseError = null;
@@ -207,9 +145,6 @@
 
 			if (parsed && typeof parsed === 'object') {
 				masterData = parsed;
-
-				// Note: Form values will be rebuilt on next step navigation
-				// The masterData is the source of truth after YAML edit
 			}
 		} catch (error) {
 			const errorMsg = `Invalid YAML: ${error instanceof Error ? error.message : 'Unknown error'}`;
@@ -218,14 +153,12 @@
 		}
 	}
 
-	// Handle mode changes
 	function handleModeChange(newMode: string) {
 		const targetMode = newMode as 'basic' | 'advance';
 
 		if (targetMode === 'basic' && mode === 'advance') {
 			syncYamlToMasterData();
 		} else if (targetMode === 'advance') {
-			// Collect all current form values into master data before showing YAML
 			collectAllFormData();
 			syncMasterDataToYaml();
 		}
@@ -234,7 +167,6 @@
 		onModeChange?.(mode);
 	}
 
-	// Collect data from all forms
 	function collectAllFormData() {
 		for (const stepForm of stepForms) {
 			const formData = getValueSnapshot(stepForm.form);
@@ -243,7 +175,6 @@
 		}
 	}
 
-	// Reactive effect to sync YAML when in advance mode
 	$effect(() => {
 		if (mode === 'advance') {
 			syncMasterDataToYaml();
@@ -252,7 +183,6 @@
 </script>
 
 <div class="multi-step-schema-form-container">
-	<!-- Mode Toggle -->
 	<div class="mb-4 flex items-center justify-end">
 		<Tabs.Root value={mode} onValueChange={handleModeChange}>
 			<Tabs.List>
@@ -263,14 +193,11 @@
 	</div>
 
 	<Tabs.Root value={mode}>
-		<!-- Basic Mode: Multi-Step Form -->
 		<Tabs.Content value="basic">
-			<!-- Step Indicators -->
 			<div class="mb-8">
 				<div class="flex items-center justify-between">
 					{#each stepNames as stepName, index (stepName)}
 						<div class="flex flex-1 items-center">
-							<!-- Step Circle -->
 							<button
 								type="button"
 								class={cn(
@@ -290,7 +217,6 @@
 								{/if}
 							</button>
 
-							<!-- Step Label -->
 							<span
 								class={cn(
 									'ml-3 text-sm font-medium',
@@ -300,7 +226,6 @@
 								{stepName}
 							</span>
 
-							<!-- Connector Line -->
 							{#if index < totalSteps - 1}
 								<div
 									class={cn('mx-4 h-0.5 flex-1', index < currentStep ? 'bg-primary' : 'bg-muted')}
@@ -311,7 +236,6 @@
 				</div>
 			</div>
 
-			<!-- Step Content -->
 			<div class="rounded-lg border bg-card p-6">
 				{#each stepForms as stepForm, index (stepForm.stepName)}
 					<div class={currentStep === index ? 'block' : 'hidden'}>
@@ -337,7 +261,6 @@
 			</div>
 		</Tabs.Content>
 
-		<!-- Advance Mode: YAML Editor -->
 		<Tabs.Content value="advance">
 			<div class="h-[70vh] rounded border">
 				{#if yamlParseError}

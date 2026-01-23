@@ -1,4 +1,4 @@
-import type { Schema, UiSchemaRoot } from '@sjsf/form';
+import { deepMerge, getByPath, setByPath, deleteByPath } from './utils';
 
 /** K8s OpenAPI Schema type */
 export interface K8sOpenAPISchema {
@@ -268,55 +268,7 @@ export function buildSchemaFromK8s(
 	return { schema: rootSchema, uiSchema, transformationMappings };
 }
 
-function deepMerge(target: any, source: any): any {
-	if (typeof target !== 'object' || target === null) return source;
-	if (typeof source !== 'object' || source === null) return target;
 
-	const output = { ...target };
-	Object.keys(source).forEach((key) => {
-		if (typeof source[key] === 'object' && source[key] !== null && key in target) {
-			output[key] = deepMerge(target[key], source[key]);
-		} else {
-			output[key] = source[key];
-		}
-	});
-	return output;
-}
-
-/**
- * Access nested property by dot path
- */
-function getByPath(obj: any, path: string): any {
-	return path.split('.').reduce((acc, part) => acc && acc[part], obj);
-}
-
-/**
- * Set nested property by dot path, creating objects as needed
- */
-function setByPath(obj: any, path: string, value: any): void {
-	const parts = path.split('.');
-	let current = obj;
-	for (let i = 0; i < parts.length - 1; i++) {
-		const part = parts[i];
-		if (!current[part]) current[part] = {};
-		current = current[part];
-	}
-	current[parts[parts.length - 1]] = value;
-}
-
-/**
- * Deletes nested property by dot path
- */
-function deleteByPath(obj: any, path: string): void {
-	const parts = path.split('.');
-	let current = obj;
-	for (let i = 0; i < parts.length - 1; i++) {
-		const part = parts[i];
-		if (!current[part]) return;
-		current = current[part];
-	}
-	delete current[parts[parts.length - 1]];
-}
 
 /**
  * Converts K8s Object data (Standard) to Form data (Flattened/Mapped)
