@@ -86,67 +86,76 @@
 	const fields: Record<string, PathOptions> = {
 		'metadata.name': { title: 'Name', required: true },
 		'metadata.namespace': { title: 'Namespace' },
-		'metadata.annotations': { title: 'Annotations' },
 		'spec.runStrategy': { title: 'Run Strategy' },
-		'spec.instancetype.name': { title: 'Instance Type Name' },
-		'spec.instancetype.kind': { title: 'Instance Type Kind' },
-		'spec.preference.name': { title: 'Preference Name' },
-		'spec.template.spec.domain.cpu.cores': { title: 'CPU Cores' },
 
-		// Disks
+		// Instance Type (Use predefined instance types)
+		'spec.instancetype.name': { title: 'Instance Type', required: true },
+		'spec.instancetype.kind': { title: 'Instance Type Kind' },
+
+		// Preference
+		'spec.preference.name': { title: 'Preference' },
+		'spec.preference.kind': { title: 'Preference Kind' },
+
+		// Simple Disks (Assume one boot disk + maybe data disk)
 		'spec.template.spec.domain.devices.disks': { title: 'Disks' },
 		'spec.template.spec.domain.devices.disks.name': { title: 'Name' },
 		'spec.template.spec.domain.devices.disks.bootOrder': { title: 'Boot Order' },
-		'spec.template.spec.domain.devices.disks.disk.bus': { title: 'Disk Bus' },
-		'spec.template.spec.domain.devices.disks.cdrom.bus': { title: 'CD-ROM Bus' },
+		// 'spec.template.spec.domain.devices.disks.disk.bus': { title: 'Disk Bus' }, // Often inferred or standard
 
-		// Volumes
+		// Volumes (Where the data comes from)
 		'spec.template.spec.volumes': { title: 'Volumes' },
 		'spec.template.spec.volumes.name': { title: 'Name' },
-		'spec.template.spec.volumes.containerDisk.image': { title: 'Container Disk Image' },
-		'spec.template.spec.volumes.persistentVolumeClaim.claimName': { title: 'PVC Name' },
-		'spec.template.spec.volumes.dataVolume.name': { title: 'Data Volume Name' },
-		'spec.template.spec.volumes.cloudInitNoCloud': { title: 'Cloud Init NoCloud' },
+		// 'spec.template.spec.volumes.containerDisk.image': { title: 'Container Image (Boot)' }, // Disable containerDisk
+		'spec.template.spec.volumes.persistentVolumeClaim.claimName': { title: 'PVC Name (Boot/Data)' }, // Only allow PVC
+		'spec.template.spec.volumes.cloudInitNoCloud': { title: 'Cloud Init Config' },
 
-		// Networks
-		'spec.template.spec.networks': { title: 'Networks' },
-		'spec.template.spec.networks.name': { title: 'Name' },
-		'spec.template.spec.networks.multus.networkName': { title: 'Multus Network Name' },
-		'spec.template.spec.networks.pod': { title: 'Pod Network' },
-
-		// Interfaces
-		'spec.template.spec.domain.devices.interfaces': { title: 'Interfaces' },
-		'spec.template.spec.domain.devices.interfaces.name': { title: 'Name' },
-		'spec.template.spec.domain.devices.interfaces.model': { title: 'Model' },
-		'spec.template.spec.domain.devices.interfaces.masquerade': { title: 'Masquerade' },
-		'spec.template.spec.domain.devices.interfaces.bridge': { title: 'Bridge' },
-
-		// Data Volume Templates
-		'spec.dataVolumeTemplates': { title: 'Data Volume Templates' },
+		// Data Volume Templates (Dynamic Provisioning)
+		'spec.dataVolumeTemplates': { title: 'New Data Volumes' },
 		'spec.dataVolumeTemplates.metadata.name': { title: 'Name' },
-		'spec.dataVolumeTemplates.spec.pvc.storageClassName': { title: 'Storage Class' },
-		'spec.dataVolumeTemplates.spec.pvc.resources.requests.storage': { title: 'Size (e.g. 10Gi)' },
+		// 'spec.dataVolumeTemplates.spec.pvc.storageClassName': { title: 'Storage Class' },
+		'spec.dataVolumeTemplates.spec.pvc.resources.requests.storage': { title: 'Size' },
 		'spec.dataVolumeTemplates.spec.source.http.url': { title: 'HTTP Source URL' },
 		'spec.dataVolumeTemplates.spec.source.registry.url': { title: 'Registry Source URL' },
 
-		// Access Credentials
-		'spec.template.spec.accessCredentials': { title: 'Access Credentials' },
-		'spec.template.spec.accessCredentials.sshPublicKey.source.secret.secretName': {
-			title: 'SSH Key Secret'
-		},
-		'spec.template.spec.accessCredentials.sshPublicKey.propagationMethod.noCloud': {
-			title: 'Propagate via NoCloud'
-		},
-		'spec.template.spec.accessCredentials.sshPublicKey.propagationMethod.qemuGuestAgent': {
-			title: 'Propagate via QEMU Agent'
-		}
+		// Networking (Default to standard pod network usually)
+		'spec.template.spec.networks': { title: 'Networks' },
+		'spec.template.spec.networks.name': { title: 'Network Name' },
+		// 'spec.template.spec.networks.pod': { title: 'Pod Network' }, // Default
+
+		// Interfaces (Matched with Networks)
+		'spec.template.spec.domain.devices.interfaces': { title: 'Interfaces' },
+		'spec.template.spec.domain.devices.interfaces.name': { title: 'Interface Name' }
+		// 'spec.template.spec.domain.devices.interfaces.masquerade': { title: 'Masquerade' }, // Default for KubeVirt
+
+		// Access
+		// 'spec.template.spec.accessCredentials': { title: 'Access Credentials' },
 	};
 
-	// Using $derived to reactively get values from the form store
 	const formValues = $derived(form ? getValueSnapshot(form) : {});
-	// const initialData = { spec: { runStrategy: '123' } };
-	const initialData = {};
 	const fieldKeys = Object.keys(fields);
+	// Default values to simplify the form (Hidden from Basic View but present in Data)
+	const initialData = {
+		spec: {
+			runStrategy: 'Always', // Default to running
+			instancetype: {
+				kind: 'VirtualMachineClusterInstancetype' // Default kind
+			},
+			preference: {
+				kind: 'VirtualMachineClusterPreference' // Default kind
+			},
+			template: {
+				spec: {
+					domain: {
+						devices: {
+							interfaces: [{ name: 'default', masquerade: {} }],
+							disks: [{ name: 'boot', bootOrder: 1, disk: { bus: 'virtio' } }] // Default boot disk config
+						}
+					},
+					networks: [{ name: 'default', pod: {} }] // Default pod network
+				}
+			}
+		}
+	};
 </script>
 
 <div class="container mx-auto py-10">
