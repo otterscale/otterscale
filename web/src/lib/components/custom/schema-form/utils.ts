@@ -7,6 +7,8 @@ export function deepMerge(target: any, source: any): any {
 
 	const output = { ...target };
 	Object.keys(source).forEach((key) => {
+		// Guard against prototype pollution
+		if (key === '__proto__' || key === 'constructor' || key === 'prototype') return;
 		if (typeof source[key] === 'object' && source[key] !== null && key in target) {
 			output[key] = deepMerge(target[key], source[key]);
 		} else {
@@ -28,6 +30,12 @@ export function getByPath(obj: any, path: string): any {
  */
 export function setByPath(obj: any, path: string, value: any): void {
 	const parts = path.split('.');
+	// Guard against prototype pollution
+	if (
+		parts.some((part) => part === '__proto__' || part === 'constructor' || part === 'prototype')
+	) {
+		return;
+	}
 	let current = obj;
 	for (let i = 0; i < parts.length - 1; i++) {
 		const part = parts[i];
@@ -42,6 +50,12 @@ export function setByPath(obj: any, path: string, value: any): void {
  */
 export function deleteByPath(obj: any, path: string): void {
 	const parts = path.split('.');
+	// Guard against prototype pollution
+	if (
+		parts.some((part) => part === '__proto__' || part === 'constructor' || part === 'prototype')
+	) {
+		return;
+	}
 	let current = obj;
 	for (let i = 0; i < parts.length - 1; i++) {
 		const part = parts[i];
