@@ -13,10 +13,10 @@
 	import { ResourceService } from '$lib/api/resource/v1/resource_pb';
 	import { type Scope, ScopeService } from '$lib/api/scope/v1/scope_pb';
 	import {
-		NavDashboard,
 		navData,
 		NavGeneral,
 		NavMain,
+		NavOverview,
 		NavSecondary,
 		NavUser,
 		WorkspaceSwitcher
@@ -123,7 +123,7 @@
 			{/if}
 		</Sidebar.Header>
 		<Sidebar.Content class="gap-2">
-			<NavDashboard items={navData.overview} />
+			<NavOverview items={navData.overview} />
 			{#if isMounted}
 				{#if next}
 					<NavMain label="AI Studio" items={navData.aiStudio} />
