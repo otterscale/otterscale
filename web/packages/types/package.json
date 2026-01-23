@@ -1,0 +1,19 @@
+{
+	"name": "@otterscale/types",
+	"version": "0.7.0",
+	"packageManager": "pnpm@10.28.1",
+	"private": true,
+	"type": "module",
+	"types": "src/index.ts",
+	"scripts": {
+		"sync": "tsx scripts/sync-types.ts"
+	},
+	"devDependencies": {
+		"@connectrpc/connect-node": "^2.1.1",
+		"@types/js-yaml": "^4.0.9",
+		"js-yaml": "^4.1.1",
+		"json-schema-to-typescript": "^15.0.4",
+		"ts-node": "^10.9.2",
+		"tsx": "^4.21.0"
+	}
+}
