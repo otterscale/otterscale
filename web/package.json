@@ -1,8 +1,8 @@
 {
-	"name": "otterscale-web",
+	"name": "@otterscale/web",
+	"version": "0.7.0",
 	"packageManager": "pnpm@10.26.0",
 	"private": true,
-	"version": "0.6.0",
 	"type": "module",
 	"scripts": {
 		"dev": "vite dev",
@@ -87,6 +87,7 @@
 		"@oslojs/binary": "^1.0.0",
 		"@oslojs/crypto": "^1.0.1",
 		"@oslojs/encoding": "^1.1.0",
+		"@otterscale/types": "workspace:*",
 		"@shikijs/langs": "^3.20.0",
 		"@shikijs/themes": "^3.20.0",
 		"@xterm/addon-clipboard": "^0.1.0",

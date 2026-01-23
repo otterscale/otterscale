@@ -1,66 +1,52 @@
 <script lang="ts">
-	import Icon from '@iconify/svelte';
+	import BugIcon from '@lucide/svelte/icons/bug';
+	import GitHubIcon from '@lucide/svelte/icons/github';
 
 	import { version } from '$app/environment';
-	import LogoImage from '$lib/assets/logo.png';
+	import LogoImage from '$lib/assets/logo.svg';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
 	import * as Dialog from '$lib/components/ui/dialog';
-	import { siteConfig } from '$lib/config/site';
 	import { m } from '$lib/paraglide/messages';
 
 	let { open = $bindable(false) }: { open: boolean } = $props();
-
-	const links = [
-		{
-			icon: 'simple-icons:github',
-			url: 'https://github.com/otterscale/otterscale'
-		},
-		{
-			icon: 'ph:paper-plane-tilt-fill',
-			url: 'https://github.com/otterscale/otterscale/issues/new/choose'
-		}
-	];
 </script>
 
 <Dialog.Root bind:open>
-	<Dialog.Content class="sm:max-w-xl">
-		<div class="pointer-events-none absolute right-0 bottom-0 z-0 size-full">
-			<svg
-				aria-hidden="true"
-				class="pointer-events-none absolute inset-0 h-full w-full fill-gray-400/30 stroke-gray-400/30"
-				style="mask-image:radial-gradient(circle at 100% 100%, black 60%, transparent 100%);-webkit-mask-image:radial-gradient(circle at 100% 100%, black 60%, transparent 100%);opacity:0.4"
-			>
-				<defs>
-					<pattern id=":S1:" width="40" height="40" patternUnits="userSpaceOnUse" x="-1" y="-1">
-						<path d="M.5 40V.5H40" fill="none" stroke-dasharray="0"></path>
-					</pattern>
-				</defs>
-				<rect width="100%" height="100%" stroke-width="0" fill="url(#:S1:)"></rect>
-			</svg>
-		</div>
-		<Dialog.Header class="flex-row items-center justify-evenly gap-4">
-			<Dialog.Title class="flex flex-col items-center gap-2 font-medium">
-				<img src={LogoImage} alt="logo" class="relative bottom-0 -mt-4 size-24" />
-				<div class="-mt-5 flex flex-col items-center justify-center gap-1">
-					<span class=" text-xl">{siteConfig.title}</span>
-					<Badge variant="outline">{version}</Badge>
+	<Dialog.Content>
+		<Dialog.Header>
+			<Dialog.Title>{m.about()}</Dialog.Title>
+			<div class="flex w-full flex-col items-center justify-center">
+				<Badge variant="secondary">{version}</Badge>
+				<div class="flex w-full items-center justify-evenly">
+					<img src={LogoImage} alt="logo" class="size-24" />
+					<div class="flex gap-2">
+						<h2 class="text-2xl leading-tight">
+							{m.join_1()}
+							<br />
+							<span class="text-foreground/60"> {m.join_2()} </span>
+						</h2>
+					</div>
 				</div>
-			</Dialog.Title>
-			<Dialog.Description class="flex flex-col justify-between gap-4 py-2">
-				<h2 class="text-center text-3xl">
-					{m.join_1()}
-					<br />
-					<span class="text-muted-foreground/80"> {m.join_2()} </span>
-				</h2>
-				<div class="flex justify-center gap-4 text-primary">
-					{#each links as { icon, url }}
-						<Button variant="outline" size="icon" href={url} target="_blank">
-							<Icon {icon} />
-						</Button>
-					{/each}
+				<div class="flex gap-2">
+					<Button
+						variant="outline"
+						size="icon"
+						href="https://github.com/otterscale"
+						target="_blank"
+					>
+						<GitHubIcon />
+					</Button>
+					<Button
+						variant="outline"
+						size="icon"
+						href="https://github.com/otterscale/otterscale/issues/new/choose"
+						target="_blank"
+					>
+						<BugIcon />
+					</Button>
 				</div>
-			</Dialog.Description>
+			</div>
 		</Dialog.Header>
 	</Dialog.Content>
 </Dialog.Root>

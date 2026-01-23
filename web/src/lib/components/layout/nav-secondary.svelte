@@ -1,5 +1,6 @@
 <script lang="ts">
-	import Icon from '@iconify/svelte';
+	import BookOpenIcon from '@lucide/svelte/icons/book-open';
+	import InfoIcon from '@lucide/svelte/icons/info';
 	import type { ComponentProps } from 'svelte';
 
 	import * as Sidebar from '$lib/components/ui/sidebar';
@@ -22,8 +23,8 @@
 			<Sidebar.MenuItem>
 				<Sidebar.MenuButton size="sm" tooltipContent={m.documentation()}>
 					{#snippet child({ props })}
-						<a href="https://otterscale.github.io" target="_blank" {...props}>
-							<Icon icon="ph:book-open" />
+						<a href="https://otterscale.com" target="_blank" {...props}>
+							<BookOpenIcon />
 							<span>{m.documentation()}</span>
 						</a>
 					{/snippet}
@@ -39,7 +40,7 @@
 				>
 					{#snippet child({ props })}
 						<button type="button" {...props}>
-							<Icon icon="ph:info" />
+							<InfoIcon />
 							<span>{m.about()}</span>
 						</button>
 					{/snippet}
