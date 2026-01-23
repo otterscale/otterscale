@@ -46,21 +46,15 @@
 		onSubmit
 	}: Props = $props();
 
-	// Set theme context for this component tree
 	setThemeContext({ components });
 
-	// Build subset schema for basic mode
 	const formConfig = $derived(buildSchemaFromK8s(apiSchema, paths));
-	console.log(formConfig);
-	// Reactive states
-	// We must convert "Map" objects (which we transformed to Arrays in schema)
-	// from K8s format (Object) to Form format (Array of Key-Value)
+
 	let initialValue = $state(k8sToFormData(initialData, formConfig.transformationMappings));
 	let advanceYaml = $state('');
 	let yamlParseError = $state<string | null>(null);
 	let ref: HTMLFormElement | undefined;
 
-	// Create form instance
 	form = createForm<Record<string, unknown>>({
 		...defaults,
 		idPrefix: 'k8s-schema-form',
@@ -70,13 +64,10 @@
 		onSubmit: handleFormSubmit
 	});
 	setFormContext(form);
-	syncFormToYaml();
 
-	// Sync form values to YAML editor
 	function syncFormToYaml() {
 		try {
 			const rawData = form ? getValueSnapshot(form) : initialValue;
-			// Convert Form Format (Array Maps) -> K8s Format (Object Maps)
 			const k8sData = formDataToK8s(rawData, formConfig.transformationMappings);
 
 			advanceYaml = yaml.dump(k8sData, {
@@ -88,14 +79,12 @@
 		}
 	}
 
-	// Sync YAML back to form
 	function syncYamlToForm() {
 		try {
 			yamlParseError = null;
 			const parsed = yaml.load(advanceYaml) as Record<string, unknown> | null;
 
 			if (parsed && typeof parsed === 'object') {
-				// Convert K8s Format -> Form Format
 				const formData = k8sToFormData(parsed, formConfig.transformationMappings);
 				Object.assign(initialValue, formData);
 			}
@@ -106,16 +95,11 @@
 		}
 	}
 
-	// Handle form submission
 	function handleFormSubmit(data: Record<string, unknown>) {
 		try {
-			// Convert Form Format -> K8s Format before submitting
 			const k8sData = formDataToK8s(data, formConfig.transformationMappings);
-
-			// Display submitted form data
 			console.log('Form submitted with data:', k8sData);
 
-			// Custom submission logic can be added here
 			if (onSubmit) {
 				onSubmit();
 			} else {
@@ -126,7 +110,6 @@
 		}
 	}
 
-	// Handle mode changes
 	function handleModeChange(newMode: string) {
 		const targetMode = newMode as 'basic' | 'advance';
 
@@ -138,7 +121,6 @@
 		onModeChange?.(mode);
 	}
 
-	// Reactive effects
 	$effect(() => {
 		if (form && mode === 'basic') {
 			syncFormToYaml();
@@ -196,8 +178,6 @@
 			if (mode === 'advance') {
 				syncYamlToForm();
 			}
-			// Always trigger native form submission to let AJV validation run.
-			// The passed 'onSubmit' will be called inside handleFormSubmit ONLY if validation passes.
 			ref?.requestSubmit();
 		}}
 	>

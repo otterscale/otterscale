@@ -12,7 +12,8 @@
 		// Step 1: Basic Metadata
 		'Basic Metadata': {
 			'metadata.namespace': { title: 'Namespace' },
-			'metadata.name': { title: 'Name' }
+			'metadata.name': { title: 'Name' },
+			'metadata.labels.app': { title: 'App Label' },
 		},
 		// Step 2: CronJob Spec
 		'CronJob Spec': {
@@ -42,7 +43,10 @@
 			'spec.jobTemplate.spec.template.spec.containers.command': { title: 'Command' },
 			'spec.jobTemplate.spec.template.spec.containers.args': { title: 'Arguments' },
 			'spec.jobTemplate.spec.template.spec.containers.env': { title: 'Environment Variables' },
-			'spec.jobTemplate.spec.template.spec.containers.resources': { title: 'Resources' },
+			'spec.jobTemplate.spec.template.spec.containers.resources.requests.cpu': { title: 'Requests CPU' },
+			'spec.jobTemplate.spec.template.spec.containers.resources.requests.memory': { title: 'Requests Memory' },
+			'spec.jobTemplate.spec.template.spec.containers.resources.limits.cpu': { title: 'Limits CPU' },
+			'spec.jobTemplate.spec.template.spec.containers.resources.limits.memory': { title: 'Limits Memory' },
 			'spec.jobTemplate.spec.template.spec.containers.imagePullPolicy': {
 				title: 'Image Pull Policy'
 			}

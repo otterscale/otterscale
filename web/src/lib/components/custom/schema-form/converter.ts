@@ -1,4 +1,4 @@
-import { deepMerge, getByPath, setByPath, deleteByPath } from './utils';
+import { deepMerge, deleteByPath,getByPath, setByPath } from './utils';
 
 /** K8s OpenAPI Schema type */
 export interface K8sOpenAPISchema {
@@ -93,10 +93,28 @@ export function buildSchemaFromK8s(
 
 			// Locate in Source
 			if (!currentSource.properties?.[part]) {
-				console.warn(`Path segment "${part}" not found in source schema (full path: ${path})`);
-				break;
+				// Check if current source is a Map (has additionalProperties schema)
+				if (
+					currentSource.type === 'object' &&
+					currentSource.additionalProperties &&
+					typeof currentSource.additionalProperties === 'object'
+				) {
+					// It's a Map, so we are traversing into a key of the map.
+					// The schema for this key is the schema defined in additionalProperties.
+					currentSource = currentSource.additionalProperties as K8sOpenAPISchema;
+					// We successfully "found" the property (conceptually), but it's dynamic.
+					// We continue traversal with this new source.
+					// Note: We don't have a concrete "sourceProp" object for this dynamic key in the original schema's "properties" map,
+					// but currentSource is now pointing to the correct schema for this node.
+				} else {
+					console.warn(`Path segment "${part}" not found in source schema (full path: ${path})`);
+					break;
+				}
+			} else {
+				currentSource = currentSource.properties[part];
 			}
-			const sourceProp = currentSource.properties[part];
+			
+			const sourceProp = currentSource;
 			const isLeaf = i === parts.length - 1;
 
 			// Ensure Target Properties exists
@@ -134,7 +152,7 @@ export function buildSchemaFromK8s(
 
 			// HOISTING LOGIC:
 			// If it is a Map, we hoist it to avoid nested object update issues in the form library.
-			if ((isLeaf || isMap) && isMap) {
+			if (isLeaf && isMap) {
 				// It's a Map. Hoist it.
 				const formPath = path.replace(/\./g, '_'); // e.g. metadata_annotations
 				transformationMappings[path] = formPath;
@@ -181,6 +199,23 @@ export function buildSchemaFromK8s(
 			}
 
 			if (isLeaf) {
+				// SIMPLIFY QUANTITY (oneOf: [string, number]) -> type: string
+				// This prevents the UI from rendering a complex selector for CPU/Memory fields.
+				if (
+					sourceProp.oneOf &&
+					sourceProp.oneOf.some((o: any) => o.type === 'string') &&
+					sourceProp.oneOf.some((o: any) => o.type === 'number' || o.type === 'integer')
+				) {
+					currentUiTarget[part] = currentUiTarget[part] || {};
+					currentTarget.properties[part] = {
+						type: 'string',
+						title: sourceProp.title || '',
+						description: sourceProp.description || ''
+					};
+					// Important: Update sourceProp to point to this new string schema so downstream logic works
+					// However, we just modified target directly, so we should be good.
+				}
+
 				if (Array.isArray(sourceProp.enum)) {
 					currentUiTarget[part]['ui:components'] = { stringField: 'enumField' };
 				} else if (
@@ -195,6 +230,16 @@ export function buildSchemaFromK8s(
 				// Apply custom UI options to Leaf field
 				if (Object.keys(customUiOptions).length > 0) {
 					currentUiTarget[part] = deepMerge(currentUiTarget[part] || {}, customUiOptions);
+				}
+
+				if (options.title) {
+					currentUiTarget[part]['ui:title'] = options.title;
+
+					// Force label to be true if title is provided, to override any implicit hiding
+					currentUiTarget[part]['ui:options'] = deepMerge(
+						currentUiTarget[part]['ui:options'] || {},
+						{ label: true }
+					);
 				}
 			}
 
