@@ -96,14 +96,16 @@
 				</Item.Description>
 				<div class="my-4 grid grid-cols-6 gap-2 text-xs **:text-muted-foreground">
 					{#each [{ key: 'Creation Timestamp', value: new Date(object.metadata.creationTimestamp).toLocaleString('sv-SE') }, { key: 'Generation', value: object.metadata?.generation }, { key: 'Resource Version', value: object.metadata?.resourceVersion }] as item, index (index)}
-						<Item.Root class="p-0">
-							<Item.Content>
-								<Item.Title class="text-xs font-semibold">{item.key}</Item.Title>
-								<Item.Description class="text-xs">
-									{item.value}
-								</Item.Description>
-							</Item.Content>
-						</Item.Root>
+						{#if item.value}
+							<Item.Root class="p-0">
+								<Item.Content>
+									<Item.Title class="text-xs font-semibold">{item.key}</Item.Title>
+									<Item.Description class="text-xs">
+										{item.value}
+									</Item.Description>
+								</Item.Content>
+							</Item.Root>
+						{/if}
 					{/each}
 				</div>
 			</Item.Content>
@@ -118,7 +120,7 @@
 					<div class="relative row-start-1 w-fit">
 						<Label class="self-start p-1 text-xs font-semibold">Labels</Label>
 						<Badge
-							class="absolute -top-1 -right-1 flex size-4 items-center justify-center rounded-full border-background text-[10px]"
+							class="absolute -top-1 -right-1 flex size-4 items-center justify-center rounded-full border-background bg-chart-1 text-[10px]"
 						>
 							{Object.entries(object.metadata?.labels).length}
 						</Badge>
@@ -137,7 +139,7 @@
 					<div class="relative row-start-2 w-fit">
 						<Label class="self-start p-1 text-xs font-semibold">Annotations</Label>
 						<Badge
-							class="absolute -top-1 -right-1 flex size-4 items-center justify-center rounded-full border-background text-[10px]"
+							class="absolute -top-1 -right-1 flex size-4 items-center justify-center rounded-full border-background bg-chart-1 text-[10px]"
 						>
 							{Object.entries(object.metadata?.annotations).length}
 						</Badge>
@@ -147,7 +149,7 @@
 							<Badge variant="outline" class="text-xs">
 								<p class="text-muted-foreground">{key}</p>
 								<Separator orientation="vertical" class="h-1" />
-								<p class="max-w-3xs truncate text-primary">{value}</p>
+								<p class="text-primary">{value}</p>
 							</Badge>
 						{/each}
 					</div>
@@ -158,17 +160,17 @@
 		<div class="grid grid-cols-3 gap-4">
 			<div class="flex h-full flex-col gap-4">
 				<!-- Resource Quota -->
-				<Card.Root class="flex h-full flex-col border-0 bg-muted/50 shadow-none">
+				<Card.Root class="flex h-full flex-col border-0 bg-chart-3/20 shadow-none">
 					{@const resourceQuota = object.spec?.resourceQuota?.hard ?? {}}
 					<Card.Header>
 						<Card.Title>
 							<Item.Root class="p-0">
 								<Item.Media>
-									<Gauge size={20} />
+									<Gauge size={24} />
 								</Item.Media>
 								<Item.Content>
 									<Item.Title>
-										<h3 class="text-sm font-semibold text-foreground">Resource Quota</h3>
+										<h3 class="font-semibold">Resource Quota</h3>
 									</Item.Title>
 								</Item.Content>
 							</Item.Root>
@@ -177,10 +179,12 @@
 					<Card.Content class="flex-1">
 						{#if Object.keys(resourceQuota).length > 0}
 							<Table.Root>
-								<Table.Body>
+								<Table.Body class="[&_td:first-child]:rounded-l-lg [&_td:last-child]:rounded-r-lg">
 									{#each Object.entries(resourceQuota) as [resource, limit], index (index)}
-										<Table.Row class="border-none">
-											<Table.Cell class="text-muted-foreground">{resource}</Table.Cell>
+										<Table.Row class="group border-none">
+											<Table.Cell class="text-muted-foreground group-hover:text-black"
+												>{resource}</Table.Cell
+											>
 											<Table.Cell class="text-end text-primary">{limit}</Table.Cell>
 										</Table.Row>
 									{/each}
@@ -193,16 +197,16 @@
 				</Card.Root>
 
 				<!-- Network Isolation -->
-				<Card.Root class="flex h-full flex-col border-0 bg-muted/50 shadow-none">
+				<Card.Root class="flex h-full flex-col border-0 bg-chart-3/20 shadow-none">
 					<Card.Header>
 						<Card.Title>
 							<Item.Root class="p-0">
 								<Item.Media>
-									<Shield size={20} />
+									<Shield size={24} />
 								</Item.Media>
 								<Item.Content>
 									<Item.Title>
-										<h3 class="text-sm font-semibold text-foreground">Network Isolation</h3>
+										<h3 class="font-semibold">Network Isolation</h3>
 									</Item.Title>
 								</Item.Content>
 							</Item.Root>
@@ -217,9 +221,9 @@
 							<Item.Actions>
 								{@const enabled = object.spec?.networkIsolation?.enabled ?? null}
 								{#if enabled === true}
-									<CircleCheck size={32} />
+									<CircleCheck size={40} class="text-chart-2" />
 								{:else if enabled === false}
-									<X size={32} class="text-destructive" />
+									<X size={40} class="text-destructive" />
 								{:else}
 									null
 								{/if}
@@ -245,7 +249,7 @@
 						{#if allowedNamespaces.length > 0}
 							<div class="flex flex-wrap gap-1">
 								{#each allowedNamespaces as allowedNamespace, index (index)}
-									<Badge variant="outline" class="text-muted-foreground">
+									<Badge variant="secondary" class="text-muted-foreground">
 										<Network class="size-3" />
 										{allowedNamespace}
 									</Badge>
@@ -259,13 +263,13 @@
 			</div>
 
 			<!-- Limit Range -->
-			<Card.Root class="flex h-full flex-col border-0 bg-muted/50 shadow-none">
+			<Card.Root class="flex h-full flex-col border-0 bg-chart-3/20 shadow-none">
 				{@const limits = object.spec?.limitRange?.limits ?? []}
 				<Card.Header>
 					<Card.Title>
 						<Item.Root class="p-0">
 							<Item.Media>
-								<Zap size={20} />
+								<Zap size={24} />
 							</Item.Media>
 							<Item.Content>
 								<Item.Title>
@@ -275,37 +279,47 @@
 						</Item.Root>
 					</Card.Title>
 				</Card.Header>
-				<Card.Content class="-mt-3 flex-1">
+				<Card.Content>
 					{#if limits.length > 0}
 						{#each limits as limit, index (index)}
 							{@const { type, ...thresholds } = limit}
-							<Table.Root class="caption-top">
-								<Table.Caption>
-									<Item.Root class="gap-2 p-1">
-										<Item.Media>
-											{#if type === 'Container'}
-												<Box size={20} />
-											{:else if type === 'Pod'}
-												<Boxes size={20} />
-											{:else if type === 'PersistentVolumeClaim'}
-												<Cylinder size={20} />
-											{/if}
-										</Item.Media>
-										<Item.Content>
-											<Item.Title>
-												<h4 class="text-sm">{type}</h4>
-											</Item.Title>
-										</Item.Content>
+							<Table.Root class="-mt-3 caption-top">
+								<Table.Caption class="text-black">
+									<Item.Root class="justify-between py-0 pl-0">
+										<div class="flex gap-2 p-1">
+											<Item.Media>
+												{#if type === 'Container'}
+													<Box size={16} />
+												{:else if type === 'Pod'}
+													<Boxes size={16} />
+												{:else if type === 'PersistentVolumeClaim'}
+													<Cylinder size={16} />
+												{/if}
+											</Item.Media>
+											<Item.Content>
+												<Item.Title>
+													<h4 class="text-sm">{type}</h4>
+												</Item.Title>
+											</Item.Content>
+										</div>
+										<Item.Actions>
+											{Object.keys(thresholds).length}
+										</Item.Actions>
 									</Item.Root>
 								</Table.Caption>
-								<Table.Body>
+								<Table.Body class="[&_td:first-child]:rounded-l-lg [&_td:last-child]:rounded-r-lg">
 									{#each Object.entries(thresholds) as [key, values], index (index)}
-										<Table.Row class="border-none">
-											<Table.Cell class="text-muted-foreground">{key}</Table.Cell>
-											<Table.Cell class="text-end text-primary">
+										<Table.Row class="group border-none">
+											<Table.Cell class="text-muted-foreground group-hover:text-black"
+												>{key}</Table.Cell
+											>
+											<Table.Cell class="text-end ">
 												{#if values && typeof values === 'object'}
 													{#each Object.entries(values) as [key, value], index (index)}
-														<Badge variant="outline" class="mr-1 bg-secondary/30 text-xs">
+														<Badge
+															variant="outline"
+															class="mr-1 bg-secondary/30 text-xs group-hover:border-primary/30 group-hover:bg-muted-foreground/30"
+														>
 															<span class="text-muted-foreground">{key}</span>
 															<Separator orientation="vertical" class="mx-1 h-1" />
 															<span class="text-primary">{value}</span>
@@ -327,17 +341,17 @@
 
 			<div class="flex h-full flex-col gap-4">
 				<!-- Users -->
-				<Card.Root class="flex h-full flex-col border-0 bg-muted/50 shadow-none">
+				<Card.Root class="flex h-full flex-col border-0 bg-chart-3/20 shadow-none">
 					{@const users = object.spec?.users ?? []}
 					<Card.Header>
 						<Card.Title>
 							<Item.Root class="p-0">
 								<Item.Media>
-									<Users size={20} />
+									<Users size={24} />
 								</Item.Media>
 								<Item.Content>
 									<Item.Title>
-										<h3 class="text-sm font-semibold text-foreground">Users</h3>
+										<h3 class="font-semibold">Users</h3>
 									</Item.Title>
 								</Item.Content>
 							</Item.Root>
@@ -346,14 +360,14 @@
 							<Badge>{users.length}</Badge>
 						</Card.Action>
 					</Card.Header>
-					<Card.Content class="flex flex-wrap gap-2">
+					<Card.Content class="flex flex-wrap">
 						{#if users.length > 0}
 							{#each users as user, index (index)}
-								<Item.Root class="w-fit hover:underline">
+								<Item.Root class="group w-fit hover:bg-muted/30 hover:underline">
 									<Item.Content>
 										<Item.Title>
 											{user.name}
-											<Badge variant="outline" class="text-xs">
+											<Badge variant="secondary" class="text-xs">
 												{user.role}
 											</Badge>
 										</Item.Title>
