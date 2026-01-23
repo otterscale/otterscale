@@ -103,6 +103,7 @@
 			return;
 		}
 		activeWorkspace = workspaces[index];
+		// TODO: Add logic to update global workspace state or navigate to the selected workspace's route.
 	}
 </script>
 

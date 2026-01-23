@@ -16,7 +16,7 @@ export const load: PageServerLoad = async ({ locals, cookies }) => {
 
 	const logoutUrl = new URL(`${env.KEYCLOAK_REALM_URL}/protocol/openid-connect/logout`);
 	logoutUrl.searchParams.set('id_token_hint', locals.session.tokenSet.idToken);
-	logoutUrl.searchParams.set('post_logout_redirect_uri', publicEnv.PUBLIC_WEB_URL);
+	logoutUrl.searchParams.set('post_logout_redirect_uri', publicEnv.PUBLIC_WEB_URL ?? '');
 
-	redirect(302, logoutUrl.toString());
+	throw redirect(302, logoutUrl.toString());
 };
