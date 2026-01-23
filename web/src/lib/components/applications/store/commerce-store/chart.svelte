@@ -46,8 +46,8 @@
 	<Sheet.Content side="right" class="min-w-[23vw]">
 		<Sheet.Header class="flex items-start justify-between bg-muted p-6 pb-2">
 			<Sheet.Title class="relative flex w-full items-start gap-2">
-				<Avatar.Root class="h-12 w-12">
-					<Avatar.Image src={chart.icon} class="object-contain" />
+				<Avatar.Root class="size-12 overflow-hidden rounded-none">
+					<Avatar.Image src={chart.icon} class="h-full w-full object-contain" />
 					<Avatar.Fallback>
 						<Icon icon={fuzzLogosIcon(chart.name, 'fluent-emoji-flat:otter')} class="size-12" />
 					</Avatar.Fallback>

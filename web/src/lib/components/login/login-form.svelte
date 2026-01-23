@@ -37,7 +37,7 @@
 		</div>
 
 		<Field>
-			<Button href={resolve('/login/keycloak')}>
+			<Button href={resolve('/login/keycloak')} rel="external">
 				<LogInIcon />
 				{m.login()}
 			</Button>

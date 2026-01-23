@@ -73,6 +73,7 @@ func (m *Kubernetes) dynamic(ctx context.Context, cluster string) (*dynamic.Dyna
 
 	userConfig.Impersonate = rest.ImpersonationConfig{
 		UserName: userSub,
+		Groups:   []string{"system:authenticated"},
 	}
 
 	return dynamic.NewForConfig(userConfig)

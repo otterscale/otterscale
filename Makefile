@@ -34,6 +34,12 @@ proto:
 		--es_opt=target=ts \
 		$(PROTO_FILES)
 
+	protoc -I=. -I=third_party -I=third_party/gnostic \
+		--es_out=web/packages/types/src/lib \
+		--es_opt=target=ts \
+		api/annotations.proto \
+		api/resource/v1/resource.proto
+
 .PHONY: openapi
 # generate openapi.yaml
 openapi:

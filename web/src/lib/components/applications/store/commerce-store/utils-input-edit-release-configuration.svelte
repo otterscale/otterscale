@@ -86,18 +86,38 @@
 					<AlertDialog.Title>
 						{m.edit_release_configuration()}
 					</AlertDialog.Title>
-					<AlertDialog.Description class="flex items-center gap-1">
-						{m.edit_release_configuration_documentation()}
-						<!-- eslint-disable svelte/no-navigation-without-resolve -->
-						<a
-							href={chartRef}
-							target="_blank"
-							rel="noopener noreferrer"
-							class="flex items-center gap-1 underline hover:no-underline"
-						>
-							{chartRef}
-						</a>
-						<!-- eslint-enable svelte/no-navigation-without-resolve -->
+					<AlertDialog.Description>
+						<div class="flex items-center gap-1">
+							<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+							{@html m.edit_release_configuration_documentation({
+								documentation: `
+									<a
+										href=${chartRef}
+										target="_blank"
+										rel="noopener noreferrer"
+										class="underline hover:no-underline"
+									>
+										${m.documentation()}
+									</a>
+								`
+							})}
+						</div>
+
+						<div class="flex items-center gap-1">
+							<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+							{@html m.edit_release_configuration_hint({
+								documentation: `
+									<a
+										href="https://helm.sh/docs/helm/helm_install/"
+										target="_blank"
+										rel="noopener noreferrer"
+										class="underline hover:no-underline"
+									>
+										${m.documentation()}
+									</a>
+								`
+							})}
+						</div>
 					</AlertDialog.Description>
 				</div>
 				<div class="flex items-center gap-2">

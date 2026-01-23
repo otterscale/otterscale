@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { CopyButton } from '$lib/components/custom/copy-button';
-	import { cn } from '$lib/utils';
+	import { cn } from '$lib/utils.js';
 
 	import { useCodeCopyButton } from './code.svelte.js';
 	import type { CodeCopyButtonProps } from './types.js';
