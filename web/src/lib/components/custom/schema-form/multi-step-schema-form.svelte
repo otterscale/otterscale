@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Check } from '@lucide/svelte';
 	import type { FormState } from '@sjsf/form';
-	import { Content, createForm, Form, getValueSnapshot, setFormContext } from '@sjsf/form';
+	import { createForm, getValueSnapshot } from '@sjsf/form';
 	import { setThemeContext } from '@sjsf/shadcn4-theme';
 	import * as components from '@sjsf/shadcn4-theme/new-york';
 	import yaml from 'js-yaml';
@@ -20,6 +20,7 @@
 		type PathOptions,
 		type SchemaFormConfig
 	} from './converter';
+	import SchemaFormStep from './SchemaFormStep.svelte';
 	import * as defaults from './defaults';
 
 	/** Grouped fields: Record<StepName, Record<Path, PathOptions>> */
@@ -63,7 +64,6 @@
 	let currentStep = $state(0);
 	let masterData = $state<Record<string, unknown>>({});
 	let stepForms = $state<StepFormData[]>([]);
-	let formRefs = $state<(HTMLFormElement | undefined)[]>([]);
 	let advanceYaml = $state('');
 	let yamlParseError = $state<string | null>(null);
 
@@ -101,14 +101,11 @@
 		}
 
 		stepForms = forms;
-		formRefs = new Array(forms.length).fill(undefined);
 
 		// Initialize masterData with initial data
 		if (initialData) {
 			masterData = { ...initialData };
 		}
-
-		syncMasterDataToYaml();
 	});
 
 	// Handle individual step submission
@@ -157,13 +154,7 @@
 		}
 	}
 
-	// Submit current step form
-	function submitCurrentStep() {
-		const ref = formRefs[currentStep];
-		if (ref) {
-			ref.requestSubmit();
-		}
-	}
+
 
 	// Deep merge utility
 	function deepMerge(
@@ -324,32 +315,26 @@
 			<!-- Step Content -->
 			<div class="rounded-lg border bg-card p-6">
 				{#each stepForms as stepForm, index (stepForm.stepName)}
-					{#if currentStep === index}
-						<div>
-							<h3 class="mb-4 text-lg font-semibold">{stepForm.stepName}</h3>
+					<div class={currentStep === index ? 'block' : 'hidden'}>
+						{#key stepForm.stepName}
+							<SchemaFormStep form={stepForm.form}>
+								<div class="mt-6 flex justify-between">
+									<Button variant="outline" onclick={goBack} disabled={isFirstStep} type="button">
+										← Previous
+									</Button>
 
-							{#key stepForm.stepName}
-								{void setFormContext(stepForm.form)}
-								<Form bind:ref={formRefs[index]}>
-									<Content />
-								</Form>
-							{/key}
-						</div>
-					{/if}
+									<div class="flex gap-2">
+										{#if !isLastStep}
+											<Button type="submit">Next →</Button>
+										{:else}
+											<Button type="submit">Submit</Button>
+										{/if}
+									</div>
+								</div>
+							</SchemaFormStep>
+						{/key}
+					</div>
 				{/each}
-			</div>
-
-			<!-- Navigation Buttons -->
-			<div class="mt-6 flex justify-between">
-				<Button variant="outline" onclick={goBack} disabled={isFirstStep}>← Previous</Button>
-
-				<div class="flex gap-2">
-					{#if !isLastStep}
-						<Button onclick={submitCurrentStep}>Next →</Button>
-					{:else}
-						<Button onclick={submitCurrentStep}>Submit</Button>
-					{/if}
-				</div>
 			</div>
 		</Tabs.Content>
 
