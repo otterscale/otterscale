@@ -3,18 +3,19 @@
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import Box from '@lucide/svelte/icons/box';
 	import CheckCircle2 from '@lucide/svelte/icons/check-circle-2';
+	import CircleCheck from '@lucide/svelte/icons/check-circle-2';
 	import Clock from '@lucide/svelte/icons/clock';
-	import Gauge from '@lucide/svelte/icons/gauge';
 	import Dot from '@lucide/svelte/icons/dot';
 	import File from '@lucide/svelte/icons/file';
+	import Gauge from '@lucide/svelte/icons/gauge';
 	import Layers from '@lucide/svelte/icons/layers';
 	import Network from '@lucide/svelte/icons/network';
 	import Plus from '@lucide/svelte/icons/plus';
-	import Zap from '@lucide/svelte/icons/zap';
 	import Shield from '@lucide/svelte/icons/shield';
 	import Tag from '@lucide/svelte/icons/tag';
 	import Users from '@lucide/svelte/icons/users';
 	import X from '@lucide/svelte/icons/x';
+	import Zap from '@lucide/svelte/icons/zap';
 	import { getContext, onDestroy, onMount } from 'svelte';
 
 	import { page } from '$app/state';
@@ -28,10 +29,9 @@
 	import Separator from '$lib/components/ui/separator/separator.svelte';
 	import { Switch } from '$lib/components/ui/switch';
 	import * as Table from '$lib/components/ui/table/index.js';
-	import CircleCheck from '@lucide/svelte/icons/check-circle-2';
 
 	const cluster = $derived(page.params.cluster ?? '');
-	const kind = $derived(page.params.kind ?? '');
+	// const kind = $derived(page.params.kind ?? '');
 	const resource = $derived(page.params.resource ?? '');
 	const group = $derived(page.url.searchParams.get('group') ?? '');
 	const version = $derived(page.url.searchParams.get('version') ?? '');
@@ -42,9 +42,6 @@
 
 	let object = $state<any>(undefined);
 	let isMounted = $state(false);
-	let isEditing = $state(false);
-	let editedObject = $state<any>(undefined);
-	let newNamespace = $state('');
 	let isGetting = $state(false);
 	let isDestroyed = false;
 
@@ -61,7 +58,7 @@
 				name: `user-9c0c49d6-fc63-478e-86a4-0d1a907c202c`
 			});
 			object = response.object;
-			editedObject = structuredClone(response.object);
+			console.log(object);
 		} catch (error) {
 			console.error('Failed to get resource:', error);
 		} finally {
@@ -76,47 +73,9 @@
 	onDestroy(() => {
 		isDestroyed = true;
 	});
-
-	function handleEdit() {
-		editedObject = structuredClone(object);
-		isEditing = true;
-	}
-	function handleCancel() {
-		editedObject = structuredClone(object);
-		isEditing = false;
-		newNamespace = '';
-	}
-	function handleSave() {
-		object = structuredClone(editedObject);
-		isEditing = false;
-		newNamespace = '';
-		// 可加上 API 更新呼叫
-	}
-	function handleAddNamespace() {
-		if (
-			newNamespace.trim() &&
-			!editedObject?.spec?.networkIsolation?.allowedNamespaces?.includes(newNamespace.trim())
-		) {
-			editedObject.spec.networkIsolation.allowedNamespaces = [
-				...(editedObject.spec.networkIsolation.allowedNamespaces || []),
-				newNamespace.trim()
-			];
-			newNamespace = '';
-		}
-	}
-	function handleRemoveNamespace(ns: string) {
-		editedObject.spec.networkIsolation.allowedNamespaces =
-			editedObject.spec.networkIsolation.allowedNamespaces.filter((n: string) => n !== ns);
-	}
-
-	const isReady = $derived(
-		object?.status?.conditions?.some(
-			(condition: JsonValue) => condition?.type === 'Ready' && condition?.status === 'True'
-		)
-	);
 </script>
 
-{#if !isMounted}
+{#if isMounted}
 	<!-- Header -->
 	<div class="flex flex-col space-y-4">
 		<Item.Root class="w-full">
@@ -128,7 +87,7 @@
 			<Item.Content>
 				<Item.Title class="font-mono">
 					<h4 class="semibold">
-						{object.kind}
+						<!-- {object.kind} -->
 					</h4>
 					<h6 class="text-muted-foreground">
 						{object.apiVersion}
@@ -140,20 +99,13 @@
 					</h1>
 				</Item.Description>
 				<div class="flex flex-wrap items-center gap-1 font-mono text-xs **:text-muted-foreground">
-					<span class="flex items-center gap-1">
-						Creation Timestamp
-						{new Date(object.metadata.creationTimestamp).toLocaleString('sv-SE')}
-					</span>
-					<Dot size={12} />
-					<span class="flex items-center gap-1">
-						Generation
-						{object.metadata.generation}
-					</span>
-					<Dot size={12} />
-					<span class="flex items-center gap-1">
-						Resource Version
-						{object.metadata.resourceVersion}
-					</span>
+					{#each [{ key: 'Creation Timestamp', value: new Date(object.metadata.creationTimestamp).toLocaleString('sv-SE') }, { key: 'Generation', value: object.metadata?.generation }, { key: 'Resource Version', value: object.metadata?.resourceVersion }] as item, index (index)}
+						<span class="flex items-center gap-1">
+							{item.key}
+							{item.value}
+						</span>
+						<Dot size={12} class="last:hidden" />
+					{/each}
 				</div>
 			</Item.Content>
 			<Item.Actions>
@@ -215,6 +167,7 @@
 		<div class="flex h-full flex-col gap-4">
 			<!-- Resource Quota -->
 			<Card.Root class="flex h-full flex-col border-0 bg-muted/50 shadow-none">
+				{@const resourceQuota = object.spec?.resourceQuota?.hard ?? {}}
 				<Card.Header>
 					<Card.Title>
 						<Item.Root class="p-0">
@@ -229,20 +182,24 @@
 						</Item.Root>
 					</Card.Title>
 					<Card.Action>
-						<Badge>{Object.keys(object.spec.resourceQuota?.hard).length}</Badge>
+						<Badge>{Object.keys(resourceQuota).length}</Badge>
 					</Card.Action>
 				</Card.Header>
 				<Card.Content class="flex-1">
-					<Table.Root>
-						<Table.Body>
-							{#each Object.entries(object.spec.resourceQuota?.hard) as [resource, limit]}
-								<Table.Row class="border-none">
-									<Table.Cell class="text-muted-foreground">{resource}</Table.Cell>
-									<Table.Cell class="text-end font-mono text-primary">{limit}</Table.Cell>
-								</Table.Row>
-							{/each}
-						</Table.Body>
-					</Table.Root>
+					{#if Object.keys(resourceQuota).length > 0}
+						<Table.Root>
+							<Table.Body>
+								{#each Object.entries(resourceQuota) as [resource, limit], index (index)}
+									<Table.Row class="border-none">
+										<Table.Cell class="text-muted-foreground">{resource}</Table.Cell>
+										<Table.Cell class="text-end font-mono text-primary">{limit}</Table.Cell>
+									</Table.Row>
+								{/each}
+							</Table.Body>
+						</Table.Root>
+					{:else}
+						null
+					{/if}
 				</Card.Content>
 			</Card.Root>
 
@@ -269,10 +226,13 @@
 							<Item.Description>Strict network isolation mode</Item.Description>
 						</Item.Content>
 						<Item.Actions>
-							{#if object.spec.networkIsolation.enabled}
+							{@const enabled = object.spec?.networkIsolation?.enabled ?? null}
+							{#if enabled === true}
 								<CircleCheck size={32} />
-							{:else}
+							{:else if enabled === false}
 								<X size={32} class="text-destructive" />
+							{:else}
+								null
 							{/if}
 						</Item.Actions>
 					</Item.Root>
@@ -282,6 +242,7 @@
 
 		<!-- Limit Range -->
 		<Card.Root class="flex h-full flex-col border-0 bg-muted/50 shadow-none">
+			{@const limits = object.spec?.limitRange?.limits ?? []}
 			<Card.Header>
 				<Card.Title>
 					<Item.Root class="p-0">
@@ -296,46 +257,51 @@
 					</Item.Root>
 				</Card.Title>
 				<Card.Action>
-					<Badge>{Object.keys(object.spec.limitRange?.limits).length}</Badge>
+					<Badge>{limits.length}</Badge>
 				</Card.Action>
 			</Card.Header>
 			<Card.Content class="flex-1">
-				{#each object.spec.limitRange?.limits as limit, index (index)}
-					<Table.Root class="caption-top">
-						<Table.Caption class="text-start">
-							<h4 class="font-mono text-xs font-black">{limit.type}</h4>
-						</Table.Caption>
-						<Table.Body>
-							{#each Object.entries(limit) as [key, value]}
-								{#if key !== 'type'}
-									<Table.Row class="border-none">
-										<Table.Cell class="text-muted-foreground">{key}</Table.Cell>
-										<Table.Cell class="text-end font-mono text-primary">
-											{#if typeof value === 'string'}
-												{value}
-											{:else if typeof value === 'object' && value}
-												{#each Object.entries(value) as [k, v]}
-													<Badge variant="outline" class="mr-1 bg-secondary/30 font-mono text-xs">
-														<span class="text-muted-foreground">{k}</span>
-														<Separator orientation="vertical" class="mx-1 h-1" />
-														<span class="text-primary">{v}</span>
-													</Badge>
-												{/each}
-											{/if}
-										</Table.Cell>
-									</Table.Row>
-								{/if}
-							{/each}
-						</Table.Body>
-					</Table.Root>
-					<Separator class="my-2 last:hidden" />
-				{/each}
+				{#if limits.length > 0}
+					{#each limits as limit, index (index)}
+						<Table.Root class="caption-top">
+							<Table.Caption class="text-start">
+								<h4 class="font-mono text-xs font-black">{limit?.type}</h4>
+							</Table.Caption>
+							<Table.Body>
+								{#each Object.entries(limit) as [target, threshold], index (index)}
+									{#if target !== 'type'}
+										<Table.Row class="border-none">
+											<Table.Cell class="text-muted-foreground">{target}</Table.Cell>
+											<Table.Cell class="text-end font-mono text-primary">
+												{#if typeof threshold === 'string'}
+													{threshold}
+												{:else if typeof threshold === 'object' && threshold}
+													{#each Object.entries(threshold) as [key, value], index (index)}
+														<Badge variant="outline" class="mr-1 bg-secondary/30 font-mono text-xs">
+															<span class="text-muted-foreground">{key}</span>
+															<Separator orientation="vertical" class="mx-1 h-1" />
+															<span class="text-primary">{value}</span>
+														</Badge>
+													{/each}
+												{/if}
+											</Table.Cell>
+										</Table.Row>
+									{/if}
+								{/each}
+							</Table.Body>
+						</Table.Root>
+						<Separator class="my-2 last:hidden" />
+					{/each}
+				{:else}
+					null
+				{/if}
 			</Card.Content>
 		</Card.Root>
 
 		<div class="flex h-full flex-col gap-4">
-			<!-- Allowed Namespaces (Resource Quota style) -->
+			<!-- Allowed Namespaces -->
 			<Card.Root class="flex h-full flex-col border-0 bg-muted/50 shadow-none">
+				{@const allowedNamespaces = object.spec?.networkIsolation?.allowedNamespaces ?? []}
 				<Card.Header>
 					<Card.Title>
 						<Item.Root class="p-0">
@@ -350,22 +316,27 @@
 						</Item.Root>
 					</Card.Title>
 					<Card.Action>
-						<Badge>{object.spec.networkIsolation.allowedNamespaces.length}</Badge>
+						<Badge>{allowedNamespaces.length}</Badge>
 					</Card.Action>
 				</Card.Header>
 				<Card.Content class="flex-1">
-					<div class="flex flex-wrap gap-1">
-						{#each object.spec.networkIsolation.allowedNamespaces as namespace}
-							<Badge variant="outline" class="text-muted-foreground">
-								<Network class="size-3" />
-								{namespace}
-							</Badge>
-						{/each}
-					</div>
+					{#if allowedNamespaces.length > 0}
+						<div class="flex flex-wrap gap-1">
+							{#each allowedNamespaces as allowedNamespace, index (index)}
+								<Badge variant="outline" class="text-muted-foreground">
+									<Network class="size-3" />
+									{allowedNamespace}
+								</Badge>
+							{/each}
+						</div>
+					{:else}
+						null
+					{/if}
 				</Card.Content>
 			</Card.Root>
 			<!-- Users -->
 			<Card.Root class="flex h-full flex-col border-0 bg-muted/50 shadow-none">
+				{@const users = object.spec?.users ?? []}
 				<Card.Header>
 					<Card.Title>
 						<Item.Root class="p-0">
@@ -380,27 +351,31 @@
 						</Item.Root>
 					</Card.Title>
 					<Card.Action>
-						<Badge>{object.spec.users.length}</Badge>
+						<Badge>{users.length}</Badge>
 					</Card.Action>
 				</Card.Header>
 				<Card.Content class="flex-1">
-					{#each object.spec.users as user}
-						<Item.Root>
-							<Item.Content>
-								<Item.Title>
-									{user.name}
-								</Item.Title>
-								<Item.Description>
-									{user.subject}
-								</Item.Description>
-							</Item.Content>
-							<Item.Actions>
-								<Badge variant="outline" class="font-mono text-xs">
-									{user.role}
-								</Badge>
-							</Item.Actions>
-						</Item.Root>
-					{/each}
+					{#if users.length > 0}
+						{#each users as user, index (index)}
+							<Item.Root>
+								<Item.Content>
+									<Item.Title>
+										{user.name}
+									</Item.Title>
+									<Item.Description class="text-xs">
+										{user.subject}
+									</Item.Description>
+								</Item.Content>
+								<Item.Actions>
+									<Badge variant="outline" class="font-mono text-xs">
+										{user.role}
+									</Badge>
+								</Item.Actions>
+							</Item.Root>
+						{/each}
+					{:else}
+						null
+					{/if}
 				</Card.Content>
 			</Card.Root>
 		</div>
@@ -450,7 +425,7 @@
 										<h1 class="text-sm font-medium">{resource.kind}</h1>
 										<p class="font-mono text-xs text-muted-foreground">{resource.apiVersion}</p>
 									</Item.Title>
-									<Item.Description>
+									<Item.Description class="text-xs">
 										{resource.name}
 									</Item.Description>
 								</Item.Content>
