@@ -70,7 +70,7 @@
 </script>
 
 {#if isMounted}
-	<div class="flex flex-col space-y-8">
+	<div class="space-y-8 pb-8">
 		<!-- Header -->
 		<Item.Root class="w-full space-y-2 p-0">
 			<Item.Media>
@@ -78,7 +78,7 @@
 					<Layers class="size-8 text-primary" />
 				</div>
 			</Item.Media>
-			<Item.Content class="space-y-2">
+			<Item.Content>
 				<Item.Title>
 					<h1 class="text-2xl font-bold text-foreground">
 						{object.metadata?.name}
@@ -94,7 +94,7 @@
 						</h6>
 					</div>
 				</Item.Description>
-				<div class="grid grid-cols-6 gap-2 text-xs **:text-muted-foreground">
+				<div class="my-4 grid grid-cols-6 gap-2 text-xs **:text-muted-foreground">
 					{#each [{ key: 'Creation Timestamp', value: new Date(object.metadata.creationTimestamp).toLocaleString('sv-SE') }, { key: 'Generation', value: object.metadata?.generation }, { key: 'Resource Version', value: object.metadata?.resourceVersion }] as item, index (index)}
 						<Item.Root class="p-0">
 							<Item.Content>
@@ -125,7 +125,7 @@
 					</div>
 					<div class="row-start-1 flex flex-wrap gap-2">
 						{#each Object.entries(object.metadata?.labels) as [key, value], index (index)}
-							<Badge variant="outline" class="bg-secondary/30 text-xs">
+							<Badge variant="outline" class="text-xs">
 								<p class="text-muted-foreground">{key}</p>
 								<Separator orientation="vertical" class="h-1" />
 								<p class="text-primary">{value}</p>
@@ -144,7 +144,7 @@
 					</div>
 					<div class="row-start-2 flex flex-wrap gap-2">
 						{#each Object.entries(object.metadata?.annotations) as [key, value], index (index)}
-							<Badge variant="outline" class="bg-secondary/30 text-xs">
+							<Badge variant="outline" class="text-xs">
 								<p class="text-muted-foreground">{key}</p>
 								<Separator orientation="vertical" class="h-1" />
 								<p class="max-w-3xs truncate text-primary">{value}</p>
