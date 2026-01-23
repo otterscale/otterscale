@@ -133,6 +133,8 @@
 
 	// Handle final submission
 	async function handleFinalSubmit() {
+		// Ensure we have the latest data from all steps, as user might have jumped around
+		collectAllFormData();
 		console.log('Final submission with data:', masterData);
 
 		if (onSubmit) {
@@ -147,11 +149,9 @@
 		}
 	}
 
-	// Navigate to specific step (only if already visited)
+	// Navigate to specific step
 	function goToStep(index: number) {
-		if (index <= currentStep) {
-			currentStep = index;
-		}
+		currentStep = index;
 	}
 
 
@@ -274,7 +274,7 @@
 							<button
 								type="button"
 								class={cn(
-									'flex h-10 w-10 items-center justify-center rounded-full border-2 text-sm font-medium transition-all',
+									'flex h-10 w-10 items-center justify-center rounded-full border-2 text-sm font-medium transition-all hover:border-primary hover:text-primary',
 									index < currentStep
 										? 'border-primary bg-primary text-primary-foreground'
 										: index === currentStep
@@ -282,7 +282,6 @@
 											: 'border-muted bg-muted text-muted-foreground'
 								)}
 								onclick={() => goToStep(index)}
-								disabled={index > currentStep}
 							>
 								{#if index < currentStep}
 									<Check class="h-5 w-5" />
