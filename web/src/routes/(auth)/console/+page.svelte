@@ -8,16 +8,15 @@
 	import { m } from '$lib/paraglide/messages';
 	import { cn } from '$lib/utils';
 
-	const STORAGE_KEY = 'tutorial_version';
+	const STORAGE_KEY = 'otterscale_tutorial';
 	const sidebar = useSidebar();
 
 	onMount(() => {
-		const seenVersion = localStorage.getItem(STORAGE_KEY);
+		const hasSeenTutorial = localStorage.getItem(STORAGE_KEY);
+		if (hasSeenTutorial) return;
 
-		if (seenVersion !== version) {
-			startTour();
-			localStorage.setItem(STORAGE_KEY, version);
-		}
+		startTour();
+		localStorage.setItem(STORAGE_KEY, 'true');
 	});
 </script>
 
