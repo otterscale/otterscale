@@ -56,19 +56,15 @@
 		try {
 			const response = await scopeClient.listScopes({});
 			scopes = response.scopes.filter((scope) => scope.name !== 'cos');
-			// TODO: scopes is empty
-			if (scopes.length > 0) {
-				activeScope = scopes[0].name;
-			}
 		} catch (error) {
 			console.error('Failed to fetch scopes:', error);
 		}
 	}
 
-	async function fetchWorkspaces() {
+	async function fetchWorkspaces(cluster: string) {
 		try {
 			const response = await resourceClient.list({
-				cluster: activeScope,
+				cluster: cluster,
 				group: 'tenant.otterscale.io',
 				version: 'v1alpha1',
 				resource: 'workspaces',
@@ -80,24 +76,21 @@
 		}
 	}
 
-	async function onValueChange(name: string) {
-		const scope = scopes.find((s) => s.name === name);
+	async function onValueChange(cluster: string) {
+		const scope = scopes.find((s) => s.name === cluster);
 		if (!scope) return;
 
+		await fetchWorkspaces(cluster);
 		await goto(resolve('/(auth)/scope/[scope]', { scope: scope.name }));
 		toast.success(m.switch_scope({ name: scope.name }));
 	}
 
-	let isMounted = $state(false);
-	onMount(async () => {
-		try {
-			await fetchScopes();
-			await fetchWorkspaces();
+	async function onHomeClick() {
+		activeScope = '';
+	}
 
-			isMounted = true;
-		} catch (error) {
-			console.error('Failed to initialize:', error);
-		}
+	onMount(async () => {
+		await fetchScopes();
 	});
 </script>
 
@@ -108,7 +101,7 @@
 <Sidebar.Provider>
 	<Sidebar.Root collapsible="icon" variant="inset" class="p-3">
 		<Sidebar.Header>
-			{#if isMounted}
+			{#if activeScope}
 				<WorkspaceSwitcher {workspaces} user={data.user} />
 			{:else}
 				<div class="flex h-12 w-full items-center gap-2 overflow-hidden rounded-md p-2">
@@ -121,8 +114,8 @@
 			{/if}
 		</Sidebar.Header>
 		<Sidebar.Content class="gap-2">
-			<NavOverview items={navData.overview} />
-			{#if isMounted}
+			{#if activeScope}
+				<NavOverview items={navData.overview} />
 				{#if next}
 					<NavMain label="AI Studio" items={navData.aiStudio} />
 					<NavMain label="Applications" items={navData.applications} />
@@ -172,12 +165,14 @@
 			variant="link"
 			onclick={() => (next = !next)}
 		>
-			{#if next}
-				<ChevronLeftIcon class="size-3.5" />
-				{m.switch_to_classic()}
-			{:else}
-				<ZapIcon class="size-3.5" />
-				{m.try_next_version()}
+			{#if activeScope}
+				{#if next}
+					<ChevronLeftIcon class="size-3.5" />
+					{m.switch_to_classic()}
+				{:else}
+					<ZapIcon class="size-3.5" />
+					{m.try_next_version()}
+				{/if}
 			{/if}
 		</Button>
 		<NavSecondary />
@@ -232,7 +227,7 @@
 						</DropdownMenu.Group>
 					</DropdownMenu.Content>
 				</DropdownMenu.Root>
-				<Button variant="ghost" size="icon" class="size-7" href="/">
+				<Button variant="ghost" size="icon" class="size-7" href="/" onclick={onHomeClick}>
 					<HouseIcon />
 					<span class="sr-only">Back to Home</span>
 				</Button>
