@@ -44,5 +44,5 @@ export const load: PageServerLoad = async ({ locals }) => {
 		throw redirect(307, resolve('/login'));
 	}
 
-	throw redirect(307, resolve('/(auth)/scopes'));
+	throw redirect(307, resolve('/(auth)/console'));
 };

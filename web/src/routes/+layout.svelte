@@ -40,7 +40,7 @@
 {/snippet}
 
 <ModeWatcher />
-<Toaster closeButton expand richColors {loadingIcon} />
+<Toaster expand richColors {loadingIcon} />
 
 <div class="app">
 	<main>
