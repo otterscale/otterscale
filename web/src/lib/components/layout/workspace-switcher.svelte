@@ -201,7 +201,7 @@
 				{/snippet}
 			</DropdownMenu.Trigger>
 			<DropdownMenu.Content
-				class="w-(--bits-dropdown-menu-anchor-width) min-w-64 rounded-lg"
+				class="w-(--bits-dropdown-menu-anchor-width) min-w-56 rounded-lg"
 				align="start"
 				side={sidebar.isMobile ? 'bottom' : 'right'}
 				sideOffset={4}
@@ -210,12 +210,12 @@
 				{#each workspaces as workspace, index (workspace.metadata?.name)}
 					{@const WorkspaceIcon = getWorkspaceIcon(workspace.metadata?.name)}
 					<DropdownMenu.Item onSelect={() => onSelect(index)} class="gap-2 p-2">
-						<div class="flex size-8 items-center justify-center rounded-md border">
-							<WorkspaceIcon class="size-4 shrink-0" />
+						<div class="flex size-6 items-center justify-center rounded-md border">
+							<WorkspaceIcon class="size-3 shrink-0" />
 						</div>
-						<div class="grid flex-1 text-start text-sm leading-tight">
+						<div class="grid flex-1 text-start text-xs leading-tight">
 							<span class="truncate font-medium">{workspace.metadata?.name}</span>
-							<span class="truncate text-xs text-muted-foreground"
+							<span class="truncate text-[10px] text-muted-foreground"
 								>{workspace.spec.users.find((u) => u.subject === user.sub)?.role}</span
 							>
 						</div>
