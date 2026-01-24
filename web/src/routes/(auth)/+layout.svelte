@@ -10,6 +10,7 @@
 
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
+	import { page } from '$app/state';
 	import { ResourceService } from '$lib/api/resource/v1/resource_pb';
 	import { type Scope, ScopeService } from '$lib/api/scope/v1/scope_pb';
 	import {
@@ -47,7 +48,7 @@
 	const scopeClient = createClient(ScopeService, transport);
 	const resourceClient = createClient(ResourceService, transport);
 
-	let activeScope = $state('');
+	let activeScope = $state(page.params.scope ?? '');
 	let scopes = $state<Scope[]>([]);
 	let workspaces = $state<TenantOtterscaleIoV1Alpha1Workspace[]>([]);
 	let next = $state(false);
@@ -77,20 +78,24 @@
 	}
 
 	async function onValueChange(cluster: string) {
-		const scope = scopes.find((s) => s.name === cluster);
-		if (!scope) return;
-
 		await fetchWorkspaces(cluster);
-		await goto(resolve('/(auth)/scope/[scope]', { scope: scope.name }));
-		toast.success(m.switch_scope({ name: scope.name }));
+		await goto(resolve('/(auth)/scope/[scope]', { scope: cluster }));
+		toast.success(m.switch_scope({ name: cluster }));
 	}
 
 	async function onHomeClick() {
 		activeScope = '';
 	}
 
+	let isMounted = $state(false);
 	onMount(async () => {
 		await fetchScopes();
+
+		if (activeScope) {
+			await fetchWorkspaces(activeScope);
+		}
+
+		isMounted = true;
 	});
 </script>
 
@@ -100,21 +105,11 @@
 
 <Sidebar.Provider>
 	<Sidebar.Root collapsible="icon" variant="inset" class="p-3">
-		<Sidebar.Header>
-			{#if activeScope}
+		{#if activeScope && isMounted}
+			<Sidebar.Header>
 				<WorkspaceSwitcher {workspaces} user={data.user} />
-			{:else}
-				<div class="flex h-12 w-full items-center gap-2 overflow-hidden rounded-md p-2">
-					<Skeleton class="size-8 bg-foreground/10" />
-					<div class="space-y-2">
-						<Skeleton class="h-3 w-36 bg-foreground/10" />
-						<Skeleton class="h-2 w-12 bg-foreground/10" />
-					</div>
-				</div>
-			{/if}
-		</Sidebar.Header>
-		<Sidebar.Content class="gap-2">
-			{#if activeScope}
+			</Sidebar.Header>
+			<Sidebar.Content class="gap-2">
 				<NavOverview items={navData.overview} />
 				{#if next}
 					<NavMain label="AI Studio" items={navData.aiStudio} />
@@ -127,45 +122,12 @@
 					<NavGeneral title={m.platform()} routes={platformRoutes(activeScope)} />
 					<NavGeneral title={m.global()} routes={globalRoutes()} />
 				{/if}
-			{:else}
-				<div class="relative flex w-full min-w-0 flex-col space-y-4 px-4 py-2">
-					<Skeleton class="h-3 w-8 bg-foreground/10" />
-					<div class="flex items-center space-x-2">
-						<Skeleton class="h-4 w-4 bg-foreground/10" />
-						<Skeleton class="h-4 w-32 bg-foreground/10" />
-					</div>
-					<div class="flex items-center space-x-2">
-						<Skeleton class="h-4 w-4 bg-foreground/10" />
-						<Skeleton class="h-4 w-32 bg-foreground/10" />
-					</div>
-					<div class="flex items-center space-x-2">
-						<Skeleton class="h-4 w-4 bg-foreground/10" />
-						<Skeleton class="h-4 w-32 bg-foreground/10" />
-					</div>
-				</div>
-				<div class="relative flex w-full min-w-0 flex-col space-y-4 px-4 py-2">
-					<Skeleton class="h-3 w-8 bg-foreground/10" />
-					<div class="flex items-center space-x-2">
-						<Skeleton class="h-4 w-4 bg-foreground/10" />
-						<Skeleton class="h-4 w-32 bg-foreground/10" />
-					</div>
-					<div class="flex items-center space-x-2">
-						<Skeleton class="h-4 w-4 bg-foreground/10" />
-						<Skeleton class="h-4 w-32 bg-foreground/10" />
-					</div>
-					<div class="flex items-center space-x-2">
-						<Skeleton class="h-4 w-4 bg-foreground/10" />
-						<Skeleton class="h-4 w-32 bg-foreground/10" />
-					</div>
-				</div>
-			{/if}
-		</Sidebar.Content>
-		<Button
-			class="mx-auto w-full text-xs text-muted-foreground"
-			variant="link"
-			onclick={() => (next = !next)}
-		>
-			{#if activeScope}
+			</Sidebar.Content>
+			<Button
+				class="mx-auto w-full text-xs text-muted-foreground"
+				variant="link"
+				onclick={() => (next = !next)}
+			>
 				{#if next}
 					<ChevronLeftIcon class="size-3.5" />
 					{m.switch_to_classic()}
@@ -173,8 +135,50 @@
 					<ZapIcon class="size-3.5" />
 					{m.try_next_version()}
 				{/if}
-			{/if}
-		</Button>
+			</Button>
+		{:else}
+			<Sidebar.Header>
+				<div class="flex h-12 w-full items-center gap-2 overflow-hidden rounded-md p-2">
+					<Skeleton class="size-8 bg-foreground/10" />
+					<div class="space-y-2">
+						<Skeleton class="h-3 w-36 bg-foreground/10" />
+						<Skeleton class="h-2 w-12 bg-foreground/10" />
+					</div>
+				</div>
+			</Sidebar.Header>
+			<Sidebar.Content class="gap-2">
+				<div class="relative flex w-full min-w-0 flex-col space-y-4 px-4 py-2">
+					<Skeleton class="h-3 w-8 bg-foreground/10" />
+					<div class="flex items-center space-x-2">
+						<Skeleton class="h-4 w-4 bg-foreground/10" />
+						<Skeleton class="h-4 w-32 bg-foreground/10" />
+					</div>
+					<div class="flex items-center space-x-2">
+						<Skeleton class="h-4 w-4 bg-foreground/10" />
+						<Skeleton class="h-4 w-32 bg-foreground/10" />
+					</div>
+					<div class="flex items-center space-x-2">
+						<Skeleton class="h-4 w-4 bg-foreground/10" />
+						<Skeleton class="h-4 w-32 bg-foreground/10" />
+					</div>
+				</div>
+				<div class="relative flex w-full min-w-0 flex-col space-y-4 px-4 py-2">
+					<Skeleton class="h-3 w-8 bg-foreground/10" />
+					<div class="flex items-center space-x-2">
+						<Skeleton class="h-4 w-4 bg-foreground/10" />
+						<Skeleton class="h-4 w-32 bg-foreground/10" />
+					</div>
+					<div class="flex items-center space-x-2">
+						<Skeleton class="h-4 w-4 bg-foreground/10" />
+						<Skeleton class="h-4 w-32 bg-foreground/10" />
+					</div>
+					<div class="flex items-center space-x-2">
+						<Skeleton class="h-4 w-4 bg-foreground/10" />
+						<Skeleton class="h-4 w-32 bg-foreground/10" />
+					</div>
+				</div>
+			</Sidebar.Content>
+		{/if}
 		<NavSecondary />
 		<Sidebar.Footer>
 			<NavUser user={data.user} />
