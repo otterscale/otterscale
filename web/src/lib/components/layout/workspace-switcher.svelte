@@ -108,7 +108,9 @@
 
 		// TODO: Add logic to update global workspace state or navigate to the selected workspace's route.
 		// await goto(resolve('/(auth)/scope/[scope]', { scope: scope.name }));
-		toast.success(m.switch_workspace({ name: activeWorkspace.metadata?.name! }));
+		if (activeWorkspace.metadata?.name) {
+			toast.success(m.switch_workspace({ name: activeWorkspace.metadata.name }));
+		}
 	}
 </script>
 
