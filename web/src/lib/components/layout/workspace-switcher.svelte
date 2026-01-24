@@ -194,7 +194,7 @@
 							{:else}
 								<span class="truncate font-medium"> OtterScale </span>
 								<span class="flex items-center gap-2 truncate text-xs text-muted-foreground">
-									empty
+									{m.no_workspace_selected()}
 								</span>
 							{/if}
 						</div>
@@ -208,7 +208,9 @@
 				side={sidebar.isMobile ? 'bottom' : 'right'}
 				sideOffset={4}
 			>
-				<DropdownMenu.Label class="text-xs text-muted-foreground">Workspaces</DropdownMenu.Label>
+				<DropdownMenu.Label class="text-xs text-muted-foreground">
+					{m.workspace()}
+				</DropdownMenu.Label>
 				{#each workspaces as workspace, index (workspace.metadata?.name)}
 					{@const WorkspaceIcon = getWorkspaceIcon(workspace.metadata?.name)}
 					<DropdownMenu.Item onSelect={() => onSelect(index)} class="gap-2 p-2">
@@ -234,7 +236,7 @@
 					<div class="flex size-6 items-center justify-center rounded-md border bg-transparent">
 						<PlusIcon class="size-3.5" />
 					</div>
-					<div class="text-xs font-medium text-muted-foreground">Add Workspace</div>
+					<div class="text-xs font-medium text-muted-foreground">{m.add_workspace()}</div>
 				</DropdownMenu.Item>
 			</DropdownMenu.Content>
 		</DropdownMenu.Root>

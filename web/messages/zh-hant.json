@@ -884,6 +884,7 @@
 	"validate_lower_alphanum_dash_start_alpha": "必須由小寫字母、數字或 '-' 組成，並以字母開頭。",
 	"validate_lower_alphanum_dash_dot": "必須由小寫字母、數字、'-' 或 '.' 組成，可以 '.' 開頭。",
 	"validate_max_length": "必須少於 {max} 個字元。",
+	"done": "完成",
 	"jobs": "Jobs",
 	"active": "Active",
 	"try_next_version": "搶先體驗新版",
@@ -892,5 +893,13 @@
 	"console_guide": "選擇叢集以開始使用",
 	"console_title": "從這裡開始",
 	"console_description": "請從右上角選單選擇一個叢集，以查看您的工作空間儀表板。",
-	"switch_workspace": "已切換到工作空間 {name}"
+	"switch_workspace": "已切換到工作空間 {name}",
+	"add_workspace": "新增工作空間",
+	"no_workspace_selected": "尚未選擇工作空間",
+	"console_guide_cluster": "選擇叢集",
+	"console_guide_cluster_description": "請由此開始，選擇您的目標叢集環境以初始化儀表板數據。",
+	"console_guide_workspace": "切換工作空間",
+	"console_guide_workspace_description": "選定叢集後，您可透過此選單在不同的工作空間之間快速切換。",
+	"console_guide_sidebar": "功能側邊欄",
+	"console_guide_sidebar_description": "您可透過側邊欄導覽平台頁面，並存取所有的核心功能。"
 }

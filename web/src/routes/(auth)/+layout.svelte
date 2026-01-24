@@ -2,11 +2,13 @@
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import ChevronLeftIcon from '@lucide/svelte/icons/chevron-left';
 	import CombineIcon from '@lucide/svelte/icons/combine';
+	import HelpCircleIcon from '@lucide/svelte/icons/help-circle';
 	import HouseIcon from '@lucide/svelte/icons/house';
 	import ZapIcon from '@lucide/svelte/icons/zap';
 	import type { TenantOtterscaleIoV1Alpha1Workspace } from '@otterscale/types';
 	import { getContext, onMount, type Snippet } from 'svelte';
 	import { toast } from 'svelte-sonner';
+	import 'driver.js/dist/driver.css';
 
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
@@ -20,6 +22,7 @@
 		NavOverview,
 		NavSecondary,
 		NavUser,
+		startTour,
 		WorkspaceSwitcher
 	} from '$lib/components/layout';
 	import { globalRoutes, platformRoutes } from '$lib/components/layout/routes';
@@ -105,9 +108,9 @@
 </svelte:head>
 
 <Sidebar.Provider>
-	<Sidebar.Root collapsible="icon" variant="inset" class="p-3">
+	<Sidebar.Root id="sidebar-guide-step" collapsible="icon" variant="inset" class="p-3">
 		{#if activeScope && isMounted}
-			<Sidebar.Header>
+			<Sidebar.Header id="workspace-guide-step">
 				<WorkspaceSwitcher {workspaces} user={data.user} />
 			</Sidebar.Header>
 			<Sidebar.Content class="gap-2">
@@ -138,7 +141,7 @@
 				{/if}
 			</Button>
 		{:else}
-			<Sidebar.Header>
+			<Sidebar.Header id="workspace-guide-step">
 				<div class="flex h-12 w-full items-center gap-2 overflow-hidden rounded-md p-2">
 					<Skeleton class="size-8 bg-foreground/10" />
 					<div class="space-y-2">
@@ -211,10 +214,14 @@
 				</Breadcrumb.Root>
 			</div>
 			<div class="flex items-center gap-2 px-4">
+				<Button variant="ghost" size="icon" class="size-7" onclick={startTour}>
+					<HelpCircleIcon />
+					<span class="sr-only">Help</span>
+				</Button>
 				<DropdownMenu.Root>
 					<DropdownMenu.Trigger>
 						{#snippet child({ props })}
-							<Button {...props} variant="ghost" size="icon" class="size-7">
+							<Button {...props} id="cluster-guide-step" variant="ghost" size="icon" class="size-7">
 								<CombineIcon />
 								<span class="sr-only">Toggle Clusters</span>
 							</Button>

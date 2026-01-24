@@ -1,4 +1,5 @@
 export * from './nav-data';
+export * from './start-tour';
 export { default as NavGeneral } from './nav-general.svelte';
 export { default as NavMain } from './nav-main.svelte';
 export { default as NavOverview } from './nav-overview.svelte';

@@ -1,11 +1,24 @@
 <script lang="ts">
 	import LayersIcon from '@lucide/svelte/icons/layers';
+	import { onMount } from 'svelte';
 
+	import { version } from '$app/environment';
+	import { startTour } from '$lib/components/layout';
 	import { useSidebar } from '$lib/components/ui/sidebar';
 	import { m } from '$lib/paraglide/messages';
 	import { cn } from '$lib/utils';
 
+	const STORAGE_KEY = 'tutorial_version';
 	const sidebar = useSidebar();
+
+	onMount(() => {
+		const seenVersion = localStorage.getItem(STORAGE_KEY);
+
+		if (seenVersion !== version) {
+			startTour();
+			localStorage.setItem(STORAGE_KEY, version);
+		}
+	});
 </script>
 
 <div
