@@ -35,11 +35,13 @@
 	import ZapIcon from '@lucide/svelte/icons/zap';
 	import { type TenantOtterscaleIoV1Alpha1Workspace } from '@otterscale/types';
 	import type { Component } from 'svelte';
+	import { toast } from 'svelte-sonner';
 
 	import { shortcut } from '$lib/actions/shortcut.svelte';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
 	import { useSidebar } from '$lib/components/ui/sidebar/index.js';
+	import { m } from '$lib/paraglide/messages';
 	import type { User } from '$lib/server/session';
 
 	let { workspaces, user }: { workspaces: TenantOtterscaleIoV1Alpha1Workspace[]; user: User } =
@@ -103,7 +105,10 @@
 			return;
 		}
 		activeWorkspace = workspaces[index];
+
 		// TODO: Add logic to update global workspace state or navigate to the selected workspace's route.
+		// await goto(resolve('/(auth)/scope/[scope]', { scope: scope.name }));
+		toast.success(m.switch_workspace({ name: activeWorkspace.metadata?.name! }));
 	}
 </script>
 

@@ -892,5 +892,6 @@
 	"workspace": "Workspace",
 	"console_guide": "Select Cluster Here",
 	"console_title": "Start from here",
-	"console_description": "Please select a cluster from the top-right menu to view your workspace dashboard."
+	"console_description": "Please select a cluster from the top-right menu to view your workspace dashboard.",
+	"switch_workspace": "Switched to workspace {name}"
 }

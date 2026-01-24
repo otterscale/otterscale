@@ -891,5 +891,6 @@
 	"workspace": "工作空間",
 	"console_guide": "選擇叢集以開始使用",
 	"console_title": "從這裡開始",
-	"console_description": "請從右上角選單選擇一個叢集，以查看您的工作空間儀表板。"
+	"console_description": "請從右上角選單選擇一個叢集，以查看您的工作空間儀表板。",
+	"switch_workspace": "已切換到工作空間 {name}"
 }
