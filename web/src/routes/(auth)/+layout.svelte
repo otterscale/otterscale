@@ -85,6 +85,7 @@
 
 	async function onHomeClick() {
 		activeScope = '';
+		await goto(resolve('/(auth)/console'));
 	}
 
 	let isMounted = $state(false);
@@ -231,7 +232,7 @@
 						</DropdownMenu.Group>
 					</DropdownMenu.Content>
 				</DropdownMenu.Root>
-				<Button variant="ghost" size="icon" class="size-7" href="/" onclick={onHomeClick}>
+				<Button variant="ghost" size="icon" class="size-7" onclick={onHomeClick}>
 					<HouseIcon />
 					<span class="sr-only">Back to Home</span>
 				</Button>
