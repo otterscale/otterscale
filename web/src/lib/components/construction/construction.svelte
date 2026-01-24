@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Icon from '@iconify/svelte';
+	import WandSparklesIcon from '@lucide/svelte/icons/wand-sparkles';
 
 	import { useSidebar } from '$lib/components/ui/sidebar';
 	import { m } from '$lib/paraglide/messages';
@@ -14,12 +14,12 @@
 		sidebar.open ? 'ml-(--sidebar-width)' : ''
 	)}
 >
-	<div class="flex size-24 items-center justify-center rounded-full border-2 border-border">
-		<Icon icon="ph:magic-wand" class="size-14" />
-	</div>
+	<WandSparklesIcon class="size-10" />
 
-	<p class="pt-2 text-3xl">{m.under_development()}</p>
-	<p class="text-base text-muted-foreground">
-		{m.under_development_description()}
-	</p>
+	<div class="space-y-2 text-center">
+		<p class="text-lg font-semibold tracking-tight">{m.under_development()}</p>
+		<p class="max-w-md text-sm text-muted-foreground">
+			{m.under_development_description()}
+		</p>
+	</div>
 </div>
