@@ -1,11 +1,23 @@
 <script lang="ts">
 	import LayersIcon from '@lucide/svelte/icons/layers';
+	import { onMount } from 'svelte';
 
+	import { version } from '$app/environment';
+	import { startTour } from '$lib/components/layout';
 	import { useSidebar } from '$lib/components/ui/sidebar';
 	import { m } from '$lib/paraglide/messages';
 	import { cn } from '$lib/utils';
 
+	const STORAGE_KEY = 'otterscale_tutorial';
 	const sidebar = useSidebar();
+
+	onMount(() => {
+		const hasSeenTutorial = localStorage.getItem(STORAGE_KEY);
+		if (hasSeenTutorial) return;
+
+		startTour();
+		localStorage.setItem(STORAGE_KEY, 'true');
+	});
 </script>
 
 <div
