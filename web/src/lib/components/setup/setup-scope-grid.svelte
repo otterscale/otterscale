@@ -156,7 +156,8 @@
 												let msg = `Fail to resolve ${unit.name}`;
 												toast.error(msg, {
 													description: (e as ConnectError).message.toString(),
-													duration: Number.POSITIVE_INFINITY
+													duration: Number.POSITIVE_INFINITY,
+													closeButton: true
 												});
 												return msg;
 											}
