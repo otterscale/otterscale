@@ -1,4 +1,6 @@
 <script lang="ts">
+	import 'driver.js/dist/driver.css';
+
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import ChevronLeftIcon from '@lucide/svelte/icons/chevron-left';
 	import CombineIcon from '@lucide/svelte/icons/combine';
@@ -8,7 +10,6 @@
 	import type { TenantOtterscaleIoV1Alpha1Workspace } from '@otterscale/types';
 	import { getContext, onMount, type Snippet } from 'svelte';
 	import { toast } from 'svelte-sonner';
-	import 'driver.js/dist/driver.css';
 
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
