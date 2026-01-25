@@ -2,7 +2,6 @@
 	import LayersIcon from '@lucide/svelte/icons/layers';
 	import { onMount } from 'svelte';
 
-	import { version } from '$app/environment';
 	import { startTour } from '$lib/components/layout';
 	import { useSidebar } from '$lib/components/ui/sidebar';
 	import { m } from '$lib/paraglide/messages';

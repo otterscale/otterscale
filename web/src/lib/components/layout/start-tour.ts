@@ -1,3 +1,5 @@
+import './tour.css';
+
 import { driver } from 'driver.js';
 
 import { m } from '$lib/paraglide/messages';
@@ -6,7 +8,7 @@ export function startTour() {
 	const driverObj = driver({
 		showProgress: true,
 		animate: true,
-		allowClose: true,
+		allowClose: false,
 		nextBtnText: m.next(),
 		prevBtnText: m.back(),
 		doneBtnText: m.done(),
