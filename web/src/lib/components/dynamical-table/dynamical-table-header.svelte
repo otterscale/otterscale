@@ -1,4 +1,6 @@
 <script lang="ts">
+	import type { JsonValue } from '@bufbuild/protobuf';
+	import type { Column } from '@tanstack/table-core';
 	import { type WithElementRef } from 'bits-ui';
 	import type { HTMLAttributes } from 'svelte/elements';
 
@@ -6,12 +8,13 @@
 
 	let {
 		ref = $bindable(null),
+		column,
 		children,
-		field,
+		fields,
 		class: className
 	}: WithElementRef<HTMLAttributes<HTMLDivElement>> & {
-		// eslint-disable-next-line
-		field: any;
+		column: Column<Record<string, JsonValue>>;
+		fields: Record<string, { description: string; type: string; format: string }>;
 	} = $props();
 </script>
 
@@ -19,11 +22,17 @@
 	<Tooltip.Provider>
 		<Tooltip.Root>
 			<Tooltip.Trigger>
-				{@render children?.()}
+				{#if children}
+					{@render children()}
+				{:else}
+					<h3>{column.id}</h3>
+				{/if}
 			</Tooltip.Trigger>
-			<Tooltip.Content>
-				{field.description}
-			</Tooltip.Content>
+			{#if fields[column.id]?.description}
+				<Tooltip.Content>
+					<p class="max-w-3xl truncate">{fields[column.id].description}</p>
+				</Tooltip.Content>
+			{/if}
 		</Tooltip.Root>
 	</Tooltip.Provider>
 </div>

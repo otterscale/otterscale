@@ -3,9 +3,11 @@
 	import { StructSchema } from '@bufbuild/protobuf/wkt';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import CircleAlert from '@lucide/svelte/icons/circle-alert';
-	import Download from '@lucide/svelte/icons/download';
+	import CloudBackup from '@lucide/svelte/icons/cloud-backup';
 	import Trash from '@lucide/svelte/icons/trash';
-	import type { Table } from '@tanstack/table-core';
+	import type { Column, Table } from '@tanstack/table-core';
+	import { type Row } from '@tanstack/table-core';
+	import lodash from 'lodash';
 	import { getContext, onDestroy, onMount } from 'svelte';
 	import { toast } from 'svelte-sonner';
 
@@ -19,8 +21,11 @@
 	import DynamicalTable from '$lib/components/dynamical-table/dynamical-table.svelte';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog/index.js';
 	import Button from '$lib/components/ui/button/button.svelte';
+	import { renderComponent } from '$lib/components/ui/data-table';
+	import { Spinner } from '$lib/components/ui/spinner/index.js';
 
 	import Separator from '../ui/separator/separator.svelte';
+	import { DynamicalTableCell, DynamicalTableHeader } from '.';
 	import ResourceActions from './resource-actions.svelte';
 	import ResourceCreate from './resource-create.svelte';
 
@@ -43,32 +48,164 @@
 	const transport: Transport = getContext('transport');
 	const resourceClient = createClient(ResourceService, transport);
 
-	// eslint-disable-next-line
-	function getFields(schema: any): Record<string, JsonValue> {
+	function getFields(
+		// eslint-disable-next-line
+		schema: any
+	): Record<string, { description: string; type: string; format: string }> {
 		return {
-			Name: schema?.properties?.metadata?.properties?.name ?? {},
-			Namespace: schema?.properties?.metadata?.properties?.namespace ?? {},
-			Labels: schema?.properties?.metadata?.properties?.labels ?? {},
-			Annotations: schema?.properties?.metadata?.properties?.annotations ?? {},
-			CreateTime: schema?.properties?.metadata?.properties?.creationTimestamp ?? {},
-			Configuration: schema ?? {}
+			Name: lodash.get(schema, 'properties.metadata.properties.name'),
+			Namespace: lodash.get(schema, 'properties.metadata.properties.namespace'),
+			Labels: lodash.get(schema, 'properties.metadata.properties.labels'),
+			Annotations: lodash.get(schema, 'properties.metadata.properties.annotations'),
+			CreateTime: lodash.get(schema, 'properties.metadata.properties.creationTimestamp'),
+			Configuration: schema
 		};
 	}
 	// eslint-disable-next-line
-	function getObject(object: any, fields: Record<string, JsonValue>): Record<string, JsonValue> {
+	function getObject(object: any): Record<string, JsonValue> {
 		return {
-			Name: object?.metadata?.name ?? null,
-			Namespace: object?.metadata?.namespace ?? null,
-			Labels: object?.metadata?.labels ?? null,
-			Annotations: object?.metadata?.annotations ?? null,
-			CreateTime: object?.metadata?.creationTimestamp ?? null,
-			Configuration: object ?? null
+			Name: lodash.get(object, 'metadata.name'),
+			Namespace: lodash.get(object, 'metadata.namespace'),
+			Labels: lodash.get(object, 'metadata.labels'),
+			Annotations: lodash.get(object, 'metadata.annotations'),
+			CreateTime: lodash.get(object, 'metadata.creationTimestamp'),
+			Configuration: object
 		};
 	}
+	const columnDefinitions = [
+		{
+			id: 'Name',
+			header: ({ column }: { column: Column<Record<string, JsonValue>> }) =>
+				renderComponent(DynamicalTableHeader, {
+					column: column,
+					fields: fields
+				}),
+			cell: ({
+				column,
+				row
+			}: {
+				column: Column<Record<string, JsonValue>>;
+				row: Row<Record<string, JsonValue>>;
+			}) =>
+				renderComponent(DynamicalTableCell, {
+					row: row,
+					column: column,
+					fields: fields
+				}),
+			accessorKey: 'Name'
+		},
+		{
+			id: 'Namespace',
+			header: ({ column }: { column: Column<Record<string, JsonValue>> }) =>
+				renderComponent(DynamicalTableHeader, {
+					column: column,
+					fields: fields
+				}),
+			cell: ({
+				column,
+				row
+			}: {
+				column: Column<Record<string, JsonValue>>;
+				row: Row<Record<string, JsonValue>>;
+			}) =>
+				renderComponent(DynamicalTableCell, {
+					row: row,
+					column: column,
+					fields: fields
+				}),
+			accessorKey: 'Namespace'
+		},
+		{
+			id: 'Annotations',
+			header: ({ column }: { column: Column<Record<string, JsonValue>> }) =>
+				renderComponent(DynamicalTableHeader, {
+					column: column,
+					fields: fields
+				}),
+			cell: ({
+				column,
+				row
+			}: {
+				column: Column<Record<string, JsonValue>>;
+				row: Row<Record<string, JsonValue>>;
+			}) =>
+				renderComponent(DynamicalTableCell, {
+					row: row,
+					column: column,
+					fields: fields
+				}),
+			accessorFn: (row: Record<string, JsonValue>) =>
+				row['Annotations'] ? Object.keys(row['Annotations']).length : null
+		},
+		{
+			id: 'Labels',
+			header: ({ column }: { column: Column<Record<string, JsonValue>> }) =>
+				renderComponent(DynamicalTableHeader, {
+					column: column,
+					fields: fields
+				}),
+			cell: ({
+				column,
+				row
+			}: {
+				column: Column<Record<string, JsonValue>>;
+				row: Row<Record<string, JsonValue>>;
+			}) =>
+				renderComponent(DynamicalTableCell, {
+					row: row,
+					column: column,
+					fields: fields
+				}),
+			accessorFn: (row: Record<string, JsonValue>) =>
+				row['Labels'] ? Object.keys(row['Labels']).length : null
+		},
+		{
+			id: 'CreateTime',
+			header: ({ column }: { column: Column<Record<string, JsonValue>> }) =>
+				renderComponent(DynamicalTableHeader, {
+					column: column,
+					fields: fields
+				}),
+			cell: ({
+				column,
+				row
+			}: {
+				column: Column<Record<string, JsonValue>>;
+				row: Row<Record<string, JsonValue>>;
+			}) =>
+				renderComponent(DynamicalTableCell, {
+					row: row,
+					column: column,
+					fields: fields
+				}),
+			accessorKey: 'CreateTime'
+		},
+		{
+			id: 'Configuration',
+			header: ({ column }: { column: Column<Record<string, JsonValue>> }) =>
+				renderComponent(DynamicalTableHeader, {
+					column: column,
+					fields: fields
+				}),
+			cell: ({
+				column,
+				row
+			}: {
+				column: Column<Record<string, JsonValue>>;
+				row: Row<Record<string, JsonValue>>;
+			}) =>
+				renderComponent(DynamicalTableCell, {
+					row: row,
+					column: column,
+					fields: fields
+				}),
+			accessorKey: 'Configuration'
+		}
+	];
 
 	// eslint-disable-next-line
 	let schema: any = $state({});
-	let fields: Record<string, JsonValue> = $state({});
+	let fields: Record<string, { description: string; type: string; format: string }> = $state({});
 	async function fetchSchema() {
 		try {
 			const schemaResponse = await resourceClient.schema({
@@ -118,7 +255,7 @@
 				resourceVersion = response.resourceVersion;
 				continueToken = response.continue;
 
-				const newObjects = response.items.map((item) => getObject(item.object, fields));
+				const newObjects = response.items.map((item) => getObject(item.object));
 				objects = [...objects, ...newObjects];
 
 				if (listAbortController.signal.aborted) {
@@ -137,11 +274,6 @@
 			return null;
 		} finally {
 			isListing = false;
-			if (listAbortController?.signal.aborted) {
-				toast.info('Resource listing was cancelled.');
-			} else {
-				toast.warning('Resource listing has stopped unexpectedly. Please try again.');
-			}
 			listAbortController = null;
 		}
 	}
@@ -181,7 +313,7 @@
 				resourceVersion = response.resource?.object?.metadata?.resourceVersion;
 
 				if (response.type === WatchEvent_Type.ADDED) {
-					const addedObject = getObject(response.resource?.object, fields);
+					const addedObject = getObject(response.resource?.object);
 
 					const index = objects.findIndex(
 						(object) =>
@@ -192,7 +324,7 @@
 						objects = [...objects, addedObject];
 					}
 				} else if (response.type === WatchEvent_Type.MODIFIED) {
-					const modifiedObject = getObject(response.resource?.object, fields);
+					const modifiedObject = getObject(response.resource?.object);
 
 					objects = objects.map((object) =>
 						object.Namespace === modifiedObject.Namespace && object.Name === modifiedObject.Name
@@ -200,7 +332,7 @@
 							: object
 					);
 				} else if (response.type === WatchEvent_Type.DELETED) {
-					const deletedObject = getObject(response.resource?.object, fields);
+					const deletedObject = getObject(response.resource?.object);
 
 					objects = objects.filter(
 						(object) =>
@@ -219,18 +351,9 @@
 
 			console.error('Failed to watch resources:', error);
 		} finally {
+			toast.info(`Watching resource ${namespace} ${resource} was cancelled.`);
+
 			isWatching = false;
-			if (watchAbortController?.signal.aborted) {
-				toast.info('Resource watching was cancelled.');
-			} else {
-				toast.warning('Resource watching has stopped unexpectedly. Please try again.', {
-					action: {
-						label: 'Reload',
-						onClick: handleReload
-					},
-					duration: 13 * 1000
-				});
-			}
 			watchAbortController = null;
 		}
 	}
@@ -276,15 +399,14 @@
 </script>
 
 {#if isMounted}
-	<DynamicalTable {objects} {fields}>
+	<DynamicalTable {objects} {fields} {columnDefinitions}>
 		{#snippet bulkDelete({ table })}
 			{#if table.getSelectedRowModel().rows.length > 0}
 				<AlertDialog.Root>
 					<AlertDialog.Trigger>
 						{#snippet child({ props })}
 							<Button class="ml-auto text-destructive" variant="outline" {...props}>
-								<Trash class="-ms-1 opacity-60" size={16} aria-hidden="true" />
-								Delete
+								<Trash class="opacity-60" size={16} aria-hidden="true" />
 								<Separator orientation="vertical" />
 								{table.getSelectedRowModel().rows.length}
 							</Button>
@@ -321,8 +443,11 @@
 		{/snippet}
 		{#snippet reload()}
 			<Button onclick={handleReload} disabled={isWatching} variant="outline">
-				<Download class="opacity-60" size={16} />
-				Reload
+				{#if isWatching}
+					<Spinner class="opacity-60" size={16} />
+				{:else}
+					<CloudBackup class="opacity-60" size={16} />
+				{/if}
 			</Button>
 		{/snippet}
 		{#snippet rowActions({ row })}

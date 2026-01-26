@@ -12,7 +12,6 @@
 <AlertDialog.Root bind:open={createModalOpen}>
 	<AlertDialog.Trigger class={buttonVariants({ variant: 'outline' })}>
 		<Plus class="opacity-60" size={16} />
-		Create
 	</AlertDialog.Trigger>
 	<AlertDialog.Content class="max-w-xl">
 		<AlertDialog.Header>

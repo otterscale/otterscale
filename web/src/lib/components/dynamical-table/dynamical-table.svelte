@@ -1,12 +1,18 @@
 <script lang="ts">
 	import { type JsonObject, type JsonValue } from '@bufbuild/protobuf';
+	import Binary from '@lucide/svelte/icons/binary';
+	import Braces from '@lucide/svelte/icons/braces';
 	import ChevronDown from '@lucide/svelte/icons/chevron-down';
 	import ChevronFirst from '@lucide/svelte/icons/chevron-first';
 	import ChevronLast from '@lucide/svelte/icons/chevron-last';
 	import ChevronLeft from '@lucide/svelte/icons/chevron-left';
 	import ChevronRight from '@lucide/svelte/icons/chevron-right';
 	import ChevronUp from '@lucide/svelte/icons/chevron-up';
+	import Clock from '@lucide/svelte/icons/clock';
 	import Columns3 from '@lucide/svelte/icons/columns-3';
+	import Eraser from '@lucide/svelte/icons/eraser';
+	import Hash from '@lucide/svelte/icons/hash';
+	import Type from '@lucide/svelte/icons/type';
 	import {
 		type ColumnDef,
 		type ColumnFiltersState,
@@ -23,6 +29,7 @@
 		type VisibilityState
 	} from '@tanstack/table-core';
 	import jsep from 'jsep';
+	import lodash from 'lodash';
 	import { createRawSnippet, type Snippet } from 'svelte';
 
 	import { Button } from '$lib/components/ui/button/index.js';
@@ -41,12 +48,12 @@
 	import * as Table from '$lib/components/ui/table';
 	import { cn } from '$lib/utils';
 
-	import { DynamicalTableCell, DynamicalTableHeader } from '.';
 	import DynamicalTableQuery, { evaluate } from './dynamical-table-query.svelte';
 
 	let {
 		objects,
 		fields,
+		columnDefinitions,
 		create,
 		bulkDelete,
 		reload,
@@ -56,6 +63,7 @@
 	}: {
 		objects: Record<string, JsonValue>[];
 		fields: Record<string, JsonValue>;
+		columnDefinitions: ColumnDef<Record<string, JsonValue>>[];
 		create?: Snippet;
 		bulkDelete?: Snippet<[{ table: TanStackTabke<Record<string, JsonValue>> }]>;
 		rowActions?: Snippet<[{ row: Row<Record<string, JsonValue>> }]>;
@@ -84,22 +92,7 @@
 			enableSorting: false,
 			size: 30
 		},
-		...Object.keys(fields).map((key) => ({
-			accessorKey: key,
-			header: () =>
-				renderComponent(DynamicalTableHeader, {
-					children: createRawSnippet(() => ({
-						render: () => `<h3>${key}</h3>`
-					})),
-					field: fields[key]
-				}),
-			cell: ({ row }: { row: Row<Record<string, JsonValue>> }) =>
-				renderComponent(DynamicalTableCell, {
-					object: row.original[key],
-					field: fields[key]
-				}),
-			enableSorting: true
-		})),
+		...columnDefinitions,
 		{
 			id: 'actions',
 			cell: ({ row }) => renderSnippet(rowActions, { row: row }),
@@ -260,8 +253,50 @@
 
 <div class="space-y-4">
 	<!-- Controllers -->
-	<!-- Accessors -->
-	<div class="flex w-full items-center gap-4">
+	<div class="flex w-full items-center gap-2">
+		<!-- Filters -->
+		<DynamicalTableQuery bind:expression {table} />
+		<DropdownMenu.Root>
+			<DropdownMenu.Trigger>
+				{#snippet child({ props })}
+					<Button variant="outline" {...props}>
+						<Columns3 class="-ms-1 opacity-60" size={16} aria-hidden="true" />
+					</Button>
+				{/snippet}
+			</DropdownMenu.Trigger>
+			<DropdownMenu.Content align="end">
+				<DropdownMenu.Label>Toggle columns</DropdownMenu.Label>
+				{#each table.getAllColumns().filter((column) => column.getCanHide()) as column (column.id)}
+					<DropdownMenu.Item
+						class={column.getIsVisible()
+							? 'text-primary **:text-primary'
+							: 'text-muted-foreground/50 **:text-muted-foreground/50'}
+						closeOnSelect={false}
+						onSelect={() => column.toggleVisibility(!column.getIsVisible())}
+					>
+						{@const type = lodash.get(fields, `${column.id}.type`)}
+						{@const format = lodash.get(fields, `${column.id}.format`)}
+						<div>
+							{#if type === 'boolean'}
+								<Binary />
+							{:else if type === 'number' || type === 'integer'}
+								<Hash />
+							{:else if type === 'string' && (format === 'date' || format === 'date-time')}
+								<Clock />
+							{:else if type === 'string'}
+								<Type />
+							{:else if type === 'array'}
+								<Braces />
+							{:else if type === 'object'}
+								<Braces />
+							{/if}
+						</div>
+						{column.id}
+					</DropdownMenu.Item>
+				{/each}
+			</DropdownMenu.Content>
+		</DropdownMenu.Root>
+		<!-- Accessors -->
 		<div>
 			{@render create?.()}
 			{@render bulkDelete?.({ table })}
@@ -269,32 +304,6 @@
 		<div class="ml-auto">
 			{@render reload()}
 		</div>
-	</div>
-	<!-- Filters -->
-	<div class="flex w-full items-center gap-4">
-		<DynamicalTableQuery bind:expression {table} />
-		<DropdownMenu.Root>
-			<DropdownMenu.Trigger>
-				{#snippet child({ props })}
-					<Button variant="outline" {...props}>
-						<Columns3 class="-ms-1 opacity-60" size={16} aria-hidden="true" />
-						View
-					</Button>
-				{/snippet}
-			</DropdownMenu.Trigger>
-			<DropdownMenu.Content align="end">
-				<DropdownMenu.Label>Toggle columns</DropdownMenu.Label>
-				{#each table.getAllColumns().filter((column) => column.getCanHide()) as column (column.id)}
-					<DropdownMenu.CheckboxItem
-						checked={column.getIsVisible()}
-						closeOnSelect={false}
-						onCheckedChange={(value) => column.toggleVisibility(!!value)}
-					>
-						{column.id}
-					</DropdownMenu.CheckboxItem>
-				{/each}
-			</DropdownMenu.Content>
-		</DropdownMenu.Root>
 	</div>
 	<!-- Table -->
 	<div class="overflow-hidden rounded-md border bg-background">
@@ -373,9 +382,10 @@
 									</Empty.Description>
 								</Empty.Header>
 								<Empty.Content>
-									<div class="flex gap-2">
-										<Button onclick={handleResetFilter}>Reset</Button>
-									</div>
+									<Button onclick={handleResetFilter}>
+										<Eraser size={16} class="opacity-60" />
+										Reset
+									</Button>
 								</Empty.Content>
 							</Empty.Root>
 						</Table.Cell>
