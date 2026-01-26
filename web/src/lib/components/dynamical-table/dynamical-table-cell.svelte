@@ -1,6 +1,6 @@
 <script lang="ts">
-	import Braces from '@lucide/svelte/icons/braces';
 	import type { JsonObject, JsonValue } from '@bufbuild/protobuf';
+	import Braces from '@lucide/svelte/icons/braces';
 	import Circle from '@lucide/svelte/icons/circle';
 	import File from '@lucide/svelte/icons/file';
 	import FileCheck from '@lucide/svelte/icons/file-check';
