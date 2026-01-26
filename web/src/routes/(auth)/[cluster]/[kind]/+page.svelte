@@ -99,15 +99,15 @@
 						{#await fetchNamespaces(cluster) then namespaces}
 							{@const namespaceOptions = namespaces
 								.sort((previous: JsonObject | undefined, next: JsonObject | undefined) =>
-									lodash
-										.get(previous, 'metadata.name', '')
-										.localeCompare(lodash.get(next, 'metadata.name', ''))
+									String(lodash.get(previous, 'metadata.name') ?? '').localeCompare(
+										String(lodash.get(next, 'metadata.name') ?? '')
+									)
 								)
 								.map((namespace: JsonObject | undefined) => ({
 									icon: 'ph:cube',
-									label: lodash.get(namespace, 'metadata.name', ''),
-									value: lodash.get(namespace, 'metadata.name', ''),
-									description: lodash.get(namespace, 'status.phase', '')
+									label: String(lodash.get(namespace, 'metadata.name') ?? ''),
+									value: String(lodash.get(namespace, 'metadata.name') ?? ''),
+									description: String(lodash.get(namespace, 'status.phase') ?? '')
 								}))}
 							<ResourcePicker
 								class="w-fit"

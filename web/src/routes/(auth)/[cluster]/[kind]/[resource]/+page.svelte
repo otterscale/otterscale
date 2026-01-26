@@ -423,81 +423,142 @@
 			{/if}
 		</Field.Set>
 	</Field.Group>
-{:else}{/if}
-<div class="flex min-h-screen items-center justify-center bg-background px-4">
-	<div class="w-full max-w-md space-y-8 text-center">
-		<!-- Animated Logo/Icon -->
-		<div class="flex justify-center">
-			<div class="relative h-20 w-20">
-				<!-- Outer rotating ring with gradient -->
-				<div
-					class="absolute inset-0 animate-spin rounded-full border-2 border-transparent border-t-primary border-r-primary"
-					style="border-right-color: oklch(0.7 0.18 170);"
-				/>
-				<!-- Middle pulsing ring -->
-				<div class="absolute inset-2 animate-pulse rounded-full border border-primary/40" />
-				<!-- Inner accelerated spin -->
-				<div
-					class="absolute inset-4 animate-spin rounded-full border border-transparent border-b-primary/60"
-					style="animation-direction: reverse; animation-duration: 1s;"
-				/>
-				<!-- Center icon -->
-				<div class="absolute inset-0 flex items-center justify-center">
-					<Layers class="h-10 w-10 text-primary" />
+{:else}
+	<main
+		class="relative flex min-h-screen items-center justify-center overflow-hidden bg-background px-4"
+	>
+		<!-- Decorative background elements -->
+		<div
+			class="absolute top-20 left-10 h-40 w-40 rounded-full border border-border/20 opacity-50"
+		></div>
+		<div
+			class="absolute right-10 bottom-20 h-52 w-52 rounded-full border border-border/10 opacity-30"
+		></div>
+		<div class="relative z-10 w-full max-w-md space-y-8 text-center">
+			<!-- Main animated icon -->
+			<div class="flex justify-center">
+				<div class="relative h-32 w-32">
+					<!-- Outer rotating ring -->
+					<div
+						class="absolute inset-0 animate-spin rounded-full border-2 border-transparent border-t-primary"
+					></div>
+					<!-- Middle ring - counter spin -->
+					<div
+						class="absolute inset-3 animate-spin rounded-full border border-primary/40"
+						style="animation-direction: reverse; animation-duration: 3s;"
+					></div>
+					<!-- First orbital layer - 3 dots -->
+					<div class="absolute inset-0 flex items-center justify-center">
+						<div class="relative h-20 w-20">
+							{#each [0, 1, 2] as i}
+								<div
+									class="absolute h-1.5 w-1.5 rounded-full bg-primary"
+									style="animation: orbit 3s linear infinite; transform-origin: 40px 40px; transform: rotate({i *
+										120}deg) translateX(40px);"
+								></div>
+							{/each}
+						</div>
+					</div>
+					<!-- Second orbital layer - 4 dots, smaller, faster, offset -->
+					<div class="absolute inset-0 flex items-center justify-center">
+						<div class="relative h-14 w-14">
+							{#each [0, 1, 2, 3] as i}
+								<div
+									class="absolute h-1 w-1 rounded-full bg-primary/70"
+									style="animation: orbit 2s linear infinite; animation-direction: reverse; transform-origin: 28px 28px; transform: rotate({i *
+										90}deg) translateX(28px);"
+								></div>
+							{/each}
+						</div>
+					</div>
+					<!-- Third orbital layer - 5 dots, tiny, very fast -->
+					<div class="absolute inset-0 flex items-center justify-center">
+						<div class="relative h-9 w-9">
+							{#each [0, 1, 2, 3, 4] as i}
+								<div
+									class="absolute h-0.5 w-0.5 rounded-full bg-primary/50"
+									style="animation: orbit 1.2s linear infinite; transform-origin: 18px 18px; transform: rotate({i *
+										72}deg) translateX(18px);"
+								></div>
+							{/each}
+						</div>
+					</div>
+					<!-- Center icon -->
+					<div class="absolute inset-0 flex items-center justify-center">
+						<Layers class="h-12 w-12 text-primary" />
+					</div>
 				</div>
 			</div>
-		</div>
-		<!-- Main Text -->
-		<div class="space-y-3">
-			<h1 class="text-3xl font-bold tracking-tight text-foreground">Loading</h1>
-			<p class="text-sm leading-relaxed text-muted-foreground">
-				Preparing your workspace configuration
-			</p>
-		</div>
-		<!-- Animated Dots -->
-		<div class="flex items-center justify-center gap-1.5 py-4">
-			{#each [0, 1, 2] as i}
-				<div
-					class="h-2 w-2 animate-bounce rounded-full bg-primary"
-					style="animation-delay: {i * 150}ms; animation-duration: 1.2s;"
-				/>
-			{/each}
-		</div>
-		<!-- Progress Steps -->
-		<div class="space-y-3 py-4">
-			{#each [{ label: 'Fetching metadata', number: '01' }, { label: 'Loading configuration', number: '02' }, { label: 'Initializing resources', number: '03' }] as step, index}
-				<div
-					class="opacity-transition flex items-center gap-3"
-					style="animation: fadeIn 0.6s ease-out {index * 200}ms both;"
-				>
-					<span class="min-w-6 text-xs font-bold tracking-wider text-primary/60">
-						{step.number}
-					</span>
-					<div class="h-px flex-1 bg-border" />
-					<span class="text-xs font-medium text-muted-foreground">
-						{step.label}
-					</span>
+			<!-- Main heading - fixed height to prevent floating -->
+			<div class="flex h-24 flex-col justify-center space-y-4">
+				<h1 class="animate-breathe text-4xl font-bold tracking-tight text-foreground">Loading</h1>
+				<div class="mx-auto h-px w-12 bg-primary"></div>
+				<p class="animate-breathe text-sm text-muted-foreground" style="animation-delay: 0.2s;">
+					Processing your request
+				</p>
+			</div>
+			<!-- Additional description -->
+			<div class="space-y-3 py-4">
+				<p class="text-xs leading-relaxed text-muted-foreground">
+					We're preparing your workspace and fetching the latest configuration data from our
+					servers.
+				</p>
+				<p class="text-xs text-muted-foreground/70">
+					This typically takes a few moments. Thank you for your patience.
+				</p>
+			</div>
+			<!-- Animated horizontal bars -->
+			<div class="flex items-center justify-center gap-1.5 py-6">
+				{#each [0, 1, 2, 3] as i}
+					<div
+						class="w-1 rounded-full bg-primary/60"
+						style="height: 24px; animation: pulse-bar 1.6s ease-in-out infinite; animation-delay: {i *
+							150}ms;"
+					></div>
+				{/each}
+			</div>
+			<!-- Subtle status indicators -->
+			<div class="flex items-center justify-center gap-6 text-xs text-muted-foreground/70">
+				<div class="flex items-center gap-1.5">
+					<div class="h-1.5 w-1.5 animate-pulse rounded-full bg-primary/40"></div>
+					<span>Active</span>
 				</div>
-			{/each}
+				<div class="h-4 w-px bg-border/50"></div>
+				<div class="text-muted-foreground/50">Please wait</div>
+			</div>
 		</div>
-		<!-- Bottom Hint -->
-		<div class="border-t border-border/30 pt-4">
-			<p class="text-xs text-muted-foreground/70">✓ Your workspace is being prepared</p>
-		</div>
-	</div>
-	<style>
-		@keyframes fadeIn {
-			from {
-				opacity: 0;
-				transform: translateX(-8px);
+		<style>
+			@keyframes orbit {
+				from {
+					transform: rotate(0deg) translateX(var(--translate-distance, 0));
+				}
+				to {
+					transform: rotate(360deg) translateX(var(--translate-distance, 0));
+				}
 			}
-			to {
-				opacity: 1;
-				transform: translateX(0);
+			@keyframes pulse-bar {
+				0%,
+				100% {
+					opacity: 0.4;
+					height: 8px;
+				}
+				50% {
+					opacity: 1;
+					height: 32px;
+				}
 			}
-		}
-		.opacity-transition {
-			opacity: 1;
-		}
-	</style>
-</div>
+			@keyframes breathe {
+				0%,
+				100% {
+					opacity: 1;
+				}
+				50% {
+					opacity: 0.6;
+				}
+			}
+			.animate-breathe {
+				animation: breathe 3s ease-in-out infinite;
+			}
+		</style>
+	</main>
+{/if}
