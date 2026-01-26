@@ -1,3 +1,43 @@
+<script lang="ts" module>
+	import { tv, type VariantProps } from 'tailwind-variants';
+	export const typographyVariants = tv({
+		variants: {
+			variant: {
+				// Headings
+				h1: 'scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl',
+				h2: 'scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0',
+				h3: 'scroll-m-20 text-2xl font-semibold tracking-tight',
+				h4: 'scroll-m-20 text-xl font-semibold tracking-tight',
+				h5: 'scroll-m-20 text-lg font-semibold tracking-tight',
+				h6: 'scroll-m-20 text-sm font-semibold tracking-tight',
+
+				// Body text
+				p: 'leading-7 [&:not(:first-child)]:mt-6',
+				lead: 'text-xl text-muted-foreground',
+				large: 'text-lg font-semibold',
+				small: 'text-sm font-medium leading-none',
+				muted: 'text-sm text-muted-foreground',
+
+				// Code & Technical
+				inline_code: 'rounded bg-muted px-2 py-1 font-mono text-sm',
+				pre: 'overflow-x-auto rounded-lg bg-muted p-4 font-mono text-sm',
+
+				// Quotes & Special
+				blockquote: 'mt-6 border-l-2 border-muted-foreground pl-6 italic text-muted-foreground',
+				caption: 'text-xs text-muted-foreground',
+
+				// Lists
+				ul: 'my-6 ml-6 list-disc [&>li]:mt-2',
+				ol: 'my-6 ml-6 list-decimal [&>li]:mt-2'
+			}
+		},
+		defaultVariants: {
+			variant: 'p'
+		}
+	});
+	export type TypographyVariant = VariantProps<typeof typographyVariants>['variant'];
+</script>
+
 <script lang="ts">
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import Box from '@lucide/svelte/icons/box';
@@ -8,10 +48,12 @@
 	import Gauge from '@lucide/svelte/icons/gauge';
 	import Layers from '@lucide/svelte/icons/layers';
 	import Network from '@lucide/svelte/icons/network';
+	import Plus from '@lucide/svelte/icons/plus';
 	import Shield from '@lucide/svelte/icons/shield';
 	import Users from '@lucide/svelte/icons/users';
 	import X from '@lucide/svelte/icons/x';
 	import Zap from '@lucide/svelte/icons/zap';
+	import { Description } from 'formsnap';
 	import { getContext, onDestroy, onMount } from 'svelte';
 
 	import { page } from '$app/state';
@@ -19,10 +61,13 @@
 	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
+	import * as Empty from '$lib/components/ui/empty/index.js';
+	import * as Field from '$lib/components/ui/field/index.js';
 	import * as Item from '$lib/components/ui/item';
 	import Label from '$lib/components/ui/label/label.svelte';
 	import Separator from '$lib/components/ui/separator/separator.svelte';
 	import * as Table from '$lib/components/ui/table/index.js';
+	import { cn } from '$lib/utils';
 
 	const cluster = $derived(page.params.cluster ?? '');
 	// const kind = $derived(page.params.kind ?? '');
@@ -52,7 +97,6 @@
 				name: `workspace-sample`
 			});
 			object = response.object;
-			console.log(object);
 		} catch (error) {
 			console.error('Failed to get resource:', error);
 		} finally {
@@ -70,143 +114,229 @@
 </script>
 
 {#if isMounted}
-	<div class="space-y-8 pb-8">
-		<!-- Header -->
-		<Item.Root class="w-full space-y-2 p-0">
-			<Item.Media>
-				<div class="rounded-lg bg-muted p-2">
-					<Layers class="size-8 text-primary" />
-				</div>
-			</Item.Media>
-			<Item.Content>
-				<Item.Title>
-					<h1 class="text-2xl font-bold text-foreground">
+	<Field.Group class="pb-8">
+		<Field.Set>
+			<!-- Header -->
+			<Item.Root class="w-full p-0">
+				<Item.Media variant="image" class="bg-muted-foreground/50 p-2">
+					<Layers size={48} />
+				</Item.Media>
+				<Item.Content>
+					<Item.Description>
+						<Badge variant="outline">{object.kind}</Badge>
+						{object.apiVersion}
+					</Item.Description>
+					<Item.Title class={typographyVariants({ variant: 'h3' })}>
 						{object.metadata?.name}
-					</h1>
-				</Item.Title>
-				<Item.Description>
-					<div class="flex items-center gap-2">
-						<h4 class="semibold">
-							{object.kind}
-						</h4>
-						<h6 class="text-muted-foreground">
-							{object.apiVersion}
-						</h6>
+					</Item.Title>
+					<Separator class="invisible" />
+					<div class="grid grid-cols-6 gap-2">
+						{#each [{ key: 'Creation Timestamp', value: new Date(object.metadata.creationTimestamp).toLocaleString('sv-SE') }, { key: 'Generation', value: object.metadata?.generation }, { key: 'Resource Version', value: object.metadata?.resourceVersion }] as item, index (index)}
+							{#if item.value}
+								<Item.Root>
+									<Item.Content>
+										<Item.Description>
+											{item.key}
+										</Item.Description>
+										<Item.Title>
+											{item.value}
+										</Item.Title>
+									</Item.Content>
+								</Item.Root>
+							{/if}
+						{/each}
 					</div>
-				</Item.Description>
-				<div class="my-4 grid grid-cols-6 gap-2 text-xs **:text-muted-foreground">
-					{#each [{ key: 'Creation Timestamp', value: new Date(object.metadata.creationTimestamp).toLocaleString('sv-SE') }, { key: 'Generation', value: object.metadata?.generation }, { key: 'Resource Version', value: object.metadata?.resourceVersion }] as item, index (index)}
-						{#if item.value}
-							<Item.Root class="p-0">
-								<Item.Content>
-									<Item.Title class="text-xs font-semibold">{item.key}</Item.Title>
-									<Item.Description class="text-xs">
-										{item.value}
-									</Item.Description>
-								</Item.Content>
-							</Item.Root>
-						{/if}
+				</Item.Content>
+				<Item.Actions>
+					<Button variant="ghost" size="icon-lg">
+						<File />
+					</Button>
+				</Item.Actions>
+				<Item.Footer class="flex flex-col items-start justify-start gap-2">
+					<!-- Tags -->
+					{@const tags = {
+						Labels: object.metadata?.labels ?? {},
+						Annotations: object.metadata?.annotations ?? {}
+					}}
+					{#each Object.entries(tags) as [key, values], index (index)}
+						<Item.Root class="grid w-full grid-cols-[100px_1fr] p-0">
+							<Item.Media class="relative flex w-fit items-center self-start">
+								<Label>{key}</Label>
+								<Badge>
+									{Object.entries(values).length}
+								</Badge>
+							</Item.Media>
+							<Item.Content class="group flex flex-row flex-wrap gap-2">
+								{#each Object.entries(values) as [key, value], index (index)}
+									<Badge variant="outline" class="max-w-full border">
+										<p class="text-muted-foreground">{key}</p>
+										<Separator orientation="vertical" class="h-1" />
+										<p class="max-w-xs truncate">{value}</p>
+									</Badge>
+								{/each}
+							</Item.Content>
+						</Item.Root>
 					{/each}
-				</div>
-			</Item.Content>
-			<Item.Actions>
-				<Button variant="ghost" size="icon">
-					<File />
-				</Button>
-			</Item.Actions>
-			<Item.Footer class="justift-start flex flex-col items-start">
-				<div class="grid grid-cols-[auto_1fr] gap-2">
-					<!-- Labels -->
-					<div class="relative row-start-1 w-fit">
-						<Label class="self-start p-1 text-xs font-semibold">Labels</Label>
-						<Badge
-							class="absolute -top-1 -right-1 flex size-4 items-center justify-center rounded-full border-background bg-chart-1 text-[10px]"
-						>
-							{Object.entries(object.metadata?.labels).length}
-						</Badge>
-					</div>
-					<div class="row-start-1 flex flex-wrap gap-2">
-						{#each Object.entries(object.metadata?.labels) as [key, value], index (index)}
-							<Badge variant="outline" class="text-xs">
-								<p class="text-muted-foreground">{key}</p>
-								<Separator orientation="vertical" class="h-1" />
-								<p class="text-primary">{value}</p>
-							</Badge>
-						{/each}
-					</div>
-
-					<!-- Annotations -->
-					<div class="relative row-start-2 w-fit">
-						<Label class="self-start p-1 text-xs font-semibold">Annotations</Label>
-						<Badge
-							class="absolute -top-1 -right-1 flex size-4 items-center justify-center rounded-full border-background bg-chart-1 text-[10px]"
-						>
-							{Object.entries(object.metadata?.annotations).length}
-						</Badge>
-					</div>
-					<div class="row-start-2 flex flex-wrap gap-2">
-						{#each Object.entries(object.metadata?.annotations) as [key, value], index (index)}
-							<Badge variant="outline" class="text-xs">
-								<p class="text-muted-foreground">{key}</p>
-								<Separator orientation="vertical" class="h-1" />
-								<p class="text-primary">{value}</p>
-							</Badge>
-						{/each}
-					</div>
-				</div>
-			</Item.Footer>
-		</Item.Root>
+				</Item.Footer>
+			</Item.Root>
+		</Field.Set>
 		<!-- Spec Section -->
-		<div class="grid grid-cols-3 gap-4">
+		<Field.Set class="grid grid-cols-1 gap-4 lg:grid-cols-2">
 			<div class="flex h-full flex-col gap-4">
 				<!-- Resource Quota -->
-				<Card.Root class="flex h-full flex-col border-0 bg-chart-3/20 shadow-none">
+				<Card.Root class="flex h-full flex-col border-0 bg-muted/50 shadow-none">
 					{@const resourceQuota = object.spec?.resourceQuota?.hard ?? {}}
 					<Card.Header>
 						<Card.Title>
 							<Item.Root class="p-0">
 								<Item.Media>
-									<Gauge size={24} />
+									<Gauge size={28} />
 								</Item.Media>
 								<Item.Content>
-									<Item.Title>
-										<h3 class="font-semibold">Resource Quota</h3>
+									<Item.Title class={typographyVariants({ variant: 'h4' })}>
+										Resource Quota
 									</Item.Title>
 								</Item.Content>
 							</Item.Root>
 						</Card.Title>
 					</Card.Header>
-					<Card.Content class="flex-1">
+					<Card.Content class="h-full flex-1">
 						{#if Object.keys(resourceQuota).length > 0}
 							<Table.Root>
 								<Table.Body class="[&_td:first-child]:rounded-l-lg [&_td:last-child]:rounded-r-lg">
 									{#each Object.entries(resourceQuota) as [resource, limit], index (index)}
-										<Table.Row class="group border-none">
-											<Table.Cell class="text-muted-foreground group-hover:text-black"
-												>{resource}</Table.Cell
+										<Table.Row
+											class="group border-none [&_td]:transition-colors [&_td]:duration-200"
+										>
+											<Table.Cell
+												class={cn(
+													typographyVariants({ variant: 'muted' }),
+													'group-hover:text-primary'
+												)}
 											>
-											<Table.Cell class="text-end text-primary">{limit}</Table.Cell>
+												{resource}
+											</Table.Cell>
+											<Table.Cell class="text-end">{limit}</Table.Cell>
 										</Table.Row>
 									{/each}
 								</Table.Body>
 							</Table.Root>
 						{:else}
-							null
+							<Empty.Root class="h-full">
+								<Empty.Header>
+									<Empty.Media variant="icon">
+										<Gauge />
+									</Empty.Media>
+									<Empty.Title>No Resource Quota Configured</Empty.Title>
+									<Empty.Description>
+										Resource Quota is not configured yet. Please click the edit button at the top
+										right to configure Resource Quota.
+									</Empty.Description>
+								</Empty.Header>
+							</Empty.Root>
 						{/if}
 					</Card.Content>
 				</Card.Root>
 
-				<!-- Network Isolation -->
-				<Card.Root class="flex h-full flex-col border-0 bg-chart-3/20 shadow-none">
+				<!-- Limit Range -->
+				<Card.Root class="flex h-full flex-col border-0 bg-muted/50 shadow-none">
+					{@const limits = object.spec?.limitRange?.limits ?? []}
 					<Card.Header>
 						<Card.Title>
 							<Item.Root class="p-0">
 								<Item.Media>
-									<Shield size={24} />
+									<Zap size={28} />
 								</Item.Media>
 								<Item.Content>
-									<Item.Title>
-										<h3 class="font-semibold">Network Isolation</h3>
+									<Item.Title class={typographyVariants({ variant: 'h4' })}>Limit Range</Item.Title>
+								</Item.Content>
+							</Item.Root>
+						</Card.Title>
+					</Card.Header>
+					<Card.Content class="h-full ">
+						{#if limits.length > 0}
+							{#each limits as limit, index (index)}
+								{@const { type, ...thresholds } = limit}
+								<Item.Root class="justify-between py-0 pl-0">
+									<!-- <Item.Media>
+										{#if type === 'Container'}
+											<Box size={16} />
+										{:else if type === 'Pod'}
+											<Boxes size={16} />
+										{:else if type === 'PersistentVolumeClaim'}
+											<Cylinder size={16} />
+										{/if}
+									</Item.Media> -->
+									<Item.Content>
+										<Item.Title class="uppercase">
+											{type}
+										</Item.Title>
+									</Item.Content>
+									<!-- <Item.Actions>
+									{Object.keys(thresholds).length}
+								</Item.Actions> -->
+									<Item.Footer>
+										{#each Object.entries(thresholds) as [key, values], index (index)}
+											{#if values && typeof values === 'object'}
+												<Item.Root class="p-0">
+													<Item.Content>
+														<Item.Title
+															class={cn('capitalize', typographyVariants({ variant: 'muted' }))}
+														>
+															{key}
+														</Item.Title>
+														<Item.Description>
+															{#each Object.entries(values) as [key, value], index (index)}
+																<!-- <Badge
+																variant="outline"
+																class="mr-1 bg-secondary/30 text-xs group-hover:border-primary/30 group-hover:bg-muted-foreground/30"
+															>
+																<p class={typographyVariants({ variant: 'muted' })}>{key}</p>
+																<Separator orientation="vertical" class="mx-1 h-1" />
+																{value}
+															</Badge> -->
+																<p class="font-mono text-primary">{key}:{value}</p>
+															{/each}
+														</Item.Description>
+													</Item.Content>
+												</Item.Root>
+											{/if}
+										{/each}
+									</Item.Footer>
+								</Item.Root>
+
+								<Separator class="my-2 last:hidden" />
+							{/each}
+						{:else}
+							<Empty.Root class="h-full">
+								<Empty.Header>
+									<Empty.Media variant="icon">
+										<Zap />
+									</Empty.Media>
+									<Empty.Title>No Limit Range Configured</Empty.Title>
+									<Empty.Description>
+										Limit Range is not configured yet. Please click the edit button at the top right
+										to configure Limit Range.
+									</Empty.Description>
+								</Empty.Header>
+							</Empty.Root>
+						{/if}
+					</Card.Content>
+				</Card.Root>
+			</div>
+
+			<div class="flex h-full flex-col gap-4">
+				<!-- Network Isolation -->
+				<Card.Root class="flex h-full flex-col border-0 bg-muted/50 shadow-none">
+					<Card.Header>
+						<Card.Title>
+							<Item.Root class="p-0">
+								<Item.Media>
+									<Shield size={28} />
+								</Item.Media>
+								<Item.Content>
+									<Item.Title class={typographyVariants({ variant: 'h4' })}>
+										Network Isolation
 									</Item.Title>
 								</Item.Content>
 							</Item.Root>
@@ -224,8 +354,6 @@
 									<CircleCheck size={40} class="text-chart-2" />
 								{:else if enabled === false}
 									<X size={40} class="text-destructive" />
-								{:else}
-									null
 								{/if}
 							</Item.Actions>
 						</Item.Root>
@@ -235,8 +363,8 @@
 						<Card.Title>
 							<Item.Root class="p-0">
 								<Item.Content>
-									<Item.Title>
-										<h3 class="text-sm font-semibold text-foreground">Allowed Namespaces</h3>
+									<Item.Title class={typographyVariants({ variant: 'h6' })}>
+										Allowed Namespaces
 									</Item.Title>
 								</Item.Content>
 							</Item.Root>
@@ -249,110 +377,32 @@
 						{#if allowedNamespaces.length > 0}
 							<div class="flex flex-wrap gap-1">
 								{#each allowedNamespaces as allowedNamespace, index (index)}
-									<Badge variant="secondary" class="text-muted-foreground">
+									<Badge variant="outline" class={typographyVariants({ variant: 'muted' })}>
 										<Network class="size-3" />
 										{allowedNamespace}
 									</Badge>
 								{/each}
 							</div>
 						{:else}
-							null
+							<Badge variant="outline" class={typographyVariants({ variant: 'muted' })}>
+								<Network class="size-3" />
+								<p class="italic">No namespaces allowed</p>
+							</Badge>
 						{/if}
 					</Card.Content>
 				</Card.Root>
-			</div>
 
-			<!-- Limit Range -->
-			<Card.Root class="flex h-full flex-col border-0 bg-chart-3/20 shadow-none">
-				{@const limits = object.spec?.limitRange?.limits ?? []}
-				<Card.Header>
-					<Card.Title>
-						<Item.Root class="p-0">
-							<Item.Media>
-								<Zap size={24} />
-							</Item.Media>
-							<Item.Content>
-								<Item.Title>
-									<h3 class="text-sm font-semibold text-foreground">Limit Range</h3>
-								</Item.Title>
-							</Item.Content>
-						</Item.Root>
-					</Card.Title>
-				</Card.Header>
-				<Card.Content>
-					{#if limits.length > 0}
-						{#each limits as limit, index (index)}
-							{@const { type, ...thresholds } = limit}
-							<Table.Root class="-mt-3 caption-top">
-								<Table.Caption class="text-black">
-									<Item.Root class="justify-between py-0 pl-0">
-										<div class="flex gap-2 p-1">
-											<Item.Media>
-												{#if type === 'Container'}
-													<Box size={16} />
-												{:else if type === 'Pod'}
-													<Boxes size={16} />
-												{:else if type === 'PersistentVolumeClaim'}
-													<Cylinder size={16} />
-												{/if}
-											</Item.Media>
-											<Item.Content>
-												<Item.Title>
-													<h4 class="text-sm">{type}</h4>
-												</Item.Title>
-											</Item.Content>
-										</div>
-										<Item.Actions>
-											{Object.keys(thresholds).length}
-										</Item.Actions>
-									</Item.Root>
-								</Table.Caption>
-								<Table.Body class="[&_td:first-child]:rounded-l-lg [&_td:last-child]:rounded-r-lg">
-									{#each Object.entries(thresholds) as [key, values], index (index)}
-										<Table.Row class="group border-none">
-											<Table.Cell class="text-muted-foreground group-hover:text-black"
-												>{key}</Table.Cell
-											>
-											<Table.Cell class="text-end ">
-												{#if values && typeof values === 'object'}
-													{#each Object.entries(values) as [key, value], index (index)}
-														<Badge
-															variant="outline"
-															class="mr-1 bg-secondary/30 text-xs group-hover:border-primary/30 group-hover:bg-muted-foreground/30"
-														>
-															<span class="text-muted-foreground">{key}</span>
-															<Separator orientation="vertical" class="mx-1 h-1" />
-															<span class="text-primary">{value}</span>
-														</Badge>
-													{/each}
-												{/if}
-											</Table.Cell>
-										</Table.Row>
-									{/each}
-								</Table.Body>
-							</Table.Root>
-							<Separator class="my-2 last:hidden" />
-						{/each}
-					{:else}
-						null
-					{/if}
-				</Card.Content>
-			</Card.Root>
-
-			<div class="flex h-full flex-col gap-4">
 				<!-- Users -->
-				<Card.Root class="flex h-full flex-col border-0 bg-chart-3/20 shadow-none">
+				<Card.Root class="flex h-full flex-col border-0 bg-muted/50 shadow-none">
 					{@const users = object.spec?.users ?? []}
 					<Card.Header>
 						<Card.Title>
 							<Item.Root class="p-0">
 								<Item.Media>
-									<Users size={24} />
+									<Users size={28} />
 								</Item.Media>
 								<Item.Content>
-									<Item.Title>
-										<h3 class="font-semibold">Users</h3>
-									</Item.Title>
+									<Item.Title class={typographyVariants({ variant: 'h4' })}>Users</Item.Title>
 								</Item.Content>
 							</Item.Root>
 						</Card.Title>
@@ -367,11 +417,11 @@
 									<Item.Content>
 										<Item.Title>
 											{user.name}
-											<Badge variant="secondary" class="text-xs">
+											<Badge variant="secondary">
 												{user.role}
 											</Badge>
 										</Item.Title>
-										<Item.Description class="text-xs">
+										<Item.Description>
 											{user.subject}
 										</Item.Description>
 									</Item.Content>
@@ -383,33 +433,110 @@
 					</Card.Content>
 				</Card.Root>
 			</div>
-		</div>
+		</Field.Set>
 
-		<!-- Related Resources -->
-		<Label class="text-xl font-bold">Related Resources</Label>
-		{#if object.status?.namespaceRef || object.status?.authorizationPolicyRef || object.status?.peerAuthenticationRef || object.status?.roleBindingRefs?.length}
-			<div class="grid gap-4 md:grid-cols-3">
-				{#each [object.status?.namespaceRef, object.status?.authorizationPolicyRef, object.status?.peerAuthenticationRef, ...(object.status?.roleBindingRefs || [])] as resource (resource?.name)}
-					{#if resource}
-						<Item.Root class="bg-muted/50 hover:underline">
-							<Item.Media>
-								<Box class="size-6 text-primary" />
-							</Item.Media>
-							<Item.Content>
-								<Item.Title>
-									<h1 class="text-sm font-semibold">{resource.kind}</h1>
-									<p class="text-xs text-muted-foreground">{resource.apiVersion}</p>
-								</Item.Title>
-								<Item.Description class="text-xs">
-									{resource.name}
-								</Item.Description>
-							</Item.Content>
-						</Item.Root>
-					{/if}
-				{/each}
+		<Field.Set>
+			<!-- Related Resources -->
+			<Label class={typographyVariants({ variant: 'h4' })}>Related Resources</Label>
+			{#if object.status?.namespaceRef || object.status?.authorizationPolicyRef || object.status?.peerAuthenticationRef || object.status?.roleBindingRefs?.length}
+				<div class="grid gap-4 md:grid-cols-3">
+					{#each [object.status?.namespaceRef, object.status?.authorizationPolicyRef, object.status?.peerAuthenticationRef, ...(object.status?.roleBindingRefs || [])] as resource (resource?.name)}
+						{#if resource}
+							<Item.Root class="bg-muted hover:underline">
+								<Item.Media>
+									<Box size={24} />
+								</Item.Media>
+								<Item.Content>
+									<Item.Title>
+										<h1>{resource.kind}</h1>
+										<p class={typographyVariants({ variant: 'muted' })}>{resource.apiVersion}</p>
+									</Item.Title>
+									<Item.Description>
+										{resource.name}
+									</Item.Description>
+								</Item.Content>
+							</Item.Root>
+						{/if}
+					{/each}
+				</div>
+			{/if}
+		</Field.Set>
+	</Field.Group>
+{:else}{/if}
+<div class="flex min-h-screen items-center justify-center bg-background px-4">
+	<div class="w-full max-w-md space-y-8 text-center">
+		<!-- Animated Logo/Icon -->
+		<div class="flex justify-center">
+			<div class="relative h-20 w-20">
+				<!-- Outer rotating ring with gradient -->
+				<div
+					class="absolute inset-0 animate-spin rounded-full border-2 border-transparent border-t-primary border-r-primary"
+					style="border-right-color: oklch(0.7 0.18 170);"
+				/>
+				<!-- Middle pulsing ring -->
+				<div class="absolute inset-2 animate-pulse rounded-full border border-primary/40" />
+				<!-- Inner accelerated spin -->
+				<div
+					class="absolute inset-4 animate-spin rounded-full border border-transparent border-b-primary/60"
+					style="animation-direction: reverse; animation-duration: 1s;"
+				/>
+				<!-- Center icon -->
+				<div class="absolute inset-0 flex items-center justify-center">
+					<Layers class="h-10 w-10 text-primary" />
+				</div>
 			</div>
-		{/if}
+		</div>
+		<!-- Main Text -->
+		<div class="space-y-3">
+			<h1 class="text-3xl font-bold tracking-tight text-foreground">Loading</h1>
+			<p class="text-sm leading-relaxed text-muted-foreground">
+				Preparing your workspace configuration
+			</p>
+		</div>
+		<!-- Animated Dots -->
+		<div class="flex items-center justify-center gap-1.5 py-4">
+			{#each [0, 1, 2] as i}
+				<div
+					class="h-2 w-2 animate-bounce rounded-full bg-primary"
+					style="animation-delay: {i * 150}ms; animation-duration: 1.2s;"
+				/>
+			{/each}
+		</div>
+		<!-- Progress Steps -->
+		<div class="space-y-3 py-4">
+			{#each [{ label: 'Fetching metadata', number: '01' }, { label: 'Loading configuration', number: '02' }, { label: 'Initializing resources', number: '03' }] as step, index}
+				<div
+					class="opacity-transition flex items-center gap-3"
+					style="animation: fadeIn 0.6s ease-out {index * 200}ms both;"
+				>
+					<span class="min-w-6 text-xs font-bold tracking-wider text-primary/60">
+						{step.number}
+					</span>
+					<div class="h-px flex-1 bg-border" />
+					<span class="text-xs font-medium text-muted-foreground">
+						{step.label}
+					</span>
+				</div>
+			{/each}
+		</div>
+		<!-- Bottom Hint -->
+		<div class="border-t border-border/30 pt-4">
+			<p class="text-xs text-muted-foreground/70">✓ Your workspace is being prepared</p>
+		</div>
 	</div>
-{:else}
-	<div class="py-12 text-center text-muted-foreground">Loading...</div>
-{/if}
+	<style>
+		@keyframes fadeIn {
+			from {
+				opacity: 0;
+				transform: translateX(-8px);
+			}
+			to {
+				opacity: 1;
+				transform: translateX(0);
+			}
+		}
+		.opacity-transition {
+			opacity: 1;
+		}
+	</style>
+</div>
