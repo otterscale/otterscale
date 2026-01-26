@@ -74,42 +74,42 @@
 		return { value: years, unit: 'year' };
 	}
 
-	function parseSchemaType(schema: any): string {
-		if (!schema) return 'unknown';
+	// function parseSchemaType(schema: any): string {
+	// 	if (!schema) return 'unknown';
 
-		if (schema.type === 'boolean') return 'boolean';
-		if (schema.type === 'string') {
-			if (schema.format === 'date-time' || schema.format === 'date') return 'time';
-			return 'string';
-		}
-		if (schema.type === 'number' || schema.type === 'integer') return 'number';
+	// 	if (schema.type === 'boolean') return 'boolean';
+	// 	if (schema.type === 'string') {
+	// 		if (schema.format === 'date-time' || schema.format === 'date') return 'time';
+	// 		return 'string';
+	// 	}
+	// 	if (schema.type === 'number' || schema.type === 'integer') return 'number';
 
-		if (schema.type === 'array' && schema.items) {
-			return `array<${parseSchemaType(schema.items)}>`;
-		}
+	// 	if (schema.type === 'array' && schema.items) {
+	// 		return `array<${parseSchemaType(schema.items)}>`;
+	// 	}
 
-		if (schema.type === 'object' && schema.additionalProperties) {
-			const valueType = parseSchemaType(schema.additionalProperties);
-			return `object<string, ${valueType}>`;
-		}
+	// 	if (schema.type === 'object' && schema.additionalProperties) {
+	// 		const valueType = parseSchemaType(schema.additionalProperties);
+	// 		return `object<string, ${valueType}>`;
+	// 	}
 
-		if (schema.type === 'object' && schema.properties) {
-			const props = Object.entries(schema.properties)
-				.map(([key, subSchema]) => `${key}: ${parseSchemaType(subSchema as any)}`)
-				.join(', ');
-			return `{ ${props} }`;
-		}
+	// 	if (schema.type === 'object' && schema.properties) {
+	// 		const props = Object.entries(schema.properties)
+	// 			.map(([key, subSchema]) => `${key}: ${parseSchemaType(subSchema as any)}`)
+	// 			.join(', ');
+	// 		return `{ ${props} }`;
+	// 	}
 
-		if (schema.enum) {
-			return `enum(${schema.enum.map((val: any) => JSON.stringify(val)).join(', ')})`;
-		}
+	// 	if (schema.enum) {
+	// 		return `enum(${schema.enum.map((val: any) => JSON.stringify(val)).join(', ')})`;
+	// 	}
 
-		if (!schema.type && schema.default !== undefined) {
-			return typeof schema.default;
-		}
+	// 	if (!schema.type && schema.default !== undefined) {
+	// 		return typeof schema.default;
+	// 	}
 
-		return 'unknown';
-	}
+	// 	return 'unknown';
+	// }
 </script>
 
 <div class={className}>

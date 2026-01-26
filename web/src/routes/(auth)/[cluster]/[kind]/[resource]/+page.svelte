@@ -41,19 +41,15 @@
 <script lang="ts">
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import Box from '@lucide/svelte/icons/box';
-	import Boxes from '@lucide/svelte/icons/boxes';
 	import CircleCheck from '@lucide/svelte/icons/check-circle-2';
-	import Cylinder from '@lucide/svelte/icons/cylinder';
 	import File from '@lucide/svelte/icons/file';
 	import Gauge from '@lucide/svelte/icons/gauge';
 	import Layers from '@lucide/svelte/icons/layers';
 	import Network from '@lucide/svelte/icons/network';
-	import Plus from '@lucide/svelte/icons/plus';
 	import Shield from '@lucide/svelte/icons/shield';
 	import Users from '@lucide/svelte/icons/users';
 	import X from '@lucide/svelte/icons/x';
 	import Zap from '@lucide/svelte/icons/zap';
-	import { Description } from 'formsnap';
 	import { getContext, onDestroy, onMount } from 'svelte';
 
 	import { page } from '$app/state';
@@ -66,7 +62,6 @@
 	import * as Item from '$lib/components/ui/item';
 	import Label from '$lib/components/ui/label/label.svelte';
 	import Separator from '$lib/components/ui/separator/separator.svelte';
-	import * as Table from '$lib/components/ui/table/index.js';
 	import { cn } from '$lib/utils';
 
 	const cluster = $derived(page.params.cluster ?? '');
@@ -181,258 +176,224 @@
 			</Item.Root>
 		</Field.Set>
 		<!-- Spec Section -->
-		<Field.Set class="grid grid-cols-1 gap-4 lg:grid-cols-2">
-			<div class="flex h-full flex-col gap-4">
-				<!-- Resource Quota -->
-				<Card.Root class="flex h-full flex-col border-0 bg-muted/50 shadow-none">
-					{@const resourceQuota = object.spec?.resourceQuota?.hard ?? {}}
-					<Card.Header>
-						<Card.Title>
-							<Item.Root class="p-0">
-								<Item.Media>
-									<Gauge size={28} />
-								</Item.Media>
-								<Item.Content>
-									<Item.Title class={typographyVariants({ variant: 'h4' })}>
-										Resource Quota
-									</Item.Title>
-								</Item.Content>
-							</Item.Root>
-						</Card.Title>
-					</Card.Header>
-					<Card.Content class="h-full flex-1">
-						{#if Object.keys(resourceQuota).length > 0}
-							<Table.Root>
-								<Table.Body class="[&_td:first-child]:rounded-l-lg [&_td:last-child]:rounded-r-lg">
-									{#each Object.entries(resourceQuota) as [resource, limit], index (index)}
-										<Table.Row
-											class="group border-none [&_td]:transition-colors [&_td]:duration-200"
-										>
-											<Table.Cell
-												class={cn(
-													typographyVariants({ variant: 'muted' }),
-													'group-hover:text-primary'
-												)}
-											>
-												{resource}
-											</Table.Cell>
-											<Table.Cell class="text-end">{limit}</Table.Cell>
-										</Table.Row>
-									{/each}
-								</Table.Body>
-							</Table.Root>
-						{:else}
-							<Empty.Root class="h-full">
-								<Empty.Header>
-									<Empty.Media variant="icon">
-										<Gauge />
-									</Empty.Media>
-									<Empty.Title>No Resource Quota Configured</Empty.Title>
-									<Empty.Description>
-										Resource Quota is not configured yet. Please click the edit button at the top
-										right to configure Resource Quota.
-									</Empty.Description>
-								</Empty.Header>
-							</Empty.Root>
-						{/if}
-					</Card.Content>
-				</Card.Root>
-
-				<!-- Limit Range -->
-				<Card.Root class="flex h-full flex-col border-0 bg-muted/50 shadow-none">
-					{@const limits = object.spec?.limitRange?.limits ?? []}
-					<Card.Header>
-						<Card.Title>
-							<Item.Root class="p-0">
-								<Item.Media>
-									<Zap size={28} />
-								</Item.Media>
-								<Item.Content>
-									<Item.Title class={typographyVariants({ variant: 'h4' })}>Limit Range</Item.Title>
-								</Item.Content>
-							</Item.Root>
-						</Card.Title>
-					</Card.Header>
-					<Card.Content class="h-full ">
-						{#if limits.length > 0}
-							{#each limits as limit, index (index)}
-								{@const { type, ...thresholds } = limit}
-								<Item.Root class="justify-between py-0 pl-0">
-									<!-- <Item.Media>
-										{#if type === 'Container'}
-											<Box size={16} />
-										{:else if type === 'Pod'}
-											<Boxes size={16} />
-										{:else if type === 'PersistentVolumeClaim'}
-											<Cylinder size={16} />
-										{/if}
-									</Item.Media> -->
-									<Item.Content>
-										<Item.Title class="uppercase">
-											{type}
+		<Field.Set class="grid grid-cols-1 gap-4 ">
+			<!-- Resource Quota -->
+			<Card.Root class="flex h-full flex-col border-0 bg-muted/50 shadow-none">
+				{@const resourceQuota = object.spec?.resourceQuota?.hard ?? {}}
+				<Card.Header>
+					<Card.Title>
+						<Item.Root class="p-0">
+							<Item.Media>
+								<Gauge size={28} />
+							</Item.Media>
+							<Item.Content>
+								<Item.Title class={typographyVariants({ variant: 'h4' })}>
+									Resource Quota
+								</Item.Title>
+							</Item.Content>
+						</Item.Root>
+					</Card.Title>
+				</Card.Header>
+				<Card.Content>
+					{#if Object.keys(resourceQuota).length > 0}
+						<div class="grid grid-cols-1 gap-4 lg:grid-cols-3 xl:grid-cols-5">
+							{#each Object.entries(resourceQuota) as [key, value], index (index)}
+								<Item.Root class="w-fit p-0">
+									<Item.Content class="flex gap-2">
+										<Item.Description>
+											{key}
+										</Item.Description>
+										<Item.Title class={cn(typographyVariants({ variant: 'large' }))}>
+											{value}
 										</Item.Title>
 									</Item.Content>
-									<!-- <Item.Actions>
-									{Object.keys(thresholds).length}
-								</Item.Actions> -->
-									<Item.Footer>
-										{#each Object.entries(thresholds) as [key, values], index (index)}
-											{#if values && typeof values === 'object'}
-												<Item.Root class="p-0">
-													<Item.Content>
-														<Item.Title
-															class={cn('capitalize', typographyVariants({ variant: 'muted' }))}
-														>
-															{key}
-														</Item.Title>
-														<Item.Description>
-															{#each Object.entries(values) as [key, value], index (index)}
-																<!-- <Badge
-																variant="outline"
-																class="mr-1 bg-secondary/30 text-xs group-hover:border-primary/30 group-hover:bg-muted-foreground/30"
-															>
-																<p class={typographyVariants({ variant: 'muted' })}>{key}</p>
-																<Separator orientation="vertical" class="mx-1 h-1" />
-																{value}
-															</Badge> -->
-																<p class="font-mono text-primary">{key}:{value}</p>
-															{/each}
-														</Item.Description>
-													</Item.Content>
-												</Item.Root>
-											{/if}
-										{/each}
-									</Item.Footer>
 								</Item.Root>
-
-								<Separator class="my-2 last:hidden" />
 							{/each}
-						{:else}
-							<Empty.Root class="h-full">
-								<Empty.Header>
-									<Empty.Media variant="icon">
-										<Zap />
-									</Empty.Media>
-									<Empty.Title>No Limit Range Configured</Empty.Title>
-									<Empty.Description>
-										Limit Range is not configured yet. Please click the edit button at the top right
-										to configure Limit Range.
-									</Empty.Description>
-								</Empty.Header>
-							</Empty.Root>
-						{/if}
-					</Card.Content>
-				</Card.Root>
-			</div>
+						</div>
+					{:else}
+						<Empty.Root class="h-full">
+							<Empty.Header>
+								<Empty.Media variant="icon">
+									<Gauge />
+								</Empty.Media>
+								<Empty.Title>No Resource Quota Configured</Empty.Title>
+								<Empty.Description>
+									Resource Quota is not configured yet. Please click the edit button at the top
+									right to configure Resource Quota.
+								</Empty.Description>
+							</Empty.Header>
+						</Empty.Root>
+					{/if}
+				</Card.Content>
+			</Card.Root>
 
-			<div class="flex h-full flex-col gap-4">
-				<!-- Network Isolation -->
-				<Card.Root class="flex h-full flex-col border-0 bg-muted/50 shadow-none">
-					<Card.Header>
-						<Card.Title>
-							<Item.Root class="p-0">
-								<Item.Media>
-									<Shield size={28} />
-								</Item.Media>
+			<!-- Limit Range -->
+			<Card.Root class="flex h-full flex-col border-0 bg-muted/50 shadow-none">
+				{@const limits = object.spec?.limitRange?.limits ?? []}
+				<Card.Header>
+					<Card.Title>
+						<Item.Root class="p-0">
+							<Item.Media>
+								<Zap size={28} />
+							</Item.Media>
+							<Item.Content>
+								<Item.Title class={typographyVariants({ variant: 'h4' })}>Limit Range</Item.Title>
+							</Item.Content>
+						</Item.Root>
+					</Card.Title>
+				</Card.Header>
+				<Card.Content class="h-full ">
+					{#if limits.length > 0}
+						{#each limits as limit, index (index)}
+							{@const { type, ...thresholds } = limit}
+							<Item.Root class="justify-between py-0 pl-0">
 								<Item.Content>
-									<Item.Title class={typographyVariants({ variant: 'h4' })}>
-										Network Isolation
+									<Item.Title class="uppercase">
+										{type}
 									</Item.Title>
 								</Item.Content>
+								<Item.Footer class="grid grid-cols-1 gap-4 lg:grid-cols-3 xl:grid-cols-5">
+									{#each Object.entries(thresholds) as [key, values], index (index)}
+										{#if values && typeof values === 'object'}
+											<Item.Root class="p-0">
+												<Item.Content>
+													<Item.Title
+														class={cn('capitalize', typographyVariants({ variant: 'muted' }))}
+													>
+														{key}
+													</Item.Title>
+													<Item.Description>
+														{#each Object.entries(values) as [key, value], index (index)}
+															<p class="font-mono text-primary">{key}:{value}</p>
+														{/each}
+													</Item.Description>
+												</Item.Content>
+											</Item.Root>
+										{/if}
+									{/each}
+								</Item.Footer>
 							</Item.Root>
-						</Card.Title>
-					</Card.Header>
-					<Card.Content class="flex-1">
-						<Item.Root class="flex w-full items-center justify-between p-0">
+							<Separator class="my-2 last:hidden" />
+						{/each}
+					{:else}
+						<Empty.Root class="h-full">
+							<Empty.Header>
+								<Empty.Media variant="icon">
+									<Zap />
+								</Empty.Media>
+								<Empty.Title>No Limit Range Configured</Empty.Title>
+								<Empty.Description>
+									Limit Range is not configured yet. Please click the edit button at the top right
+									to configure Limit Range.
+								</Empty.Description>
+							</Empty.Header>
+						</Empty.Root>
+					{/if}
+				</Card.Content>
+			</Card.Root>
+
+			<!-- Network Isolation -->
+			<Card.Root class="flex h-full flex-col border-0 bg-muted/50 shadow-none">
+				<Card.Header>
+					<Card.Title>
+						<Item.Root class="p-0">
+							<Item.Media>
+								<Shield size={28} />
+							</Item.Media>
 							<Item.Content>
-								<Item.Title>Enabled</Item.Title>
-								<Item.Description>Ingress traffic rules for the workspace</Item.Description>
+								<Item.Title class={typographyVariants({ variant: 'h4' })}>
+									Network Isolation
+								</Item.Title>
 							</Item.Content>
-							<Item.Actions>
+						</Item.Root>
+					</Card.Title>
+				</Card.Header>
+				<Card.Content class="grid grid-cols-1 gap-4 lg:grid-cols-2">
+					<Item.Root class="flex w-full items-center justify-between p-0">
+						<Item.Content>
+							<Item.Title class={typographyVariants({ variant: 'h6' })}>Enabled</Item.Title>
+							<Item.Description>
 								{@const enabled = object.spec?.networkIsolation?.enabled ?? null}
 								{#if enabled === true}
 									<CircleCheck size={40} class="text-chart-2" />
 								{:else if enabled === false}
 									<X size={40} class="text-destructive" />
 								{/if}
-							</Item.Actions>
-						</Item.Root>
-					</Card.Content>
-					{@const allowedNamespaces = object.spec?.networkIsolation?.allowedNamespaces ?? []}
-					<Card.Header>
-						<Card.Title>
-							<Item.Root class="p-0">
-								<Item.Content>
-									<Item.Title class={typographyVariants({ variant: 'h6' })}>
-										Allowed Namespaces
-									</Item.Title>
-								</Item.Content>
-							</Item.Root>
-						</Card.Title>
-						<Card.Action>
-							<Badge>{allowedNamespaces.length}</Badge>
-						</Card.Action>
-					</Card.Header>
-					<Card.Content class="flex-1">
-						{#if allowedNamespaces.length > 0}
-							<div class="flex flex-wrap gap-1">
-								{#each allowedNamespaces as allowedNamespace, index (index)}
+							</Item.Description>
+						</Item.Content>
+					</Item.Root>
+					<Item.Root class="p-0">
+						{@const allowedNamespaces = object.spec?.networkIsolation?.allowedNamespaces ?? []}
+
+						<Item.Content>
+							<Item.Title class={typographyVariants({ variant: 'h6' })}>
+								Allowed Namespaces
+							</Item.Title>
+							<Item.Description>
+								{#if allowedNamespaces.length > 0}
+									<div class="flex flex-wrap gap-1">
+										{#each allowedNamespaces as allowedNamespace, index (index)}
+											<Badge variant="secondary" class={typographyVariants({ variant: 'muted' })}>
+												<Network class="size-3" />
+												{allowedNamespace}
+											</Badge>
+										{/each}
+									</div>
+								{:else}
 									<Badge variant="outline" class={typographyVariants({ variant: 'muted' })}>
 										<Network class="size-3" />
-										{allowedNamespace}
+										<p class="italic">No namespaces allowed</p>
 									</Badge>
-								{/each}
-							</div>
-						{:else}
-							<Badge variant="outline" class={typographyVariants({ variant: 'muted' })}>
-								<Network class="size-3" />
-								<p class="italic">No namespaces allowed</p>
-							</Badge>
-						{/if}
-					</Card.Content>
-				</Card.Root>
+								{/if}
+							</Item.Description>
+						</Item.Content>
+						<Item.Actions>
+							<Badge>{allowedNamespaces.length}</Badge>
+						</Item.Actions>
+					</Item.Root>
+				</Card.Content>
+			</Card.Root>
 
-				<!-- Users -->
-				<Card.Root class="flex h-full flex-col border-0 bg-muted/50 shadow-none">
-					{@const users = object.spec?.users ?? []}
-					<Card.Header>
-						<Card.Title>
-							<Item.Root class="p-0">
-								<Item.Media>
-									<Users size={28} />
-								</Item.Media>
+			<!-- Users -->
+			<Card.Root class="flex h-full flex-col border-0 bg-muted/50 shadow-none">
+				{@const users = object.spec?.users ?? []}
+				<Card.Header>
+					<Card.Title>
+						<Item.Root class="p-0">
+							<Item.Media>
+								<Users size={28} />
+							</Item.Media>
+							<Item.Content>
+								<Item.Title class={typographyVariants({ variant: 'h4' })}>Users</Item.Title>
+							</Item.Content>
+						</Item.Root>
+					</Card.Title>
+					<Card.Action>
+						<Badge>{users.length}</Badge>
+					</Card.Action>
+				</Card.Header>
+				<Card.Content class="flex flex-wrap">
+					{#if users.length > 0}
+						{#each users as user, index (index)}
+							<Item.Root class="group w-fit hover:bg-muted/30 hover:underline">
 								<Item.Content>
-									<Item.Title class={typographyVariants({ variant: 'h4' })}>Users</Item.Title>
+									<Item.Title>
+										{user.name}
+										<Badge variant="secondary">
+											{user.role}
+										</Badge>
+									</Item.Title>
+									<Item.Description>
+										{user.subject}
+									</Item.Description>
 								</Item.Content>
 							</Item.Root>
-						</Card.Title>
-						<Card.Action>
-							<Badge>{users.length}</Badge>
-						</Card.Action>
-					</Card.Header>
-					<Card.Content class="flex flex-wrap">
-						{#if users.length > 0}
-							{#each users as user, index (index)}
-								<Item.Root class="group w-fit hover:bg-muted/30 hover:underline">
-									<Item.Content>
-										<Item.Title>
-											{user.name}
-											<Badge variant="secondary">
-												{user.role}
-											</Badge>
-										</Item.Title>
-										<Item.Description>
-											{user.subject}
-										</Item.Description>
-									</Item.Content>
-								</Item.Root>
-							{/each}
-						{:else}
-							null
-						{/if}
-					</Card.Content>
-				</Card.Root>
-			</div>
+						{/each}
+					{:else}
+						null
+					{/if}
+				</Card.Content>
+			</Card.Root>
 		</Field.Set>
 
 		<Field.Set>
