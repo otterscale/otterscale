@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { JsonValue } from '@openfeature/server-sdk';
+	import type { JsonValue } from '@bufbuild/protobuf';
 	import type { Column } from '@tanstack/table-core';
 	import { type WithElementRef } from 'bits-ui';
 	import type { HTMLAttributes } from 'svelte/elements';
