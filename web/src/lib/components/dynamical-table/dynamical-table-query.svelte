@@ -103,10 +103,10 @@
 </script>
 
 <script lang="ts">
+	import type { JsonValue } from '@bufbuild/protobuf';
 	import Code from '@lucide/svelte/icons/code';
 	import SearchIcon from '@lucide/svelte/icons/search';
 	import X from '@lucide/svelte/icons/x';
-	import type { JsonValue } from '@openfeature/server-sdk';
 	import type { Table } from '@tanstack/table-core';
 	import jsep from 'jsep';
 

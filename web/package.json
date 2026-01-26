@@ -1,7 +1,7 @@
 {
 	"name": "@otterscale/web",
 	"version": "0.7.0",
-	"packageManager": "pnpm@10.26.0",
+	"packageManager": "pnpm@10.28.1",
 	"private": true,
 	"type": "module",
 	"scripts": {
@@ -84,8 +84,6 @@
 		"@connectrpc/connect-web": "^2.1.1",
 		"@dagrejs/dagre": "^1.1.8",
 		"@iconify/svelte": "^5.1.0",
-		"@openfeature/flagd-provider": "^0.13.3",
-		"@openfeature/server-sdk": "^1.20.1",
 		"@oslojs/binary": "^1.0.0",
 		"@oslojs/crypto": "^1.0.1",
 		"@oslojs/encoding": "^1.1.0",
@@ -114,8 +112,8 @@
 		"ioredis": "^5.8.2",
 		"isomorphic-dompurify": "^2.34.0",
 		"js-yaml": "^4.1.1",
-		"json-schema-to-ts": "^3.1.1",
 		"jsep": "^1.4.0",
+		"json-schema-to-ts": "^3.1.1",
 		"pg": "^8.16.3",
 		"prometheus-query": "^3.5.1",
 		"rehype-highlight": "^7.0.2",
