@@ -1,3 +1,5 @@
+import type { Schema, UiSchemaRoot } from '@sjsf/form';
+
 import { deepMerge, deleteByPath, getByPath, setByPath } from './utils';
 
 /** K8s OpenAPI Schema type */
@@ -13,6 +15,7 @@ export interface K8sOpenAPISchema {
 	format?: string;
 	nullable?: boolean;
 	additionalProperties?: K8sOpenAPISchema | boolean;
+	oneOf?: K8sOpenAPISchema[];
 	[key: string]: unknown;
 }
 
