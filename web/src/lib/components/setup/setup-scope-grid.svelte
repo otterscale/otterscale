@@ -6,7 +6,6 @@
 	import { toast } from 'svelte-sonner';
 
 	import { resolve } from '$app/paths';
-	import { PremiumTier_Level } from '$lib/api/environment/v1/environment_pb';
 	import {
 		type Facility,
 		type Facility_Status,
@@ -19,7 +18,6 @@
 	import { Separator } from '$lib/components/ui/separator';
 	import { Switch } from '$lib/components/ui/switch';
 	import { m } from '$lib/paraglide/messages';
-	import { premiumTier } from '$lib/stores';
 
 	import SetupNodeGPUMode from './setup-node-gpu-mode.svelte';
 
@@ -65,7 +63,7 @@
 
 <div class="grid w-full grid-cols-3 gap-4 sm:gap-6 lg:grid-cols-6">
 	<div class="col-span-3 flex justify-end space-x-4 rounded-lg sm:space-x-6 lg:col-span-6">
-		<Button variant="ghost" disabled={$premiumTier.level === PremiumTier_Level.COMMUNITY}>
+		<Button variant="ghost" disabled>
 			<Icon icon="ph:plus" class="size-4" />
 			{m.add_node()}
 		</Button>
@@ -158,7 +156,8 @@
 												let msg = `Fail to resolve ${unit.name}`;
 												toast.error(msg, {
 													description: (e as ConnectError).message.toString(),
-													duration: Number.POSITIVE_INFINITY
+													duration: Number.POSITIVE_INFINITY,
+													closeButton: true
 												});
 												return msg;
 											}

@@ -1,11 +1,7 @@
-import { get } from 'svelte/store';
-
-import { PremiumTier_Level } from '$lib/api/environment/v1/environment_pb';
 import AdvancedTierImage from '$lib/assets/advanced-tier.jpg';
 import BasicTierImage from '$lib/assets/basic-tier.jpg';
 import EnterpriseTierImage from '$lib/assets/enterprise-tier.jpg';
 import { m } from '$lib/paraglide/messages';
-import { premiumTier } from '$lib/stores';
 
 interface Plan {
 	tier: string;
@@ -25,7 +21,7 @@ const plans: Plan[] = [
 		description: m.community_tier_description(),
 		tags: [m.ceph(), m.kubernetes(), m.single_node()],
 		image: BasicTierImage,
-		disabled: get(premiumTier).level < PremiumTier_Level.COMMUNITY
+		disabled: false
 	},
 	// TODO: Standard tier disabled until feature is available
 	{
@@ -35,7 +31,7 @@ const plans: Plan[] = [
 		description: m.premium_tier_description(),
 		tags: [m.ceph(), m.kubernetes(), m.multi_node(), m.cluster()],
 		image: AdvancedTierImage,
-		disabled: get(premiumTier).level < PremiumTier_Level.PREMIUM
+		disabled: true
 	},
 	{
 		tier: m.enterprise_tier(),
@@ -44,7 +40,7 @@ const plans: Plan[] = [
 		description: m.enterprise_tier_description(),
 		tags: [m.ceph(), m.kubernetes(), m.multi_node(), m.cluster()],
 		image: EnterpriseTierImage,
-		disabled: get(premiumTier).level < PremiumTier_Level.ENTERPRISE
+		disabled: true
 	}
 ];
 

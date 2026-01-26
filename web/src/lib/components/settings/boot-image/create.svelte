@@ -191,7 +191,8 @@
 									let message = `Fail to update boot images ${request.distroSeries}: ${architectures}`;
 									toast.error(message, {
 										description: (error as ConnectError).message.toString(),
-										duration: Number.POSITIVE_INFINITY
+										duration: Number.POSITIVE_INFINITY,
+										closeButton: true
 									});
 									return message;
 								}
@@ -209,7 +210,8 @@
 									let message = `Fail to create boot images ${request.distroSeries}: ${architectures}`;
 									toast.error(message, {
 										description: (error as ConnectError).message.toString(),
-										duration: Number.POSITIVE_INFINITY
+										duration: Number.POSITIVE_INFINITY,
+										closeButton: true
 									});
 									return message;
 								}

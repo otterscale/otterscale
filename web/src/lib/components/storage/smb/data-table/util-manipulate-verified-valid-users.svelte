@@ -152,7 +152,8 @@
 									let message = `Fail to validate ${requestUser}`;
 									toast.error(message, {
 										description: (error as ConnectError).message.toString(),
-										duration: Number.POSITIVE_INFINITY
+										duration: Number.POSITIVE_INFINITY,
+										closeButton: true
 									});
 									return message;
 								}

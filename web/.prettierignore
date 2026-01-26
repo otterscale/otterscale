@@ -10,3 +10,7 @@ bun.lockb
 
 # API
 /src/lib/api/
+/packages/types/src/lib/api
+
+# Generated Types
+/packages/types/src/lib/types

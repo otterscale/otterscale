@@ -95,7 +95,8 @@
 			const errorMessage = await response.text();
 			toast.error('Failed to get response from model', {
 				description: errorMessage,
-				duration: Number.POSITIVE_INFINITY
+				duration: Number.POSITIVE_INFINITY,
+				closeButton: true
 			});
 		}
 

@@ -161,7 +161,8 @@
 								let message = `Failed to edit boot image ${request.distroSeries}: ${architectures}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
-									duration: Number.POSITIVE_INFINITY
+									duration: Number.POSITIVE_INFINITY,
+									closeButton: true
 								});
 								return message;
 							}
