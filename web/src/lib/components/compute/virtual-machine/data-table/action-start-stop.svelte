@@ -40,7 +40,8 @@
 				const msg = `Failed to start virtual machine ${request.name}.`;
 				toast.error(msg, {
 					description: (e as ConnectError).message.toString(),
-					duration: Number.POSITIVE_INFINITY
+					duration: Number.POSITIVE_INFINITY,
+					closeButton: true
 				});
 				return msg;
 			}
@@ -60,7 +61,8 @@
 				const msg = `Failed to stop virtual machine ${request.name}.`;
 				toast.error(msg, {
 					description: (e as ConnectError).message.toString(),
-					duration: Number.POSITIVE_INFINITY
+					duration: Number.POSITIVE_INFINITY,
+					closeButton: true
 				});
 				return msg;
 			}

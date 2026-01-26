@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Braces from '@lucide/svelte/icons/braces';
+	import type { JsonObject, JsonValue } from '@bufbuild/protobuf';
 	import Circle from '@lucide/svelte/icons/circle';
 	import File from '@lucide/svelte/icons/file';
 	import FileCheck from '@lucide/svelte/icons/file-check';
@@ -10,7 +11,6 @@
 	import Grid from '@lucide/svelte/icons/grid';
 	import List from '@lucide/svelte/icons/list';
 	import X from '@lucide/svelte/icons/x';
-	import type { JsonObject, JsonValue } from '@openfeature/server-sdk';
 	import type { Column, Row } from '@tanstack/table-core';
 	import { type WithElementRef } from 'bits-ui';
 	import type { HTMLAttributes } from 'svelte/elements';

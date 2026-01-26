@@ -150,6 +150,7 @@ export type User = {
 };
 
 export type TokenSet = {
+	idToken: string;
 	accessToken: string;
 	refreshToken: string;
 	accessTokenExpiresAt: Date;

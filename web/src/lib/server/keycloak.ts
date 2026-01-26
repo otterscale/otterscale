@@ -8,5 +8,5 @@ export const keycloak = new KeyCloak(
 	env.KEYCLOAK_REALM_URL ?? '',
 	env.KEYCLOAK_CLIENT_ID ?? '',
 	env.KEYCLOAK_CLIENT_SECRET ?? '',
-	`${publicEnv.PUBLIC_WEB_URL}${resolve('/login/keycloak/callback')}`
+	`${publicEnv.PUBLIC_WEB_URL}${resolve('/login/callback')}`
 );
