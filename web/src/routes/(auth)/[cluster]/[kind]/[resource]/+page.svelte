@@ -40,8 +40,10 @@
 
 <script lang="ts">
 	import { createClient, type Transport } from '@connectrpc/connect';
+	import { Braces } from '@lucide/svelte';
 	import Box from '@lucide/svelte/icons/box';
 	import CircleCheck from '@lucide/svelte/icons/check-circle-2';
+	import CloudBackup from '@lucide/svelte/icons/cloud-backup';
 	import File from '@lucide/svelte/icons/file';
 	import Gauge from '@lucide/svelte/icons/gauge';
 	import Layers from '@lucide/svelte/icons/layers';
@@ -51,9 +53,16 @@
 	import X from '@lucide/svelte/icons/x';
 	import Zap from '@lucide/svelte/icons/zap';
 	import { getContext, onDestroy, onMount } from 'svelte';
+	import Monaco from 'svelte-monaco';
+	import { toast } from 'svelte-sonner';
+	import { stringify } from 'yaml';
 
 	import { page } from '$app/state';
-	import { ResourceService } from '$lib/api/resource/v1/resource_pb';
+	import {
+		ResourceService,
+		WatchEvent_Type,
+		type WatchRequest
+	} from '$lib/api/resource/v1/resource_pb';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
@@ -62,6 +71,8 @@
 	import * as Item from '$lib/components/ui/item';
 	import Label from '$lib/components/ui/label/label.svelte';
 	import Separator from '$lib/components/ui/separator/separator.svelte';
+	import * as Sheet from '$lib/components/ui/sheet/index.js';
+	import { Spinner } from '$lib/components/ui/spinner/index.js';
 	import { cn } from '$lib/utils';
 
 	const cluster = $derived(page.params.cluster ?? '');
@@ -70,42 +81,132 @@
 	const group = $derived(page.url.searchParams.get('group') ?? '');
 	const version = $derived(page.url.searchParams.get('version') ?? '');
 	const namespace = $derived(page.url.searchParams.get('namespace') ?? '');
+	const name = $derived(page.url.searchParams.get('name') ?? '');
 
 	const transport: Transport = getContext('transport');
 	const resourceClient = createClient(ResourceService, transport);
 
 	let object = $state<any>(undefined);
+
+	let getAbortController: AbortController | null = null;
+	let watchAbortController: AbortController | null = null;
 	let isMounted = $state(false);
 	let isGetting = $state(false);
 	let isDestroyed = false;
+	let resourceVersion: string | undefined = $state(undefined);
 
 	async function GetResource() {
-		if (isGetting || isDestroyed) return;
+		if (isGetting || isWatching || isDestroyed) return;
+
 		isGetting = true;
+		getAbortController = new AbortController();
+
 		try {
-			const response = await resourceClient.get({
-				cluster,
-				namespace,
-				group,
-				version,
-				resource,
-				name: `workspace-sample`
-			});
+			const response = await resourceClient.get(
+				{
+					cluster,
+					namespace,
+					group,
+					version,
+					resource,
+					name
+				},
+				{ signal: getAbortController.signal }
+			);
+
+			resourceVersion = response.object?.metadata?.resourceVersion;
 			object = response.object;
 		} catch (error) {
+			if (error instanceof Error && error.name === 'ConnectError') {
+				if (error.cause === 'Aborted due to component destroyed.') {
+					return;
+				}
+			}
+
 			console.error('Failed to get resource:', error);
+
+			return null;
 		} finally {
 			isGetting = false;
+			getAbortController = null;
+		}
+	}
+
+	let isWatching = $state(false);
+	async function watchResource() {
+		if (isGetting || isWatching || isDestroyed) return;
+
+		isWatching = true;
+		watchAbortController = new AbortController();
+		try {
+			const watchResourcesStream = resourceClient.watch(
+				{
+					cluster: cluster,
+					namespace: namespace,
+					group: group,
+					version: version,
+					resource: resource,
+					fieldSelector: `metadata.name=${name}`
+				} as WatchRequest,
+				{ signal: watchAbortController.signal }
+			);
+
+			for await (const watchResourcesResponse of watchResourcesStream) {
+				// eslint-disable-next-line
+				const response: any = watchResourcesResponse;
+
+				if (response.type === WatchEvent_Type.ERROR) {
+					continue;
+				}
+
+				if (response.type === WatchEvent_Type.BOOKMARK) {
+					resourceVersion = response.resourceVersion as string;
+					continue;
+				}
+
+				resourceVersion = response.resource?.object?.metadata?.resourceVersion;
+
+				if (response.type === WatchEvent_Type.ADDED) {
+					object = response.resource?.object;
+				} else if (response.type === WatchEvent_Type.MODIFIED) {
+					object = response.resource?.object;
+				} else if (response.type === WatchEvent_Type.DELETED) {
+					continue;
+				} else {
+					console.log('Unknown response type: ', response);
+				}
+			}
+		} catch (error) {
+			if (error instanceof Error && error.name === 'ConnectError') {
+				if (error.cause === 'Aborted due to component destroyed.') {
+					return;
+				}
+			}
+
+			console.error('Failed to watch resource:', error);
+		} finally {
+			toast.info(`Watching resource ${namespace} ${resource} ${name} was cancelled.`);
+
+			isWatching = false;
+			watchAbortController = null;
 		}
 	}
 
 	onMount(async () => {
 		await GetResource();
+		// watchResource();
+
 		isMounted = true;
 	});
 	onDestroy(() => {
 		isDestroyed = true;
 	});
+
+	function handleReload() {
+		if (!isWatching) {
+			watchResource();
+		}
+	}
 </script>
 
 {#if isMounted}
@@ -126,7 +227,7 @@
 					</Item.Title>
 					<Separator class="invisible" />
 					<div class="grid grid-cols-6 gap-2">
-						{#each [{ key: 'Creation Timestamp', value: new Date(object.metadata.creationTimestamp).toLocaleString('sv-SE') }, { key: 'Generation', value: object.metadata?.generation }, { key: 'Resource Version', value: object.metadata?.resourceVersion }] as item, index (index)}
+						{#each [{ key: 'Status', value: object.status.conditions.find((condition) => condition.type === 'Ready' && condition.status === 'True') ? 'Ready' : 'Not Ready' }, { key: 'Creation Timestamp', value: new Date(object.metadata.creationTimestamp).toLocaleString('sv-SE') }, { key: 'Generation', value: object.metadata?.generation }, { key: 'Resource Version', value: object.metadata?.resourceVersion }] as item, index (index)}
 							{#if item.value}
 								<Item.Root>
 									<Item.Content>
@@ -143,8 +244,61 @@
 					</div>
 				</Item.Content>
 				<Item.Actions>
-					<Button variant="ghost" size="icon-lg">
-						<File />
+					<Sheet.Root>
+						<Sheet.Trigger>
+							<Button variant="outline" size="icon-lg">
+								<File />
+							</Button>
+						</Sheet.Trigger>
+						<Sheet.Content
+							side="right"
+							class="flex h-full max-w-[62vw] min-w-[50vw] flex-col gap-0 overflow-y-auto p-4"
+						>
+							<Sheet.Header class="shruk-0 space-y-4">
+								<Sheet.Title>{name}</Sheet.Title>
+								<Sheet.Description>
+									{group}/{version}/{resource}
+								</Sheet.Description>
+							</Sheet.Header>
+							{#if object}
+								<div class="h-full p-4 pt-0">
+									<Monaco
+										value={stringify(object)}
+										options={{
+											language: 'yaml',
+											padding: { top: 24 },
+											automaticLayout: true,
+											domReadOnly: true,
+											readOnly: true
+										}}
+										theme="vs-dark"
+									/>
+								</div>
+							{:else}
+								<Empty.Root class="m-4 bg-muted/50">
+									<Empty.Header>
+										<Empty.Media variant="icon">
+											<Braces size={36} />
+										</Empty.Media>
+										<Empty.Title>No Data</Empty.Title>
+										<Empty.Description>
+											No data is currently available for this resource.
+											<br />
+											To populate this resource, please add properties or values through the resource
+											editor.
+										</Empty.Description>
+									</Empty.Header>
+									<Empty.Content></Empty.Content>
+								</Empty.Root>
+							{/if}
+						</Sheet.Content>
+					</Sheet.Root>
+					<Button onclick={handleReload} disabled={isWatching} variant="outline">
+						{#if isWatching}
+							<Spinner class="opacity-60" size={16} />
+						{:else}
+							<CloudBackup class="opacity-60" size={16} />
+						{/if}
 					</Button>
 				</Item.Actions>
 				<Item.Footer class="flex flex-col items-start justify-start gap-2">
@@ -176,9 +330,9 @@
 			</Item.Root>
 		</Field.Set>
 		<!-- Spec Section -->
-		<Field.Set class="grid grid-cols-1 gap-4 ">
+		<Field.Set class="grid grid-cols-1 gap-4 rounded-lg bg-muted-foreground/10">
 			<!-- Resource Quota -->
-			<Card.Root class="flex h-full flex-col border-0 bg-muted/50 shadow-none">
+			<Card.Root class="flex h-full flex-col border-0 bg-transparent shadow-none">
 				{@const resourceQuota = object.spec?.resourceQuota?.hard ?? {}}
 				<Card.Header>
 					<Card.Title>
@@ -226,9 +380,11 @@
 					{/if}
 				</Card.Content>
 			</Card.Root>
-
+			<div class="px-4">
+				<Separator class="py-px" />
+			</div>
 			<!-- Limit Range -->
-			<Card.Root class="flex h-full flex-col border-0 bg-muted/50 shadow-none">
+			<Card.Root class="flex h-full flex-col border-0 bg-transparent shadow-none">
 				{@const limits = object.spec?.limitRange?.limits ?? []}
 				<Card.Header>
 					<Card.Title>
@@ -291,9 +447,11 @@
 					{/if}
 				</Card.Content>
 			</Card.Root>
-
+			<div class="px-4">
+				<Separator class="py-px" />
+			</div>
 			<!-- Network Isolation -->
-			<Card.Root class="flex h-full flex-col border-0 bg-muted/50 shadow-none">
+			<Card.Root class="flex h-full flex-col border-0 bg-transparent shadow-none">
 				<Card.Header>
 					<Card.Title>
 						<Item.Root class="p-0">
@@ -353,9 +511,11 @@
 					</Item.Root>
 				</Card.Content>
 			</Card.Root>
-
+			<div class="px-4">
+				<Separator class="py-px" />
+			</div>
 			<!-- Users -->
-			<Card.Root class="flex h-full flex-col border-0 bg-muted/50 shadow-none">
+			<Card.Root class="flex h-full flex-col border-0 bg-transparent shadow-none">
 				{@const users = object.spec?.users ?? []}
 				<Card.Header>
 					<Card.Title>
@@ -372,14 +532,15 @@
 						<Badge>{users.length}</Badge>
 					</Card.Action>
 				</Card.Header>
-				<Card.Content class="flex flex-wrap">
+				<Card.Content class="flex flex-wrap gap-4">
+					<!-- Users must more than one -->
 					{#if users.length > 0}
 						{#each users as user, index (index)}
-							<Item.Root class="group w-fit hover:bg-muted/30 hover:underline">
+							<Item.Root variant="muted" class="group w-fit hover:bg-muted/30 hover:underline">
 								<Item.Content>
 									<Item.Title>
 										{user.name}
-										<Badge variant="secondary">
+										<Badge>
 											{user.role}
 										</Badge>
 									</Item.Title>
@@ -389,38 +550,56 @@
 								</Item.Content>
 							</Item.Root>
 						{/each}
-					{:else}
-						null
 					{/if}
 				</Card.Content>
 			</Card.Root>
 		</Field.Set>
 
 		<Field.Set>
+			{@const { conditions, ...references } = object.status ?? {}}
 			<!-- Related Resources -->
 			<Label class={typographyVariants({ variant: 'h4' })}>Related Resources</Label>
-			{#if object.status?.namespaceRef || object.status?.authorizationPolicyRef || object.status?.peerAuthenticationRef || object.status?.roleBindingRefs?.length}
-				<div class="grid gap-4 md:grid-cols-3">
-					{#each [object.status?.namespaceRef, object.status?.authorizationPolicyRef, object.status?.peerAuthenticationRef, ...(object.status?.roleBindingRefs || [])] as resource (resource?.name)}
-						{#if resource}
-							<Item.Root class="bg-muted hover:underline">
+			<div class="grid gap-4 md:grid-cols-3">
+				{#each Object.entries(references) as [name, reference], index (index)}
+					{#if typeof reference === 'object'}
+						{#if Array.isArray(reference)}
+							{#each reference as subReference, index (index)}
+								<Item.Root variant="muted" class="hover:underline">
+									<Item.Media>
+										<Box size={24} />
+									</Item.Media>
+									<Item.Content>
+										<Item.Title class="flex flex-wrap">
+											<h1>{subReference.kind}</h1>
+											<p class={typographyVariants({ variant: 'muted' })}>
+												{subReference.apiVersion}
+											</p>
+										</Item.Title>
+										<Item.Description>
+											{name}
+										</Item.Description>
+									</Item.Content>
+								</Item.Root>
+							{/each}
+						{:else}
+							<Item.Root variant="muted" class="hover:underline">
 								<Item.Media>
 									<Box size={24} />
 								</Item.Media>
 								<Item.Content>
 									<Item.Title>
-										<h1>{resource.kind}</h1>
-										<p class={typographyVariants({ variant: 'muted' })}>{resource.apiVersion}</p>
+										<h1>{reference.kind}</h1>
+										<p class={typographyVariants({ variant: 'muted' })}>{reference.apiVersion}</p>
 									</Item.Title>
 									<Item.Description>
-										{resource.name}
+										{name}
 									</Item.Description>
 								</Item.Content>
 							</Item.Root>
 						{/if}
-					{/each}
-				</div>
-			{/if}
+					{/if}
+				{/each}
+			</div>
 		</Field.Set>
 	</Field.Group>
 {:else}
