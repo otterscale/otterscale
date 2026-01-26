@@ -2,7 +2,7 @@
 	import type { JsonObject } from '@bufbuild/protobuf';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import lodash from 'lodash';
-	import { getContext, type Snippet } from 'svelte';
+	import { getContext } from 'svelte';
 
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
