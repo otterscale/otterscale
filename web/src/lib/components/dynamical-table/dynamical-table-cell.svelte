@@ -1,8 +1,8 @@
 <script lang="ts">
+	import type { JsonObject, JsonValue } from '@bufbuild/protobuf';
 	import Circle from '@lucide/svelte/icons/circle';
 	import FileCode from '@lucide/svelte/icons/file-code';
 	import X from '@lucide/svelte/icons/x';
-	import type { JsonObject, JsonValue } from '@openfeature/server-sdk';
 	import { type WithElementRef } from 'bits-ui';
 	import type { HTMLAttributes } from 'svelte/elements';
 	import Monaco from 'svelte-monaco';
