@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { createClient, type Transport } from '@connectrpc/connect';
-	import { getContext, onDestroy, onMount } from 'svelte';
+	import { getContext, onDestroy, onMount, type Component } from 'svelte';
 
 	import { page } from '$app/state';
 	import { type GetRequest, ResourceService } from '$lib/api/resource/v1/resource_pb';
@@ -78,7 +78,7 @@
 		}
 	});
 
-	const Inspector = $derived(getResourceInspector(resource));
+	const Inspector: Component<{ object: any }> = $derived(getResourceInspector(resource));
 </script>
 
 {#if isMounted}
