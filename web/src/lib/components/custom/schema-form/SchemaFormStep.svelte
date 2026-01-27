@@ -6,14 +6,15 @@
 	interface Props {
 		form: FormState<Record<string, unknown>>;
 		children?: Snippet;
+		ref?: HTMLFormElement;
 	}
 
-	let { form, children }: Props = $props();
+	let { form, children, ref = $bindable() }: Props = $props();
 
 	setFormContext(form);
 </script>
 
-<Form>
+<Form bind:ref>
 	<Content />
 	{@render children?.()}
 </Form>

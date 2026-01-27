@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { FormState } from '@sjsf/form';
-	import { Content, createForm, Form, getValueSnapshot, setFormContext } from '@sjsf/form';
+	import { createForm, getValueSnapshot } from '@sjsf/form';
 	import { setThemeContext } from '@sjsf/shadcn4-theme';
 	import * as components from '@sjsf/shadcn4-theme/new-york';
 	import yaml from 'js-yaml';
@@ -18,6 +18,7 @@
 		type PathOptions
 	} from './converter';
 	import * as defaults from './defaults';
+	import SchemaFormStep from './SchemaFormStep.svelte';
 
 	interface Props {
 		/** The full K8s OpenAPI V3 Schema */
@@ -55,15 +56,18 @@
 	let yamlParseError = $state<string | null>(null);
 	let ref: HTMLFormElement | undefined;
 
-	form = createForm<Record<string, unknown>>({
-		...defaults,
-		idPrefix: 'k8s-schema-form',
-		initialValue,
-		schema: formConfig.schema,
-		uiSchema: formConfig.uiSchema,
-		onSubmit: handleFormSubmit
-	});
-	setFormContext(form);
+	function initForm(data: Record<string, unknown>) {
+		return createForm<Record<string, unknown>>({
+			...defaults,
+			idPrefix: 'k8s-schema-form',
+			initialValue: data,
+			schema: formConfig.schema,
+			uiSchema: formConfig.uiSchema,
+			onSubmit: handleFormSubmit
+		});
+	}
+
+	form = initForm(initialValue);
 
 	function syncFormToYaml() {
 		try {
@@ -87,6 +91,7 @@
 			if (parsed && typeof parsed === 'object') {
 				const formData = k8sToFormData(parsed, formConfig.transformationMappings);
 				Object.assign(initialValue, formData);
+				form = initForm(initialValue);
 			}
 		} catch (error) {
 			const errorMsg = `Invalid YAML: ${error instanceof Error ? error.message : 'Unknown error'}`;
@@ -141,9 +146,9 @@
 	<Tabs.Root value={mode}>
 		<Tabs.Content value="basic">
 			{#if form}
-				<Form bind:ref>
-					<Content />
-				</Form>
+				{#key form}
+					<SchemaFormStep {form} bind:ref />
+				{/key}
 			{/if}
 		</Tabs.Content>
 

@@ -68,13 +68,14 @@
 	const isFirstStep = $derived(currentStep === 0);
 	const isLastStep = $derived(currentStep === totalSteps - 1);
 
-	$effect(() => {
+	function createStepForms(sourceData: Record<string, unknown> | undefined) {
 		const forms: StepFormData[] = [];
+		const source = sourceData || {};
 
 		for (const [stepName, paths] of Object.entries(fields)) {
 			const formConfig = buildSchemaFromK8s(apiSchema, paths);
 			// Filter initialData to only include fields defined in this step's schema
-			const filteredInitialData = filterDataBySchema(initialData, formConfig.schema);
+			const filteredInitialData = filterDataBySchema(source, formConfig.schema);
 			const stepInitialValue = k8sToFormData(
 				filteredInitialData,
 				formConfig.transformationMappings
@@ -93,10 +94,13 @@
 		}
 
 		stepForms = forms;
+	}
 
+	$effect(() => {
 		if (initialData) {
 			masterData = { ...initialData };
 		}
+		createStepForms(initialData);
 	});
 
 	function handleStepSubmit(
@@ -169,6 +173,7 @@
 
 		if (targetMode === 'basic' && mode === 'advance') {
 			syncYamlToMasterData();
+			createStepForms(masterData);
 		} else if (targetMode === 'advance') {
 			collectAllFormData();
 			syncMasterDataToYaml();
@@ -256,7 +261,7 @@
 			</div>
 
 			<div class="rounded-lg border bg-card p-6">
-				{#each stepForms as stepForm, index (stepForm.stepName)}
+				{#each stepForms as stepForm, index (stepForm)}
 					<div class={currentStep === index ? 'block' : 'hidden'}>
 						{#key stepForm.stepName}
 							<SchemaFormStep form={stepForm.form}>
