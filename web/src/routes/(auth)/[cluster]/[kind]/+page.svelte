@@ -77,7 +77,7 @@
 			</div>
 			<div class="flex items-center gap-2">
 				<Skeleton class="h-7 w-full" />
-				{#each Array(3) as _, i (i)}
+				{#each Array(3) as i (i)}
 					<Skeleton class="size-7" />
 				{/each}
 			</div>
@@ -85,7 +85,7 @@
 				<Table.Root class="w-full">
 					<Table.Header>
 						<Table.Row>
-							{#each Array(5) as _, i (i)}
+							{#each Array(5) as i (i)}
 								<Table.Head class="p-4">
 									<Skeleton class="h-7 w-full" />
 								</Table.Head>
@@ -93,9 +93,9 @@
 						</Table.Row>
 					</Table.Header>
 					<Table.Body>
-						{#each Array(13) as _, i (i)}
+						{#each Array(13) as i (i)}
 							<Table.Row class="border-none">
-								{#each Array(5) as _, i (i)}
+								{#each Array(5) as i (i)}
 									<Table.Cell>
 										<Skeleton class="h-7 w-full" />
 									</Table.Cell>
@@ -108,7 +108,7 @@
 			<div class="flex items-center justify-between gap-4">
 				<Skeleton class="h-7 w-1/5" />
 				<div class="flex items-center gap-2">
-					{#each Array(3) as _, i (i)}
+					{#each Array(3) as i (i)}
 						<Skeleton class="size-10" />
 					{/each}
 				</div>
