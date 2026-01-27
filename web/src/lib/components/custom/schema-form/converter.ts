@@ -136,6 +136,7 @@ export function buildSchemaFromK8s(
 			}
 
 			const sourceProp = sourceSchema;
+			const parentSource = currentSource;
 			currentSource = sourceProp;
 
 			const isExplicit = pathKeys.includes(cumulativePath);
@@ -145,6 +146,12 @@ export function buildSchemaFromK8s(
 			}
 
 			const isLeaf = i === parts.length - 1;
+
+			// Determine if field should be required
+			let shouldBeRequired = parentSource.required?.includes(part);
+			if (isLeaf && options.required !== undefined) {
+				shouldBeRequired = options.required;
+			}
 
 			const applyOptions = (target: Schema, src: K8sOpenAPISchema, isLeafNode: boolean) => {
 				if (options.title) target.title = options.title;
@@ -181,7 +188,22 @@ export function buildSchemaFromK8s(
 				if (Object.keys(customUiOptions).length > 0) {
 					uiSchema[formPath] = deepMerge(uiSchema[formPath] || {}, customUiOptions);
 				}
+
+				if (options.required) {
+					if (!rootSchema.required) rootSchema.required = [];
+					if (!rootSchema.required.includes(formPath)) {
+						rootSchema.required.push(formPath);
+					}
+				}
 				break;
+			}
+
+			// Apply required for standard fields
+			if (shouldBeRequired) {
+				if (!currentTarget.required) currentTarget.required = [];
+				if (!currentTarget.required.includes(part)) {
+					currentTarget.required.push(part);
+				}
 			}
 
 			if (!currentUiTarget[part]) {
