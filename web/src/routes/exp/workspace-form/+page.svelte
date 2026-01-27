@@ -24,9 +24,12 @@
 		},
 		// Step 3: Resource Quota
 		'Resource Quota': {
-			'spec.resourceQuota': { title: 'Resource Quota' },
-			'spec.resourceQuota.hard': { title: 'Hard Limits' },
-			'spec.resourceQuota.scopes': { title: 'Scopes' }
+			'spec.resourceQuota.hard.requests.cpu': { title: 'Requests CPU' },
+			'spec.resourceQuota.hard.requests.memory': { title: 'Requests Memory' },
+			'spec.resourceQuota.hard.limits.cpu': { title: 'Limits CPU' },
+			'spec.resourceQuota.hard.limits.memory': { title: 'Limits Memory' },
+			'spec.resourceQuota.hard.pods': { title: 'Pods' },
+			'spec.resourceQuota.hard.services': { title: 'Services' }
 		},
 		// Step 4: Limit Range
 		'Limit Range': {
