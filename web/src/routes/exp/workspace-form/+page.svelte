@@ -1,4 +1,9 @@
 <script lang="ts">
+	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
+	import { getContext } from 'svelte';
+	import { toast } from 'svelte-sonner';
+
+	import { ResourceService } from '$lib/api/resource/v1/resource_pb';
 	import {
 		type GroupedFields,
 		type K8sOpenAPISchema,
@@ -94,9 +99,40 @@
 		}
 	};
 
-	function handleMultiStepSubmit(data: Record<string, unknown>) {
-		console.log('Workspace form submitted:', data);
-		alert('Workspace created! Check console for data.');
+	const transport: Transport = getContext('transport');
+	const resourceClient = createClient(ResourceService, transport);
+
+	async function handleMultiStepSubmit(data: Record<string, unknown>) {
+		// Construct the full resource object
+		const resourceObject = {
+			apiVersion: 'tenant.otterscale.io/v1alpha1',
+			kind: 'Workspace',
+			...data
+		};
+
+		const name = (data.metadata as { name: string })?.name;
+
+		toast.promise(
+			async () => {
+				const manifest = new TextEncoder().encode(JSON.stringify(resourceObject));
+
+				await resourceClient.create({
+					cluster: 'aaa',
+					group: 'tenant.otterscale.io',
+					version: 'v1alpha1',
+					resource: 'workspaces',
+					manifest
+				});
+			},
+			{
+				loading: `Creating workspace ${name}...`,
+				success: `Successfully created workspace ${name}`,
+				error: (err) => {
+					console.error('Failed to create workspace:', err);
+					return `Failed to create workspace: ${(err as ConnectError).message}`;
+				}
+			}
+		);
 	}
 </script>
 
