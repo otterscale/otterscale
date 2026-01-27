@@ -200,7 +200,7 @@
 	});
 </script>
 
-<div class="multi-step-schema-form-container">
+<div class="multi-step-schema-form-container flex h-full flex-col">
 	<div class="relative mb-6 flex items-center justify-center py-2">
 		{#if title}
 			<h1 class="text-2xl font-bold">{title}</h1>
@@ -215,8 +215,8 @@
 		</div>
 	</div>
 
-	<Tabs.Root value={mode}>
-		<Tabs.Content value="basic">
+	<Tabs.Root value={mode} class="flex flex-1 flex-col overflow-hidden">
+		<Tabs.Content value="basic" class="flex flex-1 flex-col overflow-hidden">
 			<div class="mb-6">
 				<div class="flex items-center justify-between">
 					{#each stepNames as stepName, index (stepName)}
@@ -260,25 +260,27 @@
 				</div>
 			</div>
 
-			<div class="rounded-lg border bg-card p-6">
+			<div class="flex flex-1 flex-col overflow-y-auto rounded-lg border bg-card p-6">
 				{#each stepForms as stepForm, index (stepForm)}
-					<div class={currentStep === index ? 'block' : 'hidden'}>
+					<div class={currentStep === index ? 'flex flex-1 flex-col' : 'hidden'}>
 						{#key stepForm.stepName}
-							<SchemaFormStep form={stepForm.form}>
-								<div class="mt-6 flex justify-between">
-									<Button variant="outline" onclick={goBack} disabled={isFirstStep} type="button">
-										← Previous
-									</Button>
+							<div class="contents multi-step-form-target">
+								<SchemaFormStep form={stepForm.form}>
+									<div class="mt-auto flex justify-between pt-6">
+										<Button variant="outline" onclick={goBack} disabled={isFirstStep} type="button">
+											← Previous
+										</Button>
 
-									<div class="flex gap-2">
-										{#if !isLastStep}
-											<Button type="submit">Next →</Button>
-										{:else}
-											<Button type="submit">Submit</Button>
-										{/if}
+										<div class="flex gap-2">
+											{#if !isLastStep}
+												<Button type="submit">Next →</Button>
+											{:else}
+												<Button type="submit">Submit</Button>
+											{/if}
+										</div>
 									</div>
-								</div>
-							</SchemaFormStep>
+								</SchemaFormStep>
+							</div>
 						{/key}
 					</div>
 				{/each}
@@ -320,3 +322,11 @@
 		</Tabs.Content>
 	</Tabs.Root>
 </div>
+<style>
+	:global(.multi-step-form-target form) {
+		display: flex;
+		flex-direction: column;
+		flex-grow: 1;
+		min-height: 100%;
+	}
+</style>
