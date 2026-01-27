@@ -31,6 +31,7 @@ export interface PathOptions {
 	required?: boolean;
 	showDescription?: boolean;
 	uiSchema?: Record<string, unknown>;
+	disabled?: boolean;
 }
 
 function isMapSchema(schema: K8sOpenAPISchema): boolean {
@@ -207,6 +208,10 @@ export function buildSchemaFromK8s(
 						{ label: true }
 					);
 				}
+
+				if (options.disabled) {
+					currentUiTarget[part]['ui:disabled'] = true;
+				}
 			}
 
 			const isTerminalLeaf =
@@ -220,6 +225,10 @@ export function buildSchemaFromK8s(
 					}
 					applyOptions(newProp, sourceProp, true);
 					simplifyQuantitySchema(newProp, sourceProp);
+
+					if (options.disabled) {
+						newProp.readOnly = true;
+					}
 
 					currentTarget.properties[part] = newProp;
 				} else {
@@ -365,4 +374,51 @@ export function formDataToK8s(
 	k8sData = normalizeArrays(k8sData) as Record<string, unknown>;
 
 	return k8sData;
+}
+
+/** Filters data to only include properties defined in the schema */
+export function filterDataBySchema(data: unknown, schema: Schema): Record<string, unknown> {
+	if (!data || typeof data !== 'object' || Array.isArray(data)) return {};
+	if (!schema || schema.type !== 'object' || !schema.properties) return {};
+
+	const result: Record<string, unknown> = {};
+	const record = data as Record<string, unknown>;
+
+	for (const [key, propSchema] of Object.entries(schema.properties)) {
+		if (!(key in record)) continue;
+
+		const value = record[key];
+		const prop = propSchema as Schema;
+
+		if (
+			prop.type === 'object' &&
+			prop.properties &&
+			value &&
+			typeof value === 'object' &&
+			!Array.isArray(value)
+		) {
+			// Recursively filter nested objects
+			const filtered = filterDataBySchema(value, prop);
+			if (Object.keys(filtered).length > 0) {
+				result[key] = filtered;
+			}
+		} else if (prop.type === 'array' && Array.isArray(value)) {
+			// For arrays, filter each item if items schema is an object
+			if (prop.items && typeof prop.items === 'object' && !Array.isArray(prop.items)) {
+				result[key] = value.map((item) => {
+					if (typeof item === 'object' && item !== null) {
+						return filterDataBySchema(item, prop.items as Schema);
+					}
+					return item;
+				});
+			} else {
+				result[key] = value;
+			}
+		} else {
+			// Primitive values or other types
+			result[key] = value;
+		}
+	}
+
+	return result;
 }

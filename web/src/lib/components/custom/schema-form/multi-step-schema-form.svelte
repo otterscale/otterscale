@@ -14,6 +14,7 @@
 
 	import {
 		buildSchemaFromK8s,
+		filterDataBySchema,
 		formDataToK8s,
 		type K8sOpenAPISchema,
 		k8sToFormData,
@@ -72,7 +73,12 @@
 
 		for (const [stepName, paths] of Object.entries(fields)) {
 			const formConfig = buildSchemaFromK8s(apiSchema, paths);
-			const stepInitialValue = k8sToFormData(initialData, formConfig.transformationMappings);
+			// Filter initialData to only include fields defined in this step's schema
+			const filteredInitialData = filterDataBySchema(initialData, formConfig.schema);
+			const stepInitialValue = k8sToFormData(
+				filteredInitialData,
+				formConfig.transformationMappings
+			);
 
 			const form = createForm<Record<string, unknown>>({
 				...defaults,
