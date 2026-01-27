@@ -264,7 +264,7 @@
 				{#each stepForms as stepForm, index (stepForm)}
 					<div class={currentStep === index ? 'flex flex-1 flex-col' : 'hidden'}>
 						{#key stepForm.stepName}
-							<div class="contents multi-step-form-target">
+							<div class="multi-step-form-target contents">
 								<SchemaFormStep form={stepForm.form}>
 									<div class="mt-auto flex justify-between pt-6">
 										<Button variant="outline" onclick={goBack} disabled={isFirstStep} type="button">
@@ -288,7 +288,7 @@
 		</Tabs.Content>
 
 		<Tabs.Content value="advance">
-			<div class="h-[70vh] rounded border">
+			<div class="h-[72vh] rounded border">
 				{#if yamlParseError}
 					<div
 						class="mb-2 rounded bg-red-100 p-2 text-sm text-red-700 dark:bg-red-900/20 dark:text-red-400"
@@ -322,6 +322,7 @@
 		</Tabs.Content>
 	</Tabs.Root>
 </div>
+
 <style>
 	:global(.multi-step-form-target form) {
 		display: flex;
