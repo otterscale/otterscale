@@ -1,6 +1,8 @@
 <script lang="ts">
+	import { toJson } from '@bufbuild/protobuf';
+	import { StructSchema } from '@bufbuild/protobuf/wkt';
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
-	import { getContext } from 'svelte';
+	import { getContext, onMount } from 'svelte';
 	import { toast } from 'svelte-sonner';
 
 	import { ResourceService } from '$lib/api/resource/v1/resource_pb';
@@ -11,7 +13,9 @@
 		UserSelectWidget
 	} from '$lib/components/custom/schema-form';
 
-	import workspaceSchema from './workspace_api.json';
+	const transport: Transport = getContext('transport');
+	const resourceClient = createClient(ResourceService, transport);
+	let apiSchema: K8sOpenAPISchema | undefined = $state();
 
 	// Default values for Resource Quota and Limit Range
 	const initialData = {
@@ -103,9 +107,6 @@
 		}
 	};
 
-	const transport: Transport = getContext('transport');
-	const resourceClient = createClient(ResourceService, transport);
-
 	async function handleMultiStepSubmit(data: Record<string, unknown>) {
 		// Construct the full resource object
 		const resourceObject = {
@@ -138,19 +139,43 @@
 			}
 		);
 	}
+
+	onMount(async () => {
+		try {
+			const res = await resourceClient.schema({
+				cluster: 'aaa',
+				group: 'tenant.otterscale.io',
+				version: 'v1alpha1',
+				kind: 'Workspace'
+			});
+			// Convert Protobuf Struct to plain JSON object
+			apiSchema = toJson(StructSchema, res) as K8sOpenAPISchema;
+		} catch (err) {
+			console.error('Failed to fetch workspace schema:', err);
+			toast.error(`Failed to fetch workspace schema: ${(err as ConnectError).message}`);
+		}
+	});
+
 </script>
 
 <div class="container mx-auto py-10">
 	<!-- Multi-Step Form -->
 	<div class="mb-12">
 		<div class="rounded border bg-card p-4 text-card-foreground">
-			<MultiStepSchemaForm
-				apiSchema={workspaceSchema as K8sOpenAPISchema}
-				fields={groupedFields}
-				{initialData}
-				title="Create Workspace"
-				onSubmit={handleMultiStepSubmit}
-			/>
+			{#if apiSchema}
+				<MultiStepSchemaForm
+					{apiSchema}
+					fields={groupedFields}
+					{initialData}
+					title="Create Workspace"
+					onSubmit={handleMultiStepSubmit}
+				/>
+			{:else}
+				<div class="flex h-32 items-center justify-center">
+					<p class="text-muted-foreground">Loading schema...</p>
+				</div>
+			{/if}
 		</div>
 	</div>
 </div>
+
