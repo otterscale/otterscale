@@ -20,8 +20,10 @@
 				hard: {
 					'requests.cpu': '2',
 					'requests.memory': '4Gi',
+					'requests.nvidia.com/gpu': '0',
 					'limits.cpu': '4',
-					'limits.memory': '8Gi'
+					'limits.memory': '8Gi',
+					'limits.nvidia.com/gpu': '0'
 				}
 			},
 			limitRange: {
@@ -76,8 +78,10 @@
 		'Default Resource Settings': {
 			'spec.resourceQuota.hard.requests.cpu': { title: 'Requests CPU', disabled: true },
 			'spec.resourceQuota.hard.requests.memory': { title: 'Requests Memory', disabled: true },
+			'spec.resourceQuota.hard.requests.nvidia.com/gpu': { title: 'Requests GPU', disabled: true },
 			'spec.resourceQuota.hard.limits.cpu': { title: 'Limits CPU', disabled: true },
 			'spec.resourceQuota.hard.limits.memory': { title: 'Limits Memory', disabled: true },
+			'spec.resourceQuota.hard.limits.nvidia.com/gpu': { title: 'Limits GPU', disabled: true },
 			'spec.limitRange.limits': {
 				title: 'Limit Range',
 				uiSchema: {
