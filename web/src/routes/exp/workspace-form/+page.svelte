@@ -52,10 +52,7 @@
 						}
 					}
 				}
-			},
-			'spec.users.subject': { title: 'User Subject' },
-			'spec.users.name': { title: 'Display Name' },
-			'spec.users.role': { title: 'Role' }
+			}
 		},
 		// Step 2: Network Isolation
 		'Network Isolation': {

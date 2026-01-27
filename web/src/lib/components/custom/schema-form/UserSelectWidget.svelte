@@ -41,7 +41,9 @@
 
 	// Display text for the user button
 	const userDisplayText = $derived(
-		selectedUser ? `${selectedUser.name} (${selectedUser.subject})` : 'Select user...'
+		selectedUser
+			? `${selectedUser.name} (${selectedUser.email || selectedUser.subject})`
+			: 'Select user...'
 	);
 
 	// Find selected role label
@@ -107,7 +109,7 @@
 									/>
 									<div class="flex flex-col">
 										<span class="font-medium">{user.name}</span>
-										<span class="text-xs text-muted-foreground">{user.subject}</span>
+										<span class="text-xs text-muted-foreground">{user.email || user.subject}</span>
 									</div>
 								</Command.Item>
 							{/each}

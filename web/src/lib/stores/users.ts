@@ -17,45 +17,46 @@ export interface User {
 /**
  * Mock user data for testing
  * TODO: Replace with Keycloak API integration
+ * Note: subject must match K8s pattern: ^([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9]$
  */
 const mockUsers: User[] = [
 	{
-		subject: 'alice@example.com',
+		subject: 'alice.chen',
 		name: 'Alice Chen',
 		email: 'alice@example.com'
 	},
 	{
-		subject: 'bob@example.com',
+		subject: 'bob.wang',
 		name: 'Bob Wang',
 		email: 'bob@example.com'
 	},
 	{
-		subject: 'charlie@example.com',
+		subject: 'charlie.lin',
 		name: 'Charlie Lin',
 		email: 'charlie@example.com'
 	},
 	{
-		subject: 'diana@example.com',
+		subject: 'diana.wu',
 		name: 'Diana Wu',
 		email: 'diana@example.com'
 	},
 	{
-		subject: 'evan@example.com',
+		subject: 'evan.huang',
 		name: 'Evan Huang',
 		email: 'evan@example.com'
 	},
 	{
-		subject: 'fiona@example.com',
+		subject: 'fiona.chang',
 		name: 'Fiona Chang',
 		email: 'fiona@example.com'
 	},
 	{
-		subject: 'george@example.com',
+		subject: 'george.liu',
 		name: 'George Liu',
 		email: 'george@example.com'
 	},
 	{
-		subject: 'helen@example.com',
+		subject: 'helen.yang',
 		name: 'Helen Yang',
 		email: 'helen@example.com'
 	}
