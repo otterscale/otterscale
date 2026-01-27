@@ -38,6 +38,7 @@
 	import { toast } from 'svelte-sonner';
 
 	import { shortcut } from '$lib/actions/shortcut.svelte';
+	import DialogCreateWorkspace from '$lib/components/layout/dialog-create-workspace.svelte';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
 	import { useSidebar } from '$lib/components/ui/sidebar/index.js';
@@ -50,6 +51,9 @@
 	let activeWorkspace: TenantOtterscaleIoV1Alpha1Workspace | undefined = $derived(
 		workspaces.length > 0 ? workspaces[0] : undefined
 	);
+
+	let createWorkspaceOpen = $state(false);
+
 
 	const workspaceIcons: Component[] = [
 		ActivityIcon,
@@ -232,7 +236,7 @@
 					</DropdownMenu.Item>
 				{/each}
 				<DropdownMenu.Separator />
-				<DropdownMenu.Item class="gap-2 p-2">
+				<DropdownMenu.Item class="gap-2 p-2" onSelect={() => (createWorkspaceOpen = true)}>
 					<div class="flex size-6 items-center justify-center rounded-md border bg-transparent">
 						<PlusIcon class="size-3.5" />
 					</div>
@@ -242,3 +246,6 @@
 		</DropdownMenu.Root>
 	</Sidebar.MenuItem>
 </Sidebar.Menu>
+
+<DialogCreateWorkspace bind:open={createWorkspaceOpen} />
+
