@@ -1,4 +1,5 @@
 <script lang="ts">
+	import BasicTierImage from '$lib/assets/basic-tier.jpg';
 	import * as Sheet from '$lib/components/ui/sheet';
 
 	import CreateWorkspaceForm from './create-workspace-form.svelte';
@@ -17,8 +18,14 @@
 				<div class="flex-1 p-6 overflow-y-auto">
 					<CreateWorkspaceForm onsuccess={handleClose} />
 				</div>
-                <!-- Optional: Add an image or sidebar here if desired, similar to Create Scope -->
-                <!-- For now, we'll keep it simple as there are no "Plans" with images yet -->
+				<!-- Workspace Image -->
+				<div class="relative hidden w-2/5 lg:block">
+					<img
+						src={BasicTierImage}
+						alt="Workspace"
+						class="absolute inset-0 size-full object-cover"
+					/>
+				</div>
 			</div>
 		</Sheet.Header>
 	</Sheet.Content>
