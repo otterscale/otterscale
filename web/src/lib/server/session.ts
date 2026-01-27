@@ -2,11 +2,11 @@ import { sha256 } from '@oslojs/crypto/sha2';
 import { encodeBase32LowerCaseNoPadding, encodeHexLowerCase } from '@oslojs/encoding';
 import type { Cookies } from '@sveltejs/kit';
 
-import { dev } from '$app/environment';
+import { env  } from '$env/dynamic/public';
 
 import { redis } from './redis';
 
-const COOKIE_NAME = !dev ? '__Host-OS_SESSION' : 'OS_SESSION';
+const COOKIE_NAME = isSecure() ? '__Host-OS_SESSION' : 'OS_SESSION';
 const SESSION_EXPIRY_MS = 1000 * 60 * 60 * 24 * 30; // 30 days
 const SESSION_REFRESH_THRESHOLD_MS = 1000 * 60 * 60 * 24 * 15; // 15 days
 
@@ -116,7 +116,7 @@ export function setSessionTokenCookie(cookies: Cookies, token: string, expiresAt
 	cookies.set(COOKIE_NAME, token, {
 		httpOnly: true,
 		path: '/',
-		secure: !dev,
+		secure: isSecure(),
 		sameSite: 'lax',
 		expires: expiresAt
 	});
@@ -126,10 +126,14 @@ export function deleteSessionTokenCookie(cookies: Cookies): void {
 	cookies.set(COOKIE_NAME, '', {
 		httpOnly: true,
 		path: '/',
-		secure: !dev,
+		secure: isSecure(),
 		sameSite: 'lax',
 		maxAge: 0
 	});
+}
+
+export function isSecure(): boolean {
+	return env.PUBLIC_WEB_URL.startsWith('https');
 }
 
 // Types

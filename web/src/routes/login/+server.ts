@@ -1,13 +1,13 @@
 import type { RequestEvent } from '@sveltejs/kit';
 import { generateCodeVerifier, generateState } from 'arctic';
 
-import { dev } from '$app/environment';
 import { keycloak } from '$lib/server/keycloak';
+import { isSecure } from '$lib/server/session';
 
 const COOKIE_OPTIONS = {
 	path: '/',
 	httpOnly: true,
-	secure: !dev,
+	secure: isSecure(),
 	maxAge: 60 * 10, // 10 minutes
 	sameSite: 'lax' as const
 };
