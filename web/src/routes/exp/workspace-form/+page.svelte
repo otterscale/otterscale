@@ -2,7 +2,8 @@
 	import {
 		type GroupedFields,
 		type K8sOpenAPISchema,
-		MultiStepSchemaForm
+		MultiStepSchemaForm,
+		UserSelectWidget
 	} from '$lib/components/custom/schema-form';
 
 	import workspaceSchema from './workspace_api.json';
@@ -42,7 +43,16 @@
 		'Workspace & Users': {
 			'metadata.name': { title: 'Workspace Name' },
 			'spec.namespace': { title: 'Namespace', showDescription: true },
-			'spec.users': { title: 'Users' },
+			'spec.users': {
+				title: 'Users',
+				uiSchema: {
+					items: {
+						'ui:components': {
+							objectField: UserSelectWidget
+						}
+					}
+				}
+			},
 			'spec.users.subject': { title: 'User Subject' },
 			'spec.users.name': { title: 'Display Name' },
 			'spec.users.role': { title: 'Role' }
