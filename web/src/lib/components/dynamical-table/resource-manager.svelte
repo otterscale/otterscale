@@ -12,6 +12,7 @@
 	import { toast } from 'svelte-sonner';
 
 	import {
+		type APIResource,
 		type ListRequest,
 		ResourceService,
 		type SchemaRequest,
@@ -30,6 +31,7 @@
 	import ResourceCreate from './resource-create.svelte';
 
 	let {
+		apiResource,
 		cluster,
 		group,
 		version,
@@ -37,6 +39,7 @@
 		resource,
 		namespace
 	}: {
+		apiResource: APIResource;
 		cluster: string;
 		group: string;
 		version: string;
@@ -94,27 +97,29 @@
 				}),
 			accessorKey: 'Name'
 		},
-		{
-			id: 'Namespace',
-			header: ({ column }: { column: Column<Record<string, JsonValue>> }) =>
-				renderComponent(DynamicalTableHeader, {
-					column: column,
-					fields: fields
-				}),
-			cell: ({
-				column,
-				row
-			}: {
-				column: Column<Record<string, JsonValue>>;
-				row: Row<Record<string, JsonValue>>;
-			}) =>
-				renderComponent(DynamicalTableCell, {
-					row: row,
-					column: column,
-					fields: fields
-				}),
-			accessorKey: 'Namespace'
-		},
+		...[
+			{
+				id: 'Namespace',
+				header: ({ column }: { column: Column<Record<string, JsonValue>> }) =>
+					renderComponent(DynamicalTableHeader, {
+						column: column,
+						fields: fields
+					}),
+				cell: ({
+					column,
+					row
+				}: {
+					column: Column<Record<string, JsonValue>>;
+					row: Row<Record<string, JsonValue>>;
+				}) =>
+					renderComponent(DynamicalTableCell, {
+						row: row,
+						column: column,
+						fields: fields
+					}),
+				accessorKey: 'Namespace'
+			}
+		].filter(() => apiResource.namespaced),
 		{
 			id: 'Annotations',
 			header: ({ column }: { column: Column<Record<string, JsonValue>> }) =>
@@ -242,7 +247,7 @@
 				const response = await resourceClient.list(
 					{
 						cluster: cluster,
-						namespace: namespace,
+						namespace: apiResource.namespaced ? namespace : undefined,
 						group: group,
 						version: version,
 						resource: resource,
@@ -288,7 +293,7 @@
 			const watchResourcesStream = resourceClient.watch(
 				{
 					cluster: cluster,
-					namespace: namespace,
+					namespace: apiResource.namespaced ? namespace : undefined,
 					group: group,
 					version: version,
 					resource: resource,
