@@ -1,10 +1,9 @@
 <script lang="ts">
-	import type { TenantOtterscaleIoV1Alpha1Workspace } from '@otterscale/types';
 	import { stringify } from 'yaml';
 
 	import * as Code from '$lib/components/custom/code';
 
-	let { object }: { object: TenantOtterscaleIoV1Alpha1Workspace } = $props();
+	let { object }: { object: any } = $props();
 </script>
 
 <Code.Root
