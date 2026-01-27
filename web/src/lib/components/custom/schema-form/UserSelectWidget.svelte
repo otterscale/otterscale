@@ -1,13 +1,22 @@
 <script lang="ts">
 	import { Check, ChevronsUpDown, User } from '@lucide/svelte';
 	import type { ComponentProps } from '@sjsf/form';
+	import { onMount } from 'svelte';
 
 	import { Button } from '$lib/components/ui/button';
 	import * as Command from '$lib/components/ui/command';
 	import * as Popover from '$lib/components/ui/popover';
 	import * as Select from '$lib/components/ui/select';
-	import { searchUsers, type User as UserType, users } from '$lib/stores/users';
 	import { cn } from '$lib/utils';
+
+	// User type from Keycloak
+	interface KeycloakUser {
+		id: string;
+		username: string;
+		email?: string;
+		firstName?: string;
+		lastName?: string;
+	}
 
 	// Role options based on the K8s schema
 	const roleOptions = [
@@ -24,25 +33,73 @@
 	let currentSubject = $derived((value as Record<string, unknown>)?.subject as string | undefined);
 	let currentRole = $derived((value as Record<string, unknown>)?.role as string | undefined);
 
-	// User list from store
-	let userList = $state<UserType[]>([]);
-	users.subscribe((u) => (userList = u));
+	// User list from API
+	let userList = $state<KeycloakUser[]>([]);
+	let loading = $state(true);
+
+	// Debounce timer
+	let debounceTimer: ReturnType<typeof setTimeout> | null = null;
+
+	// Fetch users from API with search parameter
+	async function fetchUsers(search: string = '') {
+		loading = true;
+		try {
+			const queryParams = search ? `search=${encodeURIComponent(search)}&max=10` : 'max=10';
+			const res = await fetch(`/rest/users?${queryParams}`);
+			if (res.ok) {
+				userList = await res.json();
+				console.log('userList length', userList.length);
+			} else {
+				console.error('Failed to fetch users:', res.statusText);
+			}
+		} catch (error) {
+			console.error('Error fetching users:', error);
+		} finally {
+			loading = false;
+		}
+	}
+
+	// Fetch initial users on mount
+	onMount(() => {
+		fetchUsers();
+	});
 
 	// User Popover state
 	let userOpen = $state(false);
 	let searchQuery = $state('');
 	let triggerRef = $state<HTMLButtonElement | null>(null);
 
-	// Filtered users based on search
-	const filteredUsers = $derived(searchUsers(searchQuery, userList));
+	// Debounced search - call API when input changes
+	function handleSearchChange(query: string) {
+		searchQuery = query;
+
+		if (debounceTimer) {
+			clearTimeout(debounceTimer);
+		}
+
+		debounceTimer = setTimeout(() => {
+			fetchUsers(query);
+		}, 300); // 300ms debounce
+	}
+
+	// Use userList directly since filtering is done server-side
+	const filteredUsers = $derived(userList);
 
 	// Find selected user
-	const selectedUser = $derived(userList.find((u) => u.subject === currentSubject));
+	const selectedUser = $derived(userList.find((u) => u.username === currentSubject));
+
+	// Get display name for a user
+	function getDisplayName(user: KeycloakUser): string {
+		if (user.firstName || user.lastName) {
+			return `${user.firstName || ''} ${user.lastName || ''}`.trim();
+		}
+		return user.username;
+	}
 
 	// Display text for the user button
 	const userDisplayText = $derived(
 		selectedUser
-			? `${selectedUser.name} (${selectedUser.email || selectedUser.subject})`
+			? `${getDisplayName(selectedUser)} (${selectedUser.email || selectedUser.username})`
 			: 'Select user...'
 	);
 
@@ -51,12 +108,12 @@
 		roleOptions.find((r) => r.value === currentRole)?.label ?? 'Select role...'
 	);
 
-	function handleUserSelect(user: UserType) {
+	function handleUserSelect(user: KeycloakUser) {
 		// Update subject and name in the value object
 		value = {
 			...(value as Record<string, unknown>),
-			subject: user.subject,
-			name: user.name
+			subject: user.username,
+			name: getDisplayName(user)
 		};
 		userOpen = false;
 		searchQuery = '';
@@ -95,25 +152,35 @@
 			</Popover.Trigger>
 			<Popover.Content class="w-75 p-0" align="start">
 				<Command.Root shouldFilter={false}>
-					<Command.Input placeholder="Search users..." bind:value={searchQuery} />
+					<Command.Input
+						placeholder="Search users..."
+						value={searchQuery}
+						oninput={(e) => handleSearchChange(e.currentTarget.value)}
+					/>
 					<Command.List>
-						<Command.Empty>No users found.</Command.Empty>
-						<Command.Group>
-							{#each filteredUsers as user (user.subject)}
-								<Command.Item value={user.subject} onSelect={() => handleUserSelect(user)}>
-									<Check
-										class={cn(
-											'mr-2 h-4 w-4',
-											currentSubject !== user.subject && 'text-transparent'
-										)}
-									/>
-									<div class="flex flex-col">
-										<span class="font-medium">{user.name}</span>
-										<span class="text-xs text-muted-foreground">{user.email || user.subject}</span>
-									</div>
-								</Command.Item>
-							{/each}
-						</Command.Group>
+						{#if loading}
+							<Command.Loading>Loading users...</Command.Loading>
+						{:else}
+							<Command.Empty>No users found.</Command.Empty>
+							<Command.Group>
+								{#each filteredUsers as user (user.id)}
+									<Command.Item value={user.username} onSelect={() => handleUserSelect(user)}>
+										<Check
+											class={cn(
+												'mr-2 h-4 w-4',
+												currentSubject !== user.username && 'text-transparent'
+											)}
+										/>
+										<div class="flex flex-col">
+											<span class="font-medium">{getDisplayName(user)}</span>
+											<span class="text-xs text-muted-foreground"
+												>{user.email || user.username}</span
+											>
+										</div>
+									</Command.Item>
+								{/each}
+							</Command.Group>
+						{/if}
 					</Command.List>
 				</Command.Root>
 			</Popover.Content>
@@ -140,8 +207,8 @@
 
 	<!-- Hidden fields to satisfy form validation if needed -->
 	{#if selectedUser}
-		<input type="hidden" name="subject" value={selectedUser.subject} />
-		<input type="hidden" name="name" value={selectedUser.name} />
+		<input type="hidden" name="subject" value={selectedUser.username} />
+		<input type="hidden" name="name" value={getDisplayName(selectedUser)} />
 	{/if}
 	{#if currentRole}
 		<input type="hidden" name="role" value={currentRole} />
