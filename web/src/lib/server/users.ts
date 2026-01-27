@@ -41,6 +41,29 @@ export interface GetUsersOptions {
 	max?: number;
 }
 
+export interface User {
+	id: string;
+	createdTimestamp: number;
+	username: string;
+	enabled: boolean;
+	totp: boolean;
+	emailVerified: boolean;
+	firstName?: string;
+	lastName?: string;
+	email?: string;
+	disableableCredentialTypes?: string[];
+	requiredActions?: string[];
+	notBefore?: number;
+	access?: {
+		manageGroupMembership: boolean;
+		view: boolean;
+		mapRoles: boolean;
+		impersonate: boolean;
+		manage: boolean;
+	};
+	attributes?: Record<string, string[]>;
+}
+
 export async function getUsers(options: GetUsersOptions = {}): Promise<User[]> {
 	const { search = '', first = 0, max = 10 } = options;
 	const tokens = await getClientCredentialsTokens();
