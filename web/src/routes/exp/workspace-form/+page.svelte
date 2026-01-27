@@ -27,19 +27,15 @@
 			'spec.resourceQuota.hard.requests.cpu': { title: 'Requests CPU' },
 			'spec.resourceQuota.hard.requests.memory': { title: 'Requests Memory' },
 			'spec.resourceQuota.hard.limits.cpu': { title: 'Limits CPU' },
-			'spec.resourceQuota.hard.limits.memory': { title: 'Limits Memory' },
-			'spec.resourceQuota.hard.pods': { title: 'Pods' },
-			'spec.resourceQuota.hard.services': { title: 'Services' }
+			'spec.resourceQuota.hard.limits.memory': { title: 'Limits Memory' }
 		},
 		// Step 4: Limit Range
 		'Limit Range': {
-			'spec.limitRange': { title: 'Limit Range' },
-			'spec.limitRange.limits': { title: 'Limits' },
 			'spec.limitRange.limits.type': { title: 'Type' },
-			'spec.limitRange.limits.default': { title: 'Default Limits' },
-			'spec.limitRange.limits.defaultRequest': { title: 'Default Requests' },
-			'spec.limitRange.limits.max': { title: 'Max' },
-			'spec.limitRange.limits.min': { title: 'Min' }
+			'spec.limitRange.limits.default.cpu': { title: 'Default CPU Limit' },
+			'spec.limitRange.limits.default.memory': { title: 'Default Memory Limit' },
+			'spec.limitRange.limits.defaultRequest.cpu': { title: 'Default CPU Request' },
+			'spec.limitRange.limits.defaultRequest.memory': { title: 'Default Memory Request' }
 		},
 		// Step 5: Network Isolation
 		'Network Isolation': {

@@ -77,13 +77,13 @@ function resolveNextKey(
 	return { key, nextIndex, sourceSchema: undefined };
 }
 
-/** Simplify Quantity (string | number) to String type */
+/** Simplifies Quantity schema (oneOf/anyOf: [string, number]) to string type */
 function simplifyQuantitySchema(target: Schema, source: K8sOpenAPISchema) {
 	const variants = source.oneOf || source.anyOf;
 	if (
 		Array.isArray(variants) &&
-		variants.some((o: any) => o.type === 'string') &&
-		variants.some((o: any) => o.type === 'number' || o.type === 'integer')
+		variants.some((o) => o.type === 'string') &&
+		variants.some((o) => o.type === 'number' || o.type === 'integer')
 	) {
 		target.type = 'string';
 		target.title = source.title || target.title || '';
@@ -118,7 +118,7 @@ export function buildSchemaFromK8s(
 		const parts = path.split('.');
 		let currentSource: K8sOpenAPISchema = fullSchema;
 		let currentTarget: Schema = rootSchema;
-		let currentUiTarget: any = uiSchema;
+		let currentUiTarget: Record<string, unknown> = uiSchema;
 
 		let cumulativePath = '';
 
@@ -301,27 +301,68 @@ export function k8sToFormData(
 	return formData;
 }
 
+/** Recursively converts object with numeric keys back to arrays */
+export function normalizeArrays(obj: unknown): unknown {
+	if (obj === null || obj === undefined) return obj;
+	if (Array.isArray(obj)) {
+		return obj.map(normalizeArrays);
+	}
+	if (typeof obj !== 'object') return obj;
+
+	const record = obj as Record<string, unknown>;
+	const keys = Object.keys(record);
+
+	// Check if all keys are numeric (indicating it should be an array)
+	const allNumeric = keys.length > 0 && keys.every((k) => /^\d+$/.test(k));
+
+	if (allNumeric) {
+		// Convert to array, sorted by numeric index
+		const arr: unknown[] = [];
+		keys
+			.map(Number)
+			.sort((a, b) => a - b)
+			.forEach((idx) => {
+				arr[idx] = normalizeArrays(record[String(idx)]);
+			});
+		return arr;
+	}
+
+	// Recursively process object properties
+	const result: Record<string, unknown> = {};
+	for (const key of keys) {
+		result[key] = normalizeArrays(record[key]);
+	}
+	return result;
+}
+
 /** Converts Form data back to K8s Object */
 export function formDataToK8s(
 	formData: unknown,
 	mappings: Record<string, string>
 ): Record<string, unknown> {
 	if (!formData || typeof formData !== 'object' || Array.isArray(formData)) return {};
-	const k8sData = JSON.parse(JSON.stringify(formData));
+	let k8sData = JSON.parse(JSON.stringify(formData));
 
 	for (const [k8sPath, formPath] of Object.entries(mappings)) {
 		const arrayValue = k8sData[formPath];
 
 		if (Array.isArray(arrayValue)) {
-			const objectValue = arrayValue.reduce((acc: Record<string, any>, item: any) => {
-				if (item && item.key) {
-					acc[item.key] = item.value;
-				}
-				return acc;
-			}, {});
+			const objectValue = arrayValue.reduce(
+				(acc: Record<string, unknown>, item: { key?: string; value?: unknown }) => {
+					if (item && item.key) {
+						acc[item.key] = item.value;
+					}
+					return acc;
+				},
+				{}
+			);
 			setByPath(k8sData, k8sPath, objectValue);
 			delete k8sData[formPath];
 		}
 	}
+
+	// Normalize numeric-keyed objects back to arrays
+	k8sData = normalizeArrays(k8sData) as Record<string, unknown>;
+
 	return k8sData;
 }

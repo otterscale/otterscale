@@ -17,6 +17,7 @@
 		formDataToK8s,
 		type K8sOpenAPISchema,
 		k8sToFormData,
+		normalizeArrays,
 		type PathOptions,
 		type SchemaFormConfig
 	} from './converter';
@@ -98,7 +99,7 @@
 		formConfig: SchemaFormConfig
 	) {
 		const k8sData = formDataToK8s(data, formConfig.transformationMappings);
-		masterData = deepMerge(masterData, k8sData);
+		masterData = normalizeArrays(deepMerge(masterData, k8sData)) as Record<string, unknown>;
 
 		console.log(`Step "${stepName}" submitted:`, k8sData);
 		console.log('Master data:', masterData);
@@ -177,6 +178,8 @@
 			const k8sData = formDataToK8s(formData, stepForm.formConfig.transformationMappings);
 			masterData = deepMerge(masterData, k8sData);
 		}
+		// Normalize all numeric-keyed objects to arrays
+		masterData = normalizeArrays(masterData) as Record<string, unknown>;
 	}
 
 	$effect(() => {
