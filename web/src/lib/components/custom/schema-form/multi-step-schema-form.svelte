@@ -43,6 +43,8 @@
 		title?: string;
 		onModeChange?: (mode: 'basic' | 'advance') => void;
 		onSubmit?: (data: Record<string, unknown>) => Promise<void> | void;
+		transformData?: (data: Record<string, unknown>) => Record<string, unknown>;
+		yamlEditable?: boolean;
 	}
 
 	let {
@@ -52,7 +54,9 @@
 		mode = $bindable('basic'),
 		title,
 		onModeChange,
-		onSubmit
+		onSubmit,
+		transformData,
+		yamlEditable = false
 	}: Props = $props();
 
 	setThemeContext({ components });
@@ -124,6 +128,9 @@
 
 	async function handleFinalSubmit() {
 		collectAllFormData();
+		if (transformData) {
+			masterData = transformData(masterData);
+		}
 		console.log('Final submission with data:', masterData);
 
 		if (onSubmit) {
@@ -177,6 +184,9 @@
 			createStepForms(masterData);
 		} else if (targetMode === 'advance') {
 			collectAllFormData();
+			if (transformData) {
+				masterData = transformData(masterData);
+			}
 			syncMasterDataToYaml();
 		}
 
@@ -209,8 +219,8 @@
 		<div class="absolute right-0">
 			<Tabs.Root value={mode} onValueChange={handleModeChange}>
 				<Tabs.List>
-					<Tabs.Trigger value="basic">Basic</Tabs.Trigger>
-					<Tabs.Trigger value="advance">Advanced</Tabs.Trigger>
+					<Tabs.Trigger value="basic">Form</Tabs.Trigger>
+					<Tabs.Trigger value="advance">YAML</Tabs.Trigger>
 				</Tabs.List>
 			</Tabs.Root>
 		</div>
@@ -308,7 +318,8 @@
 						padding: { top: 16, bottom: 8 },
 						automaticLayout: true,
 						minimap: { enabled: false },
-						scrollBeyondLastLine: false
+						scrollBeyondLastLine: false,
+						readOnly: !yamlEditable
 					}}
 					theme={themeMode.current === 'dark' ? 'vs-dark' : 'vs'}
 					bind:value={advanceYaml}
