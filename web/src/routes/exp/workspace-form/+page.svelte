@@ -155,7 +155,6 @@
 			toast.error(`Failed to fetch workspace schema: ${(err as ConnectError).message}`);
 		}
 	});
-
 </script>
 
 <div class="container mx-auto py-10">
@@ -178,4 +177,3 @@
 		</div>
 	</div>
 </div>
-

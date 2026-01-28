@@ -54,7 +54,6 @@
 
 	let createWorkspaceOpen = $state(false);
 
-
 	const workspaceIcons: Component[] = [
 		ActivityIcon,
 		ApertureIcon,
@@ -248,4 +247,3 @@
 </Sidebar.Menu>
 
 <DialogCreateWorkspace bind:open={createWorkspaceOpen} />
-

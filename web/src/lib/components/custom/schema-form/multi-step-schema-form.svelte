@@ -217,10 +217,10 @@
 
 	<Tabs.Root value={mode} class="flex flex-1 flex-col overflow-hidden">
 		<Tabs.Content value="basic" class="flex flex-1 flex-col overflow-hidden">
-			<div class="mb-6">
+			<div class="mb-6 px-6">
 				<div class="flex items-center justify-between">
 					{#each stepNames as stepName, index (stepName)}
-						<div class="flex flex-1 items-center">
+						<div class="flex items-center">
 							<button
 								type="button"
 								class={cn(
@@ -249,18 +249,18 @@
 							>
 								{stepName}
 							</span>
-
-							{#if index < totalSteps - 1}
-								<div
-									class={cn('mx-4 h-0.5 flex-1', index < currentStep ? 'bg-primary' : 'bg-muted')}
-								></div>
-							{/if}
 						</div>
+
+						{#if index < totalSteps - 1}
+							<div
+								class={cn('mx-4 h-0.5 flex-1', index < currentStep ? 'bg-primary' : 'bg-muted')}
+							></div>
+						{/if}
 					{/each}
 				</div>
 			</div>
 
-			<div class="flex flex-1 flex-col overflow-y-auto rounded-lg border bg-card p-6">
+			<div class="flex flex-1 flex-col overflow-y-auto rounded-lg bg-card p-6">
 				{#each stepForms as stepForm, index (stepForm)}
 					<div class={currentStep === index ? 'flex flex-1 flex-col' : 'hidden'}>
 						{#key stepForm.stepName}

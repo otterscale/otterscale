@@ -209,30 +209,31 @@ export function buildSchemaFromK8s(
 			if (!currentUiTarget[part]) {
 				currentUiTarget[part] = {};
 			}
+			const partUi = currentUiTarget[part] as Record<string, unknown>;
 
 			if (!isExplicit) {
-				currentUiTarget[part]['ui:options'] = { label: false };
+				partUi['ui:options'] = { label: false };
 			}
 
 			if (isLeaf) {
 				if (Array.isArray(sourceProp.enum)) {
-					currentUiTarget[part]['ui:components'] = { stringField: 'enumField' };
+					partUi['ui:components'] = { stringField: 'enumField' };
 				}
 
 				if (Object.keys(customUiOptions).length > 0) {
-					currentUiTarget[part] = deepMerge(currentUiTarget[part] || {}, customUiOptions);
+					currentUiTarget[part] = deepMerge(partUi, customUiOptions);
 				}
 
 				if (options.title) {
-					currentUiTarget[part]['ui:title'] = options.title;
-					currentUiTarget[part]['ui:options'] = deepMerge(
-						currentUiTarget[part]['ui:options'] || {},
+					partUi['ui:title'] = options.title;
+					partUi['ui:options'] = deepMerge(
+						(partUi['ui:options'] as Record<string, unknown>) || {},
 						{ label: true }
 					);
 				}
 
 				if (options.disabled) {
-					currentUiTarget[part]['ui:disabled'] = true;
+					partUi['ui:disabled'] = true;
 				}
 			}
 
@@ -285,10 +286,10 @@ export function buildSchemaFromK8s(
 				}
 				currentTarget = justAdded.items as Schema;
 
-				if (!currentUiTarget[part].items) {
-					currentUiTarget[part].items = {};
+				if (!partUi.items) {
+					partUi.items = {};
 				}
-				currentUiTarget = currentUiTarget[part].items;
+				currentUiTarget = partUi.items as Record<string, unknown>;
 
 				continue;
 			}
@@ -298,7 +299,7 @@ export function buildSchemaFromK8s(
 				if (typeof nextTarget === 'object' && nextTarget !== null) {
 					currentTarget = nextTarget as Schema;
 				}
-				currentUiTarget = currentUiTarget[part];
+				currentUiTarget = partUi as Record<string, unknown>;
 			}
 		}
 	}
