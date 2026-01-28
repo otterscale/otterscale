@@ -5,6 +5,7 @@
 	import { getContext, onMount } from 'svelte';
 	import { toast } from 'svelte-sonner';
 
+	import { page } from '$app/state';
 	import { ResourceService } from '$lib/api/resource/v1/resource_pb';
 	import {
 		type GroupedFields,
@@ -21,6 +22,8 @@
 
 	const transport: Transport = getContext('transport');
 	const resourceClient = createClient(ResourceService, transport);
+	const cluster = $derived(page.params.cluster ?? '');
+
 	let apiSchema: K8sOpenAPISchema | undefined = $state();
 	let isSubmitting = $state(false);
 
@@ -132,7 +135,7 @@
 				const manifest = new TextEncoder().encode(JSON.stringify(resourceObject));
 
 				await resourceClient.create({
-					cluster: 'aaa', // TODO: Make this dynamic if needed
+					cluster,
 					group: 'tenant.otterscale.io',
 					version: 'v1alpha1',
 					resource: 'workspaces',
@@ -158,7 +161,7 @@
 	onMount(async () => {
 		try {
 			const res = await resourceClient.schema({
-				cluster: 'aaa', // TODO: Make this dynamic if needed
+				cluster,
 				group: 'tenant.otterscale.io',
 				version: 'v1alpha1',
 				kind: 'Workspace'
