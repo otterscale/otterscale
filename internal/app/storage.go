@@ -327,23 +327,48 @@ func (s *StorageService) DeleteSubvolume(ctx context.Context, req *pb.DeleteSubv
 	return resp, nil
 }
 
-/*func (s *StorageService) GrantSubvolumeExportAccess(ctx context.Context, req *pb.GrantSubvolumeExportAccessRequest) (*emptypb.Empty, error) {
-	if err := s.file.GrantSubvolumeClient(ctx, req.GetScope(), req.GetSubvolumeName(), req.GetClientIp()); err != nil {
+func (s *StorageService) ListNFSExports(ctx context.Context, req *pb.ListNFSExportsRequest) (*pb.ListNFSExportsResponse, error) {
+	nfsexports, err := s.file.ListNFSExports(ctx, req.GetScope(), req.GetClusterId())
+	if err != nil {
+		return nil, err
+	}
+
+	resp := &pb.ListNFSExportsResponse{}
+	resp.SetNfsExports(toProtoNfsExports(nfsexports))
+	return resp, nil
+}
+
+func (s *StorageService) ApplyNFSExport(ctx context.Context, req *pb.ApplyNFSExportRequest) (*pb.NfsExport, error) {
+	filesystem, group, subvolume := toCephFsTarget(req.GetTarget())
+
+	spec := toNFSExportSpecFromApply(req)
+
+	e, err := s.file.ApplyNFSExport(ctx, req.GetScope(), req.GetClusterId(), filesystem, group, subvolume, spec)
+	if err != nil {
+		return nil, err
+	}
+
+	return toProtoNfsExport(e), nil
+}
+
+func (s *StorageService) GetNFSExport(ctx context.Context, req *pb.GetNFSExportRequest) (*pb.NfsExport, error) {
+	nfsexport, err := s.file.GetNFSExport(ctx, req.GetScope(), req.GetClusterId(), req.GetPseudoPath())
+	if err != nil {
+		return nil, err
+	}
+
+	resp := toProtoNfsExport(nfsexport)
+	return resp, nil
+}
+
+func (s *StorageService) DeleteNFSExport(ctx context.Context, req *pb.DeleteNFSExportRequest) (*emptypb.Empty, error) {
+	if err := s.file.DeleteNFSExport(ctx, req.GetScope(), req.GetClusterId(), req.GetPseudoPath()); err != nil {
 		return nil, err
 	}
 
 	resp := &emptypb.Empty{}
 	return resp, nil
 }
-
-func (s *StorageService) RevokeSubvolumeExportAccess(ctx context.Context, req *pb.RevokeSubvolumeExportAccessRequest) (*emptypb.Empty, error) {
-	if err := s.file.RevokeSubvolumeClient(ctx, req.GetScope(), req.GetSubvolumeName(), req.GetClientIp()); err != nil {
-		return nil, err
-	}
-
-	resp := &emptypb.Empty{}
-	return resp, nil
-}*/
 
 /*func (s *StorageService) CreateSubvolumeSnapshot(ctx context.Context, req *pb.CreateSubvolumeSnapshotRequest) (*pb.Subvolume_Snapshot, error) {
 	snapshot, err := s.file.CreateSubvolumeSnapshot(ctx, req.GetScope(), req.GetVolumeName(), req.GetSubvolumeName(), req.GetGroupName(), req.GetSnapshotName())
@@ -1019,19 +1044,6 @@ func toProtoSubvolumeFeatures(fs []file.Feature) []pb.SubvolumeInfo_Feature {
 	return ret
 }
 
-/*func toProtoSubvolumeExport(e *file.SubvolumeExport) *pb.Subvolume_Export {
-	if len(e.Clients) == 0 {
-		return nil
-	}
-
-	ret := &pb.Subvolume_Export{}
-	ret.SetIp(e.IP)
-	ret.SetPath(e.Path)
-	ret.SetClients(e.Clients)
-	ret.SetCommand(e.Command)
-	return ret
-}*/
-
 /*func toProtoSubvolumeSnapshots(ss []file.SubvolumeSnapshot) []*pb.Subvolume_Snapshot {
 	ret := []*pb.Subvolume_Snapshot{}
 
@@ -1352,69 +1364,92 @@ func toProtoEntityType(et smb.EntityType) pb.ValidateSMBUserResponse_EntityType 
 	}
 }
 
-/*func (s *StorageService) ListNFSExports(ctx context.Context, req *pb.ListNFSExportsRequest) (*pb.ListNFSExportsResponse, error) {
-	exps, err := s.file.ListNFSExports(ctx, req.GetScope(), req.GetClusterId())
-	if err != nil {
-		return nil, err
+func toCephFsTarget(t *pb.CephFsTarget) (filesystem, group, subvolume string) {
+	if t == nil {
+		return "", "", ""
 	}
-
-	out := make([]*pb.NFSExport, 0, len(exps))
-	for i := range exps {
-		out = append(out, toProtoNFSExport(&exps[i]))
-	}
-
-	return &pb.ListNFSExportsResponse{
-		NFSExports: out,
-	}, nil
+	return t.GetFileSystemName(), t.GetGroupName(), t.GetSubvolumeName()
 }
 
-func (s *StorageService) CreateNFSExport(ctx context.Context, req *pb.CreateNFSExportRequest) (*pb.NFSExport, error) {
-	exp, err := s.file.CreateNFSExport(ctx, req.GetScope(), req.GetClusterId(), req.GetFileSystemName(), req.GetGroupName(), req.GetSubvolumeName(), req.GetPseudoPath(), req.GetEnableSecurityLabel(), req.GetAccessType(), req.GetSquash(), req.GetEnableProtocolNfsV3(), req.GetEnableProtocolNfsV4(), req.GetEnableTransportUdp(), req.GetEnableTransportTcp(), req.GetClients(), req.GetSectypes())
-	if err != nil {
-		return nil, err
+func toNFSExportSpecFromApply(req *pb.ApplyNFSExportRequest) file.NFSExportSpec {
+	specPB := req.GetSpec()
+
+	var spec file.NFSExportSpec
+
+	if specPB == nil {
+		return spec
 	}
-	return toProtoNFSExport(exp), nil
+
+	spec.PseudoPath = specPB.GetPseudoPath()
+
+	if specPB.HasEnableSecurityLabel() {
+		spec.EnableSecurityLabel = specPB.GetEnableSecurityLabel()
+	}
+
+	if specPB.HasAccessType() {
+		spec.AccessType = toAccessType(specPB.GetAccessType())
+	}
+	if specPB.HasSquash() {
+		spec.Squash = toSquash(specPB.GetSquash())
+	}
+
+	ps := make([]file.NFSProtocol, 0, len(specPB.GetProtocols()))
+	for _, p := range specPB.GetProtocols() {
+		if pp := toProtocol(p); pp != 0 {
+			ps = append(ps, pp)
+		}
+	}
+	spec.Protocols = ps
+
+	ts := make([]file.NFSTransport, 0, len(specPB.GetTransports()))
+	for _, t := range specPB.GetTransports() {
+		if tt := toTransport(t); tt != "" {
+			ts = append(ts, tt)
+		}
+	}
+	spec.Transports = ts
+
+	cs := make([]file.Client, 0, len(specPB.GetClients()))
+	for _, r := range specPB.GetClients() {
+		if r == nil {
+			continue
+		}
+		c := file.Client{Addresses: r.GetAddresses()}
+		if r.HasAccessType() {
+			c.AccessType = toAccessType(r.GetAccessType())
+		}
+		if r.HasSquash() {
+			c.Squash = toSquash(r.GetSquash())
+		}
+		cs = append(cs, c)
+	}
+	spec.Clients = cs
+
+	st := make([]file.Sectype, 0, len(specPB.GetSectypes()))
+	for _, x := range specPB.GetSectypes() {
+		if ss := toSecType(x); ss != "" {
+			st = append(st, ss)
+		}
+	}
+	spec.Sectypes = st
+
+	return spec
 }
 
-func (s *StorageService) GetNFSExport(ctx context.Context, req *pb.GetNFSExportRequest) (*pb.NfsExport, error) {
-
-	exp, err := s.file.GetNFSExport(ctx, req.GetScope(), req.GetClusterId(), req.GetPseudoPath())
-	if err != nil {
-		return nil, err
-	}
-	return toProtoNFSExport(exp), nil
-}
-
-func (s *StorageService) UpdateNFSExport(ctx context.Context, req *pb.UpdateNFSExportRequest) (*pb.NFSExport, error) {
-
-	exp, err := s.file.UpdateNFSExport(ctx, req.GetScope(), req.GetClusterId(), req.GetFileSystemName(), req.GetGroupName(), req.GetSubvolumeName(), req.GetPseudoPath(), req.GetEnableSecurityLabel(), req.GetAccessType(), req.GetSquash(), req.GetEnableProtocolNfsV3(), req.GetEnableProtocolNfsV4(), req.GetEnableTransportUdp(), req.GetEnableTransportTcp(), req.GetClients(), req.GetSectypes())
-	if err != nil {
-		return nil, err
-	}
-	return toProtoNFSExport(exp), nil
-}
-
-func (s *StorageService) DeleteNFSExport(ctx context.Context, req *pb.DeleteNfsExportRequest) (*emptypb.Empty, error) {
-	if err := s.file.DeleteNFSExport(ctx, req.GetScope(), req.GetClusterId(), req.GetPseudoPath()); err != nil {
-		return nil, err
-	}
-	return &emptypb.Empty{}, nil
-}
-
-func toFileAccessType(v pb.NfsAccessType) file.AccessType {
+func toAccessType(v pb.NfsAccessType) file.AccessType {
 	switch v {
 	case pb.NfsAccessType_NFS_ACCESS_TYPE_RW:
 		return file.AccessTypeRW
 	case pb.NfsAccessType_NFS_ACCESS_TYPE_RO:
 		return file.AccessTypeRO
-	case pb.NfsAccessType_NFS_ACCESS_TYPE_MDONLY:
-		return file.AccessTypeMDOnly
+	case pb.NfsAccessType_NFS_ACCESS_TYPE_NONE:
+		return file.AccessTypeNone
 	default:
 		return file.AccessTypeUnspecified
 	}
 }
 
-func toFileSquash(v pb.NfsSquash) file.Squash {
+func toSquash(v pb.NfsSquash) file.Squash {
 	switch v {
 	case pb.NfsSquash_NFS_SQUASH_NONE:
 		return file.SquashNone
@@ -1429,86 +1464,192 @@ func toFileSquash(v pb.NfsSquash) file.Squash {
 	}
 }
 
-func toFileClients(v []*pb.NfsClientRule) []file.Client {
-	out := make([]file.Client, 0, len(v))
-	for _, r := range v {
-		if r == nil {
-			continue
-		}
-		out = append(out, file.Client{
-			Addresses:  []string{r.GetAddress()},
-			AccessType: toFileAccessType(r.GetAccessType()),
-			Squash:     toFileSquash(r.GetSquash()),
-		})
+func toProtocol(v pb.NfsProtocol) file.NFSProtocol {
+	switch v {
+	case pb.NfsProtocol_NFS_PROTOCOL_V3:
+		return file.NFSProtocolV3
+	case pb.NfsProtocol_NFS_PROTOCOL_V4:
+		return file.NFSProtocolV4
+	default:
+		return 0
+	}
+}
+
+func toTransport(v pb.NfsTransport) file.NFSTransport {
+	switch v {
+	case pb.NfsTransport_NFS_TRANSPORT_TCP:
+		return file.NFSTransportTCP
+	case pb.NfsTransport_NFS_TRANSPORT_UDP:
+		return file.NFSTransportUDP
+	default:
+		return ""
+	}
+}
+
+func toSecType(v pb.NfsSecType) file.Sectype {
+	switch v {
+	case pb.NfsSecType_NFS_SECTYPE_SYS:
+		return file.SysSec
+	case pb.NfsSecType_NFS_SECTYPE_NONE:
+		return file.NoneSec
+	case pb.NfsSecType_NFS_SECTYPE_KRB5:
+		return file.Krb5Sec
+	case pb.NfsSecType_NFS_SECTYPE_KRB5I:
+		return file.Krb5iSec
+	case pb.NfsSecType_NFS_SECTYPE_KRB5P:
+		return file.Krb5pSec
+	default:
+		return ""
+	}
+}
+
+func toProtoNfsExports(es []file.NFSExport) []*pb.NfsExport {
+	out := make([]*pb.NfsExport, 0, len(es))
+	for i := range es {
+		e := es[i]
+		out = append(out, toProtoNfsExport(&e))
 	}
 	return out
 }
 
-func toProtoNfsExport(e *file.NFSExport) *pb.NFSExport {
+func toProtoNfsExport(e *file.NFSExport) *pb.NfsExport {
 	if e == nil {
 		return nil
 	}
-	return &pb.NFSExport{
-		Spec: &pb.NFSExportSpec{
-			ClusterId: e.ClusterID,
-			Cephfs: &pb.CephFsTarget{
-				FileSystemName: e.FileSystemName,
-				GroupName:      e.GroupName,
-				SubName:        e.SubName,
-			},
-			EnableSecurityLabel: e.EnableSecurityLabel,
-			Protocols:           toProtoNfsProtocols(e.Protocols),
-			PseudoPath:          e.PseudoPath,
-			AccessType:          pb.NfsAccessType(e.AccessType),
-			Squash:              pb.NfsSquash(e.Squash),
-			Transports:          toProtoNfsTransports(e.Transports),
-			Clients:             toProtoNfsClientRules(e.Clients),
-			Sectypes:            toProtoNfsSecTypes(e.SecTypes),
-		},
-		Info: &pb.NFSExportInfo{
-			EnableSecurityLabel: e.EnableSecurityLabel,
-			Path:                e.Path,
-			Protocols:           toProtoNfsProtocols(e.Protocols),
-			PseudoPath:          e.PseudoPath,
-			AccessType:          pb.NfsAccessType(e.AccessType),
-			Squash:              pb.NfsSquash(e.Squash),
-			Transports:          toProtoNfsTransports(e.Transports),
-			Clients:             toProtoNfsClientRules(e.Clients),
-			Sectypes:            toProtoNfsSecTypes(e.SecTypes),
-		},
+
+	out := &pb.NfsExport{}
+	out.SetClusterId(e.ClusterID)
+
+	cephfs := &pb.CephFsTarget{}
+	cephfs.SetFileSystemName(e.FileSystemName)
+	cephfs.SetGroupName(e.GroupName)
+	cephfs.SetSubvolumeName(e.SubvolumeName)
+	out.SetCephfs(cephfs)
+
+	info := &pb.NfsExportInfo{}
+	info.SetEnableSecurityLabel(e.EnableSecurityLabel)
+	info.SetPath(e.Path)
+	info.SetProtocols(toProtoNfsProtocols(e.Protocols))
+	info.SetPseudoPath(e.PseudoPath)
+	info.SetAccessType(toProtoNfsAccessType(e.AccessType))
+	info.SetSquash(toProtoNfsSquash(e.Squash))
+	info.SetTransports(toProtoNfsTransports(e.Transports))
+	info.SetClients(toProtoNfsClientRules(e.Clients))
+	info.SetSectypes(toProtoNfsSecTypes(e.Sectypes))
+	out.SetInfo(info)
+
+	return out
+}
+
+func toProtoNfsAccessType(v file.AccessType) pb.NfsAccessType {
+	switch v {
+	case file.AccessTypeRW:
+		return pb.NfsAccessType_NFS_ACCESS_TYPE_RW
+	case file.AccessTypeRO:
+		return pb.NfsAccessType_NFS_ACCESS_TYPE_RO
+	case file.AccessTypeNone:
+		return pb.NfsAccessType_NFS_ACCESS_TYPE_NONE
+	default:
+		return pb.NfsAccessType_NFS_ACCESS_TYPE_UNSPECIFIED
+	}
+}
+
+func toProtoNfsSquash(v file.Squash) pb.NfsSquash {
+	switch v {
+	case file.SquashNone:
+		return pb.NfsSquash_NFS_SQUASH_NONE
+	case file.SquashRoot:
+		return pb.NfsSquash_NFS_SQUASH_ROOT
+	case file.SquashAll:
+		return pb.NfsSquash_NFS_SQUASH_ALL
+	case file.SquashRootID:
+		return pb.NfsSquash_NFS_SQUASH_ROOTID
+	default:
+		return pb.NfsSquash_NFS_SQUASH_UNSPECIFIED
 	}
 }
 
 func toProtoNfsProtocols(v []file.NFSProtocol) []pb.NfsProtocol {
 	out := make([]pb.NfsProtocol, 0, len(v))
 	for _, x := range v {
-		out = append(out, pb.NfsProtocol(x))
+		p := toProtoNfsProtocol(x)
+		if p != pb.NfsProtocol_NFS_PROTOCOL_UNSPECIFIED {
+			out = append(out, p)
+		}
 	}
 	return out
 }
+
 func toProtoNfsTransports(v []file.NFSTransport) []pb.NfsTransport {
 	out := make([]pb.NfsTransport, 0, len(v))
 	for _, x := range v {
-		out = append(out, pb.NfsTransport(x))
+		t := toProtoNfsTransport(x)
+		if t != pb.NfsTransport_NFS_TRANSPORT_UNSPECIFIED {
+			out = append(out, t)
+		}
 	}
 	return out
 }
-func toProtoNfsSecTypes(v []file.NFSSecType) []pb.NfsSecType {
+
+func toProtoNfsSecTypes(v []file.Sectype) []pb.NfsSecType {
 	out := make([]pb.NfsSecType, 0, len(v))
 	for _, x := range v {
-		out = append(out, pb.NfsSecType(x))
+		s := toProtoNfsSecType(x)
+		if s != pb.NfsSecType_NFS_SECTYPE_UNSPECIFIED {
+			out = append(out, s)
+		}
 	}
 	return out
 }
-func toProtoNfsClientRules(v []file.NFSClientRule) []*pb.NfsClientRule {
+
+func toProtoNfsProtocol(v file.NFSProtocol) pb.NfsProtocol {
+	switch v {
+	case file.NFSProtocolV3:
+		return pb.NfsProtocol_NFS_PROTOCOL_V3
+	case file.NFSProtocolV4:
+		return pb.NfsProtocol_NFS_PROTOCOL_V4
+	default:
+		return pb.NfsProtocol_NFS_PROTOCOL_UNSPECIFIED
+	}
+}
+
+func toProtoNfsTransport(v file.NFSTransport) pb.NfsTransport {
+	switch v {
+	case file.NFSTransportTCP:
+		return pb.NfsTransport_NFS_TRANSPORT_TCP
+	case file.NFSTransportUDP:
+		return pb.NfsTransport_NFS_TRANSPORT_UDP
+	default:
+		return pb.NfsTransport_NFS_TRANSPORT_UNSPECIFIED
+	}
+}
+
+func toProtoNfsSecType(v file.Sectype) pb.NfsSecType {
+	switch v {
+	case file.SysSec:
+		return pb.NfsSecType_NFS_SECTYPE_SYS
+	case file.NoneSec:
+		return pb.NfsSecType_NFS_SECTYPE_NONE
+	case file.Krb5Sec:
+		return pb.NfsSecType_NFS_SECTYPE_KRB5
+	case file.Krb5iSec:
+		return pb.NfsSecType_NFS_SECTYPE_KRB5I
+	case file.Krb5pSec:
+		return pb.NfsSecType_NFS_SECTYPE_KRB5P
+	default:
+		return pb.NfsSecType_NFS_SECTYPE_UNSPECIFIED
+	}
+}
+
+func toProtoNfsClientRules(v []file.Client) []*pb.NfsClientRule {
 	out := make([]*pb.NfsClientRule, 0, len(v))
 	for i := range v {
 		r := v[i]
-		out = append(out, &pb.NfsClientRule{
-			Address:    r.Address,
-			AccessType: pb.NfsAccessType(r.AccessType),
-			Squash:     pb.NfsSquash(r.Squash),
-		})
+		x := &pb.NfsClientRule{}
+		x.SetAddresses(r.Addresses)
+		x.SetAccessType(toProtoNfsAccessType(r.AccessType))
+		x.SetSquash(toProtoNfsSquash(r.Squash))
+		out = append(out, x)
 	}
 	return out
-}*/
+}

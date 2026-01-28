@@ -141,19 +141,19 @@ service StorageService {
     };
   };
 
-  rpc CreateNFSExport(CreateNFSExportRequest) returns (NFSExport) {
+  rpc ListNFSExports(ListNFSExportsRequest) returns (ListNFSExportsResponse) {
     option (otterscale.api.feature) = {
       name: "distributed-storage-enabled"
     };
   };
 
-  rpc GetNFSExport(GetNFSExportRequest) returns (NFSExport) {
+  rpc ApplyNFSExport(ApplyNFSExportRequest) returns (NfsExport) {
     option (otterscale.api.feature) = {
       name: "distributed-storage-enabled"
     };
   };
 
-  rpc UpdateNFSExport(UpdateNFSExportRequest) returns (NFSExport) {
+  rpc GetNFSExport(GetNFSExportRequest) returns (NfsExport) {
     option (otterscale.api.feature) = {
       name: "distributed-storage-enabled"
     };
@@ -433,8 +433,8 @@ message SubvolumeListItem {
 
 enum NfsProtocol {
   NFS_PROTOCOL_UNSPECIFIED = 0;
-  NFS_PROTOCOL_V3 = 1;
-  NFS_PROTOCOL_V4 = 2;
+  NFS_PROTOCOL_V3 = 3;
+  NFS_PROTOCOL_V4 = 4;
 }
 
 enum NfsAccessType {
@@ -468,9 +468,15 @@ enum NfsSecType {
 }
 
 message NfsClientRule {
-  repeated string address = 1; // CIDR / IP / hostname
-  NfsAccessType access_type = 2; // optional if you want inheritance
-  NfsSquash squash = 3; // optional if you want inheritance
+  repeated string addresses = 1; // CIDR / IP / hostname
+  NfsAccessType access_type = 2 [features.field_presence = EXPLICIT]; // optional if you want inheritance
+  NfsSquash squash = 3 [features.field_presence = EXPLICIT]; // optional if you want inheritance
+}
+
+message NfsFsalInfo {
+  string name = 1;
+  string user_id = 2;
+  string file_system_name = 3;
 }
 
 message CephFsTarget {
@@ -479,34 +485,35 @@ message CephFsTarget {
   string subvolume_name = 3;
 }
 
-message NFSExportSpec {
-  string cluster_id = 1;
-  CephFsTarget cephfs = 2;
-  bool enable_security_label = 3;
-  repeated NfsProtocol protocols = 4; // empty is all secect
-  string pseudo_path = 5;
-  NfsAccessType access_type = 6;
-  NfsSquash squash = 7;
-  repeated NfsTransport transports = 8; //empty is all secect
-  repeated NfsClientRule clients = 9;
-  repeated NfsSecType sectypes = 10;
-}
-
-message NFSExportInfo {
-  bool enable_security_label = 1;
-  string path = 2;
+message NfsExportSpec {
+  bool enable_security_label = 1 [features.field_presence = EXPLICIT];
   repeated NfsProtocol protocols = 3; 
   string pseudo_path = 4;
-  NfsAccessType access_type = 5;
-  NfsSquash squash = 6;
-  repeated NfsTransport transports = 7; 
+  NfsAccessType access_type = 5 [features.field_presence = EXPLICIT];
+  NfsSquash squash = 6 [features.field_presence = EXPLICIT];
+  repeated NfsTransport transports = 7;
   repeated NfsClientRule clients = 8;
   repeated NfsSecType sectypes = 9;
 }
 
-message NFSExport {
-  NFSExportSpec spec = 1; 
-  NFSExportInfo info = 2;
+message NfsExportInfo {
+  uint64 export_id = 1;
+  bool enable_security_label = 2;
+  string path = 3;
+  repeated NfsProtocol protocols = 4; 
+  string pseudo_path = 5;
+  NfsAccessType access_type = 6;
+  NfsSquash squash = 7;
+  repeated NfsTransport transports = 8; 
+   NfsFsalInfo fsal = 9;
+  repeated NfsClientRule clients = 10;
+  repeated NfsSecType sectypes = 11;
+}
+
+message NfsExport {
+  string cluster_id = 1; 
+  CephFsTarget cephfs = 2;
+  NfsExportInfo info = 3;
 }
 
 message SubvolumeGroup {
@@ -1002,49 +1009,20 @@ message ListNFSExportsRequest {
 }
 
 message ListNFSExportsResponse {
-  repeated NFSExport nfs_exports = 1;
+  repeated NfsExport nfs_exports = 1;
 }
 
-message CreateNFSExportRequest {
+message ApplyNFSExportRequest {
   string scope = 1;
   string cluster_id = 2;
-  string file_system_name = 3;
-  string group_name = 4;
-  string subvolume_name = 5;
-  bool enable_security_label = 6;
-  bool enable_protocol_nfs_v3 = 7;
-  bool enable_protocol_nfs_v4 = 8;
-  string pseudo_path = 9;
-  NfsAccessType access_type = 10;
-  NfsSquash squash = 11;
-  bool enable_transport_udp = 12;
-  bool enable_transport_tcp = 13;
-  repeated NfsClientRule clients = 14;
-  repeated NfsSecType sectypes = 15;
+  CephFsTarget target = 3;
+  NfsExportSpec spec = 4;
 }
 
 message GetNFSExportRequest {
   string scope = 1;
   string cluster_id = 2;
   string pseudo_path = 3;
-}
-
-message UpdateNFSExportRequest {
-  string scope = 1;
-  string cluster_id = 2;
-  string file_system_name = 3;
-  string group_name = 4;
-  string subvolume_name = 5;
-  bool enable_security_label = 6;
-  bool enable_protocol_nfs_v3 = 7;
-  bool enable_protocol_nfs_v4 = 8;
-  string pseudo_path = 9;
-  NfsAccessType access_type = 10;
-  NfsSquash squash = 11;
-  bool enable_transport_udp = 12;
-  bool enable_transport_tcp = 13;
-  repeated NfsClientRule clients = 14;
-  repeated NfsSecType sectypes = 15;
 }
 
 message DeleteNFSExportRequest {

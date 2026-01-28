@@ -11,11 +11,12 @@ type UseCase struct {
 	subvolumeSnapshot SubvolumeSnapshotRepo
 	volume            VolumeRepo
 
-	action   action.ActionRepo
-	facility facility.FacilityRepo
+	action    action.ActionRepo
+	facility  facility.FacilityRepo
+	nfsexport NFSExportRepo
 }
 
-func NewUseCase(subvolumeGroup SubvolumeGroupRepo, subvolume SubvolumeRepo, subvolumeSnapshot SubvolumeSnapshotRepo, volume VolumeRepo, action action.ActionRepo, facility facility.FacilityRepo) *UseCase {
+func NewUseCase(subvolumeGroup SubvolumeGroupRepo, subvolume SubvolumeRepo, subvolumeSnapshot SubvolumeSnapshotRepo, volume VolumeRepo, action action.ActionRepo, facility facility.FacilityRepo, nfsexport NFSExportRepo) *UseCase {
 	return &UseCase{
 		subvolumeGroup:    subvolumeGroup,
 		subvolume:         subvolume,
@@ -23,5 +24,6 @@ func NewUseCase(subvolumeGroup SubvolumeGroupRepo, subvolume SubvolumeRepo, subv
 		volume:            volume,
 		action:            action,
 		facility:          facility,
+		nfsexport:         nfsexport,
 	}
 }

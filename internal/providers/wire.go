@@ -26,6 +26,7 @@ var ProviderSet = wire.NewSet(
 	ceph.NewSubvolumeSnapshotRepo,
 	ceph.NewUserRepo,
 	ceph.NewVolumeRepo,
+	ceph.NewNFSExportRepo,
 	helm.New,
 	helm.NewChartRepo,
 	helm.NewReleaseRepo,

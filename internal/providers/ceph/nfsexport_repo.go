@@ -1,73 +1,56 @@
 package ceph
 
+import (
+	"context"
+	"strings"
+
+	"github.com/otterscale/otterscale/internal/core/storage/file"
+)
+
 type nfsExportRepo struct {
 	ceph *Ceph
 }
 
-/*func NewNFSExportRepo(ceph *Ceph) file.NFSExportRepo {
+func NewNFSExportRepo(ceph *Ceph) file.NFSExportRepo {
 	return &nfsExportRepo{
 		ceph: ceph,
 	}
 }
 
-var _ file.NFSExportRepo = (*nfsExportRepo)(nil)*/
+var _ file.NFSExportRepo = (*nfsExportRepo)(nil)
 
-/*func (r *nfsExportRepo) List(_ context.Context, scope, clusterID string) ([]file.NFSExport, error) {
+func (r *nfsExportRepo) List(_ context.Context, scope, clusterID string) ([]file.NFSExport, error) {
 	conn, err := r.ceph.connection(scope)
 	if err != nil {
 		return nil, err
 	}
 
-	exports, err := listDetailedExports(conn, clusterID)
+	exports, err := listDetailedNFSExports(conn, clusterID)
 	if err != nil {
 		return nil, err
 	}
 
 	out := make([]file.NFSExport, 0, len(exports))
 	for i := range exports {
-		e := r.toNFSExport(&exports[i])
-		if e == nil {
-			continue
+		if e := r.toDomain(&exports[i]); e != nil {
+			out = append(out, *e)
 		}
-		out = append(out, *e)
 	}
-
 	return out, nil
 }
 
-func (r *nfsExportRepo) Create(
-	_ context.Context,
-	scope, clusterID, filesystem string,
-	enableSecurityLabel bool,
-	group, subvolume string,
-	protocolNFSv3, protocolNFSv4 bool,
-	pseudoPath string,
-	accessType file.AccessType,
-	sq file.Squash,
-	transportUDP, transportTCP bool,
-	clients []file.Client,
-) error {
+func (r *nfsExportRepo) Apply(ctx context.Context, scope, clusterID string, e *file.NFSExport) error {
 	conn, err := r.ceph.connection(scope)
 	if err != nil {
 		return err
 	}
 
-	spec := r.toCephFSExportSpec(
-		clusterID,
-		filesystem,
-		pseudoPath,
-		accessType,
-		sq,
-		protocolNFSv3,
-		protocolNFSv4,
-		transportUDP,
-		transportTCP,
-		enableSecurityLabel,
-		clients,
-	)
+	if e == nil {
+		return nil
+	}
 
-	_, err = createCephFSExport(conn, spec)
-	return err
+	ce := r.toWire(clusterID, e)
+	return applyNFSExport(conn, clusterID, ce)
 }
 
 func (r *nfsExportRepo) Get(_ context.Context, scope, clusterID, pseudoPath string) (*file.NFSExport, error) {
@@ -76,55 +59,12 @@ func (r *nfsExportRepo) Get(_ context.Context, scope, clusterID, pseudoPath stri
 		return nil, err
 	}
 
-	info, err := exportInfo(conn, clusterID, pseudoPath)
+	info, err := getNFSExport(conn, clusterID, pseudoPath)
 	if err != nil {
 		return nil, err
 	}
 
-	return r.toNFSExport(info), nil
-}
-
-func (r *nfsExportRepo) Update(
-	_ context.Context,
-	scope, clusterID string,
-	enableSecurityLabel bool,
-	protocolNFSv3, protocolNFSv4 bool,
-	pseudoPath string,
-	accessType file.AccessType,
-	sq file.Squash,
-	transportUDP, transportTCP bool,
-	clients []file.Client,
-) error {
-	conn, err := r.ceph.connection(scope)
-	if err != nil {
-		return err
-	}
-
-	oldInfo, err := exportInfo(conn, clusterID, pseudoPath)
-	if err != nil {
-		return err
-	}
-
-	if err := removeExport(conn, clusterID, pseudoPath); err != nil {
-		return err
-	}
-
-	spec := r.toCephFSExportSpec(
-		clusterID,
-		oldInfo.FSAL.FileSystemName,
-		pseudoPath,
-		accessType,
-		sq,
-		protocolNFSv3,
-		protocolNFSv4,
-		transportUDP,
-		transportTCP,
-		enableSecurityLabel,
-		clients,
-	)
-
-	_, err = createCephFSExport(conn, spec)
-	return err
+	return r.toDomain(info), nil
 }
 
 func (r *nfsExportRepo) Delete(_ context.Context, scope, clusterID, pseudoPath string) error {
@@ -132,83 +72,219 @@ func (r *nfsExportRepo) Delete(_ context.Context, scope, clusterID, pseudoPath s
 	if err != nil {
 		return err
 	}
-	return removeExport(conn, clusterID, pseudoPath)
+	return removeNFSExport(conn, clusterID, pseudoPath)
 }
 
-func (r *nfsExportRepo) toNFSExport(info *ExportInfo) *file.NFSExport {
+func (r *nfsExportRepo) toDomain(info *cephNFSExport) *file.NFSExport {
 	if info == nil {
 		return nil
 	}
 
-	v3, v4 := false, false
+	outProtocols := make([]file.NFSProtocol, 0, len(info.Protocols))
 	for _, p := range info.Protocols {
-		if p == 3 {
-			v3 = true
-		} else if p == 4 {
-			v4 = true
+		switch uint32(p) {
+		case uint32(file.NFSProtocolV3):
+			outProtocols = append(outProtocols, file.NFSProtocolV3)
+		case uint32(file.NFSProtocolV4):
+			outProtocols = append(outProtocols, file.NFSProtocolV4)
 		}
 	}
 
-	tcp, udp := false, false
+	outTransports := make([]file.NFSTransport, 0, len(info.Transports))
 	for _, t := range info.Transports {
-		switch strings.ToLower(t) {
-		case "tcp":
-			tcp = true
-		case "udp":
-			udp = true
+		tt := strings.ToUpper(strings.TrimSpace(t))
+		switch file.NFSTransport(tt) {
+		case file.NFSTransportTCP, file.NFSTransportUDP:
+			outTransports = append(outTransports, file.NFSTransport(tt))
+		}
+	}
+
+	outSecs := make([]file.Sectype, 0, len(info.SecType))
+	for _, s := range info.SecType {
+		ss := strings.ToLower(strings.TrimSpace(string(s)))
+		switch file.Sectype(ss) {
+		case file.SysSec, file.NoneSec, file.Krb5Sec, file.Krb5iSec, file.Krb5pSec:
+			outSecs = append(outSecs, file.Sectype(ss))
 		}
 	}
 
 	outClients := make([]file.Client, 0, len(info.Clients))
 	for _, c := range info.Clients {
+		addrs := make([]string, 0, len(c.Addresses))
+		for _, a := range c.Addresses {
+			a = strings.TrimSpace(a)
+			if a != "" {
+				addrs = append(addrs, a)
+			}
+		}
+		if len(addrs) == 0 {
+			continue
+		}
+
 		outClients = append(outClients, file.Client{
-			Addresses:  append([]string(nil), c.Addresses...),
-			AccessType: file.AccessType(c.AccessType),
-			Squash:     file.Squash(c.Squash),
+			Addresses:  addrs,
+			AccessType: normalizeAccessType(c.AccessType),
+			Squash:     normalizeSquashFromCeph(string(c.Squash)),
 		})
 	}
 
 	return &file.NFSExport{
-		ClusterID:            info.ClusterID,
-		FileSystemName:       info.FSAL.FileSystemName,
-		EnableSecurityLabel:  info.SecurityLabel,
-		Path:                 info.Path,
-		PseudoPath:           info.PseudoPath,
-		ProtocolNFSV3:        v3,
-		ProtocolNFSV4:        v4,
-		TransportProtocolTCP: tcp,
-		TransportProtocolUDP: udp,
-		AccessType:           file.AccessType(info.AccessType),
-		Squash:               file.Squash(info.Squash),
-		Clients:              outClients,
+		ExportID:            info.ExportID,
+		ClusterID:           info.ClusterID,
+		FileSystemName:      strings.TrimSpace(info.FSAL.FileSystemName),
+		GroupName:           "",
+		SubvolumeName:       "",
+		EnableSecurityLabel: info.SecurityLabel,
+		Path:                info.Path,
+		Protocols:           outProtocols,
+		PseudoPath:          info.PseudoPath,
+		AccessType:          normalizeAccessType(info.AccessType),
+		Squash:              normalizeSquashFromCeph(string(info.Squash)),
+		Transports:          outTransports,
+		Clients:             outClients,
+		Sectypes:            outSecs,
 	}
 }
 
-func (r *nfsExportRepo) toCephFSExportSpec(
-	clusterID, filesystem, pseudoPath string,
-	accessType file.AccessType,
-	sq file.Squash,
-	_ bool, _ bool,
-	_ bool, _ bool,
-	_ bool,
-	clients []file.Client,
-) CephFSExportSpec {
-
-	clientAddrs := make([]string, 0, len(clients))
-	for _, c := range clients {
-		clientAddrs = append(clientAddrs, c.Addresses...)
+func (r *nfsExportRepo) toWire(clusterID string, e *file.NFSExport) *cephNFSExport {
+	ps := make([]int, 0, len(e.Protocols))
+	for _, p := range e.Protocols {
+		switch p {
+		case file.NFSProtocolV3, file.NFSProtocolV4:
+			ps = append(ps, int(p))
+		}
 	}
 
-	readOnly := accessType == file.AccessTypeRO
-
-	sec := []SecType{}
-	return CephFSExportSpec{
-		FileSystemName: filesystem,
-		ClusterID:      clusterID,
-		PseudoPath:     pseudoPath,
-		ReadOnly:       readOnly,
-		ClientAddr:     clientAddrs,
-		Squash:         SquashMode(sq),
-		SecType:        sec,
+	ts := make([]string, 0, len(e.Transports))
+	for _, t := range e.Transports {
+		tt := strings.ToUpper(strings.TrimSpace(string(t)))
+		if tt == "" {
+			continue
+		}
+		switch file.NFSTransport(tt) {
+		case file.NFSTransportTCP, file.NFSTransportUDP:
+			ts = append(ts, tt)
+		}
 	}
-}*/
+
+	st := make([]string, 0, len(e.Sectypes))
+	for _, s := range e.Sectypes {
+		ss := strings.ToLower(strings.TrimSpace(string(s)))
+		switch file.Sectype(ss) {
+		case file.SysSec, file.NoneSec, file.Krb5Sec, file.Krb5iSec, file.Krb5pSec:
+			st = append(st, ss)
+		}
+	}
+
+	cs := make([]cephNFSClientInfo, 0, len(e.Clients))
+	for _, c := range e.Clients {
+		addrs := make([]string, 0, len(c.Addresses))
+		for _, a := range c.Addresses {
+			a = strings.TrimSpace(a)
+			if a != "" {
+				addrs = append(addrs, a)
+			}
+		}
+		if len(addrs) == 0 {
+			continue
+		}
+
+		cs = append(cs, cephNFSClientInfo{
+			Addresses:  addrs,
+			AccessType: string(normalizeAccessType(string(c.AccessType))),
+			Squash:     toCephSquashString(c.Squash),
+		})
+	}
+
+	return &cephNFSExport{
+		ExportID:      e.ExportID,
+		Path:          e.Path,
+		ClusterID:     clusterID,
+		PseudoPath:    e.PseudoPath,                 // json:"pseudo"
+		AccessType:    string(e.AccessType),         // "RW"/"RO"/"NONE"
+		Squash:        toCephSquashString(e.Squash), // None/Root/All/RootId
+		SecurityLabel: e.EnableSecurityLabel,
+		Protocols:     ps,
+		Transports:    ts,
+		FSAL: cephNFSFSALInfo{
+			// 你目前 file.NFSExport 已經不帶 FSAL，就固定 CEPH + fs_name
+			Name:           "CEPH",
+			UserID:         "",
+			FileSystemName: e.FileSystemName,
+		},
+		Clients: cs,
+		SecType: st,
+	}
+}
+
+// ---------- helpers ----------
+
+func normalizeAccessType(s string) file.AccessType {
+	ss := strings.ToUpper(strings.TrimSpace(s))
+	switch file.AccessType(ss) {
+	case file.AccessTypeRW, file.AccessTypeRO, file.AccessTypeNone:
+		return file.AccessType(ss)
+	default:
+		return file.AccessTypeUnspecified
+	}
+}
+
+// Ceph -> domain squash (None/Root/All/RootId) -> (none/root/all/rootid)
+func normalizeSquashFromCeph(s string) file.Squash {
+	ss := strings.ToLower(strings.TrimSpace(s))
+	switch ss {
+	case "none":
+		return file.SquashNone
+	case "root":
+		return file.SquashRoot
+	case "all":
+		return file.SquashAll
+	case "rootid", "root_id", "root-id":
+		return file.SquashRootID
+	}
+
+	// 有些 Ceph 回來是 "None"/"Root"/"All"/"RootId"
+	switch strings.TrimSpace(s) {
+	case "None":
+		return file.SquashNone
+	case "Root":
+		return file.SquashRoot
+	case "All":
+		return file.SquashAll
+	case "RootId", "RootID":
+		return file.SquashRootID
+	default:
+		return file.SquashUnspecified
+	}
+}
+
+// domain squash (none/root/all/rootid) -> Ceph squash (None/Root/All/RootId)
+func toCephSquash(s file.Squash) Squash {
+	switch strings.ToLower(strings.TrimSpace(string(s))) {
+	case "none":
+		return NoneSquash
+	case "root":
+		return RootSquash
+	case "all":
+		return AllSquash
+	case "rootid":
+		return RootIDSquash
+	default:
+		return Unspecifiedquash
+	}
+}
+
+func toCephSquashString(s file.Squash) string {
+	switch strings.ToLower(strings.TrimSpace(string(s))) {
+	case "none":
+		return "None"
+	case "root":
+		return "Root"
+	case "all":
+		return "All"
+	case "rootid":
+		return "RootId"
+	default:
+		return ""
+	}
+}

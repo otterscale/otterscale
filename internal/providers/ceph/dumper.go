@@ -195,19 +195,20 @@ type subvolumeInfo struct {
 	Features []Feature `json:"features,omitempty"`
 }
 
-type SquashMode string
+type AccessType string
+type Squash string
+type SecType string
 
 const (
-	NoneSquash       SquashMode = "None"
-	RootSquash       SquashMode = "Root"
-	AllSquash        SquashMode = "All"
-	RootIDSquash     SquashMode = "RootId"
-	NoRootSquash                = NoneSquash
-	Unspecifiedquash SquashMode = ""
+	NoneSquash       Squash = "None"
+	RootSquash       Squash = "Root"
+	AllSquash        Squash = "All"
+	RootIDSquash     Squash = "RootId"
+	NoRootSquash            = NoneSquash
+	Unspecifiedquash Squash = ""
 )
 
 // SecType indicates the kind of security/authentication to be used by an export.
-type SecType string
 
 const (
 	SysSec   SecType = "sys"
@@ -217,62 +218,32 @@ const (
 	Krb5pSec SecType = "krb5p"
 )
 
-// CephFSExportSpec is used to specify parameters to create a CephFS based export.
-type CephFSExportSpec struct {
-	FileSystemName string     `json:"fsname"`
-	ClusterID      string     `json:"cluster_id"`
-	PseudoPath     string     `json:"pseudo_path"`
-	Path           string     `json:"path,omitempty"`
-	ReadOnly       bool       `json:"readonly"`
-	ClientAddr     []string   `json:"client_addr,omitempty"`
-	Squash         SquashMode `json:"squash,omitempty"`
-	SecType        []SecType  `json:"sectype,omitempty"`
+// cephNFSFSALInfo describes NFS-Ganesha specific FSAL properties of an export.
+type cephNFSFSALInfo struct {
+	Name           string `json:"name,omitempty"`
+	UserID         string `json:"user_id,omitempty"`
+	FileSystemName string `json:"fs_name,omitempty"`
 }
 
-// ExportResult is returned along with newly created exports.
-type ExportResult struct {
-	Bind           string `json:"bind"`
-	FileSystemName string `json:"fs"`
-	Path           string `json:"path"`
-	ClusterID      string `json:"cluster"`
-	Mode           string `json:"mode"`
+type cephNFSClientInfo struct {
+	Addresses  []string `json:"addresses,omitempty"`
+	AccessType string   `json:"access_type,omitempty"`
+	Squash     string   `json:"squash,omitempty"`
 }
 
-type cephFSExportFields struct {
-	Prefix string `json:"prefix"`
-	Format string `json:"format"`
-
-	CephFSExportSpec
-}
-
-// FSALInfo describes NFS-Ganesha specific FSAL properties of an export.
-type FSALInfo struct {
-	Name           string `json:"name"`
-	UserID         string `json:"user_id"`
-	FileSystemName string `json:"fs_name"`
-}
-
-// ClientInfo describes per-client parameters of an export.
-type ClientInfo struct {
-	Addresses  []string   `json:"addresses"`
-	AccessType string     `json:"access_type"`
-	Squash     SquashMode `json:"squash"`
-}
-
-// ExportInfo describes an NFS export.
-type ExportInfo struct {
-	ExportID      int64        `json:"export_id"`
-	Path          string       `json:"path"`
-	ClusterID     string       `json:"cluster_id"`
-	PseudoPath    string       `json:"pseudo"`
-	AccessType    string       `json:"access_type"`
-	Squash        SquashMode   `json:"squash"`
-	SecurityLabel bool         `json:"security_label"`
-	Protocols     []int        `json:"protocols"`
-	Transports    []string     `json:"transports"`
-	FSAL          FSALInfo     `json:"fsal"`
-	Clients       []ClientInfo `json:"clients"`
-	SecType       []SecType    `json:"sectype"`
+type cephNFSExport struct {
+	ExportID      uint64              `json:"export_id,omitempty"`
+	Path          string              `json:"path,omitempty"`
+	ClusterID     string              `json:"cluster_id,omitempty"`
+	PseudoPath    string              `json:"pseudo,omitempty"`
+	AccessType    string              `json:"access_type,omitempty"`
+	Squash        string              `json:"squash,omitempty"`
+	SecurityLabel bool                `json:"security_label,omitempty"`
+	Protocols     []int               `json:"protocols,omitempty"`
+	Transports    []string            `json:"transports,omitempty"`
+	FSAL          cephNFSFSALInfo     `json:"fsal,omitempty"`
+	Clients       []cephNFSClientInfo `json:"clients,omitempty"`
+	SecType       []string            `json:"sectype,omitempty"`
 }
 
 type subvolumeSnapshotInfo struct {
@@ -938,43 +909,67 @@ func removeSubvolumeGroup(conn *rados.Conn, volume, group string) error {
 	return nil
 }
 
-/*func createCephFSExport(conn *rados.Conn, spec CephFSExportSpec) (*ExportResult, error) {
-	f := &cephFSExportFields{
-		Prefix:           "nfs export create cephfs",
-		Format:           "json",
-		CephFSExportSpec: spec,
-	}
-
-	resp, err := monCommand(conn, f)
+func mgrCommand(conn *rados.Conn, m any) ([]byte, error) {
+	cmd, err := json.Marshal(m)
 	if err != nil {
 		return nil, err
 	}
 
-	var r ExportResult
-	if err := json.Unmarshal(resp, &r); err != nil {
-		return nil, err
+	resp, status, err := conn.MgrCommand([][]byte{cmd})
+	if err != nil {
+		return nil, fmt.Errorf("%s: %w", status, err)
 	}
-	return &r, nil
+	return resp, nil
 }
 
-func getNFSExport(conn *rados.Conn, clusterID, pseudoPath string) (*ExportInfo, error) {
-	cmd := map[string]string{
-		"prefix":      "nfs export info",
-		"cluster_id":  clusterID,
-		"pseudo_path": pseudoPath,
-		"format":      "json",
+func mgrCommandWithUnmarshal(conn *rados.Conn, m, v any) error {
+	resp, err := mgrCommand(conn, m)
+	if err != nil {
+		return err
+	}
+	return json.Unmarshal(resp, &v)
+}
+
+func mgrCommandWithKeyUnmarshal(conn *rados.Conn, key string, m, v any) error {
+	resp, err := mgrCommand(conn, m)
+	if err != nil {
+		return err
 	}
 
-	var info ExportInfo
+	var result map[string]any
+	if err := json.Unmarshal(resp, &result); err != nil {
+		return err
+	}
 
-	if err := monCommandWithUnmarshal(conn, cmd, &info); err != nil {
+	tmp, err := json.Marshal(result[key])
+	if err != nil {
+		return err
+	}
+	return json.Unmarshal(tmp, &v)
+}
+
+func mgrCommandWithInbuf(conn *rados.Conn, m any, inbuf []byte) ([]byte, error) {
+	cmd, err := json.Marshal(m)
+	if err != nil {
 		return nil, err
 	}
 
-	return &info, nil
+	resp, status, err := conn.MgrCommand([][]byte{cmd, inbuf})
+	if err != nil {
+		return nil, fmt.Errorf("%s: %w", status, err)
+	}
+	return resp, nil
 }
 
-func listDetailedExports(conn *rados.Conn, clusterID string) ([]ExportInfo, error) {
+func mgrCommandWithInbufUnmarshal(conn *rados.Conn, m any, inbuf []byte, v any) error {
+	resp, err := mgrCommandWithInbuf(conn, m, inbuf)
+	if err != nil {
+		return err
+	}
+	return json.Unmarshal(resp, &v)
+}
+
+func listDetailedNFSExports(conn *rados.Conn, clusterID string) ([]cephNFSExport, error) {
 	cmd := map[string]any{
 		"prefix":     "nfs export ls",
 		"detailed":   "true",
@@ -982,39 +977,62 @@ func listDetailedExports(conn *rados.Conn, clusterID string) ([]ExportInfo, erro
 		"cluster_id": clusterID,
 	}
 
-	resp, err := monCommand(conn, cmd)
-	if err != nil {
-		return nil, err
-	}
-
-	var l []ExportInfo
-	if err := json.Unmarshal(resp, &l); err != nil {
+	var l []cephNFSExport
+	if err := mgrCommandWithUnmarshal(conn, cmd, &l); err != nil {
 		return nil, err
 	}
 	return l, nil
 }
 
-func updateNFSExport(conn *rados.Conn, spec CephFSExportSpec) error {
-	cmd := map[string]any{
-		"prefix":         "nfs export apply",
-		CephFSExportSpec: spec,
-	}
-
-	if _, err := monCommand(conn, cmd); err != nil {
+func applyNFSExport(conn *rados.Conn, clusterID string, spec *cephNFSExport) error {
+	inbuf, err := json.Marshal(spec)
+	if err != nil {
 		return err
 	}
 
-	return nil
+	cmd := map[string]any{
+		"prefix":     "nfs export apply",
+		"cluster_id": clusterID,
+		"format":     "json",
+	}
+
+	_, err = mgrCommandWithInbuf(conn, cmd, inbuf)
+	return err
 }
 
-func removeExport(conn *rados.Conn, clusterID, pseudoPath string) error {
+func getNFSExport(conn *rados.Conn, clusterID, pseudoPath string) (*cephNFSExport, error) {
+	cmd := map[string]string{
+		"prefix":      "nfs export info",
+		"cluster_id":  clusterID,
+		"pseudo_path": pseudoPath,
+		"format":      "json",
+	}
+
+	var info cephNFSExport
+
+	if err := mgrCommandWithUnmarshal(conn, cmd, &info); err != nil {
+		cmd["pseudo"] = pseudoPath
+		delete(cmd, "pseudo_path")
+		if err2 := mgrCommandWithUnmarshal(conn, cmd, &info); err2 != nil {
+			return nil, err
+		}
+	}
+	return &info, nil
+}
+
+func removeNFSExport(conn *rados.Conn, clusterID, pseudoPath string) error {
 	cmd := map[string]any{
 		"prefix":      "nfs export rm",
-		"format":      "json",
 		"cluster_id":  clusterID,
+		"format":      "json",
 		"pseudo_path": pseudoPath,
 	}
 
-	_, err := monCommand(conn, cmd)
-	return err
-}*/
+	if _, err := mgrCommand(conn, cmd); err != nil {
+		cmd["pseudo"] = pseudoPath
+		delete(cmd, "pseudo_path")
+		_, err2 := mgrCommand(conn, cmd)
+		return err2
+	}
+	return nil
+}

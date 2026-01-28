@@ -99,15 +99,15 @@ const (
 	// StorageServiceDeleteSubvolumeProcedure is the fully-qualified name of the StorageService's
 	// DeleteSubvolume RPC.
 	StorageServiceDeleteSubvolumeProcedure = "/otterscale.storage.v1.StorageService/DeleteSubvolume"
-	// StorageServiceCreateNFSExportProcedure is the fully-qualified name of the StorageService's
-	// CreateNFSExport RPC.
-	StorageServiceCreateNFSExportProcedure = "/otterscale.storage.v1.StorageService/CreateNFSExport"
+	// StorageServiceListNFSExportsProcedure is the fully-qualified name of the StorageService's
+	// ListNFSExports RPC.
+	StorageServiceListNFSExportsProcedure = "/otterscale.storage.v1.StorageService/ListNFSExports"
+	// StorageServiceApplyNFSExportProcedure is the fully-qualified name of the StorageService's
+	// ApplyNFSExport RPC.
+	StorageServiceApplyNFSExportProcedure = "/otterscale.storage.v1.StorageService/ApplyNFSExport"
 	// StorageServiceGetNFSExportProcedure is the fully-qualified name of the StorageService's
 	// GetNFSExport RPC.
 	StorageServiceGetNFSExportProcedure = "/otterscale.storage.v1.StorageService/GetNFSExport"
-	// StorageServiceUpdateNFSExportProcedure is the fully-qualified name of the StorageService's
-	// UpdateNFSExport RPC.
-	StorageServiceUpdateNFSExportProcedure = "/otterscale.storage.v1.StorageService/UpdateNFSExport"
 	// StorageServiceDeleteNFSExportProcedure is the fully-qualified name of the StorageService's
 	// DeleteNFSExport RPC.
 	StorageServiceDeleteNFSExportProcedure = "/otterscale.storage.v1.StorageService/DeleteNFSExport"
@@ -191,9 +191,9 @@ type StorageServiceClient interface {
 	GetSubvolume(context.Context, *v1.GetSubvolumeRequest) (*v1.Subvolume, error)
 	UpdateSubvolume(context.Context, *v1.UpdateSubvolumeRequest) (*v1.Subvolume, error)
 	DeleteSubvolume(context.Context, *v1.DeleteSubvolumeRequest) (*emptypb.Empty, error)
-	CreateNFSExport(context.Context, *v1.CreateNFSExportRequest) (*v1.NFSExport, error)
-	GetNFSExport(context.Context, *v1.GetNFSExportRequest) (*v1.NFSExport, error)
-	UpdateNFSExport(context.Context, *v1.UpdateNFSExportRequest) (*v1.NFSExport, error)
+	ListNFSExports(context.Context, *v1.ListNFSExportsRequest) (*v1.ListNFSExportsResponse, error)
+	ApplyNFSExport(context.Context, *v1.ApplyNFSExportRequest) (*v1.NfsExport, error)
+	GetNFSExport(context.Context, *v1.GetNFSExportRequest) (*v1.NfsExport, error)
 	DeleteNFSExport(context.Context, *v1.DeleteNFSExportRequest) (*emptypb.Empty, error)
 	ListSubvolumeGroups(context.Context, *v1.ListSubvolumeGroupsRequest) (*v1.ListSubvolumeGroupsResponse, error)
 	CreateSubvolumeGroup(context.Context, *v1.CreateSubvolumeGroupRequest) (*v1.SubvolumeGroup, error)
@@ -358,22 +358,22 @@ func NewStorageServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 			connect.WithSchema(storageServiceMethods.ByName("DeleteSubvolume")),
 			connect.WithClientOptions(opts...),
 		),
-		createNFSExport: connect.NewClient[v1.CreateNFSExportRequest, v1.NFSExport](
+		listNFSExports: connect.NewClient[v1.ListNFSExportsRequest, v1.ListNFSExportsResponse](
 			httpClient,
-			baseURL+StorageServiceCreateNFSExportProcedure,
-			connect.WithSchema(storageServiceMethods.ByName("CreateNFSExport")),
+			baseURL+StorageServiceListNFSExportsProcedure,
+			connect.WithSchema(storageServiceMethods.ByName("ListNFSExports")),
 			connect.WithClientOptions(opts...),
 		),
-		getNFSExport: connect.NewClient[v1.GetNFSExportRequest, v1.NFSExport](
+		applyNFSExport: connect.NewClient[v1.ApplyNFSExportRequest, v1.NfsExport](
+			httpClient,
+			baseURL+StorageServiceApplyNFSExportProcedure,
+			connect.WithSchema(storageServiceMethods.ByName("ApplyNFSExport")),
+			connect.WithClientOptions(opts...),
+		),
+		getNFSExport: connect.NewClient[v1.GetNFSExportRequest, v1.NfsExport](
 			httpClient,
 			baseURL+StorageServiceGetNFSExportProcedure,
 			connect.WithSchema(storageServiceMethods.ByName("GetNFSExport")),
-			connect.WithClientOptions(opts...),
-		),
-		updateNFSExport: connect.NewClient[v1.UpdateNFSExportRequest, v1.NFSExport](
-			httpClient,
-			baseURL+StorageServiceUpdateNFSExportProcedure,
-			connect.WithSchema(storageServiceMethods.ByName("UpdateNFSExport")),
 			connect.WithClientOptions(opts...),
 		),
 		deleteNFSExport: connect.NewClient[v1.DeleteNFSExportRequest, emptypb.Empty](
@@ -517,9 +517,9 @@ type storageServiceClient struct {
 	getSubvolume             *connect.Client[v1.GetSubvolumeRequest, v1.Subvolume]
 	updateSubvolume          *connect.Client[v1.UpdateSubvolumeRequest, v1.Subvolume]
 	deleteSubvolume          *connect.Client[v1.DeleteSubvolumeRequest, emptypb.Empty]
-	createNFSExport          *connect.Client[v1.CreateNFSExportRequest, v1.NFSExport]
-	getNFSExport             *connect.Client[v1.GetNFSExportRequest, v1.NFSExport]
-	updateNFSExport          *connect.Client[v1.UpdateNFSExportRequest, v1.NFSExport]
+	listNFSExports           *connect.Client[v1.ListNFSExportsRequest, v1.ListNFSExportsResponse]
+	applyNFSExport           *connect.Client[v1.ApplyNFSExportRequest, v1.NfsExport]
+	getNFSExport             *connect.Client[v1.GetNFSExportRequest, v1.NfsExport]
 	deleteNFSExport          *connect.Client[v1.DeleteNFSExportRequest, emptypb.Empty]
 	listSubvolumeGroups      *connect.Client[v1.ListSubvolumeGroupsRequest, v1.ListSubvolumeGroupsResponse]
 	createSubvolumeGroup     *connect.Client[v1.CreateSubvolumeGroupRequest, v1.SubvolumeGroup]
@@ -739,9 +739,18 @@ func (c *storageServiceClient) DeleteSubvolume(ctx context.Context, req *v1.Dele
 	return nil, err
 }
 
-// CreateNFSExport calls otterscale.storage.v1.StorageService.CreateNFSExport.
-func (c *storageServiceClient) CreateNFSExport(ctx context.Context, req *v1.CreateNFSExportRequest) (*v1.NFSExport, error) {
-	response, err := c.createNFSExport.CallUnary(ctx, connect.NewRequest(req))
+// ListNFSExports calls otterscale.storage.v1.StorageService.ListNFSExports.
+func (c *storageServiceClient) ListNFSExports(ctx context.Context, req *v1.ListNFSExportsRequest) (*v1.ListNFSExportsResponse, error) {
+	response, err := c.listNFSExports.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
+}
+
+// ApplyNFSExport calls otterscale.storage.v1.StorageService.ApplyNFSExport.
+func (c *storageServiceClient) ApplyNFSExport(ctx context.Context, req *v1.ApplyNFSExportRequest) (*v1.NfsExport, error) {
+	response, err := c.applyNFSExport.CallUnary(ctx, connect.NewRequest(req))
 	if response != nil {
 		return response.Msg, err
 	}
@@ -749,17 +758,8 @@ func (c *storageServiceClient) CreateNFSExport(ctx context.Context, req *v1.Crea
 }
 
 // GetNFSExport calls otterscale.storage.v1.StorageService.GetNFSExport.
-func (c *storageServiceClient) GetNFSExport(ctx context.Context, req *v1.GetNFSExportRequest) (*v1.NFSExport, error) {
+func (c *storageServiceClient) GetNFSExport(ctx context.Context, req *v1.GetNFSExportRequest) (*v1.NfsExport, error) {
 	response, err := c.getNFSExport.CallUnary(ctx, connect.NewRequest(req))
-	if response != nil {
-		return response.Msg, err
-	}
-	return nil, err
-}
-
-// UpdateNFSExport calls otterscale.storage.v1.StorageService.UpdateNFSExport.
-func (c *storageServiceClient) UpdateNFSExport(ctx context.Context, req *v1.UpdateNFSExportRequest) (*v1.NFSExport, error) {
-	response, err := c.updateNFSExport.CallUnary(ctx, connect.NewRequest(req))
 	if response != nil {
 		return response.Msg, err
 	}
@@ -961,9 +961,9 @@ type StorageServiceHandler interface {
 	GetSubvolume(context.Context, *v1.GetSubvolumeRequest) (*v1.Subvolume, error)
 	UpdateSubvolume(context.Context, *v1.UpdateSubvolumeRequest) (*v1.Subvolume, error)
 	DeleteSubvolume(context.Context, *v1.DeleteSubvolumeRequest) (*emptypb.Empty, error)
-	CreateNFSExport(context.Context, *v1.CreateNFSExportRequest) (*v1.NFSExport, error)
-	GetNFSExport(context.Context, *v1.GetNFSExportRequest) (*v1.NFSExport, error)
-	UpdateNFSExport(context.Context, *v1.UpdateNFSExportRequest) (*v1.NFSExport, error)
+	ListNFSExports(context.Context, *v1.ListNFSExportsRequest) (*v1.ListNFSExportsResponse, error)
+	ApplyNFSExport(context.Context, *v1.ApplyNFSExportRequest) (*v1.NfsExport, error)
+	GetNFSExport(context.Context, *v1.GetNFSExportRequest) (*v1.NfsExport, error)
 	DeleteNFSExport(context.Context, *v1.DeleteNFSExportRequest) (*emptypb.Empty, error)
 	ListSubvolumeGroups(context.Context, *v1.ListSubvolumeGroupsRequest) (*v1.ListSubvolumeGroupsResponse, error)
 	CreateSubvolumeGroup(context.Context, *v1.CreateSubvolumeGroupRequest) (*v1.SubvolumeGroup, error)
@@ -1124,22 +1124,22 @@ func NewStorageServiceHandler(svc StorageServiceHandler, opts ...connect.Handler
 		connect.WithSchema(storageServiceMethods.ByName("DeleteSubvolume")),
 		connect.WithHandlerOptions(opts...),
 	)
-	storageServiceCreateNFSExportHandler := connect.NewUnaryHandlerSimple(
-		StorageServiceCreateNFSExportProcedure,
-		svc.CreateNFSExport,
-		connect.WithSchema(storageServiceMethods.ByName("CreateNFSExport")),
+	storageServiceListNFSExportsHandler := connect.NewUnaryHandlerSimple(
+		StorageServiceListNFSExportsProcedure,
+		svc.ListNFSExports,
+		connect.WithSchema(storageServiceMethods.ByName("ListNFSExports")),
+		connect.WithHandlerOptions(opts...),
+	)
+	storageServiceApplyNFSExportHandler := connect.NewUnaryHandlerSimple(
+		StorageServiceApplyNFSExportProcedure,
+		svc.ApplyNFSExport,
+		connect.WithSchema(storageServiceMethods.ByName("ApplyNFSExport")),
 		connect.WithHandlerOptions(opts...),
 	)
 	storageServiceGetNFSExportHandler := connect.NewUnaryHandlerSimple(
 		StorageServiceGetNFSExportProcedure,
 		svc.GetNFSExport,
 		connect.WithSchema(storageServiceMethods.ByName("GetNFSExport")),
-		connect.WithHandlerOptions(opts...),
-	)
-	storageServiceUpdateNFSExportHandler := connect.NewUnaryHandlerSimple(
-		StorageServiceUpdateNFSExportProcedure,
-		svc.UpdateNFSExport,
-		connect.WithSchema(storageServiceMethods.ByName("UpdateNFSExport")),
 		connect.WithHandlerOptions(opts...),
 	)
 	storageServiceDeleteNFSExportHandler := connect.NewUnaryHandlerSimple(
@@ -1302,12 +1302,12 @@ func NewStorageServiceHandler(svc StorageServiceHandler, opts ...connect.Handler
 			storageServiceUpdateSubvolumeHandler.ServeHTTP(w, r)
 		case StorageServiceDeleteSubvolumeProcedure:
 			storageServiceDeleteSubvolumeHandler.ServeHTTP(w, r)
-		case StorageServiceCreateNFSExportProcedure:
-			storageServiceCreateNFSExportHandler.ServeHTTP(w, r)
+		case StorageServiceListNFSExportsProcedure:
+			storageServiceListNFSExportsHandler.ServeHTTP(w, r)
+		case StorageServiceApplyNFSExportProcedure:
+			storageServiceApplyNFSExportHandler.ServeHTTP(w, r)
 		case StorageServiceGetNFSExportProcedure:
 			storageServiceGetNFSExportHandler.ServeHTTP(w, r)
-		case StorageServiceUpdateNFSExportProcedure:
-			storageServiceUpdateNFSExportHandler.ServeHTTP(w, r)
 		case StorageServiceDeleteNFSExportProcedure:
 			storageServiceDeleteNFSExportHandler.ServeHTTP(w, r)
 		case StorageServiceListSubvolumeGroupsProcedure:
@@ -1443,16 +1443,16 @@ func (UnimplementedStorageServiceHandler) DeleteSubvolume(context.Context, *v1.D
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.DeleteSubvolume is not implemented"))
 }
 
-func (UnimplementedStorageServiceHandler) CreateNFSExport(context.Context, *v1.CreateNFSExportRequest) (*v1.NFSExport, error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.CreateNFSExport is not implemented"))
+func (UnimplementedStorageServiceHandler) ListNFSExports(context.Context, *v1.ListNFSExportsRequest) (*v1.ListNFSExportsResponse, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.ListNFSExports is not implemented"))
 }
 
-func (UnimplementedStorageServiceHandler) GetNFSExport(context.Context, *v1.GetNFSExportRequest) (*v1.NFSExport, error) {
+func (UnimplementedStorageServiceHandler) ApplyNFSExport(context.Context, *v1.ApplyNFSExportRequest) (*v1.NfsExport, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.ApplyNFSExport is not implemented"))
+}
+
+func (UnimplementedStorageServiceHandler) GetNFSExport(context.Context, *v1.GetNFSExportRequest) (*v1.NfsExport, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.GetNFSExport is not implemented"))
-}
-
-func (UnimplementedStorageServiceHandler) UpdateNFSExport(context.Context, *v1.UpdateNFSExportRequest) (*v1.NFSExport, error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.UpdateNFSExport is not implemented"))
 }
 
 func (UnimplementedStorageServiceHandler) DeleteNFSExport(context.Context, *v1.DeleteNFSExportRequest) (*emptypb.Empty, error) {
