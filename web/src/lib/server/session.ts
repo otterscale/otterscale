@@ -2,11 +2,10 @@ import { sha256 } from '@oslojs/crypto/sha2';
 import { encodeBase32LowerCaseNoPadding, encodeHexLowerCase } from '@oslojs/encoding';
 import type { Cookies } from '@sveltejs/kit';
 
-import { dev } from '$app/environment';
+import { env } from '$env/dynamic/public';
 
 import { redis } from './redis';
 
-const COOKIE_NAME = !dev ? '__Host-OS_SESSION' : 'OS_SESSION';
 const SESSION_EXPIRY_MS = 1000 * 60 * 60 * 24 * 30; // 30 days
 const SESSION_REFRESH_THRESHOLD_MS = 1000 * 60 * 60 * 24 * 15; // 15 days
 
@@ -109,27 +108,35 @@ async function getSessionFromRedis(sessionId: string): Promise<Session | null> {
 }
 
 export function getSessionTokenCookie(cookies: Cookies): string | undefined {
-	return cookies.get(COOKIE_NAME);
+	return cookies.get(cookieName());
 }
 
 export function setSessionTokenCookie(cookies: Cookies, token: string, expiresAt: Date): void {
-	cookies.set(COOKIE_NAME, token, {
+	cookies.set(cookieName(), token, {
+		expires: expiresAt,
 		httpOnly: true,
 		path: '/',
-		secure: !dev,
-		sameSite: 'lax',
-		expires: expiresAt
+		sameSite: 'lax' as const,
+		secure: isSecure()
 	});
 }
 
 export function deleteSessionTokenCookie(cookies: Cookies): void {
-	cookies.set(COOKIE_NAME, '', {
+	cookies.set(cookieName(), '', {
 		httpOnly: true,
+		maxAge: 0,
 		path: '/',
-		secure: !dev,
-		sameSite: 'lax',
-		maxAge: 0
+		sameSite: 'lax' as const,
+		secure: isSecure()
 	});
+}
+
+export function isSecure(): boolean {
+	return env.PUBLIC_WEB_URL?.startsWith('https') ?? false;
+}
+
+function cookieName(): string {
+	return isSecure() ? '__Host-OS_SESSION' : 'OS_SESSION';
 }
 
 // Types
