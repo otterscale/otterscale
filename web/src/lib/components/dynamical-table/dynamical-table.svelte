@@ -308,7 +308,7 @@
 	<!-- Table -->
 	<div class="overflow-hidden rounded-md border bg-background">
 		<Table.Root class="table-fixed">
-			<Table.Header>
+			<Table.Header class="bg-muted">
 				{#each table.getHeaderGroups() as headerGroup (headerGroup.id)}
 					<Table.Row class="hover:bg-transparent">
 						{#each headerGroup.headers as header (header.id)}
