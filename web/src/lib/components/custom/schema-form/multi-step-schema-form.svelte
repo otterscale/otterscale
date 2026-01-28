@@ -62,6 +62,7 @@
 	let stepForms = $state<StepFormData[]>([]);
 	let advanceYaml = $state('');
 	let yamlParseError = $state<string | null>(null);
+	let formRefs = $state<(HTMLFormElement | undefined)[]>([]);
 
 	const stepNames = $derived(Object.keys(fields));
 	const totalSteps = $derived(stepNames.length);
@@ -209,7 +210,7 @@
 			<Tabs.Root value={mode} onValueChange={handleModeChange}>
 				<Tabs.List>
 					<Tabs.Trigger value="basic">Basic</Tabs.Trigger>
-					<Tabs.Trigger value="advance">Advance</Tabs.Trigger>
+					<Tabs.Trigger value="advance">Advanced</Tabs.Trigger>
 				</Tabs.List>
 			</Tabs.Root>
 		</div>
@@ -260,35 +261,39 @@
 				</div>
 			</div>
 
-			<div class="flex flex-1 flex-col overflow-y-auto rounded-lg bg-card p-6">
+			<div class="flex flex-1 flex-col overflow-y-auto rounded-lg p-6">
 				{#each stepForms as stepForm, index (stepForm)}
 					<div class={currentStep === index ? 'flex flex-1 flex-col' : 'hidden'}>
 						{#key stepForm.stepName}
 							<div class="multi-step-form-target contents">
-								<SchemaFormStep form={stepForm.form}>
-									<div class="mt-auto flex justify-between pt-6">
-										<Button variant="outline" onclick={goBack} disabled={isFirstStep} type="button">
-											← Previous
-										</Button>
-
-										<div class="flex gap-2">
-											{#if !isLastStep}
-												<Button type="submit">Next →</Button>
-											{:else}
-												<Button type="submit">Submit</Button>
-											{/if}
-										</div>
-									</div>
-								</SchemaFormStep>
+								<SchemaFormStep form={stepForm.form} bind:ref={formRefs[index]} />
 							</div>
 						{/key}
 					</div>
 				{/each}
 			</div>
+
+			<div class="mt-auto flex justify-between px-6 py-4">
+				<Button variant="outline" onclick={goBack} disabled={isFirstStep} type="button">
+					← Previous
+				</Button>
+
+				<div class="flex gap-2">
+					{#if !isLastStep}
+						<Button type="button" onclick={() => formRefs[currentStep]?.requestSubmit()}>
+							Next →
+						</Button>
+					{:else}
+						<Button type="button" onclick={() => formRefs[currentStep]?.requestSubmit()}>
+							Submit
+						</Button>
+					{/if}
+				</div>
+			</div>
 		</Tabs.Content>
 
-		<Tabs.Content value="advance">
-			<div class="h-[72vh] rounded border">
+		<Tabs.Content value="advance" class="flex flex-1 flex-col overflow-hidden">
+			<div class="mx-6 flex flex-1 flex-col rounded border">
 				{#if yamlParseError}
 					<div
 						class="mb-2 rounded bg-red-100 p-2 text-sm text-red-700 dark:bg-red-900/20 dark:text-red-400"
@@ -310,15 +315,17 @@
 				/>
 			</div>
 
-			<Button
-				class="mt-6 w-full"
-				onclick={() => {
-					syncYamlToMasterData();
-					handleFinalSubmit();
-				}}
-			>
-				Submit
-			</Button>
+			<div class="mt-auto px-6 py-4">
+				<Button
+					class="w-full"
+					onclick={() => {
+						syncYamlToMasterData();
+						handleFinalSubmit();
+					}}
+				>
+					Submit
+				</Button>
+			</div>
 		</Tabs.Content>
 	</Tabs.Root>
 </div>
