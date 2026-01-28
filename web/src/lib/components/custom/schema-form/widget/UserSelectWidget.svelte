@@ -111,7 +111,7 @@
 		// Update subject and name in the value object
 		value = {
 			...(value as Record<string, unknown>),
-			subject: user.username,
+			subject: user.id,
 			name: getDisplayName(user)
 		};
 		userOpen = false;
