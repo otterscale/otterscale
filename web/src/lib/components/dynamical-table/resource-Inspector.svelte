@@ -59,7 +59,7 @@
 				{@render status?.()}
 				<Separator class="invisible" />
 				<div class="grid gap-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-6">
-					{#each [{ key: 'Cluster', value: cluster }, { key: 'Namespace', value: namespace }, { key: 'Creation Timestamp', value: new Date(object.metadata.creationTimestamp).toLocaleString('sv-SE') }, { key: 'Generation', value: object.metadata?.generation }, { key: 'Resource Version', value: object.metadata?.resourceVersion }] as item, index (index)}
+					{#each [{ key: 'Cluster', value: cluster }, { key: 'Namespace', value: namespace }, { key: 'Creation Timestamp', value: new Date(object.metadata?.creationTimestamp).toLocaleString('sv-SE') }, { key: 'Generation', value: object.metadata?.generation }, { key: 'Resource Version', value: object.metadata?.resourceVersion }] as item, index (index)}
 						{#if item.value}
 							<Item.Root class="p-0">
 								<Item.Content>

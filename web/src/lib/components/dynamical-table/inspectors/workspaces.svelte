@@ -25,10 +25,10 @@
 				<Card.Title>
 					<Item.Root class="p-0">
 						<Item.Media>
-							<Gauge size={28} />
+							<Gauge size={20} />
 						</Item.Media>
 						<Item.Content>
-							<Item.Title class={typographyVariants({ variant: 'h4' })}>Resource Quota</Item.Title>
+							<Item.Title class={typographyVariants({ variant: 'h6' })}>Resource Quota</Item.Title>
 						</Item.Content>
 					</Item.Root>
 				</Card.Title>
@@ -75,10 +75,10 @@
 				<Card.Title>
 					<Item.Root class="p-0">
 						<Item.Media>
-							<Zap size={28} />
+							<Zap size={20} />
 						</Item.Media>
 						<Item.Content>
-							<Item.Title class={typographyVariants({ variant: 'h4' })}>Limit Range</Item.Title>
+							<Item.Title class={typographyVariants({ variant: 'h6' })}>Limit Range</Item.Title>
 						</Item.Content>
 					</Item.Root>
 				</Card.Title>
@@ -141,10 +141,10 @@
 				<Card.Title>
 					<Item.Root class="p-0">
 						<Item.Media>
-							<Shield size={28} />
+							<Shield size={20} />
 						</Item.Media>
 						<Item.Content>
-							<Item.Title class={typographyVariants({ variant: 'h4' })}>
+							<Item.Title class={typographyVariants({ variant: 'h6' })}>
 								Network Isolation
 							</Item.Title>
 						</Item.Content>
@@ -206,10 +206,10 @@
 				<Card.Title>
 					<Item.Root class="p-0">
 						<Item.Media>
-							<Users size={28} />
+							<Users size={20} />
 						</Item.Media>
 						<Item.Content>
-							<Item.Title class={typographyVariants({ variant: 'h4' })}>Users</Item.Title>
+							<Item.Title class={typographyVariants({ variant: 'h6' })}>Users</Item.Title>
 						</Item.Content>
 					</Item.Root>
 				</Card.Title>
