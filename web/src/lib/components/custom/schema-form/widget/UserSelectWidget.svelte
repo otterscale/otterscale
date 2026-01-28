@@ -99,7 +99,7 @@
 	const userDisplayText = $derived(
 		selectedUser
 			? `${getDisplayName(selectedUser)} (${selectedUser.email || selectedUser.username})`
-			: 'Select user...'
+			: ((value as Record<string, unknown>)?.name as string) || 'Select user...'
 	);
 
 	// Find selected role label
