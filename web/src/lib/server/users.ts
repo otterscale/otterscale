@@ -95,8 +95,6 @@ export async function getUsers(options: GetUsersOptions = {}): Promise<User[]> {
 		}
 	});
 
-	// console.log(response);
-
 	if (!response.ok) {
 		const errorText = await response.text();
 		console.error(

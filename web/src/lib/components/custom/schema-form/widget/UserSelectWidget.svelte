@@ -48,7 +48,6 @@
 			const res = await fetch(`/rest/users?${queryParams}`);
 			if (res.ok) {
 				userList = await res.json();
-				console.log('userList length', userList.length);
 			} else {
 				console.error('Failed to fetch users:', res.statusText);
 			}

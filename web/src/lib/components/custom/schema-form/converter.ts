@@ -87,8 +87,8 @@ function simplifyQuantitySchema(target: Schema, source: K8sOpenAPISchema) {
 		variants.some((o) => o.type === 'number' || o.type === 'integer')
 	) {
 		target.type = 'string';
-		target.title = source.title || target.title || '';
-		target.description = source.description || target.description || '';
+		target.title = source.title ?? target.title ?? '';
+		target.description = source.description ?? target.description ?? '';
 		delete target.oneOf;
 		delete target.anyOf;
 	}
@@ -348,14 +348,21 @@ export function normalizeArrays(obj: unknown): unknown {
 	const allNumeric = keys.length > 0 && keys.every((k) => /^\d+$/.test(k));
 
 	if (allNumeric) {
-		// Convert to array, sorted by numeric index
+		const numericKeys = keys.map(Number).sort((a, b) => a - b);
+
+		// Safety check: Prevent sparse arrays with excessively large indices
+		if (numericKeys.length > 0 && numericKeys[numericKeys.length - 1] > 10000) {
+			const result: Record<string, unknown> = {};
+			for (const key of keys) {
+				result[key] = normalizeArrays(record[key]);
+			}
+			return result;
+		}
+
 		const arr: unknown[] = [];
-		keys
-			.map(Number)
-			.sort((a, b) => a - b)
-			.forEach((idx) => {
-				arr[idx] = normalizeArrays(record[String(idx)]);
-			});
+		numericKeys.forEach((idx) => {
+			arr[idx] = normalizeArrays(record[String(idx)]);
+		});
 		return arr;
 	}
 
