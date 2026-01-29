@@ -1,10 +1,10 @@
 <script lang="ts" module>
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
+	import semver from 'semver';
 	import { getContext, onMount } from 'svelte';
 	import { type Writable, writable } from 'svelte/store';
 	import { toast } from 'svelte-sonner';
-	import semver from 'semver';
 
 	import {
 		ApplicationService,
