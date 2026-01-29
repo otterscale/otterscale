@@ -85,7 +85,7 @@
 	const filteredUsers = $derived(userList);
 
 	// Find selected user
-	const selectedUser = $derived(userList.find((u) => u.username === currentSubject));
+	const selectedUser = $derived(userList.find((u) => u.id === currentSubject));
 
 	// Get display name for a user
 	function getDisplayName(user: KeycloakUser): string {
@@ -163,12 +163,9 @@
 							<Command.Empty>No users found.</Command.Empty>
 							<Command.Group>
 								{#each filteredUsers as user (user.id)}
-									<Command.Item value={user.username} onSelect={() => handleUserSelect(user)}>
+									<Command.Item value={user.id} onSelect={() => handleUserSelect(user)}>
 										<Check
-											class={cn(
-												'mr-2 h-4 w-4',
-												currentSubject !== user.username && 'text-transparent'
-											)}
+											class={cn('mr-2 h-4 w-4', currentSubject !== user.id && 'text-transparent')}
 										/>
 										<div class="flex flex-col">
 											<span class="font-medium">{getDisplayName(user)}</span>
@@ -206,7 +203,7 @@
 
 	<!-- Hidden fields to satisfy form validation if needed -->
 	{#if selectedUser}
-		<input type="hidden" name="subject" value={selectedUser.username} />
+		<input type="hidden" name="subject" value={selectedUser.id} />
 		<input type="hidden" name="name" value={getDisplayName(selectedUser)} />
 	{/if}
 	{#if currentRole}
