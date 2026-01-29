@@ -113,7 +113,6 @@
 					group: 'tenant.otterscale.io',
 					version: 'v1alpha1',
 					resource: 'workspaces',
-					namespace: '', // Workspace is cluster-scoped usually, checking schema... yes, create-workspace-form didn't specify namespace in create call
 					manifest,
 					fieldManager: 'otterscale-web-ui',
 					force: true
@@ -139,7 +138,7 @@
 		try {
 			// Fetch Schema
 			const schemaRes = await resourceClient.schema({
-				cluster,
+				cluster: 'aaa',
 				group: 'tenant.otterscale.io',
 				version: 'v1alpha1',
 				kind: 'Workspace'
@@ -148,17 +147,17 @@
 
 			// Fetch Existing Resource
 			const resourceRes = await resourceClient.get({
-				cluster,
+				cluster: 'aaa',
 				group: 'tenant.otterscale.io',
 				version: 'v1alpha1',
 				resource: 'workspaces',
 				name: name
 			});
-
+			console.log('schemaRes', schemaRes);
+			console.log('resourceRes', resourceRes);
 			if (resourceRes.object) {
-				// Convert Struct to JSON
-				const resourceJson = toJson(StructSchema, resourceRes.object);
-				initialData = resourceJson as Record<string, unknown>;
+				// resourceRes.object is already a plain JS object, no conversion needed
+				initialData = resourceRes.object as Record<string, unknown>;
 			}
 		} catch (err) {
 			console.error('Failed to load workspace data:', err);
