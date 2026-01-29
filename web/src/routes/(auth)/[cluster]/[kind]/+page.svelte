@@ -1,8 +1,6 @@
 <script lang="ts">
-	import type { JsonObject } from '@bufbuild/protobuf';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { Ban } from '@lucide/svelte';
-	import lodash from 'lodash';
 	import { getContext } from 'svelte';
 
 	import { goto } from '$app/navigation';
@@ -10,11 +8,10 @@
 	import {
 		type APIResource,
 		type DiscoveryRequest,
-		type ListRequest,
 		ResourceService
 	} from '$lib/api/resource/v1/resource_pb';
-	import ResourceManager from '$lib/components/dynamical-table/resource-manager.svelte';
-	import ResourcePicker from '$lib/components/dynamical-table/resource-picker.svelte';
+	import ResourcesViewer from '$lib/components/resources-viewer/resources-viewer.svelte';
+	import Picker from '$lib/components/resources-viewer/resources-viewer-picker.svelte';
 	import * as Alert from '$lib/components/ui/alert/index.js';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import * as Empty from '$lib/components/ui/empty/index.js';
@@ -57,15 +54,6 @@
 				apiResource.resource === resource
 		)
 	);
-
-	async function fetchNamespaces(cluster: string) {
-		const response = await client.list({
-			cluster: cluster,
-			resource: 'namespaces',
-			version: 'v1'
-		} as ListRequest);
-		return response.items.map((item) => item.object);
-	}
 </script>
 
 {#key cluster + group + version + kind}
@@ -77,7 +65,7 @@
 			</div>
 			<div class="flex items-center gap-2">
 				<Skeleton class="h-7 w-full" />
-				{#each Array(3) as i (i)}
+				{#each Array(3)}
 					<Skeleton class="size-7" />
 				{/each}
 			</div>
@@ -85,7 +73,7 @@
 				<Table.Root class="w-full">
 					<Table.Header>
 						<Table.Row>
-							{#each Array(5) as i (i)}
+							{#each Array(5)}
 								<Table.Head class="p-4">
 									<Skeleton class="h-7 w-full" />
 								</Table.Head>
@@ -93,9 +81,9 @@
 						</Table.Row>
 					</Table.Header>
 					<Table.Body>
-						{#each Array(13) as i (i)}
+						{#each Array(13)}
 							<Table.Row class="border-none">
-								{#each Array(5) as i (i)}
+								{#each Array(5)}
 									<Table.Cell>
 										<Skeleton class="h-7 w-full" />
 									</Table.Cell>
@@ -108,7 +96,7 @@
 			<div class="flex items-center justify-between gap-4">
 				<Skeleton class="h-7 w-1/5" />
 				<div class="flex items-center gap-2">
-					{#each Array(3) as i (i)}
+					{#each Array(3)}
 						<Skeleton class="size-10" />
 					{/each}
 				</div>
@@ -133,51 +121,22 @@
 						</Item.Description>
 					</Item.Content>
 				</Item.Root>
-				<div class="flex flex-row-reverse items-center gap-2">
-					<ResourcePicker
-						class="w-fit"
-						resource="resource"
-						value={resource}
-						options={apiResourceOptions}
-						onSelect={(option) => {
-							page.url.searchParams.set('resource', option.value);
-							// eslint-disable-next-line svelte/no-navigation-without-resolve
-							goto(page.url.href);
-						}}
-					/>
-					{#if selectedAPIResource && selectedAPIResource.namespaced}
-						{#await fetchNamespaces(cluster) then namespaces}
-							{@const namespaceOptions = namespaces
-								.sort((previous: JsonObject | undefined, next: JsonObject | undefined) =>
-									String(lodash.get(previous, 'metadata.name') ?? '').localeCompare(
-										String(lodash.get(next, 'metadata.name') ?? '')
-									)
-								)
-								.map((namespace: JsonObject | undefined) => ({
-									icon: 'ph:cube',
-									label: String(lodash.get(namespace, 'metadata.name') ?? ''),
-									value: String(lodash.get(namespace, 'metadata.name') ?? ''),
-									description: String(lodash.get(namespace, 'status.phase') ?? '')
-								}))}
-							<ResourcePicker
-								class="w-fit"
-								resource="namespace"
-								value={namespace}
-								options={namespaceOptions}
-								onSelect={(option) => {
-									page.url.searchParams.set('namespace', option.value);
-									// eslint-disable-next-line svelte/no-navigation-without-resolve
-									goto(page.url.href);
-								}}
-							/>
-						{/await}
-					{/if}
-				</div>
+				<Picker
+					class="w-fit"
+					resource="resource"
+					value={resource}
+					options={apiResourceOptions}
+					onSelect={(option) => {
+						page.url.searchParams.set('resource', option.value);
+						// eslint-disable-next-line svelte/no-navigation-without-resolve
+						goto(page.url.href);
+					}}
+				/>
 			</div>
 			{#key resource + namespace}
 				{#if selectedAPIResource}
 					{@const apiResource = selectedAPIResource}
-					<ResourceManager
+					<ResourcesViewer
 						{apiResource}
 						{cluster}
 						{group}
@@ -201,16 +160,16 @@
 				</Empty.Description>
 			</Empty.Header>
 			<Empty.Content>
-				<Alert.Root
-					variant="destructive"
-					class="border border-destructive bg-destructive/10 text-left"
-				>
-					<Alert.Title>Message</Alert.Title>
-					<Alert.Description>
-						{error?.message ?? error?.toString() ?? JSON.stringify(error)}
+				<Alert.Root variant="destructive" class="border-none bg-destructive/5">
+					<Alert.Title class="font-bold">{error?.name}</Alert.Title>
+					<Alert.Description class="text-start">
+						{error?.rawMessage}
 					</Alert.Description>
 				</Alert.Root>
-				<Button href="/">Go Back</Button>
+				<div class="flex gap-4">
+					<Button variant="outline" onclick={() => history.back()}>Go Back</Button>
+					<Button href="/">Go Home</Button>
+				</div>
 			</Empty.Content>
 		</Empty.Root>
 	{/await}

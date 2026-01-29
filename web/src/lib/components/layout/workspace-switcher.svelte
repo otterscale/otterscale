@@ -37,6 +37,8 @@
 	import type { Component } from 'svelte';
 	import { toast } from 'svelte-sonner';
 
+	import { goto } from '$app/navigation';
+	import { resolve } from '$app/paths';
 	import { shortcut } from '$lib/actions/shortcut.svelte';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
@@ -44,8 +46,11 @@
 	import { m } from '$lib/paraglide/messages';
 	import type { User } from '$lib/server/session';
 
-	let { workspaces, user }: { workspaces: TenantOtterscaleIoV1Alpha1Workspace[]; user: User } =
-		$props();
+	let {
+		scope,
+		workspaces,
+		user
+	}: { scope: string; workspaces: TenantOtterscaleIoV1Alpha1Workspace[]; user: User } = $props();
 	const sidebar = useSidebar();
 	let activeWorkspace: TenantOtterscaleIoV1Alpha1Workspace | undefined = $derived(
 		workspaces.length > 0 ? workspaces[0] : undefined
@@ -106,6 +111,12 @@
 		}
 		activeWorkspace = workspaces[index];
 
+		goto(
+			resolve(
+				`/(auth)/${scope}/Workspace/workspaces?group=tenant.otterscale.io&version=v1alpha1&name=${activeWorkspace?.metadata?.name ?? ''}`
+			)
+		);
+
 		// TODO: Add logic to update global workspace state or navigate to the selected workspace's route.
 		// await goto(resolve('/(auth)/scope/[scope]', { scope: scope.name }));
 		if (activeWorkspace.metadata?.name) {
@@ -161,7 +172,6 @@
 		callback: () => onSelect(8)
 	}}
 />
-
 <Sidebar.Menu>
 	<Sidebar.MenuItem>
 		<DropdownMenu.Root>

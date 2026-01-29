@@ -19,16 +19,16 @@
 		WatchEvent_Type,
 		type WatchRequest
 	} from '$lib/api/resource/v1/resource_pb';
+	import { DynamicalTableCell, DynamicalTableHeader } from '$lib/components/dynamical-table';
 	import DynamicalTable from '$lib/components/dynamical-table/dynamical-table.svelte';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog/index.js';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import { renderComponent } from '$lib/components/ui/data-table';
+	import Separator from '$lib/components/ui/separator/separator.svelte';
 	import { Spinner } from '$lib/components/ui/spinner/index.js';
 
-	import Separator from '../ui/separator/separator.svelte';
-	import { DynamicalTableCell, DynamicalTableHeader } from '.';
-	import ResourceActions from './resource-actions.svelte';
-	import ResourceCreate from './resource-create.svelte';
+	import ResourceActions from './resources-viewer-actions.svelte';
+	import ResourceCreate from './resources-viewer-create.svelte';
 
 	let {
 		apiResource,
