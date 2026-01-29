@@ -4,6 +4,7 @@
 	import { getContext, onMount } from 'svelte';
 	import { type Writable, writable } from 'svelte/store';
 	import { toast } from 'svelte-sonner';
+	import semver from 'semver';
 
 	import {
 		ApplicationService,
@@ -50,7 +51,19 @@
 			});
 			versions.set(response.versions);
 
-			versionReference = $versions[0].chartRef;
+			const stableVersions = $versions.filter((version) => {
+				const parsed = semver.parse(version.chartVersion);
+				return parsed && parsed.prerelease.length === 0;
+			});
+
+			if (stableVersions.length > 0) {
+				const sortedVersions = stableVersions.sort((a, b) => {
+					return semver.rcompare(a.chartVersion, b.chartVersion);
+				});
+				versionReference = sortedVersions[0].chartRef;
+			} else if ($versions.length > 0) {
+				versionReference = $versions[0].chartRef;
+			}
 
 			versionReferenceOptions.set(
 				$versions.map((version) => ({

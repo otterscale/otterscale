@@ -79,7 +79,7 @@
 	<AlertDialog.Trigger class={buttonVariants({ variant: 'outline' })}>
 		{m.view_edit()}
 	</AlertDialog.Trigger>
-	<AlertDialog.Content class="max-w-[78vw] min-w-[62vw]">
+	<AlertDialog.Content class="max-w-[95vw] min-w-[90vw]">
 		<AlertDialog.Header>
 			<div class="flex items-end justify-between gap-2">
 				<div>
