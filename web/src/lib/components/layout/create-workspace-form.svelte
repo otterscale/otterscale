@@ -58,7 +58,14 @@
 						}
 					}
 				]
-			}
+			},
+			users: [
+				{
+					subject: page.data.user?.sub,
+					name: page.data.user?.username,
+					role: 'admin'
+				}
+			]
 		}
 	};
 
