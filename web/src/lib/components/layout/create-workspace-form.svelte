@@ -32,13 +32,13 @@
 		spec: {
 			resourceQuota: {
 				hard: {
-					'requests.cpu': '2',
-					'requests.memory': '4Gi',
+					'requests.cpu': '16',
+					'requests.memory': '32Gi',
 					'requests.otterscale.com/vgpu': '0',
 					'requests.otterscale.com/vgpumem': '0',
 					'requests.otterscale.com/vgpumem-percentage': '0',
-					'limits.cpu': '2',
-					'limits.memory': '4Gi',
+					'limits.cpu': '16',
+					'limits.memory': '32Gi',
 					'limits.otterscale.com/vgpu': '0',
 					'limits.otterscale.com/vgpumem': '0',
 					'limits.otterscale.com/vgpumem-percentage': '0'
