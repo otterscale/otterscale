@@ -32,29 +32,40 @@
 		spec: {
 			resourceQuota: {
 				hard: {
-					'requests.cpu': '2',
-					'requests.memory': '4Gi',
-					'requests.nvidia.com/gpu': '0',
-					'limits.cpu': '4',
-					'limits.memory': '8Gi',
-					'limits.nvidia.com/gpu': '0'
+					'requests.cpu': '16',
+					'requests.memory': '32Gi',
+					'requests.otterscale.com/vgpu': '0',
+					'requests.otterscale.com/vgpumem': '0',
+					'requests.otterscale.com/vgpumem-percentage': '0',
+					'limits.cpu': '16',
+					'limits.memory': '32Gi',
+					'limits.otterscale.com/vgpu': '0',
+					'limits.otterscale.com/vgpumem': '0',
+					'limits.otterscale.com/vgpumem-percentage': '0'
 				}
 			},
 			limitRange: {
 				limits: [
 					{
-						type: 'Container',
+						type: 'Pod',
 						default: {
 							cpu: '500m',
 							memory: '512Mi'
 						},
 						defaultRequest: {
-							cpu: '100m',
-							memory: '128Mi'
+							cpu: '500m',
+							memory: '512Mi'
 						}
 					}
 				]
-			}
+			},
+			users: [
+				{
+					subject: page.data.user?.sub,
+					name: page.data.user?.username,
+					role: 'admin'
+				}
+			]
 		}
 	};
 
@@ -90,32 +101,60 @@
 		},
 		// Step 3: Default Resource Settings (read-only with preset values)
 		'Default Resource Settings': {
-			'spec.resourceQuota.hard.requests.cpu': { title: 'Requests CPU', disabled: true },
-			'spec.resourceQuota.hard.requests.memory': { title: 'Requests Memory', disabled: true },
-			'spec.resourceQuota.hard.requests.nvidia.com/gpu': { title: 'Requests GPU', disabled: true },
-			'spec.resourceQuota.hard.limits.cpu': { title: 'Limits CPU', disabled: true },
-			'spec.resourceQuota.hard.limits.memory': { title: 'Limits Memory', disabled: true },
-			'spec.resourceQuota.hard.limits.nvidia.com/gpu': { title: 'Limits GPU', disabled: true },
-			'spec.limitRange.limits': {
-				title: 'Limit Range',
-				uiSchema: {
-					'ui:options': {
-						addable: false,
-						removable: false,
-						orderable: false
-					}
-				}
+			'spec.resourceQuota.hard.requests.cpu': { title: 'Requests CPU' },
+			'spec.resourceQuota.hard.requests.memory': { title: 'Requests Memory' },
+			'spec.resourceQuota.hard.requests.otterscale.com/vgpu': {
+				title: 'Requests GPU',
+				disabled: true
 			},
-			'spec.limitRange.limits.type': { title: 'Type', disabled: true },
-			'spec.limitRange.limits.default.cpu': { title: 'Default CPU Limit', disabled: true },
-			'spec.limitRange.limits.default.memory': { title: 'Default Memory Limit', disabled: true },
-			'spec.limitRange.limits.defaultRequest.cpu': { title: 'Default CPU Request', disabled: true },
-			'spec.limitRange.limits.defaultRequest.memory': {
-				title: 'Default Memory Request',
+			'spec.resourceQuota.hard.requests.otterscale.com/vgpumem': {
+				title: 'Requests GPU Memory',
+				disabled: true
+			},
+			'spec.resourceQuota.hard.requests.otterscale.com/vgpumem-percentage': {
+				title: 'Requests GPU Memory Percentage',
 				disabled: true
 			}
 		}
 	};
+
+	function transformFormData(data: Record<string, unknown>) {
+		const spec = data.spec as Record<string, any>;
+
+		// Handle Resource Quota Logic: limits align with requests, strict defaults
+		if (spec?.resourceQuota?.hard) {
+			const hard = spec.resourceQuota.hard;
+			// Sync limits with requests
+			if (hard['requests.cpu']) hard['limits.cpu'] = hard['requests.cpu'];
+			if (hard['requests.memory']) hard['limits.memory'] = hard['requests.memory'];
+			// Ensure otterscale limits are 0 (or sync with requests which are 0)
+			hard['limits.otterscale.com/vgpu'] = hard['requests.otterscale.com/vgpu'] || '0';
+			hard['limits.otterscale.com/vgpumem'] = hard['requests.otterscale.com/vgpumem'] || '0';
+			hard['limits.otterscale.com/vgpumem-percentage'] =
+				hard['requests.otterscale.com/vgpumem-percentage'] || '0';
+		}
+
+		// Enforce fixed LimitRange
+		if (spec) {
+			spec.limitRange = {
+				limits: [
+					{
+						type: 'Pod',
+						default: {
+							cpu: '500m',
+							memory: '512Mi'
+						},
+						defaultRequest: {
+							cpu: '500m',
+							memory: '512Mi'
+						}
+					}
+				]
+			};
+		}
+
+		return data;
+	}
 
 	async function handleMultiStepSubmit(data: Record<string, unknown>) {
 		if (isSubmitting) return;
@@ -183,6 +222,7 @@
 			{initialData}
 			title="Create Workspace"
 			onSubmit={handleMultiStepSubmit}
+			transformData={transformFormData}
 		/>
 	{:else}
 		<div class="flex h-32 items-center justify-center">
