@@ -51,16 +51,13 @@
 			});
 			versions.set(response.versions);
 
-			const stableVersions = $versions.filter((version) => {
-				const parsed = semver.parse(version.chartVersion);
-				return parsed && parsed.prerelease.length === 0;
-			});
+			const stableVersions = $versions.filter(
+				(version) => semver.prerelease(version.chartVersion) === null
+			);
 
 			if (stableVersions.length > 0) {
-				const sortedVersions = stableVersions.sort((a, b) => {
-					return semver.rcompare(a.chartVersion, b.chartVersion);
-				});
-				versionReference = sortedVersions[0].chartRef;
+				stableVersions.sort((a, b) => semver.rcompare(a.chartVersion, b.chartVersion));
+				versionReference = stableVersions[0].chartRef;
 			} else if ($versions.length > 0) {
 				versionReference = $versions[0].chartRef;
 			}
