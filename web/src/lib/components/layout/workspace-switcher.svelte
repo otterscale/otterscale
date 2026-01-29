@@ -38,7 +38,7 @@
 	import { toast } from 'svelte-sonner';
 
 	import { shortcut } from '$lib/actions/shortcut.svelte';
-	import DialogCreateWorkspace from '$lib/components/layout/dialog-create-workspace.svelte';
+	import DialogCreateWorkspace from '$lib/components/workspace/dialog-create-workspace.svelte';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
 	import { useSidebar } from '$lib/components/ui/sidebar/index.js';
