@@ -1,6 +1,4 @@
 <script lang="ts">
-	import cluster from 'node:cluster';
-
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import {
 		Box,
@@ -16,7 +14,6 @@
 	import type { CoreV1ResourceQuota, TenantOtterscaleIoV1Alpha1Workspace } from '@otterscale/types';
 	import { getContext, onDestroy, onMount } from 'svelte';
 
-	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import { type GetRequest, ResourceService } from '$lib/api/resource/v1/resource_pb';
@@ -29,7 +26,6 @@
 	import * as Item from '$lib/components/ui/item';
 	import Label from '$lib/components/ui/label/label.svelte';
 	import Separator from '$lib/components/ui/separator/separator.svelte';
-	import { namespace } from '$lib/paraglide/messages';
 	import { cn } from '$lib/utils';
 
 	let { object }: { object: TenantOtterscaleIoV1Alpha1Workspace } = $props();
