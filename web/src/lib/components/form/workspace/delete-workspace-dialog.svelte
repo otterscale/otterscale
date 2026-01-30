@@ -9,6 +9,7 @@
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
+	import { Button } from '$lib/components/ui/button';
 	import { m } from '$lib/paraglide/messages';
 
 	let {
@@ -74,9 +75,10 @@
 		}
 	}}
 >
-	<Modal.Trigger variant="destructive">
-		<Trash2 />
-		{m.delete()}
+	<Modal.Trigger>
+		<Button variant="destructive" size="icon">
+			<Trash2 />
+		</Button>
 	</Modal.Trigger>
 	<Modal.Content>
 		<Modal.Header>Delete Workspace</Modal.Header>
