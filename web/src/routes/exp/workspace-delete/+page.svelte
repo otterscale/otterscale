@@ -1,10 +1,8 @@
 <script lang="ts">
 	import DeleteWorkspaceDialog from '$lib/components/form/workspace/delete-workspace-dialog.svelte';
-	import { Button } from '$lib/components/ui/button';
 	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';
 
-	let open = $state(false);
 	let workspaceName = $state('default'); // Default value for testing
 </script>
 
@@ -22,9 +20,6 @@
 			/>
 		</div>
 
-		<Button variant="destructive" onclick={() => (open = true)} disabled={!workspaceName}
-			>Delete Workspace</Button
-		>
-		<DeleteWorkspaceDialog bind:open name={workspaceName} />
+		<DeleteWorkspaceDialog name={workspaceName} />
 	</div>
 </div>

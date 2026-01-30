@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
+	import { Trash2 } from '@lucide/svelte';
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
 
@@ -11,11 +12,9 @@
 	import { m } from '$lib/paraglide/messages';
 
 	let {
-		open = $bindable(false),
 		name,
 		onsuccess
 	}: {
-		open: boolean;
 		name: string;
 		onsuccess?: () => void;
 	} = $props();
@@ -24,6 +23,7 @@
 	const resourceClient = createClient(ResourceService, transport);
 	const cluster = $derived(page.params.scope ?? '');
 
+	let open = $state(false);
 	let confirmName = $state('');
 	let invalid = $state(false);
 	let isDeleting = $state(false);
@@ -74,6 +74,10 @@
 		}
 	}}
 >
+	<Modal.Trigger variant="destructive">
+		<Trash2 />
+		{m.delete()}
+	</Modal.Trigger>
 	<Modal.Content>
 		<Modal.Header>Delete Workspace</Modal.Header>
 		<Form.Root>

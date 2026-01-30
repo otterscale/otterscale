@@ -5,11 +5,11 @@ type ViewerProps = { object: any };
 type ViewerType = Component<ViewerProps>;
 
 // Edit Form Types
-type EditFormProps = { open: boolean; name: string };
+type EditFormProps = { name: string; onsuccess?: () => void };
 type EditFormType = Component<EditFormProps> | null;
 
 // Delete Form Types
-type DeleteFormProps = { open: boolean; name: string; onsuccess?: () => void };
+type DeleteFormProps = { name: string; onsuccess?: () => void };
 type DeleteFormType = Component<DeleteFormProps> | null;
 
 // Viewer Components

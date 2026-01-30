@@ -1,22 +1,33 @@
 <script lang="ts">
+	import { Pencil } from '@lucide/svelte';
+
 	import BasicTierImage from '$lib/assets/basic-tier.jpg';
 	import EditWorkspaceForm from '$lib/components/form/workspace/edit-workspace-form.svelte';
+	import { Button } from '$lib/components/ui/button';
 	import * as Sheet from '$lib/components/ui/sheet';
 
 	let {
-		open = $bindable(false),
-		name
+		name,
+		onsuccess
 	}: {
-		open: boolean;
 		name: string;
+		onsuccess?: () => void;
 	} = $props();
+
+	let open = $state(false);
 
 	function handleClose() {
 		open = false;
+		onsuccess?.();
 	}
 </script>
 
-<Sheet.Root bind:open onOpenChange={handleClose}>
+<Sheet.Root bind:open>
+	<Sheet.Trigger>
+		<Button variant="outline" size="icon">
+			<Pencil />
+		</Button>
+	</Sheet.Trigger>
 	<Sheet.Content class="inset-y-auto bottom-0 h-9/10 rounded-tl-lg sm:max-w-4/5">
 		<Sheet.Header class="h-full p-0">
 			<div class="flex h-full">
