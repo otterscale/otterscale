@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import {
+		Ban,
 		Box,
 		CircleCheck,
 		Gauge,
@@ -12,20 +13,28 @@
 		Zap
 	} from '@lucide/svelte';
 	import type { CoreV1ResourceQuota, TenantOtterscaleIoV1Alpha1Workspace } from '@otterscale/types';
-	import { getContext, onDestroy, onMount } from 'svelte';
+	import { getContext, onDestroy } from 'svelte';
+	import { SvelteMap } from 'svelte/reactivity';
 
+	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
-	import { type GetRequest, ResourceService } from '$lib/api/resource/v1/resource_pb';
+	import {
+		type DiscoveryRequest,
+		type GetRequest,
+		ResourceService
+	} from '$lib/api/resource/v1/resource_pb';
 	import { typographyVariants } from '$lib/components/typography/index.ts';
+	import * as Alert from '$lib/components/ui/alert/index.js';
 	import { Badge } from '$lib/components/ui/badge';
-	import Button from '$lib/components/ui/button/button.svelte';
+	import { Button } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
 	import * as Empty from '$lib/components/ui/empty/index.js';
 	import * as Field from '$lib/components/ui/field/index.js';
 	import * as Item from '$lib/components/ui/item';
 	import Label from '$lib/components/ui/label/label.svelte';
 	import Separator from '$lib/components/ui/separator/separator.svelte';
+	import { Skeleton } from '$lib/components/ui/skeleton/index.js';
 	import { cn } from '$lib/utils';
 
 	let { object }: { object: TenantOtterscaleIoV1Alpha1Workspace } = $props();
@@ -34,64 +43,62 @@
 	const resourceClient = createClient(ResourceService, transport);
 
 	let getAbortController: AbortController | null = null;
-
-	// eslint-disable-next-line
-	let resourceQuota: CoreV1ResourceQuota = $state<any>(undefined);
-
-	let isGetting = $state(false);
-	async function GetResource() {
-		if (isGetting || isDestroyed) return;
-
-		isGetting = true;
+	let mapper = new SvelteMap<string, { group: string; version: string; resource: string }>();
+	async function GetResourceQuota(): Promise<CoreV1ResourceQuota> {
 		getAbortController = new AbortController();
-
 		try {
+			const discovery = await resourceClient.discovery(
+				{
+					cluster: page.params.cluster
+				} as DiscoveryRequest,
+				{ signal: getAbortController.signal }
+			);
+
+			for (const apiResource of discovery.apiResources ?? []) {
+				if (apiResource.resource.indexOf('/') >= 0) continue;
+
+				const apiVersion = apiResource.group
+					? `${apiResource.group}/${apiResource.version}`
+					: apiResource.version;
+
+				mapper.set(`${apiVersion}/${apiResource.kind}`, {
+					group: apiResource.group,
+					version: apiResource.version,
+					resource: apiResource.resource
+				});
+			}
+
+			const resourceQuotaReference = mapper.get(
+				`${object.status?.resourceQuotaRef?.apiVersion}/${object.status?.resourceQuotaRef?.kind}`
+			);
+
 			const resourceQuotaResponse = await resourceClient.get(
 				{
 					cluster: page.params.cluster,
 					namespace: object.status?.resourceQuotaRef?.namespace ?? '',
-					group: '',
-					version: 'v1',
-					resource: 'resourcequotas',
+					group: resourceQuotaReference?.group ?? '',
+					version: resourceQuotaReference?.version ?? '',
+					resource: resourceQuotaReference?.resource ?? '',
 					name: object.status?.resourceQuotaRef?.name ?? ''
 				} as GetRequest,
 				{ signal: getAbortController.signal }
 			);
 
-			resourceQuota = resourceQuotaResponse.object as CoreV1ResourceQuota;
-		} catch (error) {
-			if (error instanceof Error && error.name === 'ConnectError') {
-				if (error.cause === 'Aborted due to component destroyed.') {
-					return;
-				}
-			}
-
-			console.error('Failed to get resource:', error);
-
-			return null;
+			return resourceQuotaResponse.object as CoreV1ResourceQuota;
 		} finally {
-			isGetting = false;
-			getAbortController = null;
+			if (getAbortController) {
+				getAbortController.abort();
+			}
 		}
 	}
 
-	let isMounted = $state(false);
-	onMount(async () => {
-		await GetResource();
-
-		isMounted = true;
-	});
-
-	let isDestroyed = false;
 	onDestroy(() => {
-		isDestroyed = true;
 		if (getAbortController) {
-			getAbortController.abort('Aborted due to component destroyed.');
-			getAbortController = null;
+			getAbortController.abort();
 		}
 	});
 
-	function getHypertextReference(
+	function handleClick(
 		cluster: string,
 		namespace: string,
 		group: string,
@@ -100,13 +107,43 @@
 		resource: string,
 		name: string
 	) {
-		return resolve(
-			`/(auth)/${cluster}/${kind}/${resource}?group=${group}&version=${version}&name=${name}&namespace=${namespace}`
+		return goto(
+			resolve(
+				`/(auth)/${cluster}/${kind}/${resource}?group=${group}&version=${version}&name=${name}&namespace=${namespace}`
+			)
 		);
 	}
 </script>
 
-{#if isMounted}
+{#await GetResourceQuota()}
+	<Field.Group class="pb-8">
+		<Field.Set>
+			{#each Array(13).keys() as index (index)}
+				{#if index % 2 === 0}
+					{#if index % 3 !== 0}
+						{#if index % 5 === 0}
+							{#if index % 7 !== 0}
+								{#if index % 11 === 0}
+									<Skeleton class="h-1 w-full" />
+								{:else}
+									<Skeleton class="h-11 w-5/6" />
+								{/if}
+							{:else}
+								<Skeleton class="h-7 w-4/5" />
+							{/if}
+						{:else}
+							<Skeleton class="h-5 w-3/4" />
+						{/if}
+					{:else}
+						<Skeleton class="h-3 w-2/3" />
+					{/if}
+				{:else}
+					<Skeleton class="h-2 w-1/2" />
+				{/if}
+			{/each}
+		</Field.Set>
+	</Field.Group>
+{:then resourceQuota}
 	<Field.Group class="pb-8">
 		<!-- Spec Section -->
 		<Field.Set class="grid grid-cols-1 gap-0 rounded-lg bg-muted/50">
@@ -394,7 +431,24 @@
 			<Label class={typographyVariants({ variant: 'h4' })}>Related Resources</Label>
 			<div class="grid gap-4 xl:grid-cols-2 2xl:grid-cols-3">
 				{#if object?.status?.authorizationPolicyRef?.name}
-					<Item.Root variant="muted" class="hover:underline">
+					{@const reference = mapper.get(
+						`${object?.status?.authorizationPolicyRef?.apiVersion}/${object?.status?.authorizationPolicyRef?.kind}`
+					)}
+					<Item.Root
+						variant="muted"
+						class="hover:underline"
+						onclick={() => {
+							handleClick(
+								page.params.cluster!,
+								object?.status?.authorizationPolicyRef?.namespace ?? '',
+								reference?.group ?? '',
+								reference?.version ?? '',
+								object?.status?.authorizationPolicyRef?.kind ?? '',
+								reference?.resource ?? '',
+								object?.status?.authorizationPolicyRef?.name ?? ''
+							);
+						}}
+					>
 						<Item.Media>
 							<Box size={20} />
 						</Item.Media>
@@ -413,7 +467,24 @@
 				{/if}
 
 				{#if object?.status?.limitRangeRef?.name}
-					<Item.Root variant="muted" class="hover:underline">
+					{@const reference = mapper.get(
+						`${object?.status?.limitRangeRef?.apiVersion}/${object?.status?.limitRangeRef?.kind}`
+					)}
+					<Item.Root
+						variant="muted"
+						class="hover:underline"
+						onclick={() => {
+							handleClick(
+								page.params.cluster!,
+								object?.status?.limitRangeRef?.namespace ?? '',
+								reference?.group ?? '',
+								reference?.version ?? '',
+								object?.status?.limitRangeRef?.kind ?? '',
+								reference?.resource ?? '',
+								object?.status?.limitRangeRef?.name ?? ''
+							);
+						}}
+					>
 						<Item.Media>
 							<Box size={20} />
 						</Item.Media>
@@ -432,7 +503,24 @@
 				{/if}
 
 				{#if object?.status?.namespaceRef?.name}
-					<Item.Root variant="muted" class="hover:underline">
+					{@const reference = mapper.get(
+						`${object?.status?.namespaceRef?.apiVersion}/${object?.status?.namespaceRef?.kind}`
+					)}
+					<Item.Root
+						variant="muted"
+						class="hover:underline"
+						onclick={() => {
+							handleClick(
+								page.params.cluster!,
+								object?.status?.namespaceRef?.namespace ?? '',
+								reference?.group ?? '',
+								reference?.version ?? '',
+								object?.status?.namespaceRef?.kind ?? '',
+								reference?.resource ?? '',
+								object?.status?.namespaceRef?.name ?? ''
+							);
+						}}
+					>
 						<Item.Media>
 							<Box size={20} />
 						</Item.Media>
@@ -451,7 +539,24 @@
 				{/if}
 
 				{#if object?.status?.networkPolicyRef?.name}
-					<Item.Root variant="muted" class="hover:underline">
+					{@const reference = mapper.get(
+						`${object?.status?.networkPolicyRef?.apiVersion}/${object?.status?.networkPolicyRef?.kind}`
+					)}
+					<Item.Root
+						variant="muted"
+						class="hover:underline"
+						onclick={() => {
+							handleClick(
+								page.params.cluster!,
+								object?.status?.networkPolicyRef?.namespace ?? '',
+								reference?.group ?? '',
+								reference?.version ?? '',
+								object?.status?.networkPolicyRef?.kind ?? '',
+								reference?.resource ?? '',
+								object?.status?.networkPolicyRef?.name ?? ''
+							);
+						}}
+					>
 						<Item.Media>
 							<Box size={20} />
 						</Item.Media>
@@ -470,8 +575,24 @@
 				{/if}
 
 				{#if object?.status?.peerAuthenticationRef?.name}
-					<pre>{JSON.stringify(object?.status?.peerAuthenticationRef, null, 2)}</pre>
-					<Item.Root variant="muted" class="hover:underline">
+					{@const reference = mapper.get(
+						`${object?.status?.peerAuthenticationRef?.apiVersion}/${object?.status?.peerAuthenticationRef?.kind}`
+					)}
+					<Item.Root
+						variant="muted"
+						class="hover:underline"
+						onclick={() => {
+							handleClick(
+								page.params.cluster!,
+								object?.status?.peerAuthenticationRef?.namespace ?? '',
+								reference?.group ?? '',
+								reference?.version ?? '',
+								object?.status?.peerAuthenticationRef?.kind ?? '',
+								reference?.resource ?? '',
+								object?.status?.peerAuthenticationRef?.name ?? ''
+							);
+						}}
+					>
 						<Item.Media>
 							<Box size={20} />
 						</Item.Media>
@@ -486,12 +607,28 @@
 								{object?.status?.peerAuthenticationRef?.name}
 							</Item.Description>
 						</Item.Content>
-						<Item.Actions></Item.Actions>
 					</Item.Root>
 				{/if}
 
 				{#if object?.status?.resourceQuotaRef?.name}
-					<Item.Root variant="muted" class="hover:underline">
+					{@const reference = mapper.get(
+						`${object?.status?.resourceQuotaRef?.apiVersion}/${object?.status?.resourceQuotaRef?.kind}`
+					)}
+					<Item.Root
+						variant="muted"
+						class="hover:underline"
+						onclick={() => {
+							handleClick(
+								page.params.cluster!,
+								object?.status?.resourceQuotaRef?.namespace ?? '',
+								reference?.group ?? '',
+								reference?.version ?? '',
+								object?.status?.resourceQuotaRef?.kind ?? '',
+								reference?.resource ?? '',
+								object?.status?.resourceQuotaRef?.name ?? ''
+							);
+						}}
+					>
 						<Item.Media>
 							<Box size={20} />
 						</Item.Media>
@@ -505,26 +642,29 @@
 							<Item.Description>
 								{object?.status?.resourceQuotaRef?.name}
 							</Item.Description>
-							<Item.Actions>
-								<Button
-									href={getHypertextReference(
-										page.params.cluster!,
-										object?.status?.resourceQuotaRef?.namespace ?? '',
-										'',
-										'v1',
-										'ResourceQuota',
-										'resourcequotas',
-										object?.status?.resourceQuotaRef?.name
-									)}
-								/>
-							</Item.Actions>
 						</Item.Content>
 					</Item.Root>
 				{/if}
 
 				{#each object?.status?.roleBindingRefs as roleBindingRef, index (index)}
 					{#if roleBindingRef.name}
-						<Item.Root variant="muted" class="hover:underline">
+						{@const reference = mapper.get(`${roleBindingRef.apiVersion}/${roleBindingRef.kind}`)}
+
+						<Item.Root
+							variant="muted"
+							class="hover:underline"
+							onclick={() => {
+								handleClick(
+									page.params.cluster!,
+									roleBindingRef.namespace ?? '',
+									reference?.group ?? '',
+									reference?.version ?? '',
+									roleBindingRef.kind ?? '',
+									reference?.resource ?? '',
+									roleBindingRef.name ?? ''
+								);
+							}}
+						>
 							<Item.Media>
 								<Box size={20} />
 							</Item.Media>
@@ -539,23 +679,43 @@
 									{roleBindingRef.name}
 								</Item.Description>
 							</Item.Content>
-							<Item.Actions>
-								<Button
-									href={getHypertextReference(
-										page.params.cluster!,
-										roleBindingRef.namespace ?? '',
-										'rbac.authorization.k8s.io',
-										'v1',
-										'RoleBinding',
-										'rolebindings',
-										roleBindingRef.name
-									)}
-								/>
-							</Item.Actions>
 						</Item.Root>
 					{/if}
 				{/each}
 			</div>
 		</Field.Set>
 	</Field.Group>
-{/if}
+{:catch error}
+	<Empty.Root>
+		<Empty.Header>
+			<Empty.Media class="rounded-full bg-muted p-4">
+				<Ban size={36} />
+			</Empty.Media>
+			<Empty.Title class="text-2xl font-bold">Failed to load data</Empty.Title>
+			<Empty.Description>
+				An error occurred while fetching data. Please check your connection or try again later.
+			</Empty.Description>
+		</Empty.Header>
+		<Empty.Content>
+			<Alert.Root variant="destructive" class="border-none bg-destructive/5">
+				<Alert.Title class="font-bold">{error?.name}</Alert.Title>
+				<Alert.Description class="text-start">
+					{error?.rawMessage}
+				</Alert.Description>
+			</Alert.Root>
+			<div class="flex gap-4">
+				<Button variant="outline" onclick={() => history.back()}>Go Back</Button>
+				<Button href="/">Go Home</Button>
+			</div>
+		</Empty.Content>
+	</Empty.Root>
+{/await}
+
+<style>
+	@reference '../../../app.css';
+
+	:global(.no-shiki-limit pre.shiki:not([data-code-overflow] *):not([data-code-overflow])) {
+		overflow-y: visible !important;
+		max-height: none !important;
+	}
+</style>

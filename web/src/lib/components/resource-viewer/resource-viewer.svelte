@@ -46,6 +46,7 @@
 
 	let getAbortController: AbortController | null = null;
 	async function GetResource(): Promise<any> {
+		getAbortController = new AbortController();
 		try {
 			const response = await resourceClient.get(
 				{
@@ -68,7 +69,6 @@
 	onDestroy(() => {
 		if (getAbortController) {
 			getAbortController.abort();
-			getAbortController = null;
 		}
 	});
 </script>
