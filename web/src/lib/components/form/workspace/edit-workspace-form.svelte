@@ -1,8 +1,6 @@
 <script lang="ts">
-	import { toJson } from '@bufbuild/protobuf';
-	import { StructSchema } from '@bufbuild/protobuf/wkt';
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
-	import { getContext, onMount } from 'svelte';
+	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
 
 	import { page } from '$app/state';
@@ -16,9 +14,13 @@
 
 	let {
 		name,
+		schema,
+		object,
 		onsuccess
 	}: {
 		name: string;
+		schema: K8sOpenAPISchema;
+		object: Record<string, unknown>;
 		onsuccess?: () => void;
 	} = $props();
 
@@ -26,9 +28,7 @@
 	const resourceClient = createClient(ResourceService, transport);
 	const cluster = $derived(page.params.scope ?? '');
 
-	let apiSchema: K8sOpenAPISchema | undefined = $state();
 	let isSubmitting = $state(false);
-	let initialData: Record<string, unknown> | undefined = $state();
 
 	// Grouped fields for multi-step form (3 pages)
 	const groupedFields: GroupedFields = {
@@ -137,52 +137,15 @@
 			}
 		);
 	}
-
-	onMount(async () => {
-		try {
-			// Fetch Schema
-			const schemaRes = await resourceClient.schema({
-				cluster: 'aaa',
-				group: 'tenant.otterscale.io',
-				version: 'v1alpha1',
-				kind: 'Workspace'
-			});
-			apiSchema = toJson(StructSchema, schemaRes) as K8sOpenAPISchema;
-
-			// Fetch Existing Resource
-			const resourceRes = await resourceClient.get({
-				cluster: 'aaa',
-				group: 'tenant.otterscale.io',
-				version: 'v1alpha1',
-				resource: 'workspaces',
-				name: name
-			});
-			console.log('schemaRes', schemaRes);
-			console.log('resourceRes', resourceRes);
-			if (resourceRes.object) {
-				// resourceRes.object is already a plain JS object, no conversion needed
-				initialData = resourceRes.object as Record<string, unknown>;
-			}
-		} catch (err) {
-			console.error('Failed to load workspace data:', err);
-			toast.error(`Failed to load workspace data: ${(err as ConnectError).message}`);
-		}
-	});
 </script>
 
 <div class="h-full w-full">
-	{#if apiSchema && initialData}
-		<MultiStepSchemaForm
-			{apiSchema}
-			fields={groupedFields}
-			{initialData}
-			title={`Edit Workspace: ${name}`}
-			onSubmit={handleMultiStepSubmit}
-			transformData={transformFormData}
-		/>
-	{:else}
-		<div class="flex h-32 items-center justify-center">
-			<p class="text-muted-foreground">Loading workspace data...</p>
-		</div>
-	{/if}
+	<MultiStepSchemaForm
+		apiSchema={schema}
+		fields={groupedFields}
+		initialData={object}
+		title={`Edit Workspace: ${name}`}
+		onSubmit={handleMultiStepSubmit}
+		transformData={transformFormData}
+	/>
 </div>

@@ -268,7 +268,11 @@
 						</Sheet.Content>
 					</Sheet.Root>
 					{#if Editor}
-						<Editor name={response.object?.metadata?.name} />
+						<Editor
+							name={response.object?.metadata?.name}
+							schema={response.schema}
+							object={response.object}
+						/>
 					{/if}
 					{#if Deleter}
 						<Deleter name={response.object?.metadata?.name} />

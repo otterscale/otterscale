@@ -2,15 +2,20 @@
 	import { Pencil } from '@lucide/svelte';
 
 	import BasicTierImage from '$lib/assets/basic-tier.jpg';
+	import type { K8sOpenAPISchema } from '$lib/components/custom/schema-form';
 	import EditWorkspaceForm from '$lib/components/form/workspace/edit-workspace-form.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import * as Sheet from '$lib/components/ui/sheet';
 
 	let {
 		name,
+		schema,
+		object,
 		onsuccess
 	}: {
 		name: string;
+		schema: K8sOpenAPISchema;
+		object: Record<string, unknown>;
 		onsuccess?: () => void;
 	} = $props();
 
@@ -32,8 +37,8 @@
 		<Sheet.Header class="h-full p-0">
 			<div class="flex h-full">
 				<div class="flex-1 overflow-y-auto p-6">
-					{#if name}
-						<EditWorkspaceForm {name} onsuccess={handleClose} />
+					{#if name && schema && object}
+						<EditWorkspaceForm {name} {schema} {object} onsuccess={handleClose} />
 					{:else}
 						<div class="flex h-full items-center justify-center">
 							<p class="text-muted-foreground">No workspace selected.</p>
