@@ -76,7 +76,7 @@
 	}}
 >
 	<Modal.Trigger>
-		<Button variant="destructive" size="icon">
+		<Button size="icon">
 			<Trash2 />
 		</Button>
 	</Modal.Trigger>
