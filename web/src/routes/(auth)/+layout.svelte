@@ -112,7 +112,7 @@
 	<Sidebar.Root id="sidebar-guide-step" collapsible="icon" variant="inset" class="p-3">
 		{#if activeScope && isMounted}
 			<Sidebar.Header id="workspace-guide-step">
-				<WorkspaceSwitcher {workspaces} user={data.user} />
+				<WorkspaceSwitcher scope={activeScope} {workspaces} user={data.user} />
 			</Sidebar.Header>
 			<Sidebar.Content class="gap-2">
 				<NavOverview items={navData.overview} />
