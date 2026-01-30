@@ -12,24 +12,26 @@
 	import { toast } from 'svelte-sonner';
 
 	import {
+		type APIResource,
 		type ListRequest,
 		ResourceService,
 		type SchemaRequest,
 		WatchEvent_Type,
 		type WatchRequest
 	} from '$lib/api/resource/v1/resource_pb';
+	import { DynamicalTableCell, DynamicalTableHeader } from '$lib/components/dynamical-table';
 	import DynamicalTable from '$lib/components/dynamical-table/dynamical-table.svelte';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog/index.js';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import { renderComponent } from '$lib/components/ui/data-table';
+	import Separator from '$lib/components/ui/separator/separator.svelte';
 	import { Spinner } from '$lib/components/ui/spinner/index.js';
 
-	import Separator from '../ui/separator/separator.svelte';
-	import { DynamicalTableCell, DynamicalTableHeader } from '.';
-	import ResourceActions from './resource-actions.svelte';
-	import ResourceCreate from './resource-create.svelte';
+	import ResourceActions from './resources-viewer-actions.svelte';
+	import ResourceCreate from './resources-viewer-create.svelte';
 
 	let {
+		apiResource,
 		cluster,
 		group,
 		version,
@@ -37,6 +39,7 @@
 		resource,
 		namespace
 	}: {
+		apiResource: APIResource;
 		cluster: string;
 		group: string;
 		version: string;
@@ -94,27 +97,29 @@
 				}),
 			accessorKey: 'Name'
 		},
-		{
-			id: 'Namespace',
-			header: ({ column }: { column: Column<Record<string, JsonValue>> }) =>
-				renderComponent(DynamicalTableHeader, {
-					column: column,
-					fields: fields
-				}),
-			cell: ({
-				column,
-				row
-			}: {
-				column: Column<Record<string, JsonValue>>;
-				row: Row<Record<string, JsonValue>>;
-			}) =>
-				renderComponent(DynamicalTableCell, {
-					row: row,
-					column: column,
-					fields: fields
-				}),
-			accessorKey: 'Namespace'
-		},
+		...[
+			{
+				id: 'Namespace',
+				header: ({ column }: { column: Column<Record<string, JsonValue>> }) =>
+					renderComponent(DynamicalTableHeader, {
+						column: column,
+						fields: fields
+					}),
+				cell: ({
+					column,
+					row
+				}: {
+					column: Column<Record<string, JsonValue>>;
+					row: Row<Record<string, JsonValue>>;
+				}) =>
+					renderComponent(DynamicalTableCell, {
+						row: row,
+						column: column,
+						fields: fields
+					}),
+				accessorKey: 'Namespace'
+			}
+		].filter(() => apiResource.namespaced),
 		{
 			id: 'Annotations',
 			header: ({ column }: { column: Column<Record<string, JsonValue>> }) =>
@@ -242,7 +247,7 @@
 				const response = await resourceClient.list(
 					{
 						cluster: cluster,
-						namespace: namespace,
+						namespace: apiResource.namespaced ? namespace : undefined,
 						group: group,
 						version: version,
 						resource: resource,
@@ -288,7 +293,7 @@
 			const watchResourcesStream = resourceClient.watch(
 				{
 					cluster: cluster,
-					namespace: namespace,
+					namespace: apiResource.namespaced ? namespace : undefined,
 					group: group,
 					version: version,
 					resource: resource,
