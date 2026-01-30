@@ -26,7 +26,7 @@
 
 	const transport: Transport = getContext('transport');
 	const resourceClient = createClient(ResourceService, transport);
-	const cluster = $derived(page.params.scope ?? '');
+	const cluster = $derived(page.params.cluster ?? '');
 
 	let isSubmitting = $state(false);
 
@@ -114,6 +114,7 @@
 
 				await resourceClient.apply({
 					cluster,
+					name,
 					group: 'tenant.otterscale.io',
 					version: 'v1alpha1',
 					resource: 'workspaces',
