@@ -104,6 +104,8 @@ export async function GET(event: RequestEvent): Promise<Response> {
 		picture: claims.picture ?? '',
 		roles: claims.resource_access?.[env.KEYCLOAK_CLIENT_ID ?? '']?.roles ?? []
 	};
+	console.log(claims.sub);
+	console.log(tokens.accessToken());
 	const tokenSet = {
 		idToken: tokens.idToken(),
 		accessToken: tokens.accessToken(),

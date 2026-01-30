@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { toJson } from '@bufbuild/protobuf';
+	import { StructSchema } from '@bufbuild/protobuf/wkt';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { Ban, Braces } from '@lucide/svelte';
 	import File from '@lucide/svelte/icons/file';
@@ -6,7 +8,11 @@
 	import { getContext, onDestroy } from 'svelte';
 	import { stringify } from 'yaml';
 
-	import { type GetRequest, ResourceService } from '$lib/api/resource/v1/resource_pb';
+	import {
+		type GetRequest,
+		ResourceService,
+		type SchemaRequest
+	} from '$lib/api/resource/v1/resource_pb';
 	import * as Code from '$lib/components/custom/code';
 	import { typographyVariants } from '$lib/components/typography/index.ts';
 	import * as Alert from '$lib/components/ui/alert/index.js';
@@ -48,7 +54,17 @@
 	async function GetResource(): Promise<any> {
 		getAbortController = new AbortController();
 		try {
-			const response = await resourceClient.get(
+			const schemaResponse = await resourceClient.schema(
+				{
+					cluster,
+					group,
+					version,
+					kind
+				} as SchemaRequest,
+				{ signal: getAbortController?.signal }
+			);
+
+			const getResponse = await resourceClient.get(
 				{
 					cluster,
 					namespace,
@@ -60,7 +76,7 @@
 				{ signal: getAbortController?.signal }
 			);
 
-			return response.object;
+			return { object: getResponse.object, schema: toJson(StructSchema, schemaResponse) };
 		} finally {
 			if (getAbortController) getAbortController = null;
 		}
@@ -149,7 +165,7 @@
 			{/each}
 		</Field.Set>
 	</Field.Group>
-{:then object}
+{:then response}
 	{@const Inspector: ViewerType = getResourceViewer(resource)}
 	<Field.Group class="pb-8">
 		<Field.Set>
@@ -160,28 +176,30 @@
 				</Item.Media>
 				<Item.Content>
 					<Item.Description>
-						<Badge variant="outline">{object?.kind}</Badge>
-						{object?.apiVersion}
+						<Badge variant="outline">{response.object?.kind}</Badge>
+						{response.object?.apiVersion}
 					</Item.Description>
 					<Item.Title class={typographyVariants({ variant: 'h3' })}>
-						{object?.metadata?.name}
+						{response.object?.metadata?.name}
 					</Item.Title>
 					<Separator class="invisible" />
 					<div class="grid gap-2 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-6">
-						{#if object?.metadata}
+						{#if response.object?.metadata}
 							{@const clusterData = { name: 'Cluster', information: cluster }}
 							{@const namespaceData = { name: 'Namespace', information: namespace }}
 							{@const creationTimestampData = {
 								name: 'Creation Timestamp',
-								information: new Date(object.metadata?.creationTimestamp).toLocaleString('sv-SE')
+								information: new Date(response.object.metadata?.creationTimestamp).toLocaleString(
+									'sv-SE'
+								)
 							}}
 							{@const generationData = {
 								name: 'Generation',
-								information: object.metadata?.generation
+								information: response.object.metadata?.generation
 							}}
 							{@const resourceVersionData = {
 								name: 'Resource Version',
-								information: object.metadata?.resourceVersion
+								information: response.object.metadata?.resourceVersion
 							}}
 							{#each [clusterData, namespaceData, creationTimestampData, generationData, resourceVersionData] as data, index (index)}
 								{#if data.information}
@@ -216,13 +234,17 @@
 							<Sheet.Header class="shruk-0 space-y-4">
 								<Sheet.Title>
 									{name}
-									<p class="text-muted-foreground">{group}/{version}/{kind}/{resource}</p>
+									<p class="text-muted-foreground">
+										{!group ? 'core' : group}/{version}/{kind}/{resource}
+									</p>
 								</Sheet.Title>
-								<Sheet.Description></Sheet.Description>
+								<Sheet.Description>
+									{response.schema?.description}
+								</Sheet.Description>
 							</Sheet.Header>
-							{#if object}
+							{#if response.object}
 								<Code.Root
-									code={stringify(object)}
+									code={stringify(response.object)}
 									lang="yaml"
 									class="no-shiki-limit m-4 border-none bg-muted"
 								/>
@@ -246,17 +268,17 @@
 						</Sheet.Content>
 					</Sheet.Root>
 					{#if Editor}
-						<Editor name={object?.metadata?.name} />
+						<Editor name={response.object?.metadata?.name} />
 					{/if}
 					{#if Deleter}
-						<Deleter name={object?.metadata?.name} />
+						<Deleter name={response.object?.metadata?.name} />
 					{/if}
 				</Item.Actions>
 				<Item.Footer class="flex flex-col items-start justify-start gap-2">
 					<!-- Tags -->
 					{@const tags = {
-						Labels: object?.metadata?.labels ?? {},
-						Annotations: object?.metadata?.annotations ?? {}
+						Labels: response.object?.metadata?.labels ?? {},
+						Annotations: response.object?.metadata?.annotations ?? {}
 					}}
 					{#each Object.entries(tags) as [key, values], index (index)}
 						{#if Object.keys(values).length > 0}
@@ -279,7 +301,7 @@
 				</Item.Footer>
 			</Item.Root>
 		</Field.Set>
-		<Inspector {object} />
+		<Inspector object={response.object} schema={response.schema} />
 	</Field.Group>
 {:catch error}
 	<Empty.Root>

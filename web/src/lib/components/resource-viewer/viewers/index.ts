@@ -1,15 +1,14 @@
 import type { Component } from 'svelte';
 
-// Viewer Types
-type ViewerProps = { object: any };
+type ViewerProps = { object: any; schema?: any };
 type ViewerType = Component<ViewerProps>;
 
 // Edit Form Types
-type EditFormProps = { name: string; onsuccess?: () => void };
+type EditFormProps = { name: string };
 type EditFormType = Component<EditFormProps> | null;
 
 // Delete Form Types
-type DeleteFormProps = { name: string; onsuccess?: () => void };
+type DeleteFormProps = { name: string };
 type DeleteFormType = Component<DeleteFormProps> | null;
 
 // Viewer Components
