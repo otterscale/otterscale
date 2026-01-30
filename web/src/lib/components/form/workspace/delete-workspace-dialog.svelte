@@ -9,6 +9,7 @@
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
+	import * as AlertDialog from '$lib/components/ui/alert-dialog';
 	import { Button } from '$lib/components/ui/button';
 	import { m } from '$lib/paraglide/messages';
 
@@ -67,7 +68,7 @@
 	}
 </script>
 
-<Modal.Root
+<AlertDialog.Root
 	bind:open
 	onOpenChange={(isOpen) => {
 		if (isOpen) {
@@ -75,13 +76,13 @@
 		}
 	}}
 >
-	<Modal.Trigger>
-		<Button size="icon">
-			<Trash2 />
+	<AlertDialog.Trigger>
+		<Button variant="outline" size="icon">
+			<Trash2 class="text-destructive" />
 		</Button>
-	</Modal.Trigger>
-	<Modal.Content>
-		<Modal.Header>Delete Workspace</Modal.Header>
+	</AlertDialog.Trigger>
+	<AlertDialog.Content>
+		<AlertDialog.Header>Delete Workspace</AlertDialog.Header>
 		<Form.Root>
 			<Form.Fieldset>
 				<Form.Field>
@@ -93,15 +94,13 @@
 				</Form.Field>
 			</Form.Fieldset>
 		</Form.Root>
-		<Modal.Footer>
-			<Modal.Cancel>
+		<AlertDialog.Footer>
+			<AlertDialog.Cancel>
 				{m.cancel()}
-			</Modal.Cancel>
-			<Modal.ActionsGroup>
-				<Modal.Action disabled={invalid || isDeleting} variant="destructive" onclick={handleDelete}>
-					{m.confirm()}
-				</Modal.Action>
-			</Modal.ActionsGroup>
-		</Modal.Footer>
-	</Modal.Content>
-</Modal.Root>
+			</AlertDialog.Cancel>
+			<AlertDialog.Action disabled={invalid || isDeleting} onclick={handleDelete}>
+				{m.confirm()}
+			</AlertDialog.Action>
+		</AlertDialog.Footer>
+	</AlertDialog.Content>
+</AlertDialog.Root>
