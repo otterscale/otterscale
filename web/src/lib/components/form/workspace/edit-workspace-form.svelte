@@ -28,6 +28,15 @@
 	const resourceClient = createClient(ResourceService, transport);
 	const cluster = $derived(page.params.cluster ?? '');
 
+	// Remove metadata.managedFields from object
+	const cleanedObject = $derived.by(() => {
+		const copy = structuredClone(object);
+		if (copy.metadata && typeof copy.metadata === 'object') {
+			delete (copy.metadata as Record<string, unknown>).managedFields;
+		}
+		return copy;
+	});
+
 	let isSubmitting = $state(false);
 
 	// Grouped fields for multi-step form (3 pages)
@@ -144,7 +153,7 @@
 	<MultiStepSchemaForm
 		apiSchema={schema}
 		fields={groupedFields}
-		initialData={object}
+		initialData={cleanedObject}
 		title={`Edit Workspace: ${name}`}
 		onSubmit={handleMultiStepSubmit}
 		transformData={transformFormData}
