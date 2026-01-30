@@ -14,9 +14,11 @@
 
 	import {
 		buildSchemaFromK8s,
+		filterDataBySchema,
 		formDataToK8s,
 		type K8sOpenAPISchema,
 		k8sToFormData,
+		normalizeArrays,
 		type PathOptions,
 		type SchemaFormConfig
 	} from './converter';
@@ -41,6 +43,8 @@
 		title?: string;
 		onModeChange?: (mode: 'basic' | 'advance') => void;
 		onSubmit?: (data: Record<string, unknown>) => Promise<void> | void;
+		transformData?: (data: Record<string, unknown>) => Record<string, unknown>;
+		yamlEditable?: boolean;
 	}
 
 	let {
@@ -50,7 +54,9 @@
 		mode = $bindable('basic'),
 		title,
 		onModeChange,
-		onSubmit
+		onSubmit,
+		transformData,
+		yamlEditable = false
 	}: Props = $props();
 
 	setThemeContext({ components });
@@ -60,18 +66,25 @@
 	let stepForms = $state<StepFormData[]>([]);
 	let advanceYaml = $state('');
 	let yamlParseError = $state<string | null>(null);
+	let formRefs = $state<(HTMLFormElement | undefined)[]>([]);
 
 	const stepNames = $derived(Object.keys(fields));
 	const totalSteps = $derived(stepNames.length);
 	const isFirstStep = $derived(currentStep === 0);
 	const isLastStep = $derived(currentStep === totalSteps - 1);
 
-	$effect(() => {
+	function createStepForms(sourceData: Record<string, unknown> | undefined) {
 		const forms: StepFormData[] = [];
+		const source = sourceData || {};
 
 		for (const [stepName, paths] of Object.entries(fields)) {
 			const formConfig = buildSchemaFromK8s(apiSchema, paths);
-			const stepInitialValue = k8sToFormData(initialData, formConfig.transformationMappings);
+			// Filter initialData to only include fields defined in this step's schema
+			const filteredInitialData = filterDataBySchema(source, formConfig.schema);
+			const stepInitialValue = k8sToFormData(
+				filteredInitialData,
+				formConfig.transformationMappings
+			);
 
 			const form = createForm<Record<string, unknown>>({
 				...defaults,
@@ -86,10 +99,13 @@
 		}
 
 		stepForms = forms;
+	}
 
+	$effect(() => {
 		if (initialData) {
 			masterData = { ...initialData };
 		}
+		createStepForms(initialData);
 	});
 
 	function handleStepSubmit(
@@ -98,7 +114,7 @@
 		formConfig: SchemaFormConfig
 	) {
 		const k8sData = formDataToK8s(data, formConfig.transformationMappings);
-		masterData = deepMerge(masterData, k8sData);
+		masterData = normalizeArrays(deepMerge(masterData, k8sData)) as Record<string, unknown>;
 
 		console.log(`Step "${stepName}" submitted:`, k8sData);
 		console.log('Master data:', masterData);
@@ -112,6 +128,9 @@
 
 	async function handleFinalSubmit() {
 		collectAllFormData();
+		if (transformData) {
+			masterData = transformData(masterData);
+		}
 		console.log('Final submission with data:', masterData);
 
 		if (onSubmit) {
@@ -162,8 +181,12 @@
 
 		if (targetMode === 'basic' && mode === 'advance') {
 			syncYamlToMasterData();
+			createStepForms(masterData);
 		} else if (targetMode === 'advance') {
 			collectAllFormData();
+			if (transformData) {
+				masterData = transformData(masterData);
+			}
 			syncMasterDataToYaml();
 		}
 
@@ -177,6 +200,8 @@
 			const k8sData = formDataToK8s(formData, stepForm.formConfig.transformationMappings);
 			masterData = deepMerge(masterData, k8sData);
 		}
+		// Normalize all numeric-keyed objects to arrays
+		masterData = normalizeArrays(masterData) as Record<string, unknown>;
 	}
 
 	$effect(() => {
@@ -186,7 +211,7 @@
 	});
 </script>
 
-<div class="multi-step-schema-form-container">
+<div class="multi-step-schema-form-container flex h-full flex-col">
 	<div class="relative mb-6 flex items-center justify-center py-2">
 		{#if title}
 			<h1 class="text-2xl font-bold">{title}</h1>
@@ -194,19 +219,19 @@
 		<div class="absolute right-0">
 			<Tabs.Root value={mode} onValueChange={handleModeChange}>
 				<Tabs.List>
-					<Tabs.Trigger value="basic">Basic</Tabs.Trigger>
-					<Tabs.Trigger value="advance">Advance</Tabs.Trigger>
+					<Tabs.Trigger value="basic">Form</Tabs.Trigger>
+					<Tabs.Trigger value="advance">YAML</Tabs.Trigger>
 				</Tabs.List>
 			</Tabs.Root>
 		</div>
 	</div>
 
-	<Tabs.Root value={mode}>
-		<Tabs.Content value="basic">
-			<div class="mb-6">
+	<Tabs.Root value={mode} class="flex flex-1 flex-col overflow-hidden">
+		<Tabs.Content value="basic" class="flex flex-1 flex-col overflow-hidden">
+			<div class="mb-6 px-6">
 				<div class="flex items-center justify-between">
 					{#each stepNames as stepName, index (stepName)}
-						<div class="flex flex-1 items-center">
+						<div class="flex items-center">
 							<button
 								type="button"
 								class={cn(
@@ -235,44 +260,50 @@
 							>
 								{stepName}
 							</span>
-
-							{#if index < totalSteps - 1}
-								<div
-									class={cn('mx-4 h-0.5 flex-1', index < currentStep ? 'bg-primary' : 'bg-muted')}
-								></div>
-							{/if}
 						</div>
+
+						{#if index < totalSteps - 1}
+							<div
+								class={cn('mx-4 h-0.5 flex-1', index < currentStep ? 'bg-primary' : 'bg-muted')}
+							></div>
+						{/if}
 					{/each}
 				</div>
 			</div>
 
-			<div class="rounded-lg border bg-card p-6">
-				{#each stepForms as stepForm, index (stepForm.stepName)}
-					<div class={currentStep === index ? 'block' : 'hidden'}>
+			<div class="flex flex-1 flex-col overflow-y-auto rounded-lg p-6">
+				{#each stepForms as stepForm, index (stepForm)}
+					<div class={currentStep === index ? 'flex flex-1 flex-col' : 'hidden'}>
 						{#key stepForm.stepName}
-							<SchemaFormStep form={stepForm.form}>
-								<div class="mt-6 flex justify-between">
-									<Button variant="outline" onclick={goBack} disabled={isFirstStep} type="button">
-										← Previous
-									</Button>
-
-									<div class="flex gap-2">
-										{#if !isLastStep}
-											<Button type="submit">Next →</Button>
-										{:else}
-											<Button type="submit">Submit</Button>
-										{/if}
-									</div>
-								</div>
-							</SchemaFormStep>
+							<div class="multi-step-form-target contents">
+								<SchemaFormStep form={stepForm.form} bind:ref={formRefs[index]} />
+							</div>
 						{/key}
 					</div>
 				{/each}
 			</div>
+
+			<div class="mt-auto flex justify-between px-6 py-4">
+				<Button variant="outline" onclick={goBack} disabled={isFirstStep} type="button">
+					← Previous
+				</Button>
+
+				<div class="flex gap-2">
+					{#if !isLastStep}
+						<Button type="button" onclick={() => formRefs[currentStep]?.requestSubmit()}>
+							Next →
+						</Button>
+					{:else}
+						<Button type="button" onclick={() => formRefs[currentStep]?.requestSubmit()}>
+							Submit
+						</Button>
+					{/if}
+				</div>
+			</div>
 		</Tabs.Content>
 
-		<Tabs.Content value="advance">
-			<div class="h-[70vh] rounded border">
+		<Tabs.Content value="advance" class="flex flex-1 flex-col overflow-hidden">
+			<div class="mx-6 flex flex-1 flex-col rounded border">
 				{#if yamlParseError}
 					<div
 						class="mb-2 rounded bg-red-100 p-2 text-sm text-red-700 dark:bg-red-900/20 dark:text-red-400"
@@ -287,22 +318,34 @@
 						padding: { top: 16, bottom: 8 },
 						automaticLayout: true,
 						minimap: { enabled: false },
-						scrollBeyondLastLine: false
+						scrollBeyondLastLine: false,
+						readOnly: !yamlEditable
 					}}
 					theme={themeMode.current === 'dark' ? 'vs-dark' : 'vs'}
 					bind:value={advanceYaml}
 				/>
 			</div>
 
-			<Button
-				class="mt-6 w-full"
-				onclick={() => {
-					syncYamlToMasterData();
-					handleFinalSubmit();
-				}}
-			>
-				Submit
-			</Button>
+			<div class="mt-auto px-6 py-4">
+				<Button
+					class="w-full"
+					onclick={() => {
+						syncYamlToMasterData();
+						handleFinalSubmit();
+					}}
+				>
+					Submit
+				</Button>
+			</div>
 		</Tabs.Content>
 	</Tabs.Root>
 </div>
+
+<style>
+	:global(.multi-step-form-target form) {
+		display: flex;
+		flex-direction: column;
+		flex-grow: 1;
+		min-height: 100%;
+	}
+</style>
