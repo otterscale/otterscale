@@ -1,7 +1,7 @@
 <script lang="ts">
 	import BasicTierImage from '$lib/assets/basic-tier.jpg';
+	import EditWorkspaceForm from '$lib/components/form/workspace/edit-workspace-form.svelte';
 	import * as Sheet from '$lib/components/ui/sheet';
-	import EditWorkspaceForm from '$lib/components/workspace/edit-workspace-form.svelte';
 
 	let {
 		open = $bindable(false),

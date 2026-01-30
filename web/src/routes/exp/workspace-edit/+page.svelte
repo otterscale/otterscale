@@ -1,8 +1,8 @@
 <script lang="ts">
+	import SheetEditWorkspace from '$lib/components/form/workspace/sheet-edit-workspace.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';
-	import SheetEditWorkspace from '$lib/components/workspace/sheet-edit-workspace.svelte';
 
 	let open = $state(false);
 	let workspaceName = $state('default'); // Default value for testing

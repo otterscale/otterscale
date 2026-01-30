@@ -1,6 +1,6 @@
 <script lang="ts">
+	import DialogCreateWorkspace from '$lib/components/form/workspace/dialog-create-workspace.svelte';
 	import { Button } from '$lib/components/ui/button';
-	import DialogCreateWorkspace from '$lib/components/workspace/dialog-create-workspace.svelte';
 
 	let open = $state(false);
 </script>
