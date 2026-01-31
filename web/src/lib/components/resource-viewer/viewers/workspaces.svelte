@@ -216,7 +216,7 @@
 			<!-- Resource Quota -->
 			<Card.Root class="flex h-full flex-col border-0 bg-transparent shadow-none">
 				{@const resourceQuotaHard = object.spec?.resourceQuota?.hard ?? {}}
-				{@const resourceQuotaUsed: any = resourceQuota?.used ?? {}}
+				{@const resourceQuotaUsed: any = resourceQuota?.status?.used ?? {}}
 				<Card.Header>
 					<Card.Title>
 						<Item.Root class="p-0">
@@ -240,7 +240,9 @@
 											{key}
 										</Item.Description>
 										<Item.Title class={cn(typographyVariants({ variant: 'large' }))}>
-											{resourceQuotaUsed?.key ?? '?'}/{resourceQuotaHard[key]}
+											{String(resourceQuotaUsed[key])
+												? resourceQuotaUsed[key]
+												: '?'}/{resourceQuotaHard[key]}
 										</Item.Title>
 									</Item.Content>
 								</Item.Root>
