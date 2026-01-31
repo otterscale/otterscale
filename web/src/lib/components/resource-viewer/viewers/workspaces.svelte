@@ -112,6 +112,30 @@
 			)
 		);
 	}
+	function getPosition(key: string) {
+		if (key === 'limits.cpu') return 'md:col-start-1 md:row-start-1 xl:col-start-1 xl:row-start-1';
+		if (key === 'limits.memory')
+			return 'md:col-start-1 md:row-start-2 xl:col-start-2 xl:row-start-1';
+		if (key === 'limits.otterscale.com/vgpu')
+			return 'md:col-start-1 md:row-start-3 xl:col-start-3 xl:row-start-1';
+		if (key === 'limits.otterscale.com/vgpumem')
+			return 'md:col-start-1 md:row-start-4 xl:col-start-4 xl:row-start-1';
+		if (key === 'limits.otterscale.com/vgpumem-percentage')
+			return 'md:col-start-1 md:row-start-5 xl:col-start-5 xl:row-start-1';
+
+		if (key === 'requests.cpu')
+			return 'md:col-start-2 md:row-start-1 xl:col-start-1 xl:row-start-2';
+		if (key === 'requests.memory')
+			return 'md:col-start-2 md:row-start-2 xl:col-start-2 xl:row-start-2';
+		if (key === 'requests.otterscale.com/vgpu')
+			return 'md:col-start-2 md:row-start-3 xl:col-start-3 xl:row-start-2';
+		if (key === 'requests.otterscale.com/vgpumem')
+			return 'md:col-start-2 md:row-start-4 xl:col-start-4 xl:row-start-2';
+		if (key === 'requests.otterscale.com/vgpumem-percentage')
+			return 'md:col-start-2 md:row-start-5 xl:col-start-5 xl:row-start-2';
+
+		return 'xl:row-start-3 md:row-start-6';
+	}
 </script>
 
 {#await GetResourceQuota()}
@@ -232,15 +256,15 @@
 				</Card.Header>
 				<Card.Content>
 					{#if Object.keys(resourceQuotaHard).length > 0}
-						<div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+						<div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-5">
 							{#each Object.keys(resourceQuotaHard) as key, index (index)}
-								<Item.Root class="w-fit p-0">
+								<Item.Root class={cn('w-fit p-0', getPosition(key))}>
 									<Item.Content class="flex gap-2">
 										<Item.Description>
 											{key}
 										</Item.Description>
 										<Item.Title class={cn(typographyVariants({ variant: 'large' }))}>
-											{String(resourceQuotaUsed[key])
+											{resourceQuotaUsed[key] !== undefined
 												? resourceQuotaUsed[key]
 												: '?'}/{resourceQuotaHard[key]}
 										</Item.Title>
