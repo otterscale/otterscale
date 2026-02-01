@@ -4,6 +4,7 @@
 		Box,
 		CircleCheck,
 		Gauge,
+		Grid,
 		HeartPulse,
 		Network,
 		Shield,
@@ -25,6 +26,7 @@
 	} from '$lib/api/resource/v1/resource_pb';
 	import { typographyVariants } from '$lib/components/typography/index.ts';
 	import { Badge } from '$lib/components/ui/badge';
+	import Button from '$lib/components/ui/button/button.svelte';
 	import * as Card from '$lib/components/ui/card';
 	import * as Empty from '$lib/components/ui/empty/index.js';
 	import * as Field from '$lib/components/ui/field/index.js';
@@ -32,6 +34,7 @@
 	import Label from '$lib/components/ui/label/label.svelte';
 	import Separator from '$lib/components/ui/separator/separator.svelte';
 	import { Skeleton } from '$lib/components/ui/skeleton/index.js';
+	import { Toggle } from '$lib/components/ui/toggle/index.js';
 	import { cn } from '$lib/utils';
 
 	let { object }: { object: TenantOtterscaleIoV1Alpha1Workspace } = $props();
@@ -112,30 +115,23 @@
 			)
 		);
 	}
-	function getPosition(key: string) {
-		if (key === 'limits.cpu') return 'md:col-start-1 md:row-start-1 xl:col-start-1 xl:row-start-1';
-		if (key === 'limits.memory')
-			return 'md:col-start-1 md:row-start-2 xl:col-start-2 xl:row-start-1';
-		if (key === 'limits.otterscale.com/vgpu')
-			return 'md:col-start-1 md:row-start-3 xl:col-start-3 xl:row-start-1';
-		if (key === 'limits.otterscale.com/vgpumem')
-			return 'md:col-start-1 md:row-start-4 xl:col-start-4 xl:row-start-1';
-		if (key === 'limits.otterscale.com/vgpumem-percentage')
-			return 'md:col-start-1 md:row-start-5 xl:col-start-5 xl:row-start-1';
+	function getGridLayout(key: string) {
+		if (key === 'limits.cpu') return 'md:row-start-1 2xl:row-start-1';
+		if (key === 'limits.memory') return 'md:row-start-2 2xl:row-start-1';
+		if (key === 'limits.otterscale.com/vgpu') return 'md:row-start-3 2xl:row-start-1';
+		if (key === 'limits.otterscale.com/vgpumem') return 'md:row-start-4 2xl:row-start-1';
+		if (key === 'limits.otterscale.com/vgpumem-percentage') return 'md:row-start-5 2xl:row-start-1';
 
-		if (key === 'requests.cpu')
-			return 'md:col-start-2 md:row-start-1 xl:col-start-1 xl:row-start-2';
-		if (key === 'requests.memory')
-			return 'md:col-start-2 md:row-start-2 xl:col-start-2 xl:row-start-2';
-		if (key === 'requests.otterscale.com/vgpu')
-			return 'md:col-start-2 md:row-start-3 xl:col-start-3 xl:row-start-2';
-		if (key === 'requests.otterscale.com/vgpumem')
-			return 'md:col-start-2 md:row-start-4 xl:col-start-4 xl:row-start-2';
+		if (key === 'requests.cpu') return 'md:row-start-1 2xl:row-start-2';
+		if (key === 'requests.memory') return 'md:row-start-2 2xl:row-start-2';
+		if (key === 'requests.otterscale.com/vgpu') return 'md:row-start-3 2xl:row-start-2';
+		if (key === 'requests.otterscale.com/vgpumem') return 'md:row-start-4 2xl:row-start-2';
 		if (key === 'requests.otterscale.com/vgpumem-percentage')
-			return 'md:col-start-2 md:row-start-5 xl:col-start-5 xl:row-start-2';
+			return 'md:row-start-5 2xl:row-start-2';
 
-		return 'xl:row-start-3 md:row-start-6';
+		return '2xl:row-start-3 md:row-start-6';
 	}
+	let isResourceQuotasGrid = $state(false);
 </script>
 
 {#await GetResourceQuota()}
@@ -251,14 +247,28 @@
 								<Item.Title class={typographyVariants({ variant: 'h6' })}>Resource Quota</Item.Title
 								>
 							</Item.Content>
+							<Item.Actions>
+								<Toggle
+									aria-label="Toggle Resource Quota Grid"
+									size="sm"
+									onclick={() => {
+										isResourceQuotasGrid = !isResourceQuotasGrid;
+									}}
+									class="data-[state=on]:*:[svg]:fill-muted-foreground/50"
+								>
+									<Grid />
+								</Toggle>
+							</Item.Actions>
 						</Item.Root>
 					</Card.Title>
 				</Card.Header>
 				<Card.Content>
 					{#if Object.keys(resourceQuotaHard).length > 0}
-						<div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-5">
+						<div class="grid grid-cols-1 gap-4 md:grid-cols-2 2xl:grid-cols-5">
 							{#each Object.keys(resourceQuotaHard) as key, index (index)}
-								<Item.Root class={cn('w-fit p-0', getPosition(key))}>
+								<Item.Root
+									class={cn('w-fit p-0', isResourceQuotasGrid ? getGridLayout(key) : 'flex')}
+								>
 									<Item.Content class="flex gap-2">
 										<Item.Description>
 											{key}
