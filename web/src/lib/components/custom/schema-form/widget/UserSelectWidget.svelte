@@ -112,7 +112,7 @@
 		value = {
 			...(value as Record<string, unknown>),
 			subject: user.id,
-			name: getDisplayName(user)
+			name: `${getDisplayName(user)} (${user.email || user.username})`
 		};
 		userOpen = false;
 		searchQuery = '';

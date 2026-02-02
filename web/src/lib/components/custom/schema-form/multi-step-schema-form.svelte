@@ -116,9 +116,6 @@
 		const k8sData = formDataToK8s(data, formConfig.transformationMappings);
 		masterData = normalizeArrays(deepMerge(masterData, k8sData)) as Record<string, unknown>;
 
-		console.log(`Step "${stepName}" submitted:`, k8sData);
-		console.log('Master data:', masterData);
-
 		if (isLastStep) {
 			handleFinalSubmit();
 		} else {
@@ -131,7 +128,6 @@
 		if (transformData) {
 			masterData = transformData(masterData);
 		}
-		console.log('Final submission with data:', masterData);
 
 		if (onSubmit) {
 			await onSubmit(masterData);

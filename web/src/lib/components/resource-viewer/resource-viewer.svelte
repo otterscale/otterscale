@@ -1,12 +1,18 @@
 <script lang="ts">
+	import { toJson } from '@bufbuild/protobuf';
+	import { StructSchema } from '@bufbuild/protobuf/wkt';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { Ban, Braces } from '@lucide/svelte';
 	import File from '@lucide/svelte/icons/file';
 	import Layers from '@lucide/svelte/icons/layers';
-	import { getContext, onDestroy } from 'svelte';
+	import { getContext, onDestroy, onMount } from 'svelte';
 	import { stringify } from 'yaml';
 
-	import { type GetRequest, ResourceService } from '$lib/api/resource/v1/resource_pb';
+	import {
+		type GetRequest,
+		ResourceService,
+		type SchemaRequest
+	} from '$lib/api/resource/v1/resource_pb';
 	import * as Code from '$lib/components/custom/code';
 	import { typographyVariants } from '$lib/components/typography/index.ts';
 	import * as Alert from '$lib/components/ui/alert/index.js';
@@ -20,8 +26,8 @@
 	import * as Sheet from '$lib/components/ui/sheet/index.js';
 	import { Skeleton } from '$lib/components/ui/skeleton/index.js';
 
-	import type { ViewerType } from './viewers';
-	import { getResourceViewer } from './viewers';
+	import type { DeleteFormType, EditFormType, ViewerType } from './viewers';
+	import { getDeleteForm, getEditForm, getResourceViewer } from './viewers';
 
 	let {
 		cluster,
@@ -44,11 +50,32 @@
 	const transport: Transport = getContext('transport');
 	const resourceClient = createClient(ResourceService, transport);
 
+	let schema: any | undefined = $state(undefined);
+	let object: any | undefined = $state(undefined);
+	let error: any | null = $state(null);
+
+	let isGetting = $state(false);
 	let getAbortController: AbortController | null = null;
-	async function GetResource(): Promise<any> {
+	async function GetResource() {
+		if (isGetting || isDestroyed) return;
+
+		isGetting = true;
 		getAbortController = new AbortController();
+
 		try {
-			const response = await resourceClient.get(
+			const schemaResponse = await resourceClient.schema(
+				{
+					cluster,
+					group,
+					version,
+					kind
+				} as SchemaRequest,
+				{ signal: getAbortController?.signal }
+			);
+
+			schema = toJson(StructSchema, schemaResponse);
+
+			const getResponse = await resourceClient.get(
 				{
 					cluster,
 					namespace,
@@ -59,21 +86,33 @@
 				} as GetRequest,
 				{ signal: getAbortController?.signal }
 			);
-
-			return response.object;
+			object = getResponse.object;
+		} catch (e) {
+			error = e as Error;
 		} finally {
+			isGetting = false;
 			if (getAbortController) getAbortController = null;
 		}
 	}
 
+	let isMounted = $state(false);
+	onMount(async () => {
+		await GetResource();
+
+		isMounted = true;
+	});
+
+	let isDestroyed = $state(false);
 	onDestroy(() => {
+		isDestroyed = true;
+
 		if (getAbortController) {
 			getAbortController.abort();
 		}
 	});
 </script>
 
-{#await GetResource()}
+{#if !isMounted}
 	<Field.Group class="pb-8">
 		<Field.Set>
 			<Item.Root>
@@ -149,7 +188,31 @@
 			{/each}
 		</Field.Set>
 	</Field.Group>
-{:then object}
+{:else if error}
+	<Empty.Root>
+		<Empty.Header>
+			<Empty.Media class="rounded-full bg-muted p-4">
+				<Ban size={36} />
+			</Empty.Media>
+			<Empty.Title class="text-2xl font-bold">Failed to load data</Empty.Title>
+			<Empty.Description>
+				An error occurred while fetching data. Please check your connection or try again later.
+			</Empty.Description>
+		</Empty.Header>
+		<Empty.Content>
+			<Alert.Root variant="destructive" class="border-none bg-destructive/5">
+				<Alert.Title class="font-bold">{error?.name}</Alert.Title>
+				<Alert.Description class="text-start">
+					{error?.rawMessage}
+				</Alert.Description>
+			</Alert.Root>
+			<div class="flex gap-4">
+				<Button variant="outline" onclick={() => history.back()}>Go Back</Button>
+				<Button href="/">Go Home</Button>
+			</div>
+		</Empty.Content>
+	</Empty.Root>
+{:else}
 	{@const Inspector: ViewerType = getResourceViewer(resource)}
 	<Field.Group class="pb-8">
 		<Field.Set>
@@ -201,6 +264,8 @@
 					</div>
 				</Item.Content>
 				<Item.Actions>
+					{@const Editor: EditFormType = getEditForm(resource)}
+					{@const Deleter: DeleteFormType = getDeleteForm(resource)}
 					<Sheet.Root>
 						<Sheet.Trigger>
 							<Button variant="outline" size="icon-lg">
@@ -214,9 +279,13 @@
 							<Sheet.Header class="shruk-0 space-y-4">
 								<Sheet.Title>
 									{name}
-									<p class="text-muted-foreground">{group}/{version}/{kind}/{resource}</p>
+									<p class="text-muted-foreground">
+										{!group ? 'core' : group}/{version}/{kind}/{resource}
+									</p>
 								</Sheet.Title>
-								<Sheet.Description></Sheet.Description>
+								<Sheet.Description>
+									{schema?.description}
+								</Sheet.Description>
 							</Sheet.Header>
 							{#if object}
 								<Code.Root
@@ -243,6 +312,30 @@
 							{/if}
 						</Sheet.Content>
 					</Sheet.Root>
+					{#if Editor}
+						<Editor
+							name={object?.metadata?.name}
+							{schema}
+							{object}
+							onsuccess={() => {
+								resourceClient
+									.get({
+										cluster,
+										namespace,
+										group,
+										version,
+										resource,
+										name
+									} as GetRequest)
+									.then((response) => {
+										object = response.object;
+									});
+							}}
+						/>
+					{/if}
+					{#if Deleter}
+						<Deleter name={object?.metadata?.name} />
+					{/if}
 				</Item.Actions>
 				<Item.Footer class="flex flex-col items-start justify-start gap-2">
 					<!-- Tags -->
@@ -271,30 +364,6 @@
 				</Item.Footer>
 			</Item.Root>
 		</Field.Set>
-		<Inspector {object} />
+		<Inspector {object} {schema} />
 	</Field.Group>
-{:catch error}
-	<Empty.Root>
-		<Empty.Header>
-			<Empty.Media class="rounded-full bg-muted p-4">
-				<Ban size={36} />
-			</Empty.Media>
-			<Empty.Title class="text-2xl font-bold">Failed to load data</Empty.Title>
-			<Empty.Description>
-				An error occurred while fetching data. Please check your connection or try again later.
-			</Empty.Description>
-		</Empty.Header>
-		<Empty.Content>
-			<Alert.Root variant="destructive" class="border-none bg-destructive/5">
-				<Alert.Title class="font-bold">{error?.name}</Alert.Title>
-				<Alert.Description class="text-start">
-					{error?.rawMessage}
-				</Alert.Description>
-			</Alert.Root>
-			<div class="flex gap-4">
-				<Button variant="outline" onclick={() => history.back()}>Go Back</Button>
-				<Button href="/">Go Home</Button>
-			</div>
-		</Empty.Content>
-	</Empty.Root>
-{/await}
+{/if}

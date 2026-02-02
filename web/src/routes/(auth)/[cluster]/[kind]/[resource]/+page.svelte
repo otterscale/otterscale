@@ -6,7 +6,7 @@
 	const resource = $derived(page.params.resource ?? '');
 	const group = $derived(page.url.searchParams.get('group') ?? '');
 	const version = $derived(page.url.searchParams.get('version') ?? '');
-	const kind = $derived(page.url.searchParams.get('kind') ?? '');
+	const kind = $derived(page.params.kind ?? '');
 	const namespace = $derived(page.url.searchParams.get('namespace') ?? '');
 	const name = $derived(page.url.searchParams.get('name') ?? '');
 </script>
