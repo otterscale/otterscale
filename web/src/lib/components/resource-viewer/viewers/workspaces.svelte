@@ -26,7 +26,6 @@
 	} from '$lib/api/resource/v1/resource_pb';
 	import { typographyVariants } from '$lib/components/typography/index.ts';
 	import { Badge } from '$lib/components/ui/badge';
-	import Button from '$lib/components/ui/button/button.svelte';
 	import * as Card from '$lib/components/ui/card';
 	import * as Empty from '$lib/components/ui/empty/index.js';
 	import * as Field from '$lib/components/ui/field/index.js';

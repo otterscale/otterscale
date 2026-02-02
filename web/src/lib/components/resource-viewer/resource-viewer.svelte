@@ -82,6 +82,12 @@
 		}
 	}
 
+	let resourcePromise = $state(GetResource());
+
+	function refreshResource() {
+		resourcePromise = GetResource();
+	}
+
 	onDestroy(() => {
 		if (getAbortController) {
 			getAbortController.abort();
@@ -89,7 +95,7 @@
 	});
 </script>
 
-{#await GetResource()}
+{#await resourcePromise}
 	<Field.Group class="pb-8">
 		<Field.Set>
 			<Item.Root>
@@ -272,6 +278,7 @@
 							name={response.object?.metadata?.name}
 							schema={response.schema}
 							object={response.object}
+							onsuccess={refreshResource}
 						/>
 					{/if}
 					{#if Deleter}

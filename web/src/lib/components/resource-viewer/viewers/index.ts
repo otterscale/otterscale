@@ -4,7 +4,7 @@ type ViewerProps = { object: any; schema?: any };
 type ViewerType = Component<ViewerProps>;
 
 // Edit Form Types
-type EditFormProps = { name: string; schema?: any; object?: any };
+type EditFormProps = { name: string; schema?: any; object?: any; onsuccess?: () => void };
 type EditFormType = Component<EditFormProps> | null;
 
 // Delete Form Types
