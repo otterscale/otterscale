@@ -8,6 +8,7 @@
 	import * as Loading from '$lib/components/custom/loading';
 	import { buttonVariants } from '$lib/components/ui/button';
 	import * as Select from '$lib/components/ui/select/index.js';
+	import { activeNamespace } from '$lib/stores';
 	import { cn } from '$lib/utils';
 </script>
 
@@ -47,7 +48,11 @@
 		</Select.Trigger>
 		<Select.Content class="rounded-xl">
 			{#each $namespaces as namespace (namespace.name)}
-				<Select.Item value={namespace.name} class="rounded-lg">{namespace.name}</Select.Item>
+				<Select.Item
+					disabled={namespace.name !== $activeNamespace}
+					value={namespace.name}
+					class="rounded-lg">{namespace.name}</Select.Item
+				>
 			{/each}
 		</Select.Content>
 	</Select.Root>

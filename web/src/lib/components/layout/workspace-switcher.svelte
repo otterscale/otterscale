@@ -46,6 +46,7 @@
 	import { useSidebar } from '$lib/components/ui/sidebar/index.js';
 	import { m } from '$lib/paraglide/messages';
 	import type { User } from '$lib/server/session';
+	import { activeNamespace } from '$lib/stores';
 
 	let {
 		cluster,
@@ -119,6 +120,7 @@
 			return;
 		}
 		activeWorkspace = workspaces[index];
+		activeNamespace.set(activeWorkspace.spec.namespace);
 
 		goto(
 			resolve(
