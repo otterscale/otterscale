@@ -112,23 +112,27 @@
 		}
 	}
 
-	function handleFormSubmit(data: Record<string, unknown>) {
+	function submitFinalData(k8sData: Record<string, unknown>) {
 		try {
-			let k8sData = formDataToK8s(data, formConfig.transformationMappings);
-			masterData = k8sData;
-
 			if (transformData) {
 				k8sData = transformData(k8sData);
-				masterData = k8sData;
 			}
-
-			console.log('Form submitted with data:', k8sData);
+			masterData = k8sData;
 
 			if (onSubmit) {
 				onSubmit(k8sData);
 			} else {
 				onModeChange?.(mode);
 			}
+		} catch (error) {
+			console.error(`Error during form submission:`, error);
+		}
+	}
+
+	function handleFormSubmit(data: Record<string, unknown>) {
+		try {
+			const k8sData = formDataToK8s(data, formConfig.transformationMappings);
+			submitFinalData(k8sData);
 		} catch (error) {
 			console.error(`Error during form submission:`, error);
 		}
@@ -207,12 +211,8 @@
 		onclick={() => {
 			if (mode === 'advance') {
 				syncYamlToForm();
-				if (onSubmit && masterData) {
-					let finalData = masterData;
-					if (transformData) {
-						finalData = transformData(masterData);
-					}
-					onSubmit(finalData);
+				if (masterData) {
+					submitFinalData(masterData);
 				}
 			} else {
 				ref?.requestSubmit();
