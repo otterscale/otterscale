@@ -49,7 +49,7 @@
 
 	setThemeContext({ components });
 
-	const formConfig = $derived(buildSchemaFromK8s(apiSchema, paths));
+	const formConfig = buildSchemaFromK8s(apiSchema, paths);
 
 	let initialValue = $state(k8sToFormData(initialData, formConfig.transformationMappings));
 	let advanceYaml = $state('');
