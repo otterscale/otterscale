@@ -3,12 +3,14 @@ package app
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 
 	"connectrpc.com/connect"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/structpb"
+	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/api/meta"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
@@ -38,7 +40,7 @@ var _ pbconnect.ResourceServiceHandler = (*ResourceService)(nil)
 func (s *ResourceService) Discovery(_ context.Context, req *pb.DiscoveryRequest) (*pb.DiscoveryResponse, error) {
 	apiResources, err := s.resource.ListAPIResources(req.GetCluster())
 	if err != nil {
-		return nil, err
+		return nil, kubernetesErrorToConnectError(err)
 	}
 
 	pbAPIResources, err := s.toProtoAPIResources(apiResources)
@@ -54,7 +56,7 @@ func (s *ResourceService) Discovery(_ context.Context, req *pb.DiscoveryRequest)
 func (s *ResourceService) Schema(_ context.Context, req *pb.SchemaRequest) (*structpb.Struct, error) {
 	schema, err := s.resource.GetSchema(req.GetCluster(), req.GetGroup(), req.GetVersion(), req.GetKind())
 	if err != nil {
-		return nil, err
+		return nil, kubernetesErrorToConnectError(err)
 	}
 
 	return s.toProtoStructFromJSONSchema(schema)
@@ -68,7 +70,7 @@ func (s *ResourceService) List(ctx context.Context, req *pb.ListRequest) (*pb.Li
 
 	resources, err := s.resource.ListResources(ctx, cgvr, req.GetNamespace(), req.GetLabelSelector(), req.GetFieldSelector(), req.GetLimit(), req.GetContinue())
 	if err != nil {
-		return nil, err
+		return nil, kubernetesErrorToConnectError(err)
 	}
 
 	pbResources, err := s.toProtoResources(resources.Items)
@@ -92,7 +94,7 @@ func (s *ResourceService) Get(ctx context.Context, req *pb.GetRequest) (*pb.Reso
 
 	resource, err := s.resource.GetResource(ctx, cgvr, req.GetNamespace(), req.GetName())
 	if err != nil {
-		return nil, err
+		return nil, kubernetesErrorToConnectError(err)
 	}
 
 	return s.toProtoResource(resource.Object)
@@ -106,7 +108,7 @@ func (s *ResourceService) Create(ctx context.Context, req *pb.CreateRequest) (*p
 
 	resource, err := s.resource.CreateResource(ctx, cgvr, req.GetNamespace(), req.GetManifest())
 	if err != nil {
-		return nil, err
+		return nil, kubernetesErrorToConnectError(err)
 	}
 
 	return s.toProtoResource(resource.Object)
@@ -120,7 +122,7 @@ func (s *ResourceService) Apply(ctx context.Context, req *pb.ApplyRequest) (*pb.
 
 	resource, err := s.resource.ApplyResource(ctx, cgvr, req.GetNamespace(), req.GetName(), req.GetManifest(), req.GetForce(), req.GetFieldManager())
 	if err != nil {
-		return nil, err
+		return nil, kubernetesErrorToConnectError(err)
 	}
 
 	return s.toProtoResource(resource.Object)
@@ -133,7 +135,7 @@ func (s *ResourceService) Delete(ctx context.Context, req *pb.DeleteRequest) (*e
 	}
 
 	if err := s.resource.DeleteResource(ctx, cgvr, req.GetNamespace(), req.GetName(), req.GetGracePeriodSeconds()); err != nil {
-		return nil, err
+		return nil, kubernetesErrorToConnectError(err)
 	}
 
 	return &emptypb.Empty{}, nil
@@ -147,7 +149,7 @@ func (s *ResourceService) Watch(ctx context.Context, req *pb.WatchRequest, strea
 
 	watcher, err := s.resource.WatchResource(ctx, cgvr, req.GetNamespace(), req.GetLabelSelector(), req.GetFieldSelector(), req.GetResourceVersion())
 	if err != nil {
-		return err
+		return kubernetesErrorToConnectError(err)
 	}
 	defer watcher.Stop()
 
@@ -305,4 +307,73 @@ func deref[T any](ptr *T, def T) T {
 		return *ptr
 	}
 	return def
+}
+
+func kubernetesErrorToConnectError(err error) error {
+	var statusErr *apierrors.StatusError
+	if !errors.As(err, &statusErr) {
+		return connect.NewError(connect.CodeInternal, err)
+	}
+
+	switch statusErr.Status().Reason {
+	case metav1.StatusReasonUnauthorized:
+		return connect.NewError(connect.CodeUnauthenticated, err)
+
+	case metav1.StatusReasonForbidden:
+		return connect.NewError(connect.CodePermissionDenied, err)
+
+	case metav1.StatusReasonNotFound:
+		return connect.NewError(connect.CodeNotFound, err)
+
+	case metav1.StatusReasonAlreadyExists:
+		return connect.NewError(connect.CodeAlreadyExists, err)
+
+	case metav1.StatusReasonConflict:
+		return connect.NewError(connect.CodeFailedPrecondition, err)
+
+	case metav1.StatusReasonGone:
+		return connect.NewError(connect.CodeNotFound, err)
+
+	case metav1.StatusReasonInvalid:
+		return connect.NewError(connect.CodeInvalidArgument, err)
+
+	case metav1.StatusReasonServerTimeout:
+		return connect.NewError(connect.CodeDeadlineExceeded, err)
+
+	case metav1.StatusReasonStoreReadError:
+		return connect.NewError(connect.CodeInternal, err)
+
+	case metav1.StatusReasonTimeout:
+		return connect.NewError(connect.CodeDeadlineExceeded, err)
+
+	case metav1.StatusReasonTooManyRequests:
+		return connect.NewError(connect.CodeResourceExhausted, err)
+
+	case metav1.StatusReasonBadRequest:
+		return connect.NewError(connect.CodeInvalidArgument, err)
+
+	case metav1.StatusReasonMethodNotAllowed:
+		return connect.NewError(connect.CodeUnimplemented, err)
+
+	case metav1.StatusReasonNotAcceptable:
+		return connect.NewError(connect.CodeInvalidArgument, err)
+
+	case metav1.StatusReasonRequestEntityTooLarge:
+		return connect.NewError(connect.CodeResourceExhausted, err)
+
+	case metav1.StatusReasonUnsupportedMediaType:
+		return connect.NewError(connect.CodeInvalidArgument, err)
+
+	case metav1.StatusReasonInternalError:
+		return connect.NewError(connect.CodeInternal, err)
+
+	case metav1.StatusReasonExpired:
+		return connect.NewError(connect.CodeUnauthenticated, err)
+
+	case metav1.StatusReasonServiceUnavailable:
+		return connect.NewError(connect.CodeUnavailable, err)
+
+	default:
+		return connect.NewError(connect.CodeInternal, err)
+	}
 }
