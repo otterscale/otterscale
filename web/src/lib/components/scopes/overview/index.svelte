@@ -31,13 +31,10 @@
 		<MemoryUsage {prometheusDriver} {scope} bind:isReloading />
 	</div>
 
-	<div class="col-span-1">
+	<div class="col-span-2">
 		<Pods {prometheusDriver} {scope} bind:isReloading />
 	</div>
-	<div class="col-span-1">
-	<AidaptivCache {prometheusDriver} {scope} bind:isReloading />
-	</div>
 	<div class="col-span-2">
-	<Nvidia {prometheusDriver} {scope} bind:isReloading />
+		<Nvidia {prometheusDriver} {scope} bind:isReloading />
 	</div>
 </div>
