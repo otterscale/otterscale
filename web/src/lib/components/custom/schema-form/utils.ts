@@ -6,7 +6,7 @@ export function deepMerge(target: any, source: any): any {
 	if (typeof source !== 'object' || source === null) return target;
 
 	// Arrays should be replaced entirely, not merged
-	if (Array.isArray(source)) {
+	if (Array.isArray(target) || Array.isArray(source)) {
 		return source;
 	}
 
