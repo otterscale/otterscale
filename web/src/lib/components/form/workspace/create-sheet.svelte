@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { type TenantOtterscaleIoV1Alpha1Workspace } from '@otterscale/types';
+
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import BasicTierImage from '$lib/assets/basic-tier.jpg';
@@ -10,9 +12,13 @@
 		open = $bindable(false),
 		cluster,
 		onsuccess
-	}: { open: boolean; cluster: string; onsuccess?: (workspace?: any) => void } = $props();
+	}: {
+		open: boolean;
+		cluster: string;
+		onsuccess?: (workspace?: TenantOtterscaleIoV1Alpha1Workspace) => void;
+	} = $props();
 
-	function handleClose(workspace?: any) {
+	function handleClose(workspace?: TenantOtterscaleIoV1Alpha1Workspace) {
 		open = false;
 		if (workspace?.metadata?.name) {
 			onsuccess?.(workspace);
