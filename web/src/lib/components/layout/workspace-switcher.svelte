@@ -50,8 +50,14 @@
 	let {
 		cluster,
 		workspaces,
-		user
-	}: { cluster: string; workspaces: TenantOtterscaleIoV1Alpha1Workspace[]; user: User } = $props();
+		user,
+		onsuccess
+	}: {
+		cluster: string;
+		workspaces: TenantOtterscaleIoV1Alpha1Workspace[];
+		user: User;
+		onsuccess?: (workspace?: TenantOtterscaleIoV1Alpha1Workspace) => void;
+	} = $props();
 	const sidebar = useSidebar();
 	let activeWorkspace: TenantOtterscaleIoV1Alpha1Workspace | undefined = $derived(
 		workspaces.length > 0 ? workspaces[0] : undefined
@@ -256,4 +262,4 @@
 	</Sidebar.MenuItem>
 </Sidebar.Menu>
 
-<CreateSheet bind:open={createWorkspaceOpen} {cluster} />
+<CreateSheet bind:open={createWorkspaceOpen} {cluster} {onsuccess} />

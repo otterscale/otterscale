@@ -6,11 +6,16 @@
 
 	import CreateWorkspaceForm from './create-form.svelte';
 
-	let { open = $bindable(false), cluster }: { open: boolean; cluster: string } = $props();
+	let {
+		open = $bindable(false),
+		cluster,
+		onsuccess
+	}: { open: boolean; cluster: string; onsuccess?: (workspace?: any) => void } = $props();
 
 	function handleClose(workspace?: any) {
 		open = false;
 		if (workspace?.metadata?.name) {
+			onsuccess?.(workspace);
 			goto(
 				resolve(
 					`/(auth)/${cluster}/Workspace/workspaces?group=tenant.otterscale.io&version=v1alpha1&name=${workspace.metadata.name}`
