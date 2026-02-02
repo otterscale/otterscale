@@ -52,7 +52,7 @@
 	const scopeClient = createClient(ScopeService, transport);
 	const resourceClient = createClient(ResourceService, transport);
 
-	let activeScope = $state(page.params.scope ?? '');
+	let activeScope = $state(page.params.scope ?? page.params.cluster ?? ''); //TODO: remove page.params.scope after route updated
 	let scopes = $state<Scope[]>([]);
 	let workspaces = $state<TenantOtterscaleIoV1Alpha1Workspace[]>([]);
 	let next = $state(false);
