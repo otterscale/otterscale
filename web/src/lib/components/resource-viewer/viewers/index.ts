@@ -13,9 +13,9 @@ type DeleteFormType = Component<DeleteFormProps> | null;
 
 // Viewer Components
 // Delete Form Components
-import DeleteWorkspaceDialog from '$lib/components/form/workspace/delete-workspace-dialog.svelte';
+import DeleteDialog from '$lib/components/form/workspace/delete-dialog.svelte';
 // Edit Form Components
-import SheetEditWorkspace from '$lib/components/form/workspace/sheet-edit-workspace.svelte';
+import EditSheet from '$lib/components/form/workspace/edit-sheet.svelte';
 
 import Default from './default.svelte';
 import Workspaces from './workspaces.svelte';
@@ -29,17 +29,17 @@ function getResourceViewer(resource: string): ViewerType {
 
 function getEditForm(resource: string): EditFormType {
 	if (resource === 'workspaces') {
-		return SheetEditWorkspace as unknown as EditFormType;
+		return EditSheet as unknown as EditFormType;
 	}
 	return null;
 }
 
 function getDeleteForm(resource: string): DeleteFormType {
 	if (resource === 'workspaces') {
-		return DeleteWorkspaceDialog as unknown as DeleteFormType;
+		return DeleteDialog as unknown as DeleteFormType;
 	}
 	return null;
 }
 
-export type { DeleteFormType, EditFormType, ViewerType };
 export { getDeleteForm, getEditForm, getResourceViewer };
+export type { DeleteFormType, EditFormType, ViewerType };

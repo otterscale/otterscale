@@ -2,7 +2,7 @@
 	import BasicTierImage from '$lib/assets/basic-tier.jpg';
 	import * as Sheet from '$lib/components/ui/sheet';
 
-	import CreateWorkspaceForm from './create-workspace-form.svelte';
+	import CreateWorkspaceForm from './create-form.svelte';
 
 	let { open = $bindable(false) }: { open: boolean } = $props();
 

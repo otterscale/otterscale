@@ -26,7 +26,7 @@
 
 	const transport: Transport = getContext('transport');
 	const resourceClient = createClient(ResourceService, transport);
-	const cluster = $derived(page.params.cluster ?? '');
+	const cluster = $derived(page.params.cluster ?? page.params.scope ?? '');
 
 	// Remove metadata.managedFields from object
 	const cleanedObject = $derived.by(() => {

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import DialogCreateWorkspace from '$lib/components/form/workspace/dialog-create-workspace.svelte';
+	import CreateSheet from '$lib/components/form/workspace/create-sheet.svelte';
 	import { Button } from '$lib/components/ui/button';
 
 	let open = $state(false);
@@ -9,6 +9,6 @@
 	<div class="mb-12">
 		<h1 class="mb-4 text-2xl font-bold">Workspace Creation Dialog Test</h1>
 		<Button onclick={() => (open = true)}>Create Workspace</Button>
-		<DialogCreateWorkspace bind:open />
+		<CreateSheet bind:open />
 	</div>
 </div>

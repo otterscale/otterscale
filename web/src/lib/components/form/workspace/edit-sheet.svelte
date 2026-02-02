@@ -3,9 +3,10 @@
 
 	import BasicTierImage from '$lib/assets/basic-tier.jpg';
 	import type { K8sOpenAPISchema } from '$lib/components/custom/schema-form';
-	import EditWorkspaceForm from '$lib/components/form/workspace/edit-workspace-form.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import * as Sheet from '$lib/components/ui/sheet';
+
+	import EditWorkspaceForm from './edit-form.svelte';
 
 	let {
 		name,

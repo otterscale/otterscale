@@ -1,5 +1,5 @@
 <script lang="ts">
-	import SheetEditWorkspace from '$lib/components/form/workspace/sheet-edit-workspace.svelte';
+	import EditSheet from '$lib/components/form/workspace/edit-sheet.svelte';
 	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';
 
@@ -20,6 +20,6 @@
 			/>
 		</div>
 
-		<SheetEditWorkspace name={workspaceName} />
+		<EditSheet name={workspaceName} />
 	</div>
 </div>

@@ -22,7 +22,7 @@
 
 	const transport: Transport = getContext('transport');
 	const resourceClient = createClient(ResourceService, transport);
-	const cluster = $derived(page.params.scope ?? ''); // TODO: Change to cluster after the URL refactor completes.
+	const cluster = $derived(page.params.cluster ?? page.params.scope ?? ''); // TODO: Change to cluster after the URL refactor completes.
 
 	let apiSchema: K8sOpenAPISchema | undefined = $state();
 	let isSubmitting = $state(false);

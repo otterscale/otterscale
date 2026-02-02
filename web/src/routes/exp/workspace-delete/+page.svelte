@@ -1,5 +1,5 @@
 <script lang="ts">
-	import DeleteWorkspaceDialog from '$lib/components/form/workspace/delete-workspace-dialog.svelte';
+	import DeleteDialog from '$lib/components/form/workspace/delete-dialog.svelte';
 	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';
 
@@ -20,6 +20,6 @@
 			/>
 		</div>
 
-		<DeleteWorkspaceDialog name={workspaceName} />
+		<DeleteDialog name={workspaceName} />
 	</div>
 </div>

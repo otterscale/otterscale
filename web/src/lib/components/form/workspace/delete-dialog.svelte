@@ -8,7 +8,6 @@
 	import { ResourceService } from '$lib/api/resource/v1/resource_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
-	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
 	import { Button } from '$lib/components/ui/button';
 	import { m } from '$lib/paraglide/messages';
@@ -23,7 +22,7 @@
 
 	const transport: Transport = getContext('transport');
 	const resourceClient = createClient(ResourceService, transport);
-	const cluster = $derived(page.params.scope ?? '');
+	const cluster = $derived(page.params.cluster ?? page.params.scope ?? '');
 
 	let open = $state(false);
 	let confirmName = $state('');
