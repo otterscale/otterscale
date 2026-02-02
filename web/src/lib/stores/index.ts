@@ -21,6 +21,9 @@ interface AppStores {
 	// Navigation
 	breadcrumbs: Writable<Path[]>;
 
+	// Namespace
+	activeNamespace: Writable<string>;
+
 	// Notification
 	notifications: Writable<Notification[]>;
 }

@@ -27,12 +27,10 @@
 <script lang="ts">
 	let {
 		secrets,
-		// scope,
 		selectedNamespace = $bindable(),
 		reloadManager
 	}: {
 		secrets: Writable<Secret[]>;
-		// scope: string;
 		selectedNamespace: string;
 		reloadManager: ReloadManager;
 	} = $props();
@@ -139,7 +137,6 @@
 			<Filters.Column {messages} {table} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>
-			<!-- <Pickers {scope} bind:selectedNamespace /> -->
 			<Reloader
 				checked={reloadManager.state}
 				onCheckedChange={(isChecked) => {

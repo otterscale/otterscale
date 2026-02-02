@@ -26,7 +26,7 @@
 				scope: scope,
 				namespace: selectedNamespace
 			});
-			secrets.set(response.secrets.filter((secret) => secret.namespace === $activeNamespace));
+			secrets.set(response.secrets);
 		} catch (error) {
 			console.error('Failed to fetch secrets:', error);
 		}
