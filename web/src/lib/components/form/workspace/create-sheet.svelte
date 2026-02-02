@@ -1,13 +1,22 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
+	import { resolve } from '$app/paths';
 	import BasicTierImage from '$lib/assets/basic-tier.jpg';
 	import * as Sheet from '$lib/components/ui/sheet';
 
-	import CreateWorkspaceForm from './create-workspace-form.svelte';
+	import CreateWorkspaceForm from './create-form.svelte';
 
-	let { open = $bindable(false) }: { open: boolean } = $props();
+	let { open = $bindable(false), cluster }: { open: boolean; cluster: string } = $props();
 
-	function handleClose() {
+	function handleClose(workspace?: any) {
 		open = false;
+		if (workspace?.metadata?.name) {
+			goto(
+				resolve(
+					`/(auth)/${cluster}/Workspace/workspaces?group=tenant.otterscale.io&version=v1alpha1&name=${workspace.metadata.name}`
+				)
+			);
+		}
 	}
 </script>
 

@@ -40,7 +40,7 @@
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import { shortcut } from '$lib/actions/shortcut.svelte';
-	import DialogCreateWorkspace from '$lib/components/layout/dialog-create-workspace.svelte';
+	import CreateSheet from '$lib/components/form/workspace/create-sheet.svelte';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
 	import { useSidebar } from '$lib/components/ui/sidebar/index.js';
@@ -48,10 +48,10 @@
 	import type { User } from '$lib/server/session';
 
 	let {
-		scope,
+		cluster,
 		workspaces,
 		user
-	}: { scope: string; workspaces: TenantOtterscaleIoV1Alpha1Workspace[]; user: User } = $props();
+	}: { cluster: string; workspaces: TenantOtterscaleIoV1Alpha1Workspace[]; user: User } = $props();
 	const sidebar = useSidebar();
 	let activeWorkspace: TenantOtterscaleIoV1Alpha1Workspace | undefined = $derived(
 		workspaces.length > 0 ? workspaces[0] : undefined
@@ -116,7 +116,7 @@
 
 		goto(
 			resolve(
-				`/(auth)/${scope}/Workspace/workspaces?group=tenant.otterscale.io&version=v1alpha1&name=${activeWorkspace?.metadata?.name ?? ''}`
+				`/(auth)/${cluster}/Workspace/workspaces?group=tenant.otterscale.io&version=v1alpha1&name=${activeWorkspace?.metadata?.name ?? ''}`
 			)
 		);
 
@@ -256,4 +256,4 @@
 	</Sidebar.MenuItem>
 </Sidebar.Menu>
 
-<DialogCreateWorkspace bind:open={createWorkspaceOpen} />
+<CreateSheet bind:open={createWorkspaceOpen} {cluster} />

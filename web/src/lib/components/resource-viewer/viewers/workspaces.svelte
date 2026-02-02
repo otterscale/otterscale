@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import {
-		Ban,
 		Box,
 		CircleCheck,
 		Gauge,
+		Grid,
 		HeartPulse,
 		Network,
 		Shield,
@@ -25,9 +25,7 @@
 		ResourceService
 	} from '$lib/api/resource/v1/resource_pb';
 	import { typographyVariants } from '$lib/components/typography/index.ts';
-	import * as Alert from '$lib/components/ui/alert/index.js';
 	import { Badge } from '$lib/components/ui/badge';
-	import { Button } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
 	import * as Empty from '$lib/components/ui/empty/index.js';
 	import * as Field from '$lib/components/ui/field/index.js';
@@ -35,6 +33,7 @@
 	import Label from '$lib/components/ui/label/label.svelte';
 	import Separator from '$lib/components/ui/separator/separator.svelte';
 	import { Skeleton } from '$lib/components/ui/skeleton/index.js';
+	import { Toggle } from '$lib/components/ui/toggle/index.js';
 	import { cn } from '$lib/utils';
 
 	let { object }: { object: TenantOtterscaleIoV1Alpha1Workspace } = $props();
@@ -85,6 +84,8 @@
 			);
 
 			return resourceQuotaResponse.object as CoreV1ResourceQuota;
+		} catch {
+			return {} as CoreV1ResourceQuota;
 		} finally {
 			if (getAbortController) {
 				getAbortController.abort();
@@ -113,6 +114,23 @@
 			)
 		);
 	}
+	function getGridLayout(key: string) {
+		if (key === 'limits.cpu') return 'md:row-start-1 2xl:row-start-1';
+		if (key === 'limits.memory') return 'md:row-start-2 2xl:row-start-1';
+		if (key === 'limits.otterscale.com/vgpu') return 'md:row-start-3 2xl:row-start-1';
+		if (key === 'limits.otterscale.com/vgpumem') return 'md:row-start-4 2xl:row-start-1';
+		if (key === 'limits.otterscale.com/vgpumem-percentage') return 'md:row-start-5 2xl:row-start-1';
+
+		if (key === 'requests.cpu') return 'md:row-start-1 2xl:row-start-2';
+		if (key === 'requests.memory') return 'md:row-start-2 2xl:row-start-2';
+		if (key === 'requests.otterscale.com/vgpu') return 'md:row-start-3 2xl:row-start-2';
+		if (key === 'requests.otterscale.com/vgpumem') return 'md:row-start-4 2xl:row-start-2';
+		if (key === 'requests.otterscale.com/vgpumem-percentage')
+			return 'md:row-start-5 2xl:row-start-2';
+
+		return '2xl:row-start-3 md:row-start-6';
+	}
+	let isResourceQuotasGrid = $state(false);
 </script>
 
 {#await GetResourceQuota()}
@@ -165,35 +183,49 @@
 					</Card.Title>
 				</Card.Header>
 				<Card.Content>
-					{#if isReady}
-						<Item.Root class={cn('p-0', !isReady ? '**:text-destructive' : '**:text-none')}>
-							<Item.Content>
-								<Item.Title class={typographyVariants({ variant: 'h6' })}>
-									{readyCondition?.reason}
-								</Item.Title>
-								<Item.Description>{readyCondition?.message}</Item.Description>
-							</Item.Content>
-						</Item.Root>
-					{:else}
-						{#each [...conditions].sort((p, n) => {
-							const previous = new Date(p.lastTransitionTime ?? 0).getTime();
-							const next = new Date(n.lastTransitionTime ?? 0).getTime();
-							return next - previous;
-						}) as condition, index (index)}
-							<Item.Root
-								class={cn(
-									'p-0',
-									condition.status === 'False' ? '**:text-destructive' : '**:text-none'
-								)}
-							>
+					{#if conditions.length > 0}
+						{#if isReady}
+							<Item.Root class={cn('p-0', !isReady ? '**:text-destructive' : '**:text-none')}>
 								<Item.Content>
 									<Item.Title class={typographyVariants({ variant: 'h6' })}>
-										{condition?.reason}
+										{readyCondition?.reason}
 									</Item.Title>
-									<Item.Description class="max-w-3xs">{condition?.message}</Item.Description>
+									<Item.Description>{readyCondition?.message}</Item.Description>
 								</Item.Content>
 							</Item.Root>
-						{/each}
+						{:else}
+							{#each [...conditions].sort((p, n) => {
+								const previous = new Date(p.lastTransitionTime ?? 0).getTime();
+								const next = new Date(n.lastTransitionTime ?? 0).getTime();
+								return next - previous;
+							}) as condition, index (index)}
+								<Item.Root
+									class={cn(
+										'p-0',
+										condition.status === 'False' ? '**:text-destructive' : '**:text-none'
+									)}
+								>
+									<Item.Content>
+										<Item.Title class={typographyVariants({ variant: 'h6' })}>
+											{condition?.reason}
+										</Item.Title>
+										<Item.Description class="max-w-3xs">{condition?.message}</Item.Description>
+									</Item.Content>
+								</Item.Root>
+							{/each}
+						{/if}
+					{:else}
+						<Empty.Root class="h-full">
+							<Empty.Header>
+								<Empty.Media variant="icon">
+									<HeartPulse />
+								</Empty.Media>
+								<Empty.Title>No Status Available</Empty.Title>
+								<Empty.Description>
+									There are no status conditions to display for this workspace.
+								</Empty.Description>
+							</Empty.Header>
+						</Empty.Root>
 					{/if}
 				</Card.Content>
 			</Card.Root>
@@ -202,7 +234,8 @@
 			</div>
 			<!-- Resource Quota -->
 			<Card.Root class="flex h-full flex-col border-0 bg-transparent shadow-none">
-				<!-- {@const resourceQuotaHard = object.spec?.resourceQuota?.hard ?? {}} -->
+				{@const resourceQuotaHard = object.spec?.resourceQuota?.hard ?? {}}
+				{@const resourceQuotaUsed: any = resourceQuota?.status?.used ?? {}}
 				<Card.Header>
 					<Card.Title>
 						<Item.Root class="p-0">
@@ -213,21 +246,36 @@
 								<Item.Title class={typographyVariants({ variant: 'h6' })}>Resource Quota</Item.Title
 								>
 							</Item.Content>
+							<Item.Actions>
+								<Toggle
+									aria-label="Toggle Resource Quota Grid"
+									size="sm"
+									onclick={() => {
+										isResourceQuotasGrid = !isResourceQuotasGrid;
+									}}
+									class="data-[state=on]:*:[svg]:fill-muted-foreground/50"
+								>
+									<Grid />
+								</Toggle>
+							</Item.Actions>
 						</Item.Root>
 					</Card.Title>
 				</Card.Header>
 				<Card.Content>
-					{#if Object.keys(resourceQuota?.status?.hard ?? {}).length > 0}
-						<div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-							{#each Object.keys(resourceQuota?.status?.hard ?? {}) as key, index (index)}
-								<Item.Root class="w-fit p-0">
+					{#if Object.keys(resourceQuotaHard).length > 0}
+						<div class="grid grid-cols-1 gap-4 md:grid-cols-2 2xl:grid-cols-5">
+							{#each Object.keys(resourceQuotaHard) as key, index (index)}
+								<Item.Root
+									class={cn('w-fit p-0', isResourceQuotasGrid ? getGridLayout(key) : 'flex')}
+								>
 									<Item.Content class="flex gap-2">
 										<Item.Description>
 											{key}
 										</Item.Description>
 										<Item.Title class={cn(typographyVariants({ variant: 'large' }))}>
-											{(resourceQuota?.status?.used ?? {})[key]}/{(resourceQuota?.status?.hard ??
-												{})[key]}
+											{resourceQuotaUsed[key] !== undefined
+												? resourceQuotaUsed[key]
+												: '?'}/{resourceQuotaHard[key]}
 										</Item.Title>
 									</Item.Content>
 								</Item.Root>
@@ -429,239 +477,24 @@
 		<Field.Set>
 			<!-- Related Resources -->
 			<Label class={typographyVariants({ variant: 'h4' })}>Related Resources</Label>
-			<div class="grid gap-4 xl:grid-cols-2 2xl:grid-cols-3">
-				{#if object?.status?.authorizationPolicyRef?.name}
-					{@const reference = mapper.get(
-						`${object?.status?.authorizationPolicyRef?.apiVersion}/${object?.status?.authorizationPolicyRef?.kind}`
-					)}
-					<Item.Root
-						variant="muted"
-						class="hover:underline"
-						onclick={() => {
-							handleClick(
-								page.params.cluster!,
-								object?.status?.authorizationPolicyRef?.namespace ?? '',
-								reference?.group ?? '',
-								reference?.version ?? '',
-								object?.status?.authorizationPolicyRef?.kind ?? '',
-								reference?.resource ?? '',
-								object?.status?.authorizationPolicyRef?.name ?? ''
-							);
-						}}
-					>
-						<Item.Media>
-							<Box size={20} />
-						</Item.Media>
-						<Item.Content>
-							<Item.Title class="flex flex-wrap">
-								<h1>{object?.status?.authorizationPolicyRef?.kind}</h1>
-								<p class={typographyVariants({ variant: 'muted' })}>
-									{object?.status?.authorizationPolicyRef?.apiVersion}
-								</p>
-							</Item.Title>
-							<Item.Description>
-								{object?.status?.authorizationPolicyRef?.name}
-							</Item.Description>
-						</Item.Content>
-					</Item.Root>
-				{/if}
-
-				{#if object?.status?.limitRangeRef?.name}
-					{@const reference = mapper.get(
-						`${object?.status?.limitRangeRef?.apiVersion}/${object?.status?.limitRangeRef?.kind}`
-					)}
-					<Item.Root
-						variant="muted"
-						class="hover:underline"
-						onclick={() => {
-							handleClick(
-								page.params.cluster!,
-								object?.status?.limitRangeRef?.namespace ?? '',
-								reference?.group ?? '',
-								reference?.version ?? '',
-								object?.status?.limitRangeRef?.kind ?? '',
-								reference?.resource ?? '',
-								object?.status?.limitRangeRef?.name ?? ''
-							);
-						}}
-					>
-						<Item.Media>
-							<Box size={20} />
-						</Item.Media>
-						<Item.Content>
-							<Item.Title class="flex flex-wrap">
-								<h1>{object?.status?.limitRangeRef?.kind}</h1>
-								<p class={typographyVariants({ variant: 'muted' })}>
-									{object?.status?.limitRangeRef?.apiVersion}
-								</p>
-							</Item.Title>
-							<Item.Description>
-								{object?.status?.limitRangeRef?.name}
-							</Item.Description>
-						</Item.Content>
-					</Item.Root>
-				{/if}
-
-				{#if object?.status?.namespaceRef?.name}
-					{@const reference = mapper.get(
-						`${object?.status?.namespaceRef?.apiVersion}/${object?.status?.namespaceRef?.kind}`
-					)}
-					<Item.Root
-						variant="muted"
-						class="hover:underline"
-						onclick={() => {
-							handleClick(
-								page.params.cluster!,
-								object?.status?.namespaceRef?.namespace ?? '',
-								reference?.group ?? '',
-								reference?.version ?? '',
-								object?.status?.namespaceRef?.kind ?? '',
-								reference?.resource ?? '',
-								object?.status?.namespaceRef?.name ?? ''
-							);
-						}}
-					>
-						<Item.Media>
-							<Box size={20} />
-						</Item.Media>
-						<Item.Content>
-							<Item.Title class="flex flex-wrap">
-								<h1>{object?.status?.namespaceRef?.kind}</h1>
-								<p class={typographyVariants({ variant: 'muted' })}>
-									{object?.status?.namespaceRef?.apiVersion}
-								</p>
-							</Item.Title>
-							<Item.Description>
-								{object?.status?.namespaceRef?.name}
-							</Item.Description>
-						</Item.Content>
-					</Item.Root>
-				{/if}
-
-				{#if object?.status?.networkPolicyRef?.name}
-					{@const reference = mapper.get(
-						`${object?.status?.networkPolicyRef?.apiVersion}/${object?.status?.networkPolicyRef?.kind}`
-					)}
-					<Item.Root
-						variant="muted"
-						class="hover:underline"
-						onclick={() => {
-							handleClick(
-								page.params.cluster!,
-								object?.status?.networkPolicyRef?.namespace ?? '',
-								reference?.group ?? '',
-								reference?.version ?? '',
-								object?.status?.networkPolicyRef?.kind ?? '',
-								reference?.resource ?? '',
-								object?.status?.networkPolicyRef?.name ?? ''
-							);
-						}}
-					>
-						<Item.Media>
-							<Box size={20} />
-						</Item.Media>
-						<Item.Content>
-							<Item.Title class="flex flex-wrap">
-								<h1>{object?.status?.networkPolicyRef?.kind}</h1>
-								<p class={typographyVariants({ variant: 'muted' })}>
-									{object?.status?.networkPolicyRef?.apiVersion}
-								</p>
-							</Item.Title>
-							<Item.Description>
-								{object?.status?.networkPolicyRef?.name}
-							</Item.Description>
-						</Item.Content>
-					</Item.Root>
-				{/if}
-
-				{#if object?.status?.peerAuthenticationRef?.name}
-					{@const reference = mapper.get(
-						`${object?.status?.peerAuthenticationRef?.apiVersion}/${object?.status?.peerAuthenticationRef?.kind}`
-					)}
-					<Item.Root
-						variant="muted"
-						class="hover:underline"
-						onclick={() => {
-							handleClick(
-								page.params.cluster!,
-								object?.status?.peerAuthenticationRef?.namespace ?? '',
-								reference?.group ?? '',
-								reference?.version ?? '',
-								object?.status?.peerAuthenticationRef?.kind ?? '',
-								reference?.resource ?? '',
-								object?.status?.peerAuthenticationRef?.name ?? ''
-							);
-						}}
-					>
-						<Item.Media>
-							<Box size={20} />
-						</Item.Media>
-						<Item.Content>
-							<Item.Title class="flex flex-wrap">
-								<h1>{object?.status?.peerAuthenticationRef?.kind}</h1>
-								<p class={typographyVariants({ variant: 'muted' })}>
-									{object?.status?.peerAuthenticationRef?.apiVersion}
-								</p>
-							</Item.Title>
-							<Item.Description>
-								{object?.status?.peerAuthenticationRef?.name}
-							</Item.Description>
-						</Item.Content>
-					</Item.Root>
-				{/if}
-
-				{#if object?.status?.resourceQuotaRef?.name}
-					{@const reference = mapper.get(
-						`${object?.status?.resourceQuotaRef?.apiVersion}/${object?.status?.resourceQuotaRef?.kind}`
-					)}
-					<Item.Root
-						variant="muted"
-						class="hover:underline"
-						onclick={() => {
-							handleClick(
-								page.params.cluster!,
-								object?.status?.resourceQuotaRef?.namespace ?? '',
-								reference?.group ?? '',
-								reference?.version ?? '',
-								object?.status?.resourceQuotaRef?.kind ?? '',
-								reference?.resource ?? '',
-								object?.status?.resourceQuotaRef?.name ?? ''
-							);
-						}}
-					>
-						<Item.Media>
-							<Box size={20} />
-						</Item.Media>
-						<Item.Content>
-							<Item.Title class="flex flex-wrap">
-								<h1>{object?.status?.resourceQuotaRef?.kind}</h1>
-								<p class={typographyVariants({ variant: 'muted' })}>
-									{object?.status?.resourceQuotaRef?.apiVersion}
-								</p>
-							</Item.Title>
-							<Item.Description>
-								{object?.status?.resourceQuotaRef?.name}
-							</Item.Description>
-						</Item.Content>
-					</Item.Root>
-				{/if}
-
-				{#each object?.status?.roleBindingRefs as roleBindingRef, index (index)}
-					{#if roleBindingRef.name}
-						{@const reference = mapper.get(`${roleBindingRef.apiVersion}/${roleBindingRef.kind}`)}
-
+			{#if Object.keys(object?.status ?? {}).length > 1}
+				<div class="grid gap-4 xl:grid-cols-2 2xl:grid-cols-3">
+					{#if object?.status?.authorizationPolicyRef?.name}
+						{@const reference = mapper.get(
+							`${object?.status?.authorizationPolicyRef?.apiVersion}/${object?.status?.authorizationPolicyRef?.kind}`
+						)}
 						<Item.Root
 							variant="muted"
 							class="hover:underline"
 							onclick={() => {
 								handleClick(
 									page.params.cluster!,
-									roleBindingRef.namespace ?? '',
+									object?.status?.authorizationPolicyRef?.namespace ?? '',
 									reference?.group ?? '',
 									reference?.version ?? '',
-									roleBindingRef.kind ?? '',
+									object?.status?.authorizationPolicyRef?.kind ?? '',
 									reference?.resource ?? '',
-									roleBindingRef.name ?? ''
+									object?.status?.authorizationPolicyRef?.name ?? ''
 								);
 							}}
 						>
@@ -670,43 +503,248 @@
 							</Item.Media>
 							<Item.Content>
 								<Item.Title class="flex flex-wrap">
-									<h1>{roleBindingRef.kind}</h1>
+									<h1>{object?.status?.authorizationPolicyRef?.kind}</h1>
 									<p class={typographyVariants({ variant: 'muted' })}>
-										{roleBindingRef.apiVersion}
+										{object?.status?.authorizationPolicyRef?.apiVersion}
 									</p>
 								</Item.Title>
 								<Item.Description>
-									{roleBindingRef.name}
+									{object?.status?.authorizationPolicyRef?.name}
 								</Item.Description>
 							</Item.Content>
 						</Item.Root>
 					{/if}
-				{/each}
-			</div>
+
+					{#if object?.status?.limitRangeRef?.name}
+						{@const reference = mapper.get(
+							`${object?.status?.limitRangeRef?.apiVersion}/${object?.status?.limitRangeRef?.kind}`
+						)}
+						<Item.Root
+							variant="muted"
+							class="hover:underline"
+							onclick={() => {
+								handleClick(
+									page.params.cluster!,
+									object?.status?.limitRangeRef?.namespace ?? '',
+									reference?.group ?? '',
+									reference?.version ?? '',
+									object?.status?.limitRangeRef?.kind ?? '',
+									reference?.resource ?? '',
+									object?.status?.limitRangeRef?.name ?? ''
+								);
+							}}
+						>
+							<Item.Media>
+								<Box size={20} />
+							</Item.Media>
+							<Item.Content>
+								<Item.Title class="flex flex-wrap">
+									<h1>{object?.status?.limitRangeRef?.kind}</h1>
+									<p class={typographyVariants({ variant: 'muted' })}>
+										{object?.status?.limitRangeRef?.apiVersion}
+									</p>
+								</Item.Title>
+								<Item.Description>
+									{object?.status?.limitRangeRef?.name}
+								</Item.Description>
+							</Item.Content>
+						</Item.Root>
+					{/if}
+
+					{#if object?.status?.namespaceRef?.name}
+						{@const reference = mapper.get(
+							`${object?.status?.namespaceRef?.apiVersion}/${object?.status?.namespaceRef?.kind}`
+						)}
+						<Item.Root
+							variant="muted"
+							class="hover:underline"
+							onclick={() => {
+								handleClick(
+									page.params.cluster!,
+									object?.status?.namespaceRef?.namespace ?? '',
+									reference?.group ?? '',
+									reference?.version ?? '',
+									object?.status?.namespaceRef?.kind ?? '',
+									reference?.resource ?? '',
+									object?.status?.namespaceRef?.name ?? ''
+								);
+							}}
+						>
+							<Item.Media>
+								<Box size={20} />
+							</Item.Media>
+							<Item.Content>
+								<Item.Title class="flex flex-wrap">
+									<h1>{object?.status?.namespaceRef?.kind}</h1>
+									<p class={typographyVariants({ variant: 'muted' })}>
+										{object?.status?.namespaceRef?.apiVersion}
+									</p>
+								</Item.Title>
+								<Item.Description>
+									{object?.status?.namespaceRef?.name}
+								</Item.Description>
+							</Item.Content>
+						</Item.Root>
+					{/if}
+
+					{#if object?.status?.networkPolicyRef?.name}
+						{@const reference = mapper.get(
+							`${object?.status?.networkPolicyRef?.apiVersion}/${object?.status?.networkPolicyRef?.kind}`
+						)}
+						<Item.Root
+							variant="muted"
+							class="hover:underline"
+							onclick={() => {
+								handleClick(
+									page.params.cluster!,
+									object?.status?.networkPolicyRef?.namespace ?? '',
+									reference?.group ?? '',
+									reference?.version ?? '',
+									object?.status?.networkPolicyRef?.kind ?? '',
+									reference?.resource ?? '',
+									object?.status?.networkPolicyRef?.name ?? ''
+								);
+							}}
+						>
+							<Item.Media>
+								<Box size={20} />
+							</Item.Media>
+							<Item.Content>
+								<Item.Title class="flex flex-wrap">
+									<h1>{object?.status?.networkPolicyRef?.kind}</h1>
+									<p class={typographyVariants({ variant: 'muted' })}>
+										{object?.status?.networkPolicyRef?.apiVersion}
+									</p>
+								</Item.Title>
+								<Item.Description>
+									{object?.status?.networkPolicyRef?.name}
+								</Item.Description>
+							</Item.Content>
+						</Item.Root>
+					{/if}
+
+					{#if object?.status?.peerAuthenticationRef?.name}
+						{@const reference = mapper.get(
+							`${object?.status?.peerAuthenticationRef?.apiVersion}/${object?.status?.peerAuthenticationRef?.kind}`
+						)}
+						<Item.Root
+							variant="muted"
+							class="hover:underline"
+							onclick={() => {
+								handleClick(
+									page.params.cluster!,
+									object?.status?.peerAuthenticationRef?.namespace ?? '',
+									reference?.group ?? '',
+									reference?.version ?? '',
+									object?.status?.peerAuthenticationRef?.kind ?? '',
+									reference?.resource ?? '',
+									object?.status?.peerAuthenticationRef?.name ?? ''
+								);
+							}}
+						>
+							<Item.Media>
+								<Box size={20} />
+							</Item.Media>
+							<Item.Content>
+								<Item.Title class="flex flex-wrap">
+									<h1>{object?.status?.peerAuthenticationRef?.kind}</h1>
+									<p class={typographyVariants({ variant: 'muted' })}>
+										{object?.status?.peerAuthenticationRef?.apiVersion}
+									</p>
+								</Item.Title>
+								<Item.Description>
+									{object?.status?.peerAuthenticationRef?.name}
+								</Item.Description>
+							</Item.Content>
+						</Item.Root>
+					{/if}
+
+					{#if object?.status?.resourceQuotaRef?.name}
+						{@const reference = mapper.get(
+							`${object?.status?.resourceQuotaRef?.apiVersion}/${object?.status?.resourceQuotaRef?.kind}`
+						)}
+						<Item.Root
+							variant="muted"
+							class="hover:underline"
+							onclick={() => {
+								handleClick(
+									page.params.cluster!,
+									object?.status?.resourceQuotaRef?.namespace ?? '',
+									reference?.group ?? '',
+									reference?.version ?? '',
+									object?.status?.resourceQuotaRef?.kind ?? '',
+									reference?.resource ?? '',
+									object?.status?.resourceQuotaRef?.name ?? ''
+								);
+							}}
+						>
+							<Item.Media>
+								<Box size={20} />
+							</Item.Media>
+							<Item.Content>
+								<Item.Title class="flex flex-wrap">
+									<h1>{object?.status?.resourceQuotaRef?.kind}</h1>
+									<p class={typographyVariants({ variant: 'muted' })}>
+										{object?.status?.resourceQuotaRef?.apiVersion}
+									</p>
+								</Item.Title>
+								<Item.Description>
+									{object?.status?.resourceQuotaRef?.name}
+								</Item.Description>
+							</Item.Content>
+						</Item.Root>
+					{/if}
+
+					{#each object?.status?.roleBindingRefs as roleBindingRef, index (index)}
+						{#if roleBindingRef.name}
+							{@const reference = mapper.get(`${roleBindingRef.apiVersion}/${roleBindingRef.kind}`)}
+
+							<Item.Root
+								variant="muted"
+								class="hover:underline"
+								onclick={() => {
+									handleClick(
+										page.params.cluster!,
+										roleBindingRef.namespace ?? '',
+										reference?.group ?? '',
+										reference?.version ?? '',
+										roleBindingRef.kind ?? '',
+										reference?.resource ?? '',
+										roleBindingRef.name ?? ''
+									);
+								}}
+							>
+								<Item.Media>
+									<Box size={20} />
+								</Item.Media>
+								<Item.Content>
+									<Item.Title class="flex flex-wrap">
+										<h1>{roleBindingRef.kind}</h1>
+										<p class={typographyVariants({ variant: 'muted' })}>
+											{roleBindingRef.apiVersion}
+										</p>
+									</Item.Title>
+									<Item.Description>
+										{roleBindingRef.name}
+									</Item.Description>
+								</Item.Content>
+							</Item.Root>
+						{/if}
+					{/each}
+				</div>
+			{:else}
+				<Empty.Root class="h-full">
+					<Empty.Header>
+						<Empty.Media variant="icon">
+							<Box />
+						</Empty.Media>
+						<Empty.Title>No Related Resources</Empty.Title>
+						<Empty.Description>
+							There are no related resources to display for this workspace.
+						</Empty.Description>
+					</Empty.Header>
+				</Empty.Root>
+			{/if}
 		</Field.Set>
 	</Field.Group>
-{:catch error}
-	<Empty.Root>
-		<Empty.Header>
-			<Empty.Media class="rounded-full bg-muted p-4">
-				<Ban size={36} />
-			</Empty.Media>
-			<Empty.Title class="text-2xl font-bold">Failed to load data</Empty.Title>
-			<Empty.Description>
-				An error occurred while fetching data. Please check your connection or try again later.
-			</Empty.Description>
-		</Empty.Header>
-		<Empty.Content>
-			<Alert.Root variant="destructive" class="border-none bg-destructive/5">
-				<Alert.Title class="font-bold">{error?.name}</Alert.Title>
-				<Alert.Description class="text-start">
-					{error?.rawMessage}
-				</Alert.Description>
-			</Alert.Root>
-			<div class="flex gap-4">
-				<Button variant="outline" onclick={() => history.back()}>Go Back</Button>
-				<Button href="/">Go Home</Button>
-			</div>
-		</Empty.Content>
-	</Empty.Root>
 {/await}
