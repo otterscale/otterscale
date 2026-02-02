@@ -309,6 +309,7 @@ func deref[T any](ptr *T, def T) T {
 	return def
 }
 
+//nolint:gocyclo
 func kubernetesErrorToConnectError(err error) error {
 	var statusErr *apierrors.StatusError
 	if !errors.As(err, &statusErr) {
