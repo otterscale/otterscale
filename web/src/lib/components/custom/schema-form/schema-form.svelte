@@ -31,10 +31,16 @@
 		initialData?: Record<string, unknown>;
 		/** Current mode: 'basic' | 'advance' */
 		mode?: 'basic' | 'advance';
+		/** Form title */
+		title?: string;
 		/** Callback when mode changes */
 		onModeChange?: (mode: 'basic' | 'advance') => void;
 		/** Callback when submit button is clicked */
-		onSubmit?: () => Promise<void> | void;
+		onSubmit?: (data: Record<string, unknown>) => Promise<void> | void;
+		/** Transform data before submission */
+		transformData?: (data: Record<string, unknown>) => Record<string, unknown>;
+		/** Whether YAML editor is editable */
+		yamlEditable?: boolean;
 	}
 
 	let {
@@ -43,8 +49,11 @@
 		form = $bindable(),
 		initialData,
 		mode = $bindable('basic'),
+		title,
 		onModeChange,
-		onSubmit
+		onSubmit,
+		transformData,
+		yamlEditable = false
 	}: Props = $props();
 
 	setThemeContext({ components });
@@ -52,6 +61,7 @@
 	const formConfig = buildSchemaFromK8s(apiSchema, paths);
 
 	let initialValue = $state(k8sToFormData(initialData, formConfig.transformationMappings));
+	let masterData = $state<Record<string, unknown>>({});
 	let advanceYaml = $state('');
 	let yamlParseError = $state<string | null>(null);
 	let ref: HTMLFormElement | undefined;
@@ -73,6 +83,7 @@
 		try {
 			const rawData = form ? getValueSnapshot(form) : initialValue;
 			const k8sData = formDataToK8s(rawData, formConfig.transformationMappings);
+			masterData = k8sData;
 
 			advanceYaml = yaml.dump(k8sData, {
 				indent: 2,
@@ -92,6 +103,7 @@
 				const formData = k8sToFormData(parsed, formConfig.transformationMappings);
 				Object.assign(initialValue, formData);
 				form = initForm(initialValue);
+				masterData = parsed;
 			}
 		} catch (error) {
 			const errorMsg = `Invalid YAML: ${error instanceof Error ? error.message : 'Unknown error'}`;
@@ -102,11 +114,18 @@
 
 	function handleFormSubmit(data: Record<string, unknown>) {
 		try {
-			const k8sData = formDataToK8s(data, formConfig.transformationMappings);
+			let k8sData = formDataToK8s(data, formConfig.transformationMappings);
+			masterData = k8sData;
+
+			if (transformData) {
+				k8sData = transformData(k8sData);
+				masterData = k8sData;
+			}
+
 			console.log('Form submitted with data:', k8sData);
 
 			if (onSubmit) {
-				onSubmit();
+				onSubmit(k8sData);
 			} else {
 				onModeChange?.(mode);
 			}
@@ -134,13 +153,18 @@
 </script>
 
 <div class="schema-form-container">
-	<div class="mb-4 flex items-center justify-end">
-		<Tabs.Root value={mode} onValueChange={handleModeChange}>
-			<Tabs.List>
-				<Tabs.Trigger value="basic">Basic</Tabs.Trigger>
-				<Tabs.Trigger value="advance">Advance</Tabs.Trigger>
-			</Tabs.List>
-		</Tabs.Root>
+	<div class="relative mb-4 flex items-center justify-center py-2">
+		{#if title}
+			<h1 class="text-2xl font-bold">{title}</h1>
+		{/if}
+		<div class="absolute right-0">
+			<Tabs.Root value={mode} onValueChange={handleModeChange}>
+				<Tabs.List>
+					<Tabs.Trigger value="basic">Form</Tabs.Trigger>
+					<Tabs.Trigger value="advance">YAML</Tabs.Trigger>
+				</Tabs.List>
+			</Tabs.Root>
+		</div>
 	</div>
 
 	<Tabs.Root value={mode}>
@@ -168,7 +192,8 @@
 						padding: { top: 16, bottom: 8 },
 						automaticLayout: true,
 						minimap: { enabled: false },
-						scrollBeyondLastLine: false
+						scrollBeyondLastLine: false,
+						readOnly: !yamlEditable
 					}}
 					theme={themeMode.current === 'dark' ? 'vs-dark' : 'vs'}
 					bind:value={advanceYaml}
@@ -182,8 +207,16 @@
 		onclick={() => {
 			if (mode === 'advance') {
 				syncYamlToForm();
+				if (onSubmit && masterData) {
+					let finalData = masterData;
+					if (transformData) {
+						finalData = transformData(masterData);
+					}
+					onSubmit(finalData);
+				}
+			} else {
+				ref?.requestSubmit();
 			}
-			ref?.requestSubmit();
 		}}
 	>
 		Submit
