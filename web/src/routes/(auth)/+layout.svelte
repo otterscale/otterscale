@@ -112,7 +112,12 @@
 	<Sidebar.Root id="sidebar-guide-step" collapsible="icon" variant="inset" class="p-3">
 		{#if activeScope && isMounted}
 			<Sidebar.Header id="workspace-guide-step">
-				<WorkspaceSwitcher cluster={activeScope} {workspaces} user={data.user} />
+				<WorkspaceSwitcher
+					cluster={activeScope}
+					{workspaces}
+					user={data.user}
+					onsuccess={() => fetchWorkspaces(activeScope)}
+				/>
 			</Sidebar.Header>
 			<Sidebar.Content class="gap-2">
 				<NavOverview items={navData.overview} />
