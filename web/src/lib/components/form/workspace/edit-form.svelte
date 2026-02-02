@@ -29,13 +29,13 @@
 	const cluster = $derived(page.params.cluster ?? page.params.scope ?? '');
 
 	// Remove metadata.managedFields from object
-	const cleanedObject = $derived.by(() => {
-		const copy = structuredClone(object);
+	function getCleanedObject() {
+		const copy = structuredClone($state.snapshot(object) as Record<string, unknown>);
 		if (copy.metadata && typeof copy.metadata === 'object') {
 			delete (copy.metadata as Record<string, unknown>).managedFields;
 		}
 		return copy;
-	});
+	}
 
 	let isSubmitting = $state(false);
 
@@ -153,7 +153,7 @@
 	<MultiStepSchemaForm
 		apiSchema={schema}
 		fields={groupedFields}
-		initialData={cleanedObject}
+		initialData={getCleanedObject()}
 		title={`Edit Workspace: ${name}`}
 		onSubmit={handleMultiStepSubmit}
 		transformData={transformFormData}

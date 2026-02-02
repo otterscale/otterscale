@@ -5,7 +5,7 @@
 	import { Ban, Braces } from '@lucide/svelte';
 	import File from '@lucide/svelte/icons/file';
 	import Layers from '@lucide/svelte/icons/layers';
-	import { getContext, onDestroy } from 'svelte';
+	import { getContext, onDestroy, onMount } from 'svelte';
 	import { stringify } from 'yaml';
 
 	import {
@@ -50,9 +50,18 @@
 	const transport: Transport = getContext('transport');
 	const resourceClient = createClient(ResourceService, transport);
 
+	let schema: any | undefined = $state(undefined);
+	let object: any | undefined = $state(undefined);
+	let error: any | null = $state(null);
+
+	let isGetting = $state(false);
 	let getAbortController: AbortController | null = null;
-	async function GetResource(): Promise<any> {
+	async function GetResource() {
+		if (isGetting || isDestroyed) return;
+
+		isGetting = true;
 		getAbortController = new AbortController();
+
 		try {
 			const schemaResponse = await resourceClient.schema(
 				{
@@ -63,6 +72,8 @@
 				} as SchemaRequest,
 				{ signal: getAbortController?.signal }
 			);
+
+			schema = toJson(StructSchema, schemaResponse);
 
 			const getResponse = await resourceClient.get(
 				{
@@ -75,27 +86,33 @@
 				} as GetRequest,
 				{ signal: getAbortController?.signal }
 			);
-
-			return { object: getResponse.object, schema: toJson(StructSchema, schemaResponse) };
+			object = getResponse.object;
+		} catch (e) {
+			error = e as Error;
 		} finally {
+			isGetting = false;
 			if (getAbortController) getAbortController = null;
 		}
 	}
 
-	let resourcePromise = $state(GetResource());
+	let isMounted = $state(false);
+	onMount(async () => {
+		await GetResource();
 
-	function refreshResource() {
-		resourcePromise = GetResource();
-	}
+		isMounted = true;
+	});
 
+	let isDestroyed = $state(false);
 	onDestroy(() => {
+		isDestroyed = true;
+
 		if (getAbortController) {
 			getAbortController.abort();
 		}
 	});
 </script>
 
-{#await resourcePromise}
+{#if !isMounted}
 	<Field.Group class="pb-8">
 		<Field.Set>
 			<Item.Root>
@@ -171,7 +188,31 @@
 			{/each}
 		</Field.Set>
 	</Field.Group>
-{:then response}
+{:else if error}
+	<Empty.Root>
+		<Empty.Header>
+			<Empty.Media class="rounded-full bg-muted p-4">
+				<Ban size={36} />
+			</Empty.Media>
+			<Empty.Title class="text-2xl font-bold">Failed to load data</Empty.Title>
+			<Empty.Description>
+				An error occurred while fetching data. Please check your connection or try again later.
+			</Empty.Description>
+		</Empty.Header>
+		<Empty.Content>
+			<Alert.Root variant="destructive" class="border-none bg-destructive/5">
+				<Alert.Title class="font-bold">{error?.name}</Alert.Title>
+				<Alert.Description class="text-start">
+					{error?.rawMessage}
+				</Alert.Description>
+			</Alert.Root>
+			<div class="flex gap-4">
+				<Button variant="outline" onclick={() => history.back()}>Go Back</Button>
+				<Button href="/">Go Home</Button>
+			</div>
+		</Empty.Content>
+	</Empty.Root>
+{:else}
 	{@const Inspector: ViewerType = getResourceViewer(resource)}
 	<Field.Group class="pb-8">
 		<Field.Set>
@@ -182,30 +223,28 @@
 				</Item.Media>
 				<Item.Content>
 					<Item.Description>
-						<Badge variant="outline">{response.object?.kind}</Badge>
-						{response.object?.apiVersion}
+						<Badge variant="outline">{object?.kind}</Badge>
+						{object?.apiVersion}
 					</Item.Description>
 					<Item.Title class={typographyVariants({ variant: 'h3' })}>
-						{response.object?.metadata?.name}
+						{object?.metadata?.name}
 					</Item.Title>
 					<Separator class="invisible" />
 					<div class="grid gap-2 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-6">
-						{#if response.object?.metadata}
+						{#if object?.metadata}
 							{@const clusterData = { name: 'Cluster', information: cluster }}
 							{@const namespaceData = { name: 'Namespace', information: namespace }}
 							{@const creationTimestampData = {
 								name: 'Creation Timestamp',
-								information: new Date(response.object.metadata?.creationTimestamp).toLocaleString(
-									'sv-SE'
-								)
+								information: new Date(object.metadata?.creationTimestamp).toLocaleString('sv-SE')
 							}}
 							{@const generationData = {
 								name: 'Generation',
-								information: response.object.metadata?.generation
+								information: object.metadata?.generation
 							}}
 							{@const resourceVersionData = {
 								name: 'Resource Version',
-								information: response.object.metadata?.resourceVersion
+								information: object.metadata?.resourceVersion
 							}}
 							{#each [clusterData, namespaceData, creationTimestampData, generationData, resourceVersionData] as data, index (index)}
 								{#if data.information}
@@ -245,12 +284,12 @@
 									</p>
 								</Sheet.Title>
 								<Sheet.Description>
-									{response.schema?.description}
+									{schema?.description}
 								</Sheet.Description>
 							</Sheet.Header>
-							{#if response.object}
+							{#if object}
 								<Code.Root
-									code={stringify(response.object)}
+									code={stringify(object)}
 									lang="yaml"
 									class="no-shiki-limit m-4 border-none bg-muted"
 								/>
@@ -275,21 +314,34 @@
 					</Sheet.Root>
 					{#if Editor}
 						<Editor
-							name={response.object?.metadata?.name}
-							schema={response.schema}
-							object={response.object}
-							onsuccess={refreshResource}
+							name={object?.metadata?.name}
+							{schema}
+							{object}
+							onsuccess={() => {
+								resourceClient
+									.get({
+										cluster,
+										namespace,
+										group,
+										version,
+										resource,
+										name
+									} as GetRequest)
+									.then((response) => {
+										object = response.object;
+									});
+							}}
 						/>
 					{/if}
 					{#if Deleter}
-						<Deleter name={response.object?.metadata?.name} />
+						<Deleter name={object?.metadata?.name} />
 					{/if}
 				</Item.Actions>
 				<Item.Footer class="flex flex-col items-start justify-start gap-2">
 					<!-- Tags -->
 					{@const tags = {
-						Labels: response.object?.metadata?.labels ?? {},
-						Annotations: response.object?.metadata?.annotations ?? {}
+						Labels: object?.metadata?.labels ?? {},
+						Annotations: object?.metadata?.annotations ?? {}
 					}}
 					{#each Object.entries(tags) as [key, values], index (index)}
 						{#if Object.keys(values).length > 0}
@@ -312,30 +364,6 @@
 				</Item.Footer>
 			</Item.Root>
 		</Field.Set>
-		<Inspector object={response.object} schema={response.schema} />
+		<Inspector {object} {schema} />
 	</Field.Group>
-{:catch error}
-	<Empty.Root>
-		<Empty.Header>
-			<Empty.Media class="rounded-full bg-muted p-4">
-				<Ban size={36} />
-			</Empty.Media>
-			<Empty.Title class="text-2xl font-bold">Failed to load data</Empty.Title>
-			<Empty.Description>
-				An error occurred while fetching data. Please check your connection or try again later.
-			</Empty.Description>
-		</Empty.Header>
-		<Empty.Content>
-			<Alert.Root variant="destructive" class="border-none bg-destructive/5">
-				<Alert.Title class="font-bold">{error?.name}</Alert.Title>
-				<Alert.Description class="text-start">
-					{error?.rawMessage}
-				</Alert.Description>
-			</Alert.Root>
-			<div class="flex gap-4">
-				<Button variant="outline" onclick={() => history.back()}>Go Back</Button>
-				<Button href="/">Go Home</Button>
-			</div>
-		</Empty.Content>
-	</Empty.Root>
-{/await}
+{/if}
