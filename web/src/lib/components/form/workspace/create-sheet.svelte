@@ -6,14 +6,14 @@
 
 	import CreateWorkspaceForm from './create-form.svelte';
 
-	let { open = $bindable(false), scope }: { open: boolean; scope: string } = $props();
+	let { open = $bindable(false), cluster }: { open: boolean; cluster: string } = $props();
 
 	function handleClose(workspace?: any) {
 		open = false;
 		if (workspace?.metadata?.name) {
 			goto(
 				resolve(
-					`/(auth)/${scope}/Workspace/workspaces?group=tenant.otterscale.io&version=v1alpha1&name=${workspace.metadata.name}`
+					`/(auth)/${cluster}/Workspace/workspaces?group=tenant.otterscale.io&version=v1alpha1&name=${workspace.metadata.name}`
 				)
 			);
 		}

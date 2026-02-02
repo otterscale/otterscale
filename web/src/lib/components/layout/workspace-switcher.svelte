@@ -48,10 +48,10 @@
 	import type { User } from '$lib/server/session';
 
 	let {
-		scope,
+		cluster,
 		workspaces,
 		user
-	}: { scope: string; workspaces: TenantOtterscaleIoV1Alpha1Workspace[]; user: User } = $props();
+	}: { cluster: string; workspaces: TenantOtterscaleIoV1Alpha1Workspace[]; user: User } = $props();
 	const sidebar = useSidebar();
 	let activeWorkspace: TenantOtterscaleIoV1Alpha1Workspace | undefined = $derived(
 		workspaces.length > 0 ? workspaces[0] : undefined
@@ -116,7 +116,7 @@
 
 		goto(
 			resolve(
-				`/(auth)/${scope}/Workspace/workspaces?group=tenant.otterscale.io&version=v1alpha1&name=${activeWorkspace?.metadata?.name ?? ''}`
+				`/(auth)/${cluster}/Workspace/workspaces?group=tenant.otterscale.io&version=v1alpha1&name=${activeWorkspace?.metadata?.name ?? ''}`
 			)
 		);
 
@@ -256,4 +256,4 @@
 	</Sidebar.MenuItem>
 </Sidebar.Menu>
 
-<CreateSheet bind:open={createWorkspaceOpen} {scope} />
+<CreateSheet bind:open={createWorkspaceOpen} {cluster} />

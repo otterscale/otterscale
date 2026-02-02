@@ -4,6 +4,8 @@
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
 
+	import { goto } from '$app/navigation';
+	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import { ResourceService } from '$lib/api/resource/v1/resource_pb';
 	import * as Form from '$lib/components/custom/form';
@@ -55,6 +57,7 @@
 					isDeleting = false;
 					open = false;
 					onsuccess?.();
+					goto(resolve(`/(auth)/scope/${cluster}`));
 					return `Successfully deleted workspace ${name}`;
 				},
 				error: (err) => {
