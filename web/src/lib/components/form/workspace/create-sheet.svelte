@@ -18,7 +18,7 @@
 		onsuccess?: (workspace?: TenantOtterscaleIoV1Alpha1Workspace) => void;
 	} = $props();
 
-	function handleClose(workspace?: TenantOtterscaleIoV1Alpha1Workspace) {
+	function handleWorkspaceSuccess(workspace?: TenantOtterscaleIoV1Alpha1Workspace) {
 		open = false;
 		if (workspace?.metadata?.name) {
 			onsuccess?.(workspace);
@@ -29,14 +29,18 @@
 			);
 		}
 	}
+
+	function handleOpenChange(isOpen: boolean) {
+		open = isOpen;
+	}
 </script>
 
-<Sheet.Root bind:open onOpenChange={handleClose}>
+<Sheet.Root bind:open onOpenChange={handleOpenChange}>
 	<Sheet.Content class="inset-y-auto bottom-0 h-9/10 rounded-tl-lg sm:max-w-4/5">
 		<Sheet.Header class="h-full p-0">
 			<div class="flex h-full">
 				<div class="flex-1 overflow-y-auto p-6">
-					<CreateWorkspaceForm onsuccess={handleClose} />
+					<CreateWorkspaceForm onsuccess={handleWorkspaceSuccess} />
 				</div>
 				<!-- Workspace Image -->
 				<div class="relative hidden w-2/5 lg:block">
