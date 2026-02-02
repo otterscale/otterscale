@@ -5,6 +5,11 @@ export function deepMerge(target: any, source: any): any {
 	if (typeof target !== 'object' || target === null) return source;
 	if (typeof source !== 'object' || source === null) return target;
 
+	// Arrays should be replaced entirely, not merged
+	if (Array.isArray(target) || Array.isArray(source)) {
+		return source;
+	}
+
 	const output = { ...target };
 	Object.keys(source).forEach((key) => {
 		// Guard against prototype pollution
