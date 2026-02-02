@@ -1,14 +1,13 @@
 <script lang="ts">
 	import { PrometheusDriver } from 'prometheus-query';
 
-	import AidaptivCache from './aidaptiv-cache.svelte';
 	import ClusterNodes from './cluster-nodes.svelte';
 	import CpuUsage from './cpu-usage.svelte';
-	import Nvidia from './nvidia.svelte';
+	import GPUUtilization from './gpu-utilization.svelte';
+	import GPUMemorUsage from './gpu-memory-usage.svelte';
 	import MemoryUsage from './memory-usage.svelte';
 	import Pods from './pods.svelte';
 	import Uptime from './uptime.svelte';
-	import Version from './version.svelte';
 	import Health from './health.svelte';
 
 	let {
@@ -20,7 +19,8 @@
 
 <div class="grid auto-rows-[minmax(140px,auto)] grid-cols-2 gap-4 pt-4 md:gap-6 lg:grid-cols-4">
 	<Health {prometheusDriver} {scope} bind:isReloading />
-	<Version {prometheusDriver} {scope} bind:isReloading />
+	<!-- <Version {prometheusDriver} {scope} bind:isReloading /> -->
+	<Pods {prometheusDriver} {scope} bind:isReloading />
 	<Uptime {prometheusDriver} {scope} bind:isReloading />
 	<ClusterNodes {prometheusDriver} {scope} bind:isReloading />
 
@@ -32,9 +32,9 @@
 	</div>
 
 	<div class="col-span-2">
-		<Pods {prometheusDriver} {scope} bind:isReloading />
+		<GPUUtilization {prometheusDriver} {scope} bind:isReloading />
 	</div>
 	<div class="col-span-2">
-		<Nvidia {prometheusDriver} {scope} bind:isReloading />
+		<GPUMemorUsage {prometheusDriver} {scope} bind:isReloading />
 	</div>
 </div>
