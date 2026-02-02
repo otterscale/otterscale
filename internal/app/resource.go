@@ -309,72 +309,37 @@ func deref[T any](ptr *T, def T) T {
 	return def
 }
 
-//nolint:gocyclo
 func kubernetesErrorToConnectError(err error) error {
 	var statusErr *apierrors.StatusError
 	if !errors.As(err, &statusErr) {
 		return connect.NewError(connect.CodeInternal, err)
 	}
 
-	switch statusErr.Status().Reason {
-	case metav1.StatusReasonUnauthorized:
-		return connect.NewError(connect.CodeUnauthenticated, err)
-
-	case metav1.StatusReasonForbidden:
-		return connect.NewError(connect.CodePermissionDenied, err)
-
-	case metav1.StatusReasonNotFound:
-		return connect.NewError(connect.CodeNotFound, err)
-
-	case metav1.StatusReasonAlreadyExists:
-		return connect.NewError(connect.CodeAlreadyExists, err)
-
-	case metav1.StatusReasonConflict:
-		return connect.NewError(connect.CodeFailedPrecondition, err)
-
-	case metav1.StatusReasonGone:
-		return connect.NewError(connect.CodeNotFound, err)
-
-	case metav1.StatusReasonInvalid:
-		return connect.NewError(connect.CodeInvalidArgument, err)
-
-	case metav1.StatusReasonServerTimeout:
-		return connect.NewError(connect.CodeDeadlineExceeded, err)
-
-	case metav1.StatusReasonStoreReadError:
-		return connect.NewError(connect.CodeInternal, err)
-
-	case metav1.StatusReasonTimeout:
-		return connect.NewError(connect.CodeDeadlineExceeded, err)
-
-	case metav1.StatusReasonTooManyRequests:
-		return connect.NewError(connect.CodeResourceExhausted, err)
-
-	case metav1.StatusReasonBadRequest:
-		return connect.NewError(connect.CodeInvalidArgument, err)
-
-	case metav1.StatusReasonMethodNotAllowed:
-		return connect.NewError(connect.CodeUnimplemented, err)
-
-	case metav1.StatusReasonNotAcceptable:
-		return connect.NewError(connect.CodeInvalidArgument, err)
-
-	case metav1.StatusReasonRequestEntityTooLarge:
-		return connect.NewError(connect.CodeResourceExhausted, err)
-
-	case metav1.StatusReasonUnsupportedMediaType:
-		return connect.NewError(connect.CodeInvalidArgument, err)
-
-	case metav1.StatusReasonInternalError:
-		return connect.NewError(connect.CodeInternal, err)
-
-	case metav1.StatusReasonExpired:
-		return connect.NewError(connect.CodeUnauthenticated, err)
-
-	case metav1.StatusReasonServiceUnavailable:
-		return connect.NewError(connect.CodeUnavailable, err)
-
-	default:
-		return connect.NewError(connect.CodeInternal, err)
+	statusReasonToConnectCode := map[metav1.StatusReason]connect.Code{
+		metav1.StatusReasonUnauthorized:          connect.CodeUnauthenticated,
+		metav1.StatusReasonForbidden:             connect.CodePermissionDenied,
+		metav1.StatusReasonNotFound:              connect.CodeNotFound,
+		metav1.StatusReasonAlreadyExists:         connect.CodeAlreadyExists,
+		metav1.StatusReasonConflict:              connect.CodeFailedPrecondition,
+		metav1.StatusReasonGone:                  connect.CodeNotFound,
+		metav1.StatusReasonInvalid:               connect.CodeInvalidArgument,
+		metav1.StatusReasonServerTimeout:         connect.CodeDeadlineExceeded,
+		metav1.StatusReasonStoreReadError:        connect.CodeInternal,
+		metav1.StatusReasonTimeout:               connect.CodeDeadlineExceeded,
+		metav1.StatusReasonTooManyRequests:       connect.CodeResourceExhausted,
+		metav1.StatusReasonBadRequest:            connect.CodeInvalidArgument,
+		metav1.StatusReasonMethodNotAllowed:      connect.CodeUnimplemented,
+		metav1.StatusReasonNotAcceptable:         connect.CodeInvalidArgument,
+		metav1.StatusReasonRequestEntityTooLarge: connect.CodeResourceExhausted,
+		metav1.StatusReasonUnsupportedMediaType:  connect.CodeInvalidArgument,
+		metav1.StatusReasonInternalError:         connect.CodeInternal,
+		metav1.StatusReasonExpired:               connect.CodeInvalidArgument,
+		metav1.StatusReasonServiceUnavailable:    connect.CodeUnavailable,
 	}
+
+	if code, ok := statusReasonToConnectCode[statusErr.Status().Reason]; ok {
+		return connect.NewError(code, err)
+	}
+
+	return connect.NewError(connect.CodeInternal, err)
 }
