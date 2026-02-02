@@ -17,7 +17,7 @@
 	let {
 		onsuccess
 	}: {
-		onsuccess?: () => void;
+		onsuccess?: (workspace?: any) => void;
 	} = $props();
 
 	const transport: Transport = getContext('transport');
@@ -180,12 +180,14 @@
 					resource: 'workspaces',
 					manifest
 				});
+
+				return resourceObject;
 			},
 			{
 				loading: `Creating workspace ${name}...`,
-				success: () => {
+				success: (workspace) => {
 					isSubmitting = false;
-					onsuccess?.();
+					onsuccess?.(workspace);
 					return `Successfully created workspace ${name}`;
 				},
 				error: (err) => {

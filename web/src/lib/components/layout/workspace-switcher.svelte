@@ -256,4 +256,4 @@
 	</Sidebar.MenuItem>
 </Sidebar.Menu>
 
-<CreateSheet bind:open={createWorkspaceOpen} />
+<CreateSheet bind:open={createWorkspaceOpen} {scope} />
