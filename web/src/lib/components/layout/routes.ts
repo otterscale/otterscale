@@ -51,10 +51,6 @@ const platformRoutes = (scope: string): Route[] => [
 				url: resolve('/(auth)/scope/[scope]/applications/services', { scope: scope })
 			},
 			{
-				title: m.jobs(),
-				url: resolve('/(auth)/scope/[scope]/applications/jobs', { scope: scope })
-			},
-			{
 				title: m.secrets(),
 				url: resolve('/(auth)/scope/[scope]/applications/secrets', { scope: scope })
 			},
