@@ -3,6 +3,7 @@ package kubernetes
 import (
 	"fmt"
 
+	"connectrpc.com/connect"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/version"
@@ -79,7 +80,7 @@ func (r *discoveryRepo) Validate(cluster, group, version, res string) (resource.
 		}
 	}
 
-	return resource.ClusterGroupVersionResource{}, fmt.Errorf("resource %s not found in group version %s", gvr.Resource, gvr.GroupVersion().String())
+	return resource.ClusterGroupVersionResource{}, connect.NewError(connect.CodeNotFound, fmt.Errorf("resource %s not found in group version %s", gvr.Resource, gvr.GroupVersion().String()))
 }
 
 func (r *discoveryRepo) Version(cluster string) (*version.Info, error) {
