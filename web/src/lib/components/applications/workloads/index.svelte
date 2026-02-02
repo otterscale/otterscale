@@ -6,6 +6,7 @@
 	import { ApplicationService } from '$lib/api/application/v1/application_pb';
 	import * as Loading from '$lib/components/custom/loading';
 	import { ReloadManager } from '$lib/components/custom/reloader';
+	import { activeNamespace } from '$lib/stores';
 
 	import { DataTable } from './data-table/index';
 	import type { Application } from './types';
@@ -24,10 +25,12 @@
 				scope: scope
 			});
 			applications.set(
-				response.applications.map((application) => ({
-					...application,
-					hostname: response.hostname
-				}))
+				response.applications
+					.filter((application) => application.namespace === $activeNamespace)
+					.map((application) => ({
+						...application,
+						hostname: response.hostname
+					}))
 			);
 		} catch (error) {
 			console.error('Failed to fetch applications:', error);

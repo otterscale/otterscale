@@ -20,19 +20,19 @@
 	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
 
 	import { getColumns, messages } from './columns';
-	import Pickers from './pickers.svelte';
+	// import Pickers from './pickers.svelte';
 	import Statistics from './statistics.svelte';
 </script>
 
 <script lang="ts">
 	let {
 		secrets,
-		scope,
+		// scope,
 		selectedNamespace = $bindable(),
 		reloadManager
 	}: {
 		secrets: Writable<Secret[]>;
-		scope: string;
+		// scope: string;
 		selectedNamespace: string;
 		reloadManager: ReloadManager;
 	} = $props();
@@ -139,7 +139,7 @@
 			<Filters.Column {messages} {table} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>
-			<Pickers {scope} bind:selectedNamespace />
+			<!-- <Pickers {scope} bind:selectedNamespace /> -->
 			<Reloader
 				checked={reloadManager.state}
 				onCheckedChange={(isChecked) => {

@@ -20,6 +20,7 @@
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import { Single as SingleSelect } from '$lib/components/custom/select';
 	import { m } from '$lib/paraglide/messages';
+	import { activeNamespace } from '$lib/stores';
 	import { cn } from '$lib/utils';
 
 	import ReleaseValuesInputEdit from './utils-input-edit-release-configuration.svelte';
@@ -72,6 +73,7 @@
 	function init() {
 		request = {
 			scope: scope,
+			namespace: $activeNamespace,
 			chartRef: versionReference,
 			valuesYaml: '',
 			valuesMap: {}
@@ -119,7 +121,12 @@
 
 			<Form.Field>
 				<Form.Label>{m.namespace()}</Form.Label>
-				<SingleInput.General type="text" bind:value={request.namespace} />
+				<SingleInput.General
+					type="text"
+					readonly
+					class="text-muted-foreground"
+					bind:value={request.namespace}
+				/>
 			</Form.Field>
 
 			<Form.Field>

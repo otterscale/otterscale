@@ -29,6 +29,7 @@ interface AppStores {
 const createStores = (): AppStores => ({
 	breadcrumbs: writable<Path[]>([{ title: m.home(), url: resolve('/') }]),
 	// temp
+	activeNamespace: writable<string>(''),
 	notifications: writable<Notification[]>([
 		{
 			id: '1',
@@ -45,4 +46,4 @@ const createStores = (): AppStores => ({
 });
 
 // Export individual stores
-export const { breadcrumbs, notifications } = createStores();
+export const { breadcrumbs, activeNamespace, notifications } = createStores();
