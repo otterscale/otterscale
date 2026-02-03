@@ -85,6 +85,7 @@
 		"@connectrpc/connect-web": "^2.1.1",
 		"@dagrejs/dagre": "^1.1.8",
 		"@iconify/svelte": "^5.1.0",
+		"@monaco-editor/loader": "^1.7.0",
 		"@oslojs/binary": "^1.0.0",
 		"@oslojs/crypto": "^1.0.1",
 		"@oslojs/encoding": "^1.1.0",
@@ -117,6 +118,7 @@
 		"json-schema-to-ts": "^3.1.1",
 		"jsonata": "^2.1.0",
 		"lodash": "^4.17.23",
+		"monaco-editor": "^0.55.1",
 		"pg": "^8.16.3",
 		"prometheus-query": "^3.5.1",
 		"rehype-highlight": "^7.0.2",
@@ -125,6 +127,7 @@
 		"svelte-exmarkdown": "^5.0.2",
 		"svelte-monaco": "^1.0.4",
 		"svelte-toolbelt": "^0.10.6",
+		"vite-plugin-static-copy": "^3.2.0",
 		"yaml": "^2.8.2"
 	},
 	"pnpm": {
