@@ -80,11 +80,8 @@
 		for (const [stepName, paths] of Object.entries(fields)) {
 			const formConfig = buildSchemaFromK8s(apiSchema, paths);
 			// Filter initialData to only include fields defined in this step's schema
-			const filteredInitialData = filterDataBySchema(source, formConfig.schema);
-			const stepInitialValue = k8sToFormData(
-				filteredInitialData,
-				formConfig.transformationMappings
-			);
+			const transformedData = k8sToFormData(source, formConfig.transformationMappings);
+			const stepInitialValue = filterDataBySchema(transformedData, formConfig.schema);
 
 			const form = createForm<Record<string, unknown>>({
 				...defaults,
