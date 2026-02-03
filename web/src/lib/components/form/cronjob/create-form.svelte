@@ -30,34 +30,50 @@
 
 	// Default values for CronJob
 	const initialData = {
-		spec: {
-			schedule: '0 0 * * *',
-			concurrencyPolicy: 'Allow',
-			suspend: false,
-			jobTemplate: {
-				spec: {
-					template: {
-						spec: {
-							restartPolicy: 'OnFailure',
-							containers: [
-								{
-									name: 'hello',
-									image: 'busybox',
-									args: ['/bin/sh', '-c', 'date; echo Hello from the Kubernetes cluster']
-								}
-							]
-						}
-					}
-				}
-			}
-		}
+		// spec: {
+		// 	schedule: '0 0 * * *',
+		// 	concurrencyPolicy: 'Allow',
+		// 	suspend: false,
+		// 	jobTemplate: {
+		// 		spec: {
+		// 			template: {
+		// 				spec: {
+		// 					restartPolicy: 'OnFailure'
+		// 					// containers: [
+		// 					// 	{
+		// 					// 		name: 'job-container',
+		// 					// 		image: 'busybox'
+		// 					// 		// command: ['sh', '-c', 'echo Hello World']
+		// 					// 	}
+		// 					// ]
+		// 				}
+		// 			}
+		// 		}
+		// 	}
+		// }
 	};
 
 	// Grouped fields for multi-step form
 	const groupedFields: GroupedFields = {
 		// Step 1: General Settings
-		'General Settings': {
-			'metadata.name': { title: 'Name', disabled: true },
+		// 'General Settings': {
+		// 	'metadata.name': { title: 'Name' },
+		// 	'spec.namespace': { title: 'Namespace', showDescription: true },
+		// 	'spec.schedule': { title: 'Schedule' },
+		// 	'spec.timeZone': { title: 'Time Zone' },
+		// 	'spec.concurrencyPolicy': { title: 'Concurrency Policy' },
+		// 	'spec.suspend': {
+		// 		title: 'Suspend execution',
+		// 		uiSchema: {
+		// 			'ui:components': {
+		// 				checkboxWidget: 'switchWidget'
+		// 			}
+		// 		}
+		// 	}
+		// },
+		// Step 2: Job Settings
+		'Job Settings': {
+			'metadata.name': { title: 'Name' },
 			'spec.namespace': { title: 'Namespace', showDescription: true },
 			'spec.schedule': { title: 'Schedule' },
 			'spec.timeZone': { title: 'Time Zone' },
@@ -69,31 +85,19 @@
 						checkboxWidget: 'switchWidget'
 					}
 				}
-			}
-		},
-		// Step 2: Job Settings
-		'Job Settings': {
+			},
 			'spec.jobTemplate.spec.template.spec.restartPolicy': { title: 'Restart Policy' },
-			'spec.jobTemplate.spec.template.spec.containers': { title: 'Containers' }
-			// 'spec.jobTemplate.spec.template.spec.containers.name': { title: 'Container Name' },
-			// 'spec.jobTemplate.spec.template.spec.containers.image': { title: 'Image' },
-			// 'spec.jobTemplate.spec.template.spec.containers.command': { title: 'Command' },
-			// 'spec.jobTemplate.spec.template.spec.containers.args': { title: 'Arguments' },
-			// 'spec.jobTemplate.spec.template.spec.containers.env': { title: 'Environment Variables' },
+			'spec.jobTemplate.spec.template.spec.containers': { title: 'Containers' },
+			'spec.jobTemplate.spec.template.spec.containers.name': { title: 'Container Name' },
+			'spec.jobTemplate.spec.template.spec.containers.image': { title: 'Image' },
+			'spec.jobTemplate.spec.template.spec.containers.command': { title: 'Command' },
+			'spec.jobTemplate.spec.template.spec.containers.args': { title: 'Arguments' },
+			'spec.jobTemplate.spec.template.spec.containers.env': { title: 'Environment Variables' }
 			// 'spec.jobTemplate.spec.template.spec.containers.resources.requests.cpu': {
 			// 	title: 'Requests CPU'
 			// },
 			// 'spec.jobTemplate.spec.template.spec.containers.resources.requests.memory': {
 			// 	title: 'Requests Memory'
-			// },
-			// 'spec.jobTemplate.spec.template.spec.containers.resources.limits.cpu': {
-			// 	title: 'Limits CPU'
-			// },
-			// 'spec.jobTemplate.spec.template.spec.containers.resources.limits.memory': {
-			// 	title: 'Limits Memory'
-			// },
-			// 'spec.jobTemplate.spec.template.spec.containers.imagePullPolicy': {
-			// 	title: 'Image Pull Policy'
 			// }
 		}
 	};
@@ -174,6 +178,7 @@
 			title="Create CronJob"
 			onSubmit={handleMultiStepSubmit}
 			transformData={transformFormData}
+			yamlEditable={true}
 		/>
 	{:else}
 		<div class="flex h-32 items-center justify-center">
