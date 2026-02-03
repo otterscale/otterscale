@@ -3,12 +3,14 @@ package app
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 
 	"connectrpc.com/connect"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/structpb"
+	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/api/meta"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
@@ -20,6 +22,28 @@ import (
 	"github.com/otterscale/otterscale/api/resource/v1/pbconnect"
 	"github.com/otterscale/otterscale/internal/core/resource"
 )
+
+var statusReasonToConnectCode = map[metav1.StatusReason]connect.Code{
+	metav1.StatusReasonUnauthorized:          connect.CodeUnauthenticated,
+	metav1.StatusReasonForbidden:             connect.CodePermissionDenied,
+	metav1.StatusReasonNotFound:              connect.CodeNotFound,
+	metav1.StatusReasonAlreadyExists:         connect.CodeAlreadyExists,
+	metav1.StatusReasonConflict:              connect.CodeFailedPrecondition,
+	metav1.StatusReasonGone:                  connect.CodeNotFound,
+	metav1.StatusReasonInvalid:               connect.CodeInvalidArgument,
+	metav1.StatusReasonServerTimeout:         connect.CodeDeadlineExceeded,
+	metav1.StatusReasonStoreReadError:        connect.CodeInternal,
+	metav1.StatusReasonTimeout:               connect.CodeDeadlineExceeded,
+	metav1.StatusReasonTooManyRequests:       connect.CodeResourceExhausted,
+	metav1.StatusReasonBadRequest:            connect.CodeInvalidArgument,
+	metav1.StatusReasonMethodNotAllowed:      connect.CodeUnimplemented,
+	metav1.StatusReasonNotAcceptable:         connect.CodeInvalidArgument,
+	metav1.StatusReasonRequestEntityTooLarge: connect.CodeResourceExhausted,
+	metav1.StatusReasonUnsupportedMediaType:  connect.CodeInvalidArgument,
+	metav1.StatusReasonInternalError:         connect.CodeInternal,
+	metav1.StatusReasonExpired:               connect.CodeInvalidArgument,
+	metav1.StatusReasonServiceUnavailable:    connect.CodeUnavailable,
+}
 
 type ResourceService struct {
 	pbconnect.UnimplementedResourceServiceHandler
@@ -38,7 +62,7 @@ var _ pbconnect.ResourceServiceHandler = (*ResourceService)(nil)
 func (s *ResourceService) Discovery(_ context.Context, req *pb.DiscoveryRequest) (*pb.DiscoveryResponse, error) {
 	apiResources, err := s.resource.ListAPIResources(req.GetCluster())
 	if err != nil {
-		return nil, err
+		return nil, k8sErrorToConnectError(err)
 	}
 
 	pbAPIResources, err := s.toProtoAPIResources(apiResources)
@@ -54,7 +78,7 @@ func (s *ResourceService) Discovery(_ context.Context, req *pb.DiscoveryRequest)
 func (s *ResourceService) Schema(_ context.Context, req *pb.SchemaRequest) (*structpb.Struct, error) {
 	schema, err := s.resource.GetSchema(req.GetCluster(), req.GetGroup(), req.GetVersion(), req.GetKind())
 	if err != nil {
-		return nil, err
+		return nil, k8sErrorToConnectError(err)
 	}
 
 	return s.toProtoStructFromJSONSchema(schema)
@@ -63,12 +87,12 @@ func (s *ResourceService) Schema(_ context.Context, req *pb.SchemaRequest) (*str
 func (s *ResourceService) List(ctx context.Context, req *pb.ListRequest) (*pb.ListResponse, error) {
 	cgvr, err := s.resource.Validate(req.GetCluster(), req.GetGroup(), req.GetVersion(), req.GetResource())
 	if err != nil {
-		return nil, err
+		return nil, k8sErrorToConnectError(err)
 	}
 
 	resources, err := s.resource.ListResources(ctx, cgvr, req.GetNamespace(), req.GetLabelSelector(), req.GetFieldSelector(), req.GetLimit(), req.GetContinue())
 	if err != nil {
-		return nil, err
+		return nil, k8sErrorToConnectError(err)
 	}
 
 	pbResources, err := s.toProtoResources(resources.Items)
@@ -87,12 +111,12 @@ func (s *ResourceService) List(ctx context.Context, req *pb.ListRequest) (*pb.Li
 func (s *ResourceService) Get(ctx context.Context, req *pb.GetRequest) (*pb.Resource, error) {
 	cgvr, err := s.resource.Validate(req.GetCluster(), req.GetGroup(), req.GetVersion(), req.GetResource())
 	if err != nil {
-		return nil, err
+		return nil, k8sErrorToConnectError(err)
 	}
 
 	resource, err := s.resource.GetResource(ctx, cgvr, req.GetNamespace(), req.GetName())
 	if err != nil {
-		return nil, err
+		return nil, k8sErrorToConnectError(err)
 	}
 
 	return s.toProtoResource(resource.Object)
@@ -101,12 +125,12 @@ func (s *ResourceService) Get(ctx context.Context, req *pb.GetRequest) (*pb.Reso
 func (s *ResourceService) Create(ctx context.Context, req *pb.CreateRequest) (*pb.Resource, error) {
 	cgvr, err := s.resource.Validate(req.GetCluster(), req.GetGroup(), req.GetVersion(), req.GetResource())
 	if err != nil {
-		return nil, err
+		return nil, k8sErrorToConnectError(err)
 	}
 
 	resource, err := s.resource.CreateResource(ctx, cgvr, req.GetNamespace(), req.GetManifest())
 	if err != nil {
-		return nil, err
+		return nil, k8sErrorToConnectError(err)
 	}
 
 	return s.toProtoResource(resource.Object)
@@ -115,12 +139,12 @@ func (s *ResourceService) Create(ctx context.Context, req *pb.CreateRequest) (*p
 func (s *ResourceService) Apply(ctx context.Context, req *pb.ApplyRequest) (*pb.Resource, error) {
 	cgvr, err := s.resource.Validate(req.GetCluster(), req.GetGroup(), req.GetVersion(), req.GetResource())
 	if err != nil {
-		return nil, err
+		return nil, k8sErrorToConnectError(err)
 	}
 
 	resource, err := s.resource.ApplyResource(ctx, cgvr, req.GetNamespace(), req.GetName(), req.GetManifest(), req.GetForce(), req.GetFieldManager())
 	if err != nil {
-		return nil, err
+		return nil, k8sErrorToConnectError(err)
 	}
 
 	return s.toProtoResource(resource.Object)
@@ -129,11 +153,11 @@ func (s *ResourceService) Apply(ctx context.Context, req *pb.ApplyRequest) (*pb.
 func (s *ResourceService) Delete(ctx context.Context, req *pb.DeleteRequest) (*emptypb.Empty, error) {
 	cgvr, err := s.resource.Validate(req.GetCluster(), req.GetGroup(), req.GetVersion(), req.GetResource())
 	if err != nil {
-		return nil, err
+		return nil, k8sErrorToConnectError(err)
 	}
 
 	if err := s.resource.DeleteResource(ctx, cgvr, req.GetNamespace(), req.GetName(), req.GetGracePeriodSeconds()); err != nil {
-		return nil, err
+		return nil, k8sErrorToConnectError(err)
 	}
 
 	return &emptypb.Empty{}, nil
@@ -142,12 +166,12 @@ func (s *ResourceService) Delete(ctx context.Context, req *pb.DeleteRequest) (*e
 func (s *ResourceService) Watch(ctx context.Context, req *pb.WatchRequest, stream *connect.ServerStream[pb.WatchEvent]) error {
 	cgvr, err := s.resource.Validate(req.GetCluster(), req.GetGroup(), req.GetVersion(), req.GetResource())
 	if err != nil {
-		return err
+		return k8sErrorToConnectError(err)
 	}
 
 	watcher, err := s.resource.WatchResource(ctx, cgvr, req.GetNamespace(), req.GetLabelSelector(), req.GetFieldSelector(), req.GetResourceVersion())
 	if err != nil {
-		return err
+		return k8sErrorToConnectError(err)
 	}
 	defer watcher.Stop()
 
@@ -305,4 +329,17 @@ func deref[T any](ptr *T, def T) T {
 		return *ptr
 	}
 	return def
+}
+
+func k8sErrorToConnectError(err error) error {
+	var statusErr *apierrors.StatusError
+	if !errors.As(err, &statusErr) {
+		return connect.NewError(connect.CodeInternal, err)
+	}
+
+	if code, ok := statusReasonToConnectCode[statusErr.Status().Reason]; ok {
+		return connect.NewError(code, err)
+	}
+
+	return connect.NewError(connect.CodeInternal, err)
 }
