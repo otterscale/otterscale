@@ -3,6 +3,7 @@ import { sveltekit } from '@sveltejs/kit/vite';
 import tailwindcss from '@tailwindcss/vite';
 import { playwright } from '@vitest/browser-playwright';
 import devtoolsJson from 'vite-plugin-devtools-json';
+import { viteStaticCopy } from 'vite-plugin-static-copy';
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
@@ -13,6 +14,14 @@ export default defineConfig({
 		paraglideVitePlugin({
 			project: './project.inlang',
 			outdir: './src/lib/paraglide'
+		}),
+		viteStaticCopy({
+			targets: [
+				{
+					src: 'node_modules/monaco-editor/min/vs',
+					dest: 'monaco-editor'
+				}
+			]
 		})
 	],
 	test: {
