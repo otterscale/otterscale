@@ -4,6 +4,7 @@
 	import { type Release } from '$lib/api/application/v1/application_pb';
 	import { type Chart } from '$lib/api/registry/v1/registry_pb';
 	import { m } from '$lib/paraglide/messages';
+	import { activeNamespace } from '$lib/stores';
 
 	import ChartComponent from './chart.svelte';
 	import FilterDeprecation from './filter-deprecation.svelte';
@@ -30,15 +31,17 @@
 	} = $props();
 
 	const releasesFromChartName = $derived(
-		$releases.reduce((mapping, release) => {
-			if (release.chart?.name) {
-				if (!mapping.has(release.chart.name)) {
-					mapping.set(release.chart.name, []);
+		$releases
+			.filter((release) => !$activeNamespace || release.namespace === $activeNamespace)
+			.reduce((mapping, release) => {
+				if (release.chart?.name) {
+					if (!mapping.has(release.chart.name)) {
+						mapping.set(release.chart.name, []);
+					}
+					mapping.get(release.chart.name)?.push(release);
 				}
-				mapping.get(release.chart.name)?.push(release);
-			}
-			return mapping;
-		}, new Map<string, Release[]>())
+				return mapping;
+			}, new Map<string, Release[]>())
 	);
 	const filterManager = $derived(new FilterManager($charts));
 	const paginationManager = $derived(new PaginationManager(filterManager.filteredCharts));
