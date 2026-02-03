@@ -115,6 +115,7 @@
 		"js-yaml": "^4.1.1",
 		"jsep": "^1.4.0",
 		"json-schema-to-ts": "^3.1.1",
+		"jsonata": "^2.1.0",
 		"lodash": "^4.17.23",
 		"pg": "^8.16.3",
 		"prometheus-query": "^3.5.1",

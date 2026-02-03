@@ -28,7 +28,7 @@
 		type Table as TanStackTabke,
 		type VisibilityState
 	} from '@tanstack/table-core';
-	import jsep from 'jsep';
+	import jsonata from 'jsonata';
 	import lodash from 'lodash';
 	import { createRawSnippet, type Snippet } from 'svelte';
 
@@ -48,7 +48,7 @@
 	import * as Table from '$lib/components/ui/table';
 	import { cn } from '$lib/utils';
 
-	import DynamicalTableQuery, { evaluate } from './dynamical-table-query.svelte';
+	import DynamicalTableQuery from './dynamic-table-query.svelte';
 
 	let {
 		objects,
@@ -194,10 +194,15 @@
 		globalFilterFn: (row, _, filterValue: string) => {
 			if (!filterValue) return true;
 			try {
-				const ast = jsep(filterValue);
-				return evaluate(ast, row.original);
+				const evaluator = jsonata(expression);
+				let result: boolean | undefined;
+				evaluator.evaluate(row.original).then((r) => {
+					result = r;
+				});
+				console.log(result);
+				return !!result;
 			} catch (error) {
-				console.error('Parse error:', error);
+				console.error('JSONata parse error:', error);
 				return true;
 			}
 		}
@@ -312,7 +317,10 @@
 				{#each table.getHeaderGroups() as headerGroup (headerGroup.id)}
 					<Table.Row class="hover:bg-transparent">
 						{#each headerGroup.headers as header (header.id)}
-							<Table.Head style="width: {header.getSize()}px" class="h-11">
+							<Table.Head
+								style="width: {header.getSize()}px"
+								class={cn(lodash.get(header.column.columnDef.meta, 'class'), 'h-11')}
+							>
 								{#if !header.isPlaceholder && header.column.getCanSort()}
 									<div
 										class={cn(
@@ -361,7 +369,12 @@
 					{#each table.getRowModel().rows as row (row.id)}
 						<Table.Row data-state={row.getIsSelected() && 'selected'}>
 							{#each row.getVisibleCells() as cell (cell.id)}
-								<Table.Cell class={getCellAlignment(fields[cell.column.id])}>
+								<Table.Cell
+									class={cn(
+										getCellAlignment(fields[cell.column.id]),
+										lodash.get(cell.column.columnDef.meta, 'class')
+									)}
+								>
 									<FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
 								</Table.Cell>
 							{/each}

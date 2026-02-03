@@ -18,6 +18,7 @@
 	import { stringify } from 'yaml';
 
 	import * as Code from '$lib/components/custom/code/index.js';
+	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
 	import * as Collapsible from '$lib/components/ui/collapsible';
 	import * as Empty from '$lib/components/ui/empty/index.js';
@@ -27,6 +28,8 @@
 	import * as Tabs from '$lib/components/ui/tabs/index.js';
 	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
 	import { now } from '$lib/stores/now';
+
+	import { format, getRelativeTime } from './utils';
 
 	let {
 		ref = $bindable(null),
@@ -40,76 +43,6 @@
 		row: Row<Record<string, JsonValue>>;
 		fields: Record<string, { description: string; type: string; format: string }>;
 	} = $props();
-
-	function format(value: string) {
-		try {
-			return JSON.stringify(JSON.parse(value), null, 4);
-		} catch {
-			return value;
-		}
-	}
-
-	function getRelativeTime(now: number, timestamp: number) {
-		const milliseconds = timestamp;
-
-		const seconds = Math.floor((now - milliseconds) / 1000);
-		if (seconds < 60) return { value: seconds, unit: 'second' };
-
-		const minutes = Math.floor(seconds / 60);
-		if (minutes < 60) return { value: minutes, unit: 'minute' };
-
-		const hours = Math.floor(minutes / 60);
-		if (hours < 24) return { value: hours, unit: 'hour' };
-
-		const days = Math.floor(hours / 24);
-		if (days < 7) return { value: days, unit: 'day' };
-
-		const weeks = Math.floor(days / 7);
-		if (weeks < 5) return { value: weeks, unit: 'week' };
-
-		const months = Math.floor(days / 30);
-		if (months < 12) return { value: months, unit: 'month' };
-
-		const years = Math.floor(days / 365);
-		return { value: years, unit: 'year' };
-	}
-
-	// function parseSchemaType(schema: any): string {
-	// 	if (!schema) return 'unknown';
-
-	// 	if (schema.type === 'boolean') return 'boolean';
-	// 	if (schema.type === 'string') {
-	// 		if (schema.format === 'date-time' || schema.format === 'date') return 'time';
-	// 		return 'string';
-	// 	}
-	// 	if (schema.type === 'number' || schema.type === 'integer') return 'number';
-
-	// 	if (schema.type === 'array' && schema.items) {
-	// 		return `array<${parseSchemaType(schema.items)}>`;
-	// 	}
-
-	// 	if (schema.type === 'object' && schema.additionalProperties) {
-	// 		const valueType = parseSchemaType(schema.additionalProperties);
-	// 		return `object<string, ${valueType}>`;
-	// 	}
-
-	// 	if (schema.type === 'object' && schema.properties) {
-	// 		const props = Object.entries(schema.properties)
-	// 			.map(([key, subSchema]) => `${key}: ${parseSchemaType(subSchema as any)}`)
-	// 			.join(', ');
-	// 		return `{ ${props} }`;
-	// 	}
-
-	// 	if (schema.enum) {
-	// 		return `enum(${schema.enum.map((val: any) => JSON.stringify(val)).join(', ')})`;
-	// 	}
-
-	// 	if (!schema.type && schema.default !== undefined) {
-	// 		return typeof schema.default;
-	// 	}
-
-	// 	return 'unknown';
-	// }
 </script>
 
 <div class={className}>
@@ -283,7 +216,18 @@
 {/snippet}
 
 {#snippet ArrayCell({ data }: { data: JsonValue[] })}
-	{data.length}
+	{#if data && data.length > 0}
+		{@const [anyDatum] = data}
+		{#if typeof anyDatum == 'object'}
+			{data.length}
+		{:else}
+			<div class="flex items-center gap-1">
+				{#each data as datum, index (index)}
+					<Badge variant="outline">{datum}</Badge>
+				{/each}
+			</div>
+		{/if}
+	{/if}
 {/snippet}
 
 {#snippet DateCell({ data }: { data: Date })}
