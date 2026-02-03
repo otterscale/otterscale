@@ -264,7 +264,7 @@ export function buildSchemaFromK8s(
 						currentTarget.properties[part] = {
 							type: 'object',
 							properties: {},
-							additionalProperties: true
+							additionalProperties: false
 						};
 					}
 					applyOptions(currentTarget.properties[part] as Schema, sourceProp, false);
