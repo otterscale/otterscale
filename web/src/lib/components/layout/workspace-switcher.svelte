@@ -67,9 +67,17 @@
 			const found = workspaces.find((w) => w.metadata?.name === $activeWorkspaceName);
 			if (found) return found;
 		}
-
+		console.log('activeWorkspace', workspaces[0]);
 		return workspaces[0];
 	});
+
+	$effect(() => {
+		if (!activeWorkspace) return;
+
+		activeNamespace.set(activeWorkspace.spec.namespace);
+		activeWorkspaceName.set(activeWorkspace.metadata?.name ?? '');
+	});
+
 	let createWorkspaceOpen = $state(false);
 
 	const workspaceIcons: Component[] = [
@@ -126,11 +134,6 @@
 			return;
 		}
 		activeWorkspace = workspaces[index];
-		activeNamespace.set(activeWorkspace.spec.namespace);
-
-		if (activeWorkspace.metadata?.name) {
-			activeWorkspaceName.set(activeWorkspace.metadata.name);
-		}
 
 		goto(
 			resolve(
