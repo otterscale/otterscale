@@ -68,9 +68,9 @@
 			const found = workspaces.find((w) => w.metadata?.name === $activeWorkspaceName);
 			if (found) return found;
 		}
-
 		return workspaces[0];
 	});
+
 	let createWorkspaceOpen = $state(false);
 	let ActiveIcon = $derived(getWorkspaceIcon(activeWorkspace?.metadata?.name));
 
