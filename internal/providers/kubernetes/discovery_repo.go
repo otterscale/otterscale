@@ -1,6 +1,8 @@
 package kubernetes
 
 import (
+	"fmt"
+
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime/schema"
@@ -78,7 +80,7 @@ func (r *discoveryRepo) Validate(cluster, group, version, res string) (resource.
 		}
 	}
 
-	return resource.ClusterGroupVersionResource{}, apierrors.NewNotFound(schema.GroupResource{Group: gvr.Group, Resource: gvr.Resource}, gvr.Resource)
+	return resource.ClusterGroupVersionResource{}, apierrors.NewBadRequest(fmt.Sprintf("unable to recognize resource %q in %s", res, schema.GroupVersion{Group: group, Version: version}))
 }
 
 func (r *discoveryRepo) Version(cluster string) (*version.Info, error) {
