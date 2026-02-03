@@ -144,7 +144,7 @@
 			spec.limitRange = {
 				limits: [
 					{
-						type: 'Pod',
+						type: 'Container',
 						default: {
 							cpu: '500m',
 							memory: '512Mi'
