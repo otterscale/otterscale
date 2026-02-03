@@ -46,7 +46,7 @@
 	import { useSidebar } from '$lib/components/ui/sidebar/index.js';
 	import { m } from '$lib/paraglide/messages';
 	import type { User } from '$lib/server/session';
-	import { activeNamespace } from '$lib/stores';
+	import { activeNamespace, activeWorkspaceName } from '$lib/stores';
 
 	let {
 		cluster,
@@ -60,10 +60,16 @@
 		onsuccess?: (workspace?: TenantOtterscaleIoV1Alpha1Workspace) => void;
 	} = $props();
 	const sidebar = useSidebar();
-	let activeWorkspace: TenantOtterscaleIoV1Alpha1Workspace | undefined = $derived(
-		workspaces.length > 0 ? workspaces[0] : undefined
-	);
+	let activeWorkspace: TenantOtterscaleIoV1Alpha1Workspace | undefined = $derived.by(() => {
+		if (workspaces.length === 0) return undefined;
 
+		if ($activeWorkspaceName) {
+			const found = workspaces.find((w) => w.metadata?.name === $activeWorkspaceName);
+			if (found) return found;
+		}
+
+		return workspaces[0];
+	});
 	let createWorkspaceOpen = $state(false);
 
 	const workspaceIcons: Component[] = [
@@ -121,6 +127,10 @@
 		}
 		activeWorkspace = workspaces[index];
 		activeNamespace.set(activeWorkspace.spec.namespace);
+
+		if (activeWorkspace.metadata?.name) {
+			activeWorkspaceName.set(activeWorkspace.metadata.name);
+		}
 
 		goto(
 			resolve(

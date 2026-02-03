@@ -51,6 +51,9 @@ interface AppStores {
 	// Navigation
 	breadcrumbs: Writable<Path[]>;
 
+	// Workspace
+	activeWorkspaceName: Writable<string>;
+
 	// Namespace
 	activeNamespace: Writable<string>;
 
@@ -61,6 +64,8 @@ interface AppStores {
 // Create stores
 const createStores = (): AppStores => ({
 	breadcrumbs: writable<Path[]>([{ title: m.home(), url: resolve('/') }]),
+	// Persistent workspace store
+	activeWorkspaceName: persistentWritable<string>('otterscale:activeWorkspace', ''),
 	// Persistent namespace store
 	activeNamespace: persistentWritable<string>('otterscale:activeNamespace', ''),
 	notifications: writable<Notification[]>([
@@ -79,4 +84,4 @@ const createStores = (): AppStores => ({
 });
 
 // Export individual stores
-export const { breadcrumbs, activeNamespace, notifications } = createStores();
+export const { breadcrumbs, activeWorkspaceName, activeNamespace, notifications } = createStores();
