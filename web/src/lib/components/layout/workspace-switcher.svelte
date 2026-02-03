@@ -59,6 +59,7 @@
 		user: User;
 		onsuccess?: (workspace?: TenantOtterscaleIoV1Alpha1Workspace) => void;
 	} = $props();
+
 	const sidebar = useSidebar();
 	let activeWorkspace: TenantOtterscaleIoV1Alpha1Workspace | undefined = $derived.by(() => {
 		if (workspaces.length === 0) return undefined;
@@ -67,18 +68,11 @@
 			const found = workspaces.find((w) => w.metadata?.name === $activeWorkspaceName);
 			if (found) return found;
 		}
-		console.log('activeWorkspace', workspaces[0]);
 		return workspaces[0];
 	});
 
-	$effect(() => {
-		if (!activeWorkspace) return;
-
-		activeNamespace.set(activeWorkspace.spec.namespace);
-		activeWorkspaceName.set(activeWorkspace.metadata?.name ?? '');
-	});
-
 	let createWorkspaceOpen = $state(false);
+	let ActiveIcon = $derived(getWorkspaceIcon(activeWorkspace?.metadata?.name));
 
 	const workspaceIcons: Component[] = [
 		ActivityIcon,
@@ -127,26 +121,29 @@
 		return workspaceIcons[index];
 	}
 
-	let ActiveIcon = $derived(getWorkspaceIcon(activeWorkspace?.metadata?.name));
-
 	function onSelect(index: number) {
-		if (index >= workspaces.length) {
-			return;
-		}
-		activeWorkspace = workspaces[index];
+		if (index >= workspaces.length) return;
 
-		goto(
-			resolve(
-				`/(auth)/${cluster}/Workspace/workspaces?group=tenant.otterscale.io&version=v1alpha1&name=${activeWorkspace?.metadata?.name ?? ''}`
-			)
+		const workspace = workspaces[index];
+		const workspaceName = workspace.metadata?.name ?? '';
+
+		const workspaceUrl = resolve(
+			`/(auth)/${cluster}/Workspace/workspaces?group=tenant.otterscale.io&version=v1alpha1&name=${workspaceName}`
 		);
 
-		// TODO: Add logic to update global workspace state or navigate to the selected workspace's route.
-		// await goto(resolve('/(auth)/scope/[scope]', { scope: scope.name }));
-		if (activeWorkspace.metadata?.name) {
-			toast.success(m.switch_workspace({ name: activeWorkspace.metadata.name }));
+		goto(workspaceUrl);
+
+		if (workspaceName) {
+			toast.success(m.switch_workspace({ name: workspaceName }));
 		}
 	}
+
+	$effect(() => {
+		if (!activeWorkspace) return;
+
+		activeNamespace.set(activeWorkspace.spec.namespace);
+		activeWorkspaceName.set(activeWorkspace.metadata?.name ?? '');
+	});
 </script>
 
 <svelte:window
@@ -258,8 +255,8 @@
 							>
 						</div>
 						<DropdownMenu.Shortcut class="flex items-center gap-0.5 text-sm">
-							<CommandIcon class="size-3" />
 							{#if index < 9}
+								<CommandIcon class="size-3" />
 								<span class="font-mono">{index + 1}</span>
 							{/if}
 						</DropdownMenu.Shortcut>
