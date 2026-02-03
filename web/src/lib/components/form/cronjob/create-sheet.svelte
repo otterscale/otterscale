@@ -9,10 +9,12 @@
 	let {
 		open = $bindable(false),
 		cluster,
+		schema = undefined,
 		onsuccess
 	}: {
 		open: boolean;
 		cluster: string;
+		schema?: any;
 		onsuccess?: (cronjob?: any) => void;
 	} = $props();
 
@@ -38,7 +40,7 @@
 		<Sheet.Header class="h-full p-0">
 			<div class="flex h-full">
 				<div class="flex-1 overflow-y-auto p-6">
-					<CreateCronJobForm onsuccess={handleCronJobSuccess} />
+					<CreateCronJobForm {schema} onsuccess={handleCronJobSuccess} />
 				</div>
 				<!-- Image -->
 				<div class="relative hidden w-2/5 lg:block">

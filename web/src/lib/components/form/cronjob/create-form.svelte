@@ -14,8 +14,10 @@
 	} from '$lib/components/custom/schema-form';
 
 	let {
+		schema: propSchema = undefined,
 		onsuccess
 	}: {
+		schema?: K8sOpenAPISchema;
 		onsuccess?: (cronjob?: any) => void;
 	} = $props();
 
@@ -23,7 +25,7 @@
 	const resourceClient = createClient(ResourceService, transport);
 	const cluster = $derived(page.params.cluster ?? page.params.scope ?? '');
 
-	let apiSchema: K8sOpenAPISchema | undefined = $state();
+	let schema: K8sOpenAPISchema | undefined = $state(propSchema);
 	let isSubmitting = $state(false);
 
 	// Default values for CronJob
@@ -55,19 +57,44 @@
 	const groupedFields: GroupedFields = {
 		// Step 1: General Settings
 		'General Settings': {
-			'metadata.name': { title: 'Name' },
+			'metadata.name': { title: 'Name', disabled: true },
 			'spec.namespace': { title: 'Namespace', showDescription: true },
-			'spec.schedule': { title: 'Schedule', description: 'Cron schedule string, e.g. "0 0 * * *"' },
+			'spec.schedule': { title: 'Schedule' },
+			'spec.timeZone': { title: 'Time Zone' },
 			'spec.concurrencyPolicy': { title: 'Concurrency Policy' },
-			'spec.suspend': { title: 'Suspend execution' }
+			'spec.suspend': {
+				title: 'Suspend execution',
+				uiSchema: {
+					'ui:components': {
+						checkboxWidget: 'switchWidget'
+					}
+				}
+			}
 		},
 		// Step 2: Job Settings
 		'Job Settings': {
 			'spec.jobTemplate.spec.template.spec.restartPolicy': { title: 'Restart Policy' },
-			'spec.jobTemplate.spec.template.spec.containers': {
-				title: 'Containers'
-				// Allowing default array UI for containers
-			}
+			'spec.jobTemplate.spec.template.spec.containers': { title: 'Containers' }
+			// 'spec.jobTemplate.spec.template.spec.containers.name': { title: 'Container Name' },
+			// 'spec.jobTemplate.spec.template.spec.containers.image': { title: 'Image' },
+			// 'spec.jobTemplate.spec.template.spec.containers.command': { title: 'Command' },
+			// 'spec.jobTemplate.spec.template.spec.containers.args': { title: 'Arguments' },
+			// 'spec.jobTemplate.spec.template.spec.containers.env': { title: 'Environment Variables' },
+			// 'spec.jobTemplate.spec.template.spec.containers.resources.requests.cpu': {
+			// 	title: 'Requests CPU'
+			// },
+			// 'spec.jobTemplate.spec.template.spec.containers.resources.requests.memory': {
+			// 	title: 'Requests Memory'
+			// },
+			// 'spec.jobTemplate.spec.template.spec.containers.resources.limits.cpu': {
+			// 	title: 'Limits CPU'
+			// },
+			// 'spec.jobTemplate.spec.template.spec.containers.resources.limits.memory': {
+			// 	title: 'Limits Memory'
+			// },
+			// 'spec.jobTemplate.spec.template.spec.containers.imagePullPolicy': {
+			// 	title: 'Image Pull Policy'
+			// }
 		}
 	};
 
@@ -120,6 +147,8 @@
 	}
 
 	onMount(async () => {
+		if (schema) return;
+
 		try {
 			const res = await resourceClient.schema({
 				cluster,
@@ -128,7 +157,7 @@
 				kind: 'CronJob'
 			});
 			// Convert Protobuf Struct to plain JSON object
-			apiSchema = toJson(StructSchema, res) as K8sOpenAPISchema;
+			schema = toJson(StructSchema, res) as K8sOpenAPISchema;
 		} catch (err) {
 			console.error('Failed to fetch cronjob schema:', err);
 			toast.error(`Failed to fetch cronjob schema: ${(err as ConnectError).message}`);
@@ -137,9 +166,9 @@
 </script>
 
 <div class="h-full w-full">
-	{#if apiSchema}
+	{#if schema}
 		<MultiStepSchemaForm
-			{apiSchema}
+			apiSchema={schema}
 			fields={groupedFields}
 			{initialData}
 			title="Create CronJob"

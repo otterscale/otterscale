@@ -44,16 +44,24 @@
 		'General Settings': {
 			'metadata.name': { title: 'Name', disabled: true },
 			'spec.namespace': { title: 'Namespace', showDescription: true },
-			'spec.schedule': { title: 'Schedule', description: 'Cron schedule string, e.g. "0 0 * * *"' },
+			'spec.schedule': { title: 'Schedule' },
+			'spec.timeZone': { title: 'Time Zone' },
 			'spec.concurrencyPolicy': { title: 'Concurrency Policy' },
-			'spec.suspend': { title: 'Suspend execution' }
+			'spec.suspend': {
+				title: 'Suspend execution',
+				uiSchema: {
+					'ui:components': {
+						checkboxWidget: 'switchWidget'
+					}
+				}
+			}
 		},
 		// Step 2: Job Settings
 		'Job Settings': {
-			'spec.jobTemplate.spec.template.spec.restartPolicy': { title: 'Restart Policy' },
-			'spec.jobTemplate.spec.template.spec.containers': {
-				title: 'Containers'
-			}
+			'spec.jobTemplate.spec.template.spec.restartPolicy': { title: 'Restart Policy' }
+			// 'spec.jobTemplate.spec.template.spec.containers': {
+			// 	title: 'Containers'
+			// }
 		}
 	};
 
