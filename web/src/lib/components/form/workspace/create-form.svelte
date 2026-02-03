@@ -47,7 +47,7 @@
 			limitRange: {
 				limits: [
 					{
-						type: 'Pod',
+						type: 'Container',
 						default: {
 							cpu: '500m',
 							memory: '512Mi'
@@ -74,7 +74,6 @@
 		// Step 1: Workspace & Users
 		'Workspace & Users': {
 			'metadata.name': { title: 'Workspace Name' },
-			'spec.namespace': { title: 'Namespace', showDescription: true },
 			'spec.users': {
 				title: 'Users',
 				uiSchema: {
@@ -120,6 +119,12 @@
 
 	function transformFormData(data: Record<string, unknown>) {
 		const spec = data.spec as Record<string, any>;
+		const metadata = data.metadata as Record<string, any>;
+
+		// Set namespace to be the same as workspace name
+		if (spec && metadata?.name) {
+			spec.namespace = metadata.name;
+		}
 
 		// Handle Resource Quota Logic: limits align with requests, strict defaults
 		if (spec?.resourceQuota?.hard) {
