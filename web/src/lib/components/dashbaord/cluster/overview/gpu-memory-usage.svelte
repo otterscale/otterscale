@@ -19,7 +19,6 @@
 	}: { prometheusDriver: PrometheusDriver; scope: string; isReloading: boolean } = $props();
 
 	let gpuMemoryUsages = $state([] as SampleValue[]);
-
 	const gpuMemoryUsageConfigurations = {
 		usage: { label: 'Usage', color: 'var(--chart-1)' }
 	} satisfies Chart.ChartConfig;
@@ -91,7 +90,7 @@
 					yPadding={[0, 25]}
 					series={[
 						{
-							key: 'usage',
+							key: 'value',
 							label: gpuMemoryUsageConfigurations.usage.label,
 							color: gpuMemoryUsageConfigurations.usage.color
 						}

@@ -16,7 +16,7 @@
 	let clusterNodes: SampleValue | undefined = $state(undefined);
 	async function fetchClusterNodes() {
 		const response = await prometheusDriver.instantQuery(
-			`count(kube_node_role{juju_model="${scope}", container!=""})`
+			`count(kube_node_role{juju_model="${scope}"})`
 		);
 		clusterNodes = response.result[0]?.value ?? undefined;
 	}
@@ -55,7 +55,7 @@
 		class="absolute -right-10 bottom-0 size-36 text-8xl tracking-tight text-nowrap text-primary/5 uppercase group-hover:hidden"
 	/>
 	<Card.Header>
-		<Card.Title>Cluster Nodes</Card.Title>
+		<Card.Title>Nodes</Card.Title>
 		<Card.Description class="flex h-6 items-center"></Card.Description>
 	</Card.Header>
 	{#if !isLoaded}

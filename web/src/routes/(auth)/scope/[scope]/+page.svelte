@@ -6,15 +6,16 @@
 	import { page } from '$app/state';
 	import { EnvironmentService } from '$lib/api/environment/v1/environment_pb';
 	import { Reloader } from '$lib/components/custom/reloader';
-	import ClusterNodes from '$lib/components/dashbaord/cluster/overview/cluster-nodes.svelte';
 	import CpuUsage from '$lib/components/dashbaord/cluster/overview/cpu-usage.svelte';
+	import Deployments from '$lib/components/dashbaord/cluster/overview/deployments.svelte';
 	import GPUMemorUsage from '$lib/components/dashbaord/cluster/overview/gpu-memory-usage.svelte';
 	import GPUUtilization from '$lib/components/dashbaord/cluster/overview/gpu-utilization.svelte';
 	import Health from '$lib/components/dashbaord/cluster/overview/health.svelte';
+	import Information from '$lib/components/dashbaord/cluster/overview/information.svelte';
 	import MemoryUsage from '$lib/components/dashbaord/cluster/overview/memory-usage.svelte';
+	import Nodes from '$lib/components/dashbaord/cluster/overview/nodes.svelte';
 	import Pods from '$lib/components/dashbaord/cluster/overview/pods.svelte';
 	import Uptime from '$lib/components/dashbaord/cluster/overview/uptime.svelte';
-	import Version from '$lib/components/dashbaord/cluster/overview/version.svelte';
 	import { m } from '$lib/paraglide/messages';
 
 	const scope = $derived(page.params.scope!);
@@ -35,7 +36,6 @@
 					'x-proxy-target': 'api'
 				}
 			});
-			console.log(prometheusDriver);
 		} catch (error) {
 			console.error('Failed to initialize Prometheus driver:', error);
 		}
@@ -68,15 +68,18 @@
 						<Health {prometheusDriver} {scope} bind:isReloading />
 					</div>
 					<div class="col-span-1">
-						<ClusterNodes {prometheusDriver} {scope} bind:isReloading />
-					</div>
-					<div class="col-span-1">
 						<Uptime {prometheusDriver} {scope} bind:isReloading />
 					</div>
-					<div class="col-span-1">
-						<Version {prometheusDriver} {scope} bind:isReloading />
+					<div class="col-span-2">
+						<Information {prometheusDriver} {scope} bind:isReloading />
 					</div>
 
+					<div class="col-span-1">
+						<Nodes {prometheusDriver} {scope} bind:isReloading />
+					</div>
+					<div class="col-span-1">
+						<Deployments {prometheusDriver} {scope} bind:isReloading />
+					</div>
 					<div class="col-span-2">
 						<Pods {prometheusDriver} {scope} bind:isReloading />
 					</div>
@@ -88,10 +91,10 @@
 						<MemoryUsage {prometheusDriver} {scope} bind:isReloading />
 					</div>
 
-					<div class="col-span-2">
+					<div class="col-span-1">
 						<GPUUtilization {prometheusDriver} {scope} bind:isReloading />
 					</div>
-					<div class="col-span-2">
+					<div class="col-span-1">
 						<GPUMemorUsage {prometheusDriver} {scope} bind:isReloading />
 					</div>
 				</div>

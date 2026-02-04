@@ -38,12 +38,12 @@
 
 	async function fetchMemoryUsage() {
 		const usageResponse = await prometheusDriver.instantQuery(
-			`sum(node_memory_MemTotal_bytes{juju_model="${scope}", container!=""} - node_memory_MemAvailable_bytes{juju_model="${scope}", container!=""})`
+			`sum(node_memory_MemTotal_bytes{juju_model="${scope}"} - node_memory_MemAvailable_bytes{juju_model="${scope}"})`
 		);
 		memoryUsage = usageResponse.result[0]?.value ?? undefined;
 
 		const totalResponse = await prometheusDriver.instantQuery(
-			`sum(node_memory_MemTotal_bytes{juju_model="${scope}", container!=""})`
+			`sum(node_memory_MemTotal_bytes{juju_model="${scope}"})`
 		);
 		memoryTotal = totalResponse.result[0]?.value ?? undefined;
 	}
@@ -52,7 +52,7 @@
 		try {
 			const range = timeRanges[selectedTimeRange as keyof typeof timeRanges];
 			const response = await prometheusDriver.rangeQuery(
-				`sum(node_memory_MemTotal_bytes{juju_model="${scope}", container!=""} - node_memory_MemAvailable_bytes{juju_model="${scope}", container!=""}) / sum(node_memory_MemTotal_bytes{juju_model="${scope}", container!=""}) * 100`,
+				`sum(node_memory_MemTotal_bytes{juju_model="${scope}"} - node_memory_MemAvailable_bytes{juju_model="${scope}"}) / sum(node_memory_MemTotal_bytes{juju_model="${scope}"}) * 100`,
 				Date.now() - range.duration,
 				Date.now(),
 				range.step

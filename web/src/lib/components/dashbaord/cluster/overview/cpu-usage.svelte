@@ -2,6 +2,7 @@
 	import Icon from '@iconify/svelte';
 	import { scaleUtc } from 'd3-scale';
 	import { curveLinear } from 'd3-shape';
+	import { ArcChart, Text } from 'layerchart';
 	import { LineChart } from 'layerchart';
 	import type { PrometheusDriver, SampleValue } from 'prometheus-query';
 	import { onDestroy, onMount } from 'svelte';
@@ -11,6 +12,7 @@
 	import * as Chart from '$lib/components/ui/chart';
 	import { Progress } from '$lib/components/ui/progress';
 	import * as Select from '$lib/components/ui/select';
+	import { formatCapacity } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
 
 	let {
@@ -36,16 +38,17 @@
 
 	async function fetchCpuUsage() {
 		const response = await prometheusDriver.instantQuery(
-			`sum(rate(node_cpu_seconds_total{mode!="idle", juju_model="${scope}", container!=""}[5m])) / sum(rate(node_cpu_seconds_total{juju_model="${scope}", container!=""}[5m])) * 100`
+			`sum(rate(node_cpu_seconds_total{mode!="idle", juju_model="${scope}"}[5m])) / sum(rate(node_cpu_seconds_total{juju_model="${scope}"}[5m])) * 100`
 		);
 		avgCpuUsage = response.result[0]?.value ?? undefined;
+		console.log(avgCpuUsage);
 	}
 
 	async function fetchCpuHistory() {
 		try {
 			const range = timeRanges[selectedTimeRange as keyof typeof timeRanges];
 			const response = await prometheusDriver.rangeQuery(
-				`sum(rate(node_cpu_seconds_total{mode!="idle", juju_model="${scope}", container!=""}[5m])) / sum(rate(node_cpu_seconds_total{juju_model="${scope}", container!=""}[5m])) * 100`,
+				`sum(rate(node_cpu_seconds_total{mode!="idle", juju_model="${scope}"}[5m])) / sum(rate(node_cpu_seconds_total{juju_model="${scope}"}[5m])) * 100`,
 				Date.now() - range.duration,
 				Date.now(),
 				range.step
@@ -136,7 +139,44 @@
 			<p class="p-0 text-xs text-muted-foreground">{m.no_data_display()}</p>
 		</div>
 	{:else}
-		<Card.Content class="flex items-center justify-between gap-4">
+		<Card.Content>
+			<Chart.Container class="h-[200px] w-full px-2 pt-2" config={chartConfig}>
+				<ArcChart
+					data={[{ value: avgCpuUsage.value }]}
+					outerRadius={88}
+					innerRadius={66}
+					trackOuterRadius={83}
+					trackInnerRadius={72}
+					padding={40}
+					range={[90, -270]}
+					maxValue={100}
+					series={[
+						{
+							key: 'value',
+							color: chartConfig.cpu.color
+						}
+					]}
+					props={{
+						arc: { track: { fill: 'var(--muted)' }, motion: 'tween' },
+						tooltip: { context: { hideDelay: 350 } }
+					}}
+					tooltip={false}
+				>
+					{#snippet belowMarks()}
+						<circle cx="0" cy="0" r="80" class="fill-background" />
+					{/snippet}
+					{#snippet aboveMarks()}
+						<Text
+							value={avgCpuUsage ? `${Math.round(Number(avgCpuUsage.value))}%` : undefined}
+							textAnchor="middle"
+							verticalAnchor="middle"
+							class="fill-foreground text-4xl! font-bold"
+						/>
+					{/snippet}
+				</ArcChart>
+			</Chart.Container>
+		</Card.Content>
+		<!-- <Card.Content class="flex items-center justify-between gap-4">
 			<div class="flex-1">
 				<div class="text-3xl font-bold">
 					{avgCpuUsage ? Math.round(Number(avgCpuUsage.value)) + '%' : 'N/A'}
@@ -188,6 +228,6 @@
 					</LineChart>
 				</Chart.Container>
 			</div>
-		</Card.Content>
+		</Card.Content> -->
 	{/if}
 </Card.Root>

@@ -16,7 +16,7 @@
 	let nodeNotReady: SampleValue | undefined = $state(undefined);
 	async function fetchNodeStatus() {
 		const responseNotReadyNode = await prometheusDriver.instantQuery(
-			`sum(kube_node_status_condition{condition="Ready" , status="false", juju_model="${scope}", container!=""})`
+			`sum(kube_node_status_condition{condition="Ready" , status="false", juju_model="${scope}"})`
 		);
 		nodeNotReady = responseNotReadyNode.result[0]?.value ?? undefined;
 	}
@@ -52,13 +52,7 @@
 <Card.Root class="relative h-full min-h-[140px] gap-2 overflow-hidden">
 	<Card.Header>
 		<Card.Title>{m.state()}</Card.Title>
-		{#if String(nodeNotReady?.value)}
-			<Card.Description class="flex h-6 items-center">
-				{nodeNotReady?.value} not ready nodes
-			</Card.Description>
-		{:else}
-			<Card.Description class="flex h-6 items-center">unknown not ready nodes</Card.Description>
-		{/if}
+		<Card.Description class="flex h-6 items-center">Cluster Status</Card.Description>
 	</Card.Header>
 	{#if !isLoaded}
 		<div class="flex h-9 w-full items-center justify-center">
