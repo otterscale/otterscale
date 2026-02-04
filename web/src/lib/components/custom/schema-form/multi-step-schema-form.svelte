@@ -2,8 +2,6 @@
 	import { Check } from '@lucide/svelte';
 	import type { FormState } from '@sjsf/form';
 	import { createForm, getValueSnapshot } from '@sjsf/form';
-	import { setThemeContext } from '@sjsf/shadcn4-theme';
-	import * as components from '@sjsf/shadcn4-theme/new-york';
 	import yaml from 'js-yaml';
 	import { mode as themeMode } from 'mode-watcher';
 	import Monaco from 'svelte-monaco';
@@ -58,8 +56,6 @@
 		transformData,
 		yamlEditable = false
 	}: Props = $props();
-
-	setThemeContext({ components });
 
 	let currentStep = $state(0);
 	let masterData = $state<Record<string, unknown>>({});

@@ -1,4 +1,7 @@
 <script lang="ts">
+	import '@sjsf/basic-theme/css/basic.css';
+
+	import Layout from '@sjsf/basic-theme/components/layout.svelte';
 	import {
 		Content,
 		createForm,
@@ -8,6 +11,7 @@
 		setFormContext,
 		type UiSchema
 	} from '@sjsf/form';
+	import { overrideByRecord } from '@sjsf/form/lib/resolver';
 	import { setThemeContext } from '@sjsf/shadcn4-theme';
 	import * as components from '@sjsf/shadcn4-theme/new-york';
 
@@ -109,7 +113,10 @@
 		...defaults,
 		schema,
 		uiSchema,
-		initialValue
+		initialValue,
+		theme: overrideByRecord(defaults.theme, {
+			layout: Layout
+		})
 	});
 	setFormContext(form);
 
