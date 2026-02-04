@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { JsonValue } from '@bufbuild/protobuf';
 	import { type JsonObject } from '@bufbuild/protobuf';
-	import { AlertCircleIcon, BookIcon, InfoIcon } from '@lucide/svelte';
+	import { BookIcon } from '@lucide/svelte';
 	import Binary from '@lucide/svelte/icons/binary';
 	import Braces from '@lucide/svelte/icons/braces';
 	import ChevronDown from '@lucide/svelte/icons/chevron-down';
@@ -36,7 +36,6 @@
 	import { createRawSnippet, type Snippet } from 'svelte';
 
 	import { shortcut } from '$lib/actions/shortcut.svelte';
-	import * as Alert from '$lib/components/ui/alert/index.js';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import * as ButtonGroup from '$lib/components/ui/button-group/index.js';
 	import { Checkbox } from '$lib/components/ui/checkbox/index.js';
@@ -48,7 +47,6 @@
 	} from '$lib/components/ui/data-table';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 	import * as Empty from '$lib/components/ui/empty/index.js';
-	import * as HoverCard from '$lib/components/ui/hover-card';
 	import * as InputGroup from '$lib/components/ui/input-group/index.js';
 	import * as Kbd from '$lib/components/ui/kbd/index.js';
 	import { Label } from '$lib/components/ui/label/index.js';
@@ -56,8 +54,6 @@
 	import { Select, SelectContent, SelectItem, SelectTrigger } from '$lib/components/ui/select';
 	import * as Table from '$lib/components/ui/table';
 	import { cn } from '$lib/utils';
-
-	import Badge from '../ui/badge/badge.svelte';
 
 	let {
 		objects,
@@ -123,6 +119,18 @@
 	let globalFilter = $state('');
 	let globalFilterInput = $state('');
 	let globalFilterError: Error | null = $state(null);
+
+	const extraFunctions = {
+		now: () => Date.now(),
+
+		Time: (time: string | number | Date) => new Date(time).getTime(),
+
+		Seconds: (time: number) => time * 1000,
+		Minutes: (time: number) => time * 60 * 1000,
+		Hours: (time: number) => time * 60 * 60 * 1000,
+		Days: (time: number) => time * 24 * 60 * 60 * 1000,
+		Years: (time: number) => time * 365 * 24 * 60 * 60 * 1000
+	};
 
 	let rowSelection = $state<RowSelectionState>({});
 	let columnFilters = $state<ColumnFiltersState>([]);
@@ -205,7 +213,7 @@
 		globalFilterFn: (row) => {
 			if (!globalFilter) return true;
 			try {
-				const expression = compileExpression(globalFilter);
+				const expression = compileExpression(globalFilter, { extraFunctions });
 				const result = expression(row.original);
 				return Boolean(result);
 			} catch {
@@ -270,7 +278,7 @@
 		try {
 			globalFilterError = null;
 			if (globalFilterInput) {
-				compileExpression(globalFilterInput);
+				compileExpression(globalFilterInput, { extraFunctions });
 			}
 			globalFilter = globalFilterInput;
 			table.setGlobalFilter(globalFilterInput);
@@ -595,3 +603,5 @@
 		</div>
 	</div>
 </div>
+
+<pre>{JSON.stringify(table.getRow(1), null, 2)}</pre>

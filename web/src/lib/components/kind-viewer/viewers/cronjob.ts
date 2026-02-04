@@ -20,8 +20,8 @@ function cronjobFieldsMask(
 		Schedule: lodash.get(schema, 'properties.spec.properties.schedule'),
 		Suspend: lodash.get(schema, 'properties.spec.properties.suspend'),
 		Active: lodash.get(schema, 'properties.status.properties.active'),
-		LastSchedule: lodash.get(schema, 'properties.status.properties.lastScheduleTime'),
-		CreationTimestamp: lodash.get(schema, 'properties.metadata.properties.creationTimestamp'),
+		'Last Schedule': lodash.get(schema, 'properties.status.properties.lastScheduleTime'),
+		'Creation Timestamp': lodash.get(schema, 'properties.metadata.properties.creationTimestamp'),
 		Images: {
 			description: lodash.get(
 				schema,
@@ -40,8 +40,8 @@ function cronjobObjectMask(object: BatchV1CronJob): Record<string, JsonValue | u
 		Schedule: object?.spec?.schedule,
 		Suspend: object?.spec?.suspend,
 		Active: object?.status?.active as JsonValue,
-		LastSchedule: object?.status?.lastScheduleTime,
-		CreationTimestamp: object?.metadata?.creationTimestamp,
+		'Last Schedule': object?.status?.lastScheduleTime,
+		'Creation Timestamp': object?.metadata?.creationTimestamp,
 		Images: object?.spec?.jobTemplate?.spec?.template?.spec?.containers.map(
 			(container) => container.image
 		) as JsonValue,
@@ -161,7 +161,7 @@ function cronjobColumnDefinitions(apiResource: APIResource, fields: any) {
 			accessorKey: 'Active'
 		},
 		{
-			id: 'LastSchedule',
+			id: 'Last Schedule',
 			header: ({ column }: { column: Column<Record<string, JsonValue>> }) =>
 				renderComponent(DynamicTableHeader, {
 					column: column,
@@ -179,10 +179,10 @@ function cronjobColumnDefinitions(apiResource: APIResource, fields: any) {
 					column: column,
 					fields: fields
 				}),
-			accessorKey: 'LastSchedule'
+			accessorKey: 'Last Schedule'
 		},
 		{
-			id: 'CreationTimestamp',
+			id: 'Creation Timestamp',
 			header: ({ column }: { column: Column<Record<string, JsonValue>> }) =>
 				renderComponent(DynamicTableHeader, {
 					column: column,
@@ -200,7 +200,7 @@ function cronjobColumnDefinitions(apiResource: APIResource, fields: any) {
 					column: column,
 					fields: fields
 				}),
-			accessorKey: 'CreationTimestamp'
+			accessorKey: 'Creation Timestamp'
 		},
 		{
 			id: 'Images',
