@@ -1,5 +1,7 @@
 <script lang="ts">
-	import { type JsonObject, type JsonValue } from '@bufbuild/protobuf';
+	import type { JsonValue } from '@bufbuild/protobuf';
+	import { type JsonObject } from '@bufbuild/protobuf';
+	import { AlertCircleIcon, BookIcon, InfoIcon } from '@lucide/svelte';
 	import Binary from '@lucide/svelte/icons/binary';
 	import Braces from '@lucide/svelte/icons/braces';
 	import ChevronDown from '@lucide/svelte/icons/chevron-down';
@@ -9,6 +11,7 @@
 	import ChevronRight from '@lucide/svelte/icons/chevron-right';
 	import ChevronUp from '@lucide/svelte/icons/chevron-up';
 	import Clock from '@lucide/svelte/icons/clock';
+	import Code from '@lucide/svelte/icons/code';
 	import Columns3 from '@lucide/svelte/icons/columns-3';
 	import Eraser from '@lucide/svelte/icons/eraser';
 	import Hash from '@lucide/svelte/icons/hash';
@@ -28,11 +31,14 @@
 		type Table as TanStackTabke,
 		type VisibilityState
 	} from '@tanstack/table-core';
-	import jsonata from 'jsonata';
+	import { compileExpression } from 'filtrex';
 	import lodash from 'lodash';
 	import { createRawSnippet, type Snippet } from 'svelte';
 
+	import { shortcut } from '$lib/actions/shortcut.svelte';
+	import * as Alert from '$lib/components/ui/alert/index.js';
 	import { Button } from '$lib/components/ui/button/index.js';
+	import * as ButtonGroup from '$lib/components/ui/button-group/index.js';
 	import { Checkbox } from '$lib/components/ui/checkbox/index.js';
 	import {
 		createSvelteTable,
@@ -42,13 +48,16 @@
 	} from '$lib/components/ui/data-table';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 	import * as Empty from '$lib/components/ui/empty/index.js';
+	import * as HoverCard from '$lib/components/ui/hover-card';
+	import * as InputGroup from '$lib/components/ui/input-group/index.js';
+	import * as Kbd from '$lib/components/ui/kbd/index.js';
 	import { Label } from '$lib/components/ui/label/index.js';
 	import * as Pagination from '$lib/components/ui/pagination/index.js';
 	import { Select, SelectContent, SelectItem, SelectTrigger } from '$lib/components/ui/select';
 	import * as Table from '$lib/components/ui/table';
 	import { cn } from '$lib/utils';
 
-	import DynamicalTableQuery from './dynamic-table-query.svelte';
+	import Badge from '../ui/badge/badge.svelte';
 
 	let {
 		objects,
@@ -112,6 +121,8 @@
 	];
 
 	let globalFilter = $state('');
+	let globalFilterInput = $state('');
+	let globalFilterError: Error | null = $state(null);
 
 	let rowSelection = $state<RowSelectionState>({});
 	let columnFilters = $state<ColumnFiltersState>([]);
@@ -191,26 +202,17 @@
 				return sorting;
 			}
 		},
-		globalFilterFn: (row, _, filterValue: string) => {
-			if (!filterValue) return true;
+		globalFilterFn: (row) => {
+			if (!globalFilter) return true;
 			try {
-				const evaluator = jsonata(expression);
-				let result: boolean | undefined;
-				evaluator.evaluate(row.original).then((r) => {
-					result = r;
-				});
-				console.log(result);
-				return !!result;
-			} catch (error) {
-				console.error('JSONata parse error:', error);
-				return true;
+				const expression = compileExpression(globalFilter);
+				const result = expression(row.original);
+				return Boolean(result);
+			} catch {
+				return false;
 			}
 		}
 	});
-
-	function handleResetFilter() {
-		expression = '';
-	}
 
 	// eslint-disable-next-line
 	function getAlignment(field: any): 'start' | 'center' | 'end' {
@@ -253,14 +255,85 @@
 		}
 	}
 
-	let expression = $state('');
+	function handleKeyDown(event: KeyboardEvent) {
+		if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
+			event.preventDefault();
+			handleSearch();
+		}
+
+		if (event.key === 'Escape') {
+			event.preventDefault();
+			handleClear();
+		}
+	}
+	function handleSearch() {
+		try {
+			globalFilterError = null;
+			if (globalFilterInput) {
+				compileExpression(globalFilterInput);
+			}
+			globalFilter = globalFilterInput;
+			table.setGlobalFilter(globalFilterInput);
+		} catch (error) {
+			globalFilterError = error as Error;
+		}
+	}
+	function handleClear() {
+		globalFilterInput = '';
+		globalFilter = '';
+		globalFilterError = null;
+		table.setGlobalFilter('');
+	}
 </script>
 
+<svelte:window
+	use:shortcut={{
+		key: '/',
+		ctrl: false,
+		callback: () => {
+			const input = document.getElementById('global_filter');
+			if (input) (input as HTMLInputElement).focus();
+		}
+	}}
+/>
 <div class="space-y-4">
 	<!-- Controllers -->
 	<div class="flex w-full items-center gap-2">
 		<!-- Filters -->
-		<DynamicalTableQuery bind:expression {table} />
+
+		<ButtonGroup.Root class="w-full">
+			<InputGroup.Root>
+				<InputGroup.Addon>
+					<Code size={16} />
+				</InputGroup.Addon>
+				<InputGroup.Input
+					id="global_filter"
+					placeholder="Search via Query Language"
+					bind:value={globalFilterInput}
+					class="w-full"
+					onkeydown={handleKeyDown}
+				/>
+				<InputGroup.Addon align="inline-end">
+					<Kbd.Group>
+						<Kbd.Root>ctrl</Kbd.Root>
+						<Kbd.Root>⏎</Kbd.Root>
+					</Kbd.Group>
+				</InputGroup.Addon>
+			</InputGroup.Root>
+			<Button
+				variant="outline"
+				size="icon"
+				aria-label="Search"
+				onclick={handleSearch}
+				onkeydown={(event) => {
+					if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
+						handleSearch();
+					}
+				}}
+			>
+				<BookIcon size={16} />
+			</Button>
+		</ButtonGroup.Root>
 		<DropdownMenu.Root>
 			<DropdownMenu.Trigger>
 				{#snippet child({ props })}
@@ -310,6 +383,11 @@
 			{@render reload()}
 		</div>
 	</div>
+	{#if globalFilterError}
+		<p class="text-xs text-destructive">
+			{globalFilterError.message}
+		</p>
+	{/if}
 	<!-- Table -->
 	<div class="overflow-hidden rounded-md border bg-background">
 		<Table.Root class="table-fixed">
@@ -395,7 +473,7 @@
 									</Empty.Description>
 								</Empty.Header>
 								<Empty.Content>
-									<Button onclick={handleResetFilter}>
+									<Button onclick={handleClear}>
 										<Eraser size={16} class="opacity-60" />
 										Reset
 									</Button>
