@@ -75,17 +75,6 @@
 			}
 		}
 	});
-
-	function handleKeyDown(event: KeyboardEvent) {
-		if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
-			event.preventDefault();
-			handleSearch();
-		}
-		if (event.key === 'Escape') {
-			event.preventDefault();
-			handleClear();
-		}
-	}
 </script>
 
 <Sheet.Root>

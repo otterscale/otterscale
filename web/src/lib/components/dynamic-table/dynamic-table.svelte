@@ -1,21 +1,24 @@
 <script lang="ts">
 	import type { JsonValue } from '@bufbuild/protobuf';
 	import { type JsonObject } from '@bufbuild/protobuf';
-	import { BookIcon } from '@lucide/svelte';
-	import Binary from '@lucide/svelte/icons/binary';
-	import Braces from '@lucide/svelte/icons/braces';
-	import ChevronDown from '@lucide/svelte/icons/chevron-down';
-	import ChevronFirst from '@lucide/svelte/icons/chevron-first';
-	import ChevronLast from '@lucide/svelte/icons/chevron-last';
-	import ChevronLeft from '@lucide/svelte/icons/chevron-left';
-	import ChevronRight from '@lucide/svelte/icons/chevron-right';
-	import ChevronUp from '@lucide/svelte/icons/chevron-up';
-	import Clock from '@lucide/svelte/icons/clock';
-	import Code from '@lucide/svelte/icons/code';
-	import Columns3 from '@lucide/svelte/icons/columns-3';
-	import Eraser from '@lucide/svelte/icons/eraser';
-	import Hash from '@lucide/svelte/icons/hash';
-	import Type from '@lucide/svelte/icons/type';
+	import {
+		BinaryIcon,
+		BookIcon,
+		BracesIcon,
+		BracketsIcon,
+		ChevronDownIcon,
+		ChevronFirstIcon,
+		ChevronLastIcon,
+		ChevronLeftIcon,
+		ChevronRightIcon,
+		ChevronUpIcon,
+		ClockIcon,
+		CodeIcon,
+		Columns3Icon,
+		EraserIcon,
+		HashIcon,
+		TypeIcon
+	} from '@lucide/svelte';
 	import {
 		type ColumnDef,
 		type ColumnFiltersState,
@@ -54,6 +57,8 @@
 	import { Select, SelectContent, SelectItem, SelectTrigger } from '$lib/components/ui/select';
 	import * as Table from '$lib/components/ui/table';
 	import { cn } from '$lib/utils';
+
+	import { getColumnType } from './dynamic-table-header.svelte';
 
 	let {
 		objects,
@@ -121,15 +126,22 @@
 	let globalFilterError: Error | null = $state(null);
 
 	const extraFunctions = {
-		now: () => Date.now(),
-
 		Time: (time: string | number | Date) => new Date(time).getTime(),
+
+		now: () => Date.now(),
 
 		Seconds: (time: number) => time * 1000,
 		Minutes: (time: number) => time * 60 * 1000,
 		Hours: (time: number) => time * 60 * 60 * 1000,
 		Days: (time: number) => time * 24 * 60 * 60 * 1000,
-		Years: (time: number) => time * 365 * 24 * 60 * 60 * 1000
+		Years: (time: number) => time * 365 * 24 * 60 * 60 * 1000,
+
+		length: (array: unknown[]) => (array ? array.length : 0)
+	};
+
+	const constants = {
+		true: true,
+		false: false
 	};
 
 	let rowSelection = $state<RowSelectionState>({});
@@ -213,7 +225,7 @@
 		globalFilterFn: (row) => {
 			if (!globalFilter) return true;
 			try {
-				const expression = compileExpression(globalFilter, { extraFunctions });
+				const expression = compileExpression(globalFilter, { extraFunctions, constants });
 				const result = expression(row.original);
 				return Boolean(result);
 			} catch {
@@ -278,7 +290,7 @@
 		try {
 			globalFilterError = null;
 			if (globalFilterInput) {
-				compileExpression(globalFilterInput, { extraFunctions });
+				compileExpression(globalFilterInput, { extraFunctions, constants });
 			}
 			globalFilter = globalFilterInput;
 			table.setGlobalFilter(globalFilterInput);
@@ -308,11 +320,10 @@
 	<!-- Controllers -->
 	<div class="flex w-full items-center gap-2">
 		<!-- Filters -->
-
 		<ButtonGroup.Root class="w-full">
 			<InputGroup.Root>
 				<InputGroup.Addon>
-					<Code size={16} />
+					<CodeIcon size={16} />
 				</InputGroup.Addon>
 				<InputGroup.Input
 					id="global_filter"
@@ -346,7 +357,7 @@
 			<DropdownMenu.Trigger>
 				{#snippet child({ props })}
 					<Button variant="outline" {...props}>
-						<Columns3 class="-ms-1 opacity-60" size={16} aria-hidden="true" />
+						<Columns3Icon class="-ms-1 opacity-60" size={16} aria-hidden="true" />
 					</Button>
 				{/snippet}
 			</DropdownMenu.Trigger>
@@ -362,21 +373,20 @@
 					>
 						{@const type = lodash.get(fields, `${column.id}.type`)}
 						{@const format = lodash.get(fields, `${column.id}.format`)}
-						<div>
-							{#if type === 'boolean'}
-								<Binary />
-							{:else if type === 'number' || type === 'integer'}
-								<Hash />
-							{:else if type === 'string' && (format === 'date' || format === 'date-time')}
-								<Clock />
-							{:else if type === 'string'}
-								<Type />
-							{:else if type === 'array'}
-								<Braces />
-							{:else if type === 'object'}
-								<Braces />
-							{/if}
-						</div>
+						{@const columnType = getColumnType(type, format)}
+						{#if columnType === 'boolean'}
+							<BinaryIcon />
+						{:else if columnType === 'number'}
+							<HashIcon />
+						{:else if columnType === 'time'}
+							<ClockIcon />
+						{:else if columnType === 'string'}
+							<TypeIcon />
+						{:else if columnType === 'array'}
+							<BracketsIcon />
+						{:else if columnType === 'object'}
+							<BracesIcon />
+						{/if}
 						{column.id}
 					</DropdownMenu.Item>
 				{/each}
@@ -434,9 +444,9 @@
 											context={header.getContext()}
 										/>
 										{#if header.column.getIsSorted() === 'asc'}
-											<ChevronUp class="shrink-0 opacity-60" size={16} aria-hidden="true" />
+											<ChevronUpIcon class="shrink-0 opacity-60" size={16} aria-hidden="true" />
 										{:else if header.column.getIsSorted() === 'desc'}
-											<ChevronDown class="shrink-0 opacity-60" size={16} aria-hidden="true" />
+											<ChevronDownIcon class="shrink-0 opacity-60" size={16} aria-hidden="true" />
 										{/if}
 									</div>
 								{:else if !header.isPlaceholder && !header.column.getCanSort()}
@@ -472,7 +482,7 @@
 							<Empty.Root>
 								<Empty.Header>
 									<Empty.Media variant="icon">
-										<Columns3 size={32} class="opacity-60" aria-hidden="true" />
+										<Columns3Icon size={32} class="opacity-60" aria-hidden="true" />
 									</Empty.Media>
 									<Empty.Title>No Resources Found</Empty.Title>
 									<Empty.Description>
@@ -482,7 +492,7 @@
 								</Empty.Header>
 								<Empty.Content>
 									<Button onclick={handleClear}>
-										<Eraser size={16} class="opacity-60" />
+										<EraserIcon size={16} class="opacity-60" />
 										Reset
 									</Button>
 								</Empty.Content>
@@ -556,7 +566,7 @@
 							disabled={!table.getCanPreviousPage()}
 							aria-label="Go to first page"
 						>
-							<ChevronFirst size={16} aria-hidden="true" />
+							<ChevronFirstIcon size={16} aria-hidden="true" />
 						</Button>
 					</Pagination.Item>
 					<!-- Previous page button -->
@@ -569,7 +579,7 @@
 							disabled={!table.getCanPreviousPage()}
 							aria-label="Go to previous page"
 						>
-							<ChevronLeft size={16} aria-hidden="true" />
+							<ChevronLeftIcon size={16} aria-hidden="true" />
 						</Button>
 					</Pagination.Item>
 					<!-- Next page button -->
@@ -582,7 +592,7 @@
 							disabled={!table.getCanNextPage()}
 							aria-label="Go to next page"
 						>
-							<ChevronRight size={16} aria-hidden="true" />
+							<ChevronRightIcon size={16} aria-hidden="true" />
 						</Button>
 					</Pagination.Item>
 					<!-- Last page button -->
@@ -595,7 +605,7 @@
 							disabled={!table.getCanNextPage()}
 							aria-label="Go to last page"
 						>
-							<ChevronLast size={16} aria-hidden="true" />
+							<ChevronLastIcon size={16} aria-hidden="true" />
 						</Button>
 					</Pagination.Item>
 				</Pagination.Content>
@@ -603,5 +613,3 @@
 		</div>
 	</div>
 </div>
-
-<pre>{JSON.stringify(table.getRow(1), null, 2)}</pre>

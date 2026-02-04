@@ -7,7 +7,7 @@ function format(value: string) {
 }
 
 function getRelativeTime(now: number, timestamp: number) {
-	const milliseconds = timestamp;
+	const milliseconds = Math.max(timestamp, 0);
 
 	const seconds = Math.floor((now - milliseconds) / 1000);
 	if (seconds < 60) return { value: seconds, unit: 'second' };
