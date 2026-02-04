@@ -1,0 +1,90 @@
+{
+    "type": "object",
+    "properties": {
+        "spec": {
+            "type": "object",
+            "properties": {
+                "jobTemplate": {
+                    "type": "object",
+                    "properties": {
+                        "spec": {
+                            "type": "object",
+                            "properties": {
+                                "template": {
+                                    "type": "object",
+                                    "properties": {
+                                        "spec": {
+                                            "type": "object",
+                                            "properties": {
+                                                "restartPolicy": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "Always",
+                                                        "Never",
+                                                        "OnFailure"
+                                                    ],
+                                                    "title": "Restart Policy"
+                                                },
+                                                "containers": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "name": {
+                                                                "type": "string",
+                                                                "default": "",
+                                                                "title": "Container Name"
+                                                            },
+                                                            "image": {
+                                                                "type": "string",
+                                                                "title": "Image"
+                                                            },
+                                                            "command": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "default": "",
+                                                                    "type": "string"
+                                                                },
+                                                                "x-kubernetes-list-type": "atomic",
+                                                                "title": "Command"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "name"
+                                                        ]
+                                                    },
+                                                    "title": "Containers"
+                                                }
+                                            },
+                                            "additionalProperties": false,
+                                            "title": "",
+                                            "required": [
+                                                "containers"
+                                            ]
+                                        }
+                                    },
+                                    "additionalProperties": false,
+                                    "title": ""
+                                }
+                            },
+                            "additionalProperties": false,
+                            "title": "",
+                            "required": [
+                                "template"
+                            ]
+                        }
+                    },
+                    "additionalProperties": false,
+                    "title": ""
+                }
+            },
+            "additionalProperties": false,
+            "title": "",
+            "required": [
+                "jobTemplate"
+            ]
+        }
+    },
+    "required": [],
+    "title": ""
+}

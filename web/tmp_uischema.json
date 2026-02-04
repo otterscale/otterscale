@@ -1,0 +1,74 @@
+{
+    "spec": {
+        "ui:options": {
+            "label": false
+        },
+        "jobTemplate": {
+            "ui:options": {
+                "label": false
+            },
+            "spec": {
+                "ui:options": {
+                    "label": false
+                },
+                "template": {
+                    "ui:options": {
+                        "label": false
+                    },
+                    "spec": {
+                        "ui:options": {
+                            "label": false
+                        },
+                        "restartPolicy": {
+                            "ui:components": {
+                                "stringField": "enumField"
+                            },
+                            "ui:title": "Restart Policy",
+                            "ui:options": {
+                                "label": true
+                            }
+                        },
+                        "containers": {
+                            "ui:title": "Containers",
+                            "ui:options": {
+                                "label": true
+                            },
+                            "items": {
+                                "name": {
+                                    "ui:title": "Container Name",
+                                    "ui:options": {
+                                        "label": true
+                                    }
+                                },
+                                "image": {
+                                    "ui:title": "Image",
+                                    "ui:options": {
+                                        "label": true
+                                    }
+                                },
+                                "command": {
+                                    "ui:title": "Command",
+                                    "ui:options": {
+                                        "label": true
+                                    }
+                                },
+                                "args": {
+                                    "ui:title": "Arguments",
+                                    "ui:options": {
+                                        "label": true
+                                    }
+                                },
+                                "env": {
+                                    "ui:title": "Environment Variables",
+                                    "ui:options": {
+                                        "label": true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
