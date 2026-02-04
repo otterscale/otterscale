@@ -1,5 +1,5 @@
 <script lang="ts">
-	// import '@sjsf/basic-theme/css/basic.css';
+	import '@sjsf/basic-theme/css/basic.css';
 	import Layout from '@sjsf/basic-theme/components/layout.svelte';
 	import {
 		Content,
@@ -11,8 +11,7 @@
 		type UiSchema
 	} from '@sjsf/form';
 	import { overrideByRecord } from '@sjsf/form/lib/resolver';
-	import { theme as shadcnTheme } from '@sjsf/shadcn4-theme';
-	import CustomLayout from '$lib/components/custom/schema-form/layout/Layout.svelte';
+
 	import * as defaults from '$lib/components/custom/schema-form/defaults';
 
 
@@ -28,9 +27,6 @@
 							spec: {
 								type: 'object',
 								properties: {
-									template: {
-										type: 'object',
-										properties: {
 											spec: {
 												type: 'object',
 												properties: {
@@ -70,9 +66,6 @@
 												required: ['containers']
 											}
 										}
-									}
-								},
-								required: ['template']
 							}
 						}
 					}
@@ -114,9 +107,6 @@
 		// theme: overrideByRecord(defaults.theme, {
 		// 	layout: Layout
 		// })
-		theme: overrideByRecord(defaults.theme, {
-			layout: CustomLayout
-		})
 	});
 	setFormContext(form);
 
