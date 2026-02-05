@@ -4,13 +4,12 @@ import '@sjsf/form/fields/extra/enum-include';
 import '@sjsf/form/fields/extra/multi-enum-include';
 import '@sjsf/form/fields/extra/unknown-native-file-include';
 
+import { dynamic } from '@sjsf/form/lib/dynamic.svelte';
 import { overrideByRecord } from '@sjsf/form/lib/resolver';
 import { theme as shadcnTheme } from '@sjsf/shadcn4-theme';
 
-import LazyObjectTemplate from './form/lazy-object-template.svelte';
-
 export const theme = overrideByRecord(shadcnTheme, {
-	objectTemplate: LazyObjectTemplate
+	objectTemplate: dynamic(() => import('@sjsf/form/templates/object.svelte'))
 });
 import '@sjsf/shadcn4-theme/extra-widgets/textarea-include';
 import '@sjsf/shadcn4-theme/extra-widgets/checkboxes-include';
