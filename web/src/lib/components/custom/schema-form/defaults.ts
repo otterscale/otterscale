@@ -7,7 +7,7 @@ import '@sjsf/form/fields/extra/unknown-native-file-include';
 import { overrideByRecord } from '@sjsf/form/lib/resolver';
 import { theme as shadcnTheme } from '@sjsf/shadcn4-theme';
 
-import LazyObjectTemplate from './layout/lazy-object-template.svelte';
+import LazyObjectTemplate from './form/lazy-object-template.svelte';
 
 export const theme = overrideByRecord(shadcnTheme, {
 	objectTemplate: LazyObjectTemplate
