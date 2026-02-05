@@ -3,16 +3,14 @@ export { translation } from '@sjsf/form/translations/en';
 import '@sjsf/form/fields/extra/enum-include';
 import '@sjsf/form/fields/extra/multi-enum-include';
 import '@sjsf/form/fields/extra/unknown-native-file-include';
-// export { theme } from '@sjsf/shadcn4-theme';
 
+import { overrideByRecord } from '@sjsf/form/lib/resolver';
 import { theme as shadcnTheme } from '@sjsf/shadcn4-theme';
-import { extendByRecord } from '@sjsf/form/lib/resolver';
-import CustomLayout from './layout/Layout.svelte';
-import { Select, SelectContent, SelectItem, SelectTrigger } from '@sjsf/shadcn4-theme/new-york';
 
-export const theme = extendByRecord(shadcnTheme, {
-	layout: CustomLayout,
-    Select, SelectContent, SelectItem, SelectTrigger
+import CustomLayout from './layout/Layout.svelte';
+
+export const theme = overrideByRecord(shadcnTheme, {
+	layout: CustomLayout
 });
 import '@sjsf/shadcn4-theme/extra-widgets/textarea-include';
 import '@sjsf/shadcn4-theme/extra-widgets/checkboxes-include';

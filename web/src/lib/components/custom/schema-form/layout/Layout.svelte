@@ -1,6 +1,7 @@
 <script lang="ts">
+	import { type ComponentProps, getFormContext, layoutAttributes } from '@sjsf/form';
 	import { getContext, setContext } from 'svelte';
-	import { getFormContext, layoutAttributes, type ComponentProps } from '@sjsf/form';
+
 	import ArrayItemControls from './chunks/ArrayItemControls.svelte';
 	import DefaultBranch from './chunks/DefaultBranch.svelte';
 	import FieldBranch from './chunks/FieldBranch.svelte';
@@ -9,6 +10,7 @@
 	import FieldSetBranch from './chunks/FieldSetBranch.svelte';
 	import FieldTitleRow from './chunks/FieldTitleRow.svelte';
 	import SimpleContent from './chunks/SimpleContent.svelte';
+	import LazyBranch from './LazyBranch.svelte';
 
 	let props: ComponentProps['layout'] = $props();
 	const { type, config } = props;
@@ -16,6 +18,11 @@
 	// Use context to track recursion depth implicitly
 	const parentDepth = getContext<number>('layout-depth') || 0;
 	setContext('layout-depth', parentDepth + 1);
+
+	// Threshold for switching to async rendering to break the call stack
+	// First 10 layers render synchronously for performance, deeper layers use LazyBranch
+	const LAZY_THRESHOLD = 20;
+	const useLazy = parentDepth > LAZY_THRESHOLD;
 
 	const ctx = getFormContext();
 	const attributes = $derived(layoutAttributes(ctx, config, 'layout', 'layouts', type, {}));
@@ -35,11 +42,7 @@
 		default: DefaultBranch
 	};
 
-	function getBranchType(
-		t: string,
-		meta: boolean,
-		attrs: any
-	): keyof typeof BRANCHES {
+	function getBranchType(t: string, meta: boolean, attrs: any): keyof typeof BRANCHES {
 		if ((t === 'field-content' || meta) && Object.keys(attrs).length < 2) {
 			return 'simple';
 		}
@@ -64,22 +67,20 @@
 	const branchKey = $derived(getBranchType(type, isMeta, attributes));
 	const Branch = $derived(BRANCHES[branchKey]);
 
-	const branchProps = $derived(
-		branchKey === 'simple' ? props : { ...props, attributes }
-	);
-	// const branchProps = $derived({ ...props, attributes });
+	// const branchProps = $derived(branchKey === 'simple' ? props : { ...props, attributes });
+	const branchProps = $derived({ ...props, attributes });
 </script>
 
-{#if parentDepth > 50}
+{#if parentDepth > 100}
 	{console.warn('Recursion Limit Reached!', parentDepth, type)}
 	<div style="border: 2px solid red; padding: 10px;">
 		<strong>🛑 Recursion Limit Reached ({parentDepth})!</strong>
 		<p>Type: {type}</p>
 		<pre>{JSON.stringify(config, null, 2)}</pre>
 	</div>
+{:else if useLazy}
+	<!-- Use LazyBranch to break the call stack for deep recursion -->
+	<LazyBranch component={Branch} {...branchProps} />
 {:else}
-	{console.log('Recursion Limit Reached!', parentDepth, type)}
 	<Branch {...branchProps} />
 {/if}
-
-<!-- <Branch {...branchProps} /> -->
