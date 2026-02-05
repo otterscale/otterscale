@@ -13,10 +13,12 @@
 		formDataToK8s,
 		type K8sOpenAPISchema,
 		k8sToFormData,
+		normalizeArrays,
 		type PathOptions
 	} from './converter';
 	import * as defaults from './defaults';
 	import SchemaFormStep from './schema-form-step.svelte';
+	import { deepMerge } from './utils';
 
 	interface Props {
 		/** The full K8s OpenAPI V3 Schema */
@@ -57,7 +59,7 @@
 	const formConfig = buildSchemaFromK8s(apiSchema, paths);
 
 	let initialValue = $state(k8sToFormData(initialData, formConfig.transformationMappings));
-	let masterData = $state<Record<string, unknown>>({});
+	let masterData = $state<Record<string, unknown>>(initialData ?? {});
 	let advanceYaml = $state('');
 	let yamlParseError = $state<string | null>(null);
 	let ref: HTMLFormElement | undefined;
@@ -79,9 +81,10 @@
 		try {
 			const rawData = form ? getValueSnapshot(form) : initialValue;
 			const k8sData = formDataToK8s(rawData, formConfig.transformationMappings);
-			masterData = k8sData;
+			// Use deepMerge to preserve data not in the form paths
+			masterData = normalizeArrays(deepMerge(masterData, k8sData)) as Record<string, unknown>;
 
-			advanceYaml = yaml.dump(k8sData, {
+			advanceYaml = yaml.dump(masterData, {
 				indent: 2,
 				lineWidth: -1
 			});

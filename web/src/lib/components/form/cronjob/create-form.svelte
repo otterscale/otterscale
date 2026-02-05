@@ -46,7 +46,6 @@
 								{
 									name: 'job-container',
 									image: 'busybox:latest',
-									imagePullPolicy: 'IfNotPresent',
 									command: ['sh', '-c', 'echo Hello World']
 								}
 							]

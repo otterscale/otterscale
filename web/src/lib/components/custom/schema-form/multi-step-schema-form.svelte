@@ -58,7 +58,7 @@
 	}: Props = $props();
 
 	let currentStep = $state(0);
-	let masterData = $state<Record<string, unknown>>({});
+	let masterData = $state<Record<string, unknown>>(initialData ?? {});
 	let stepForms = $state<StepFormData[]>([]);
 	let advanceYaml = $state('');
 	let yamlParseError = $state<string | null>(null);
@@ -69,14 +69,13 @@
 	const isFirstStep = $derived(currentStep === 0);
 	const isLastStep = $derived(currentStep === totalSteps - 1);
 
-	function createStepForms(sourceData: Record<string, unknown> | undefined) {
+	function createStepForms(sourceData: Record<string, unknown>) {
 		const forms: StepFormData[] = [];
-		const source = sourceData || {};
 
 		for (const [stepName, paths] of Object.entries(fields)) {
 			const formConfig = buildSchemaFromK8s(apiSchema, paths);
 			// Filter initialData to only include fields defined in this step's schema
-			const transformedData = k8sToFormData(source, formConfig.transformationMappings);
+			const transformedData = k8sToFormData(sourceData, formConfig.transformationMappings);
 			const stepInitialValue = filterDataBySchema(transformedData, formConfig.schema);
 
 			const form = createForm<Record<string, unknown>>({
@@ -94,12 +93,8 @@
 		stepForms = forms;
 	}
 
-	$effect(() => {
-		if (initialData) {
-			masterData = { ...initialData };
-		}
-		createStepForms(initialData);
-	});
+	// Initialize step forms once on component creation
+	createStepForms(masterData);
 
 	function handleStepSubmit(
 		stepName: string,
@@ -192,12 +187,6 @@
 		// Normalize all numeric-keyed objects to arrays
 		masterData = normalizeArrays(masterData) as Record<string, unknown>;
 	}
-
-	$effect(() => {
-		if (mode === 'advance') {
-			syncMasterDataToYaml();
-		}
-	});
 </script>
 
 <div class="multi-step-schema-form-container flex h-full flex-col">
