@@ -12,6 +12,7 @@
 	import * as Chart from '$lib/components/ui/chart/index.js';
 	import { formatIO } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
+	import { activeNamespace } from '$lib/stores';
 
 	let {
 		prometheusDriver,
@@ -37,7 +38,7 @@
 		const response = await prometheusDriver.rangeQuery(
 			`
 			sum(
-			irate(container_network_receive_bytes_total{job="kubelet",juju_model="${scope}",metrics_path="/metrics/cadvisor",namespace=~".+"}[4m])
+			irate(container_network_receive_bytes_total{job="kubelet",juju_model="${scope}",metrics_path="/metrics/cadvisor",namespace="${$activeNamespace}"}[4m])
 			)
 			`,
 			new SvelteDate().setMinutes(0, 0, 0) - 1 * 60 * 60 * 1000,
@@ -51,7 +52,7 @@
 		const response = await prometheusDriver.rangeQuery(
 			`
 			sum(
-			irate(container_network_transmit_bytes_total{job="kubelet",juju_model="${scope}",metrics_path="/metrics/cadvisor",namespace=~".+"}[4m])
+			irate(container_network_transmit_bytes_total{job="kubelet",juju_model="${scope}",metrics_path="/metrics/cadvisor",namespace="${$activeNamespace}"}[4m])
 			)
 			`,
 			new SvelteDate().setMinutes(0, 0, 0) - 1 * 60 * 60 * 1000,
@@ -85,6 +86,12 @@
 			reloadManager.restart();
 		} else {
 			reloadManager.stop();
+		}
+	});
+
+	$effect(() => {
+		if ($activeNamespace) {
+			fetch();
 		}
 	});
 </script>
