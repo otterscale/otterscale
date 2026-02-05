@@ -1,5 +1,5 @@
 # Build stage
-FROM golang:1.25.4-trixie@sha256:a02d35efc036053fdf0da8c15919276bf777a80cbfda6a35c5e9f087e652adfc AS builder
+FROM golang:1.26rc3-trixie@sha256:bc4a32a68778c1f78911fa769a296a8beb01d1c786d13dab93fefcd1985f4004 AS builder
 
 WORKDIR /src
 
