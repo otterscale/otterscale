@@ -56,6 +56,7 @@
 		},
 		// Step 2: Container Settings
 		Container: {
+			'spec.jobTemplate.spec.template.spec.containers.name': { title: 'Name' },
 			'spec.jobTemplate.spec.template.spec.containers.image': { title: 'Image' },
 			'spec.jobTemplate.spec.template.spec.containers.command': { title: 'Command' },
 			'spec.jobTemplate.spec.template.spec.containers.args': { title: 'Arguments' },
@@ -104,6 +105,7 @@
 				await resourceClient.apply({
 					cluster,
 					name,
+					namespace: page.url.searchParams.get('namespace') ?? '',
 					group: 'batch',
 					version: 'v1',
 					resource: 'cronjobs',

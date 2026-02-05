@@ -16,9 +16,11 @@
 
 	let {
 		name,
+		onOpenChangeComplete,
 		onsuccess
 	}: {
 		name: string;
+		onOpenChangeComplete: () => void;
 		onsuccess?: () => void;
 	} = $props();
 
@@ -45,6 +47,7 @@
 			async () => {
 				await resourceClient.delete({
 					cluster,
+					namespace: page.url.searchParams.get('namespace') ?? '',
 					group: 'batch', // Changed from tenant.otterscale.io
 					version: 'v1', // Changed from v1alpha1
 					resource: 'cronjobs', // Changed from workspaces
@@ -58,7 +61,11 @@
 					open = false;
 					onsuccess?.();
 					// Redirect after delete - using scope root for now
-					goto(resolve(`/(auth)/scope/${cluster}`));
+					goto(
+						resolve(
+							`/(auth)/${cluster}/CronJob?group=batch&version=v1&namespace=${page.url.searchParams.get('namespace') ?? ''}&resource=cronjobs&resource=cronjobs`
+						)
+					);
 					return `Successfully deleted cronjob ${name}`;
 				},
 				error: (err) => {
@@ -78,11 +85,11 @@
 			init();
 		}
 	}}
+	{onOpenChangeComplete}
 >
-	<AlertDialog.Trigger>
-		<Button variant="outline" size="icon">
-			<Trash2 class="text-destructive" />
-		</Button>
+	<AlertDialog.Trigger class="flex items-center gap-2">
+		<Trash2 size={16} />
+		Delete
 	</AlertDialog.Trigger>
 	<AlertDialog.Content>
 		<AlertDialog.Header>Delete CronJob</AlertDialog.Header>

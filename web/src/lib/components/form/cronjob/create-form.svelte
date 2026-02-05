@@ -1,8 +1,6 @@
 <script lang="ts">
-	import { toJson } from '@bufbuild/protobuf';
-	import { StructSchema } from '@bufbuild/protobuf/wkt';
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
-	import { getContext, onMount } from 'svelte';
+	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
 
 	import { page } from '$app/state';
@@ -74,6 +72,7 @@
 		},
 		// Step 2: Container Settings
 		Container: {
+			'spec.jobTemplate.spec.template.spec.containers.name': { title: 'Name' },
 			'spec.jobTemplate.spec.template.spec.containers.image': { title: 'Image' },
 			'spec.jobTemplate.spec.template.spec.containers.command': { title: 'Command' },
 			'spec.jobTemplate.spec.template.spec.containers.args': { title: 'Arguments' },
@@ -120,6 +119,7 @@
 
 				await resourceClient.create({
 					cluster,
+					namespace: page.url.searchParams.get('namespace') ?? '',
 					group: 'batch',
 					version: 'v1',
 					resource: 'cronjobs',
@@ -143,24 +143,6 @@
 			}
 		);
 	}
-
-	onMount(async () => {
-		if (schema) return;
-
-		try {
-			const res = await resourceClient.schema({
-				cluster,
-				group: 'batch',
-				version: 'v1',
-				kind: 'CronJob'
-			});
-			// Convert Protobuf Struct to plain JSON object
-			schema = toJson(StructSchema, res) as K8sOpenAPISchema;
-		} catch (err) {
-			console.error('Failed to fetch cronjob schema:', err);
-			toast.error(`Failed to fetch cronjob schema: ${(err as ConnectError).message}`);
-		}
-	});
 </script>
 
 <div class="h-full w-full">

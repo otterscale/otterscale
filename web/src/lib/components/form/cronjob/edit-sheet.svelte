@@ -2,7 +2,6 @@
 	import { Pencil } from '@lucide/svelte';
 
 	import type { K8sOpenAPISchema } from '$lib/components/custom/schema-form';
-	import { Button } from '$lib/components/ui/button';
 	import * as Sheet from '$lib/components/ui/sheet';
 
 	import EditCronJobForm from './edit-form.svelte';
@@ -11,11 +10,13 @@
 		name,
 		schema,
 		object,
+		onOpenChangeComplete,
 		onsuccess
 	}: {
 		name: string;
 		schema: K8sOpenAPISchema;
 		object: Record<string, unknown>;
+		onOpenChangeComplete: () => void;
 		onsuccess?: () => void;
 	} = $props();
 
@@ -25,13 +26,13 @@
 		open = false;
 		onsuccess?.();
 	}
+	console.log('object', object);
 </script>
 
-<Sheet.Root bind:open>
-	<Sheet.Trigger>
-		<Button variant="outline" size="icon">
-			<Pencil />
-		</Button>
+<Sheet.Root bind:open {onOpenChangeComplete}>
+	<Sheet.Trigger class="flex items-center gap-2">
+		<Pencil size={16} />
+		Edit
 	</Sheet.Trigger>
 	<Sheet.Content
 		class="fixed top-1/2 left-1/2 h-[90vh] w-[90vw] max-w-4xl min-w-[800px] -translate-x-1/2 -translate-y-1/2 rounded-lg border bg-background shadow-lg"
