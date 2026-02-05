@@ -48,7 +48,7 @@
 	});
 
 	$effect(() => {
-		if ($activeNamespace !== undefined) {
+		if ($activeNamespace) {
 			fetch();
 		}
 	});

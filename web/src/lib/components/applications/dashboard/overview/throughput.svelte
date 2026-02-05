@@ -35,13 +35,6 @@
 	} satisfies Chart.ChartConfig;
 
 	async function fetchReads() {
-		console.log(`
-			sum(
-			rate(
-				container_fs_reads_bytes_total{container!="",device=~"(/dev/)?(mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|md.+|dasd.+)",job="kubelet",juju_model="${scope}",metrics_path="/metrics/cadvisor",namespace="${$activeNamespace}"}[4m]
-			)
-			)
-			`);
 		const response = await prometheusDriver.rangeQuery(
 			`
 			sum(
@@ -101,7 +94,7 @@
 	});
 
 	$effect(() => {
-		if ($activeNamespace !== undefined) {
+		if ($activeNamespace) {
 			fetch();
 		}
 	});
