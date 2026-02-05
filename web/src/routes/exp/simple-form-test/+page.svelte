@@ -80,7 +80,21 @@
 		required: []
 	};
 
-	const uiSchema: UiSchema = {};
+	const uiSchema: UiSchema = {
+		spec: {
+			jobTemplate: {
+				spec: {
+					template: {
+						spec: {
+							restartPolicy: {
+								'ui:components': { stringField: 'enumField' }
+							}
+						}
+					}
+				}
+			}
+		}
+	};
 
 	const initialValue = {
 		spec: {

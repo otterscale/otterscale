@@ -88,7 +88,6 @@ function simplifyQuantitySchema(target: Schema, source: K8sOpenAPISchema) {
 	) {
 		target.type = 'string';
 		target.title = source.title ?? target.title ?? '';
-		target.description = source.description ?? target.description ?? '';
 		delete target.oneOf;
 		delete target.anyOf;
 	}
