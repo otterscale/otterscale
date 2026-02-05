@@ -31,4 +31,24 @@ function getRelativeTime(now: number, timestamp: number) {
 	return { value: years, unit: 'year' };
 }
 
-export { format, getRelativeTime };
+function getColumnType(type: JsonValue, format: JsonValue) {
+	if (type === 'boolean') {
+		return 'boolean';
+	} else if (type === 'number' || type === 'integer') {
+		return 'number';
+	} else if (type === 'string' && (format === 'date' || format === 'date-time')) {
+		return 'time';
+	} else if (type === 'string') {
+		return 'string';
+	} else if (type === 'array') {
+		return 'array';
+	} else if (type === 'object' && format === 'ratio') {
+		return 'ratio';
+	} else if (type === 'object') {
+		return 'object';
+	} else {
+		return undefined;
+	}
+}
+
+export { format, getColumnType, getRelativeTime };

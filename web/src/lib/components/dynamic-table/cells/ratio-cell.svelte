@@ -3,8 +3,8 @@
 		numerator,
 		denominator
 	}: {
-		numerator: number;
-		denominator: number;
+		numerator: any;
+		denominator: any;
 	} = $props();
 </script>
 

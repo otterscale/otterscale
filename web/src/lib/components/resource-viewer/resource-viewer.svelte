@@ -26,8 +26,8 @@
 	import * as Sheet from '$lib/components/ui/sheet/index.js';
 	import { Skeleton } from '$lib/components/ui/skeleton/index.js';
 
-	import type { DeleteFormType, EditFormType, ViewerType } from './viewers';
-	import { getDeleteForm, getEditForm, getResourceViewer } from './viewers';
+	import type { DeleterType, EditorType, ViewerType } from './viewers';
+	import { getDeleter, getEditor, getResourceViewer } from './viewers';
 
 	let {
 		cluster,
@@ -264,8 +264,8 @@
 					</div>
 				</Item.Content>
 				<Item.Actions>
-					{@const Editor: EditFormType = getEditForm(resource)}
-					{@const Deleter: DeleteFormType = getDeleteForm(resource)}
+					{@const Editor: EditorType = getEditor(resource)}
+					{@const Deleter: DeleterType = getDeleter(resource)}
 					<Sheet.Root>
 						<Sheet.Trigger>
 							<Button variant="outline" size="icon-lg">

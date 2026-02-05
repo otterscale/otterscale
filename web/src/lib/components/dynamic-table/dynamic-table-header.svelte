@@ -1,23 +1,3 @@
-<script lang="ts" module>
-	export function getColumnType(type: JsonValue, format: JsonValue) {
-		if (type === 'boolean') {
-			return 'boolean';
-		} else if (type === 'number' || type === 'integer') {
-			return 'number';
-		} else if (type === 'string' && (format === 'date' || format === 'date-time')) {
-			return 'time';
-		} else if (type === 'string') {
-			return 'string';
-		} else if (type === 'array') {
-			return 'array';
-		} else if (type === 'object') {
-			return 'object';
-		} else {
-			return undefined;
-		}
-	}
-</script>
-
 <script lang="ts">
 	import type { JsonValue } from '@bufbuild/protobuf';
 	import type { Column } from '@tanstack/table-core';
@@ -26,6 +6,8 @@
 	import type { HTMLAttributes } from 'svelte/elements';
 
 	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
+
+	import { getColumnType } from './utils';
 
 	let {
 		ref = $bindable(null),

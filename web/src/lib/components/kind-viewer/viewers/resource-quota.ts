@@ -21,7 +21,22 @@ function resourceQuotaFieldsMask(schema: any): Record<string, { type: string; fo
 			type: 'object',
 			format: 'ratio'
 		},
-		'Creation Timestamp': lodash.get(schema, 'properties.metadata.properties.creationTimestamp'),
+		'Memory Limit': {
+			type: 'object',
+			format: 'ratio'
+		},
+		'CPU Request': {
+			type: 'object',
+			format: 'ratio'
+		},
+		'GPU Request': {
+			type: 'object',
+			format: 'ratio'
+		},
+		'Memory Request': {
+			type: 'object',
+			format: 'ratio'
+		},
 		Configuration: schema
 	};
 }
@@ -33,10 +48,25 @@ function resourceQuotaObjectMask(object: BatchV1CronJob): Record<string, JsonVal
 		Labels: lodash.get(object, 'metadata.labels'),
 		Annotations: lodash.get(object, 'metadata.annotations'),
 		'CPU Limit': {
-			numerator: Number(object['status']['used']['limits.cpu']),
-			denominator: Number(object['status']['hard']['limits.cpu'])
+			numerator: object['status']['used']['limits.cpu'],
+			denominator: object['status']['hard']['limits.cpu']
 		},
-		'Creation Timestamp': object?.metadata?.creationTimestamp,
+		'Memory Limit': {
+			numerator: object['status']['used']['limits.memory'],
+			denominator: object['status']['hard']['limits.memory']
+		},
+		'CPU Request': {
+			numerator: object['status']['used']['requests.cpu'],
+			denominator: object['status']['hard']['requests.cpu']
+		},
+		'GPU Request': {
+			numerator: object['status']['used']['requests.otterscale.com/vgpu'],
+			denominator: object['status']['hard']['requests.otterscale.com/vgpu']
+		},
+		'Memory Request': {
+			numerator: object['status']['used']['requests.memory'],
+			denominator: object['status']['hard']['requests.memory']
+		},
 		Configuration: object as JsonValue
 	};
 }
@@ -146,10 +176,10 @@ function resourceQuotaColumnDefinitions(apiResource: APIResource, fields: any) {
 					numerator: row.original[column.id].numerator,
 					denominator: row.original[column.id].denominator
 				}),
-			accessorKey: 'Creation Timestamp'
+			accessorKey: 'CPU Limit'
 		},
 		{
-			id: 'Creation Timestamp',
+			id: 'Memory Limit',
 			header: ({ column }: { column: Column<Record<string, JsonValue>> }) =>
 				renderComponent(DynamicTableHeader, {
 					column: column,
@@ -162,12 +192,71 @@ function resourceQuotaColumnDefinitions(apiResource: APIResource, fields: any) {
 				column: Column<Record<string, JsonValue>>;
 				row: Row<Record<string, JsonValue>>;
 			}) =>
-				renderComponent(DynamicTableCell, {
-					row: row,
+				renderComponent(RatioCell, {
+					numerator: row.original[column.id].numerator,
+					denominator: row.original[column.id].denominator
+				}),
+			accessorKey: 'Memory Limit'
+		},
+		{
+			id: 'CPU Request',
+			header: ({ column }: { column: Column<Record<string, JsonValue>> }) =>
+				renderComponent(DynamicTableHeader, {
 					column: column,
 					fields: fields
 				}),
-			accessorKey: 'Creation Timestamp'
+			cell: ({
+				column,
+				row
+			}: {
+				column: Column<Record<string, JsonValue>>;
+				row: Row<Record<string, JsonValue>>;
+			}) =>
+				renderComponent(RatioCell, {
+					numerator: row.original[column.id].numerator,
+					denominator: row.original[column.id].denominator
+				}),
+			accessorKey: 'CPU Request'
+		},
+		{
+			id: 'GPU Request',
+			header: ({ column }: { column: Column<Record<string, JsonValue>> }) =>
+				renderComponent(DynamicTableHeader, {
+					column: column,
+					fields: fields
+				}),
+			cell: ({
+				column,
+				row
+			}: {
+				column: Column<Record<string, JsonValue>>;
+				row: Row<Record<string, JsonValue>>;
+			}) =>
+				renderComponent(RatioCell, {
+					numerator: row.original[column.id].numerator,
+					denominator: row.original[column.id].denominator
+				}),
+			accessorKey: 'GPU Request'
+		},
+		{
+			id: 'Memory Request',
+			header: ({ column }: { column: Column<Record<string, JsonValue>> }) =>
+				renderComponent(DynamicTableHeader, {
+					column: column,
+					fields: fields
+				}),
+			cell: ({
+				column,
+				row
+			}: {
+				column: Column<Record<string, JsonValue>>;
+				row: Row<Record<string, JsonValue>>;
+			}) =>
+				renderComponent(RatioCell, {
+					numerator: row.original[column.id].numerator,
+					denominator: row.original[column.id].denominator
+				}),
+			accessorKey: 'Memory Request'
 		},
 		{
 			id: 'Configuration',

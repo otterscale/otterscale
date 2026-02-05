@@ -17,6 +17,7 @@
 		Columns3Icon,
 		EraserIcon,
 		HashIcon,
+		PercentIcon,
 		TypeIcon
 	} from '@lucide/svelte';
 	import {
@@ -28,7 +29,6 @@
 		getPaginationRowModel,
 		getSortedRowModel,
 		type PaginationState,
-		type Row,
 		type RowSelectionState,
 		type SortingState,
 		type Table as TanStackTabke,
@@ -39,7 +39,7 @@
 	import { createRawSnippet, type Snippet } from 'svelte';
 
 	import { shortcut } from '$lib/actions/shortcut.svelte';
-	import { Button } from '$lib/components/ui/button/index.js';
+	import { Button, buttonVariants } from '$lib/components/ui/button/index.js';
 	import * as ButtonGroup from '$lib/components/ui/button-group/index.js';
 	import { Checkbox } from '$lib/components/ui/checkbox/index.js';
 	import {
@@ -55,10 +55,11 @@
 	import { Label } from '$lib/components/ui/label/index.js';
 	import * as Pagination from '$lib/components/ui/pagination/index.js';
 	import { Select, SelectContent, SelectItem, SelectTrigger } from '$lib/components/ui/select';
+	import * as Sheet from '$lib/components/ui/sheet';
 	import * as Table from '$lib/components/ui/table';
 	import { cn } from '$lib/utils';
 
-	import { getColumnType } from './dynamic-table-header.svelte';
+	import { getColumnType } from './utils';
 
 	let {
 		objects,
@@ -76,7 +77,7 @@
 		columnDefinitions: ColumnDef<Record<string, JsonValue>>[];
 		create?: Snippet;
 		bulkDelete?: Snippet<[{ table: TanStackTabke<Record<string, JsonValue>> }]>;
-		rowActions?: Snippet<[{ row: Row<Record<string, JsonValue>> }]>;
+		rowActions?: Snippet<[{ row: any; fields: any; objects: any }]>;
 		reload: Snippet;
 	} = $props();
 
@@ -105,7 +106,12 @@
 		...columnDefinitions,
 		{
 			id: 'actions',
-			cell: ({ row }) => renderSnippet(rowActions, { row: row }),
+			cell: ({ row }) =>
+				renderSnippet(rowActions, {
+					row: row,
+					objects: objects,
+					fields: fields
+				}),
 			header: () =>
 				renderSnippet(
 					createRawSnippet(() => {
@@ -329,29 +335,91 @@
 					id="global_filter"
 					placeholder="Search via Query Language"
 					bind:value={globalFilterInput}
-					class="w-full"
+					class="peer w-full"
 					onkeydown={handleKeyDown}
 				/>
-				<InputGroup.Addon align="inline-end">
+				<InputGroup.Addon align="inline-end" class="hidden peer-focus:flex">
 					<Kbd.Group>
 						<Kbd.Root>ctrl</Kbd.Root>
 						<Kbd.Root>⏎</Kbd.Root>
 					</Kbd.Group>
 				</InputGroup.Addon>
+				<InputGroup.Addon align="inline-end" class="peer-focus:hidden">
+					<Kbd.Group>
+						<Kbd.Root>/</Kbd.Root>
+					</Kbd.Group>
+				</InputGroup.Addon>
 			</InputGroup.Root>
-			<Button
-				variant="outline"
-				size="icon"
-				aria-label="Search"
-				onclick={handleSearch}
-				onkeydown={(event) => {
-					if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
-						handleSearch();
-					}
-				}}
-			>
-				<BookIcon size={16} />
-			</Button>
+			<Sheet.Root>
+				<Sheet.Trigger
+					aria-label="Document"
+					class={buttonVariants({ variant: 'outline', size: 'icon' })}
+				>
+					<BookIcon size={16} />
+				</Sheet.Trigger>
+				<Sheet.Content side="right" class="min-w-[23vw]">
+					<Sheet.Header>
+						<Sheet.Title>Filtrex Query Language Documentation</Sheet.Title>
+						<Sheet.Description>
+							Filtrex is a simple, safe, and powerful expression language for filtering and
+							searching data. You can use Filtrex queries in the search box to filter table rows
+							using custom logic.
+						</Sheet.Description>
+					</Sheet.Header>
+					<div class="overflow-auto p-4 text-sm">
+						<h3 class="font-semibold">Basic Syntax</h3>
+						<div class="p-4 font-mono">
+							<p>Field comparison: age &gt; 18</p>
+							<p>String matching: name == "Alice"</p>
+							<p>Logical operators: status == "active" and score &gt; 80</p>
+							<p>Field names with spaces: 'full name' == "Alice Smith"</p>
+						</div>
+
+						<br />
+
+						<h3 class="font-semibold">Operators</h3>
+						<div class="p-4 font-mono">
+							<p>and, or, not</p>
+							<p>==, ~=, &gt;, &gt;=, &lt;, &lt;=</p>
+						</div>
+
+						<br />
+
+						<h3 class="font-semibold">Functions</h3>
+						<div class="p-4 font-mono">
+							<p>length(array) — Get array length</p>
+							<p>Time(date) — Convert date to timestamp</p>
+							<p>now() — Current timestamp</p>
+							<p>Seconds(n), Minutes(n), Hours(n), Days(n), Years(n)</p>
+						</div>
+
+						<br />
+
+						<h3 class="font-semibold">Constants</h3>
+						<div class="p-4 font-mono">
+							<p>true, false</p>
+						</div>
+
+						<br />
+
+						<h3 class="font-semibold">Tips</h3>
+						<div class="p-4 font-mono">
+							<p>Use <kbd>ctrl</kbd> + <kbd>⏎</kbd> to search.</p>
+							<p>Press <kbd>/</kbd> to focus the search box.</p>
+							<p>Press <kbd>esc</kbd> to clear the filter.</p>
+						</div>
+					</div>
+					<Sheet.Footer>
+						<p class="mt-4 text-xs text-muted-foreground">
+							For advanced usage, refer to the <a
+								href="https://github.com/joewalnes/filtrex"
+								target="_blank"
+								class="underline">Filtrex documentation</a
+							>.
+						</p>
+					</Sheet.Footer>
+				</Sheet.Content>
+			</Sheet.Root>
 		</ButtonGroup.Root>
 		<DropdownMenu.Root>
 			<DropdownMenu.Trigger>
@@ -386,6 +454,8 @@
 							<BracketsIcon />
 						{:else if columnType === 'object'}
 							<BracesIcon />
+						{:else if columnType === 'ratio'}
+							<PercentIcon />
 						{/if}
 						{column.id}
 					</DropdownMenu.Item>

@@ -14,7 +14,6 @@
 	import type { Column, Row } from '@tanstack/table-core';
 	import { type WithElementRef } from 'bits-ui';
 	import type { HTMLAttributes } from 'svelte/elements';
-	import Monaco from 'svelte-monaco';
 	import { stringify } from 'yaml';
 
 	import * as Code from '$lib/components/custom/code/index.js';
@@ -92,17 +91,12 @@
 			</Sheet.Header>
 			{#if data}
 				{#if Object.values(data).some((value) => value && typeof value === 'object')}
-					<div class="h-full p-4 pt-0">
-						<Monaco
-							value={stringify(data)}
-							options={{
-								language: 'yaml',
-								padding: { top: 24 },
-								automaticLayout: true,
-								domReadOnly: true,
-								readOnly: true
-							}}
-							theme="vs-dark"
+					<div class="p-4">
+						<Code.Root
+							variant="secondary"
+							lang="yaml"
+							class="no-shiki-limit w-full border-none"
+							code={stringify(data)}
 						/>
 					</div>
 				{:else}
@@ -287,3 +281,12 @@
 {#snippet EmptyCell()}
 	<p class="text-muted-foreground">no data</p>
 {/snippet}
+
+<style>
+	@reference '../../../app.css';
+
+	:global(.no-shiki-limit pre.shiki:not([data-code-overflow] *):not([data-code-overflow])) {
+		overflow-y: visible !important;
+		max-height: none !important;
+	}
+</style>

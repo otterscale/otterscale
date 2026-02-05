@@ -3,6 +3,7 @@
 
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import BotIcon from '@lucide/svelte/icons/bot';
+	import BoxIcon from '@lucide/svelte/icons/box';
 	import ChevronLeftIcon from '@lucide/svelte/icons/chevron-left';
 	import CloudBackupIcon from '@lucide/svelte/icons/cloud-backup';
 	import CodeIcon from '@lucide/svelte/icons/code';
@@ -67,15 +68,15 @@
 					`/(auth)/${page.params.scope ?? page.params.cluster}/Workspace/workspaces?group=tenant.otterscale.io&version=v1alpha1&name=${$activeWorkspaceName}`
 				),
 				icon: MapIcon,
-				edit: true
+				edit: false
 			},
 			{
 				name: m.resource_quota(),
 				url: resolve(
 					`/(auth)/${page.params.scope ?? page.params.cluster}/ResourceQuota?group=&version=v1&namespace=${$activeNamespace}&resource=resourcequotas`
 				),
-				icon: MapIcon,
-				edit: true
+				icon: BoxIcon,
+				edit: false
 			}
 		],
 		aiStudio: [

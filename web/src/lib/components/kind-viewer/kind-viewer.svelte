@@ -3,10 +3,7 @@
 	import { StructSchema } from '@bufbuild/protobuf/wkt';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { Cable, Unplug } from '@lucide/svelte';
-	import CircleAlert from '@lucide/svelte/icons/circle-alert';
-	import CloudBackup from '@lucide/svelte/icons/cloud-backup';
-	import Trash from '@lucide/svelte/icons/trash';
-	import type { ColumnDef, Table } from '@tanstack/table-core';
+	import type { ColumnDef } from '@tanstack/table-core';
 	import { getContext, onDestroy, onMount } from 'svelte';
 	import { toast } from 'svelte-sonner';
 
@@ -19,13 +16,10 @@
 		type WatchRequest
 	} from '$lib/api/resource/v1/resource_pb';
 	import { DynamicTable } from '$lib/components/dynamic-table';
-	import * as AlertDialog from '$lib/components/ui/alert-dialog/index.js';
 	import Button from '$lib/components/ui/button/button.svelte';
-	import Separator from '$lib/components/ui/separator/separator.svelte';
-	import { Spinner } from '$lib/components/ui/spinner/index.js';
 
-	import KindActions from './kind-viewer-actions.svelte';
-	import KindCreate from './kind-viewer-create.svelte';
+	import { type ActionsType, getActions } from './actions';
+	import { type CreatorType, getCreator } from './creations';
 	import { getColumnDefinitionsGetter, getFieldsGetter, getObjectGetter } from './viewers';
 
 	let {
@@ -222,26 +216,29 @@
 			watchAbortController.abort();
 		}
 	});
-	function handleDeleteRows(table: Table<Record<string, JsonValue>>) {
-		const selectedRows = table.getSelectedRowModel().rows;
-		objects = objects.filter(
-			(object) =>
-				!selectedRows.some((row) => row.original && object && row.original.id === object.id)
-		);
-		table.resetRowSelection();
-	}
+	// function handleDeleteRows(table: Table<Record<string, JsonValue>>) {
+	// 	const selectedRows = table.getSelectedRowModel().rows;
+	// 	objects = objects.filter(
+	// 		(object) =>
+	// 			!selectedRows.some((row) => row.original && object && row.original.id === object.id)
+	// 	);
+	// 	table.resetRowSelection();
+	// }
 	function handleReload() {
 		if (!isWatching) {
 			watchResources();
 		}
 	}
+
+	const Creator: CreatorType = $derived(getCreator(kind));
+	const Actions: ActionsType = $derived(getActions(kind));
 </script>
 
 {#if isMounted}
 	{#if columnDefinitions}
 		<DynamicTable {objects} {fields} {columnDefinitions}>
 			{#snippet create()}
-				<KindCreate {resource} />
+				<Creator {schema} />
 			{/snippet}
 			{#snippet reload()}
 				<Button onclick={handleReload} disabled={isWatching} variant="outline">
@@ -252,8 +249,8 @@
 					{/if}
 				</Button>
 			{/snippet}
-			{#snippet rowActions({ row })}
-				<KindActions {row} />
+			{#snippet rowActions({ row, fields, objects })}
+				<Actions {row} schema={fields['Configuration']} object={objects[row.id]['Configuration']} />
 			{/snippet}
 		</DynamicTable>
 	{/if}
