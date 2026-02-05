@@ -137,5 +137,6 @@
 		title={`Edit CronJob: ${name}`}
 		onSubmit={handleMultiStepSubmit}
 		transformData={transformFormData}
+		yamlEditable={true}
 	/>
 </div>
