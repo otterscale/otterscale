@@ -7,6 +7,8 @@
 	import logos from '@iconify-json/logos/icons.json';
 	import ph from '@iconify-json/ph/icons.json';
 	import simpleIcons from '@iconify-json/simple-icons/icons.json';
+	import { setThemeContext } from '@sjsf/shadcn4-theme';
+	import * as components from '@sjsf/shadcn4-theme/new-york';
 	import { ModeWatcher } from 'mode-watcher';
 	import { setContext } from 'svelte';
 
@@ -33,6 +35,7 @@
 	addCollection(logos);
 	addCollection(ph);
 	addCollection(simpleIcons);
+	setThemeContext({ components });
 </script>
 
 {#snippet loadingIcon()}

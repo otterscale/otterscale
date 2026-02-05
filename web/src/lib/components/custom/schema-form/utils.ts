@@ -1,12 +1,31 @@
 /**
+ * Check if value is empty (null, undefined, empty object, or array of empty objects)
+ */
+function isEmptyValue(value: any): boolean {
+	if (value === null || value === undefined) return true;
+	if (Array.isArray(value)) {
+		return value.length === 0 || value.every((item) => isEmptyValue(item));
+	}
+	if (typeof value === 'object') {
+		return Object.keys(value).length === 0;
+	}
+	return false;
+}
+
+/**
  * Deep merge two objects.
+ * Skips merging if source value is empty to preserve existing data.
  */
 export function deepMerge(target: any, source: any): any {
 	if (typeof target !== 'object' || target === null) return source;
 	if (typeof source !== 'object' || source === null) return target;
 
-	// Arrays should be replaced entirely, not merged
+	// Arrays: only replace if source is not empty
 	if (Array.isArray(target) || Array.isArray(source)) {
+		// If source is empty or contains only empty objects, keep target
+		if (isEmptyValue(source)) {
+			return target;
+		}
 		return source;
 	}
 
@@ -14,10 +33,19 @@ export function deepMerge(target: any, source: any): any {
 	Object.keys(source).forEach((key) => {
 		// Guard against prototype pollution
 		if (key === '__proto__' || key === 'constructor' || key === 'prototype') return;
-		if (typeof source[key] === 'object' && source[key] !== null && key in target) {
-			output[key] = deepMerge(target[key], source[key]);
+
+		const sourceValue = source[key];
+		const targetValue = target[key];
+
+		// Skip if source value is empty and target has data
+		if (isEmptyValue(sourceValue) && targetValue !== undefined && !isEmptyValue(targetValue)) {
+			return;
+		}
+
+		if (typeof sourceValue === 'object' && sourceValue !== null && key in target) {
+			output[key] = deepMerge(targetValue, sourceValue);
 		} else {
-			output[key] = source[key];
+			output[key] = sourceValue;
 		}
 	});
 	return output;

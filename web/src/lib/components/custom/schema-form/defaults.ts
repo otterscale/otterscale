@@ -4,7 +4,14 @@ import '@sjsf/form/fields/extra/enum-include';
 import '@sjsf/form/fields/extra/multi-enum-include';
 import '@sjsf/form/fields/extra/unknown-native-file-include';
 
-export { theme } from '@sjsf/shadcn4-theme';
+import { overrideByRecord } from '@sjsf/form/lib/resolver';
+import { theme as shadcnTheme } from '@sjsf/shadcn4-theme';
+
+import CustomLayout from './layout/layout.svelte';
+
+export const theme = overrideByRecord(shadcnTheme, {
+	layout: CustomLayout
+});
 import '@sjsf/shadcn4-theme/extra-widgets/textarea-include';
 import '@sjsf/shadcn4-theme/extra-widgets/checkboxes-include';
 import '@sjsf/shadcn4-theme/extra-widgets/radio-include';

@@ -2,8 +2,6 @@
 	import { Check } from '@lucide/svelte';
 	import type { FormState } from '@sjsf/form';
 	import { createForm, getValueSnapshot } from '@sjsf/form';
-	import { setThemeContext } from '@sjsf/shadcn4-theme';
-	import * as components from '@sjsf/shadcn4-theme/new-york';
 	import yaml from 'js-yaml';
 	import { mode as themeMode } from 'mode-watcher';
 	import Monaco from 'svelte-monaco';
@@ -23,7 +21,7 @@
 		type SchemaFormConfig
 	} from './converter';
 	import * as defaults from './defaults';
-	import SchemaFormStep from './SchemaFormStep.svelte';
+	import SchemaFormStep from './schema-form-step.svelte';
 	import { deepMerge } from './utils';
 
 	export type GroupedFields = Record<string, Record<string, PathOptions>>;
@@ -59,10 +57,8 @@
 		yamlEditable = false
 	}: Props = $props();
 
-	setThemeContext({ components });
-
 	let currentStep = $state(0);
-	let masterData = $state<Record<string, unknown>>({});
+	let masterData = $state<Record<string, unknown>>(initialData ?? {});
 	let stepForms = $state<StepFormData[]>([]);
 	let advanceYaml = $state('');
 	let yamlParseError = $state<string | null>(null);
@@ -73,18 +69,14 @@
 	const isFirstStep = $derived(currentStep === 0);
 	const isLastStep = $derived(currentStep === totalSteps - 1);
 
-	function createStepForms(sourceData: Record<string, unknown> | undefined) {
+	function createStepForms(sourceData: Record<string, unknown>) {
 		const forms: StepFormData[] = [];
-		const source = sourceData || {};
 
 		for (const [stepName, paths] of Object.entries(fields)) {
 			const formConfig = buildSchemaFromK8s(apiSchema, paths);
 			// Filter initialData to only include fields defined in this step's schema
-			const filteredInitialData = filterDataBySchema(source, formConfig.schema);
-			const stepInitialValue = k8sToFormData(
-				filteredInitialData,
-				formConfig.transformationMappings
-			);
+			const transformedData = k8sToFormData(sourceData, formConfig.transformationMappings);
+			const stepInitialValue = filterDataBySchema(transformedData, formConfig.schema);
 
 			const form = createForm<Record<string, unknown>>({
 				...defaults,
@@ -101,12 +93,8 @@
 		stepForms = forms;
 	}
 
-	$effect(() => {
-		if (initialData) {
-			masterData = { ...initialData };
-		}
-		createStepForms(initialData);
-	});
+	// Initialize step forms once on component creation
+	createStepForms(masterData);
 
 	function handleStepSubmit(
 		stepName: string,
@@ -199,12 +187,6 @@
 		// Normalize all numeric-keyed objects to arrays
 		masterData = normalizeArrays(masterData) as Record<string, unknown>;
 	}
-
-	$effect(() => {
-		if (mode === 'advance') {
-			syncMasterDataToYaml();
-		}
-	});
 </script>
 
 <div class="multi-step-schema-form-container flex h-full flex-col">
