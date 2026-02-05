@@ -4,7 +4,7 @@
 
 	let props: ComponentProps['objectTemplate'] = $props();
 
-	// Use #await to defer rendering to the next microtask, breaking the recursion stack
+	// Use #await with a resolved promise to defer rendering asynchronously, breaking the synchronous recursion stack
 </script>
 
 {#await Promise.resolve() then}
