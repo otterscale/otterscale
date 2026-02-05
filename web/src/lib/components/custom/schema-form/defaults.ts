@@ -7,10 +7,10 @@ import '@sjsf/form/fields/extra/unknown-native-file-include';
 import { overrideByRecord } from '@sjsf/form/lib/resolver';
 import { theme as shadcnTheme } from '@sjsf/shadcn4-theme';
 
-import CustomLayout from './layout/layout.svelte';
+import LazyObjectTemplate from './form/lazy-object-template.svelte';
 
 export const theme = overrideByRecord(shadcnTheme, {
-	layout: CustomLayout
+	objectTemplate: LazyObjectTemplate
 });
 import '@sjsf/shadcn4-theme/extra-widgets/textarea-include';
 import '@sjsf/shadcn4-theme/extra-widgets/checkboxes-include';
