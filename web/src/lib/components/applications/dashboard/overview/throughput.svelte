@@ -12,6 +12,7 @@
 	import * as Chart from '$lib/components/ui/chart/index.js';
 	import { formatIO } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
+	import { activeNamespace } from '$lib/stores';
 
 	let {
 		prometheusDriver,
@@ -38,7 +39,7 @@
 			`
 			sum(
 			rate(
-				container_fs_reads_bytes_total{container!="",device=~"(/dev/)?(mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|md.+|dasd.+)",job="kubelet",juju_model="${scope}",metrics_path="/metrics/cadvisor",namespace!=""}[4m]
+				container_fs_reads_bytes_total{container!="",device=~"(/dev/)?(mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|md.+|dasd.+)",job="kubelet",juju_model="${scope}",metrics_path="/metrics/cadvisor",namespace="${$activeNamespace}"}[4m]
 			)
 			)
 			`,
@@ -54,7 +55,7 @@
 			`
 			sum(
 			rate(
-				container_fs_writes_bytes_total{container!="",job="kubelet",juju_model="${scope}",metrics_path="/metrics/cadvisor",namespace!=""}[4m]
+				container_fs_writes_bytes_total{container!="",job="kubelet",juju_model="${scope}",metrics_path="/metrics/cadvisor",namespace="${$activeNamespace}"}[4m]
 			)
 			)
 			`,
@@ -89,6 +90,12 @@
 			reloadManager.restart();
 		} else {
 			reloadManager.stop();
+		}
+	});
+
+	$effect(() => {
+		if ($activeNamespace) {
+			fetch();
 		}
 	});
 </script>

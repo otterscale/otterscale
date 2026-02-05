@@ -12,6 +12,7 @@
 	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
 	import { formatCapacity } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
+	import { activeNamespace } from '$lib/stores';
 
 	let {
 		prometheusDriver,
@@ -39,7 +40,7 @@
 	async function fetchMemoryUsages() {
 		const response = await prometheusDriver.rangeQuery(
 			`
-			sum(container_memory_rss{container!="",job="kubelet",juju_model="${scope}",metrics_path="/metrics/cadvisor"})
+			sum(container_memory_rss{container!="",job="kubelet",juju_model="${scope}",metrics_path="/metrics/cadvisor",namespace="${$activeNamespace}"})
 			`,
 			Date.now() - 60 * 60 * 1000,
 			Date.now(),
@@ -60,7 +61,7 @@
 	async function fetchMemoryRequests() {
 		const response = await prometheusDriver.instantQuery(
 			`
-			sum(namespace_memory:kube_pod_container_resource_requests:sum{juju_model="${scope}"})
+			sum(namespace_memory:kube_pod_container_resource_requests:sum{juju_model="${scope}",namespace="${$activeNamespace}"})
 			`
 		);
 		memoryRequests = response.result[0]?.value?.value;
@@ -69,7 +70,7 @@
 	async function fetchMemoryLimits() {
 		const response = await prometheusDriver.instantQuery(
 			`
-			sum(namespace_memory:kube_pod_container_resource_limits:sum{juju_model="${scope}"})
+			sum(namespace_memory:kube_pod_container_resource_limits:sum{juju_model="${scope}",namespace="${$activeNamespace}"})
 			`
 		);
 		memoryLimits = response.result[0]?.value?.value;
@@ -104,6 +105,12 @@
 			reloadManager.restart();
 		} else {
 			reloadManager.stop();
+		}
+	});
+
+	$effect(() => {
+		if ($activeNamespace) {
+			fetch();
 		}
 	});
 </script>
