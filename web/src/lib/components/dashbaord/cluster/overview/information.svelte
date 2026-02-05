@@ -58,7 +58,7 @@
 	/>
 	<Card.Header>
 		<Card.Title>Information</Card.Title>
-		<Card.Description class="flex h-6 items-center">Cluster Version and Platform</Card.Description>
+		<!-- <Card.Description class="flex h-6 items-center">Cluster Version and Platform</Card.Description> -->
 	</Card.Header>
 	{#if !isLoaded}
 		<div class="flex h-9 w-full items-center justify-center">
@@ -70,11 +70,11 @@
 			<p class="p-0 text-xs text-muted-foreground">{m.no_data_display()}</p>
 		</div>
 	{:else}
-		<Card.Content class="flex items-baseline gap-2">
-			<span class="text-3xl">{version ?? 'N/A'}</span>
-			<span class="text-1xl font-medium tracking-wider text-muted-foreground uppercase"
-				>{platform ?? 'N/A'}</span
-			>
+		<Card.Content class="flex flex-col gap-2">
+			<p class="text-1xl font-medium tracking-wider text-muted-foreground uppercase">
+				{platform ?? 'N/A'}
+			</p>
+			<p class="text-3xl">{version ?? 'N/A'}</p>
 		</Card.Content>
 	{/if}
 </Card.Root>

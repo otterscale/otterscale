@@ -52,7 +52,13 @@
 <Card.Root class="relative h-full min-h-[140px] gap-2 overflow-hidden">
 	<Card.Header>
 		<Card.Title>{m.state()}</Card.Title>
-		<Card.Description class="flex h-6 items-center">Cluster Status</Card.Description>
+		{#if nodeNotReady && Number(nodeNotReady.value) === 0}
+			<Card.Description class="flex h-6 items-center">All Nodes Ready</Card.Description>
+		{:else if nodeNotReady && Number(nodeNotReady.value) !== 0}
+			<Card.Description class="flex h-6 items-center">
+				{Number(nodeNotReady.value)} nodes unready
+			</Card.Description>
+		{/if}
 	</Card.Header>
 	{#if !isLoaded}
 		<div class="flex h-9 w-full items-center justify-center">
@@ -64,8 +70,8 @@
 			<p class="p-0 text-xs text-muted-foreground">{m.no_data_display()}</p>
 		</div>
 	{:else if Number(nodeNotReady.value) === 0}
-		<Card.Content class="text-3xl">Health</Card.Content>
+		<Card.Content class="text-3xl">Healthy</Card.Content>
 	{:else}
-		<Card.Content class="text-3xl">{Number(nodeNotReady.value)}</Card.Content>
+		<Card.Content class="text-3xl">Unhealthy</Card.Content>
 	{/if}
 </Card.Root>

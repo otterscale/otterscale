@@ -16,6 +16,7 @@
 	let maxAllocatablePods: SampleValue | undefined = $state(undefined);
 	let runningPods: SampleValue | undefined = $state(undefined);
 	let pendingPods: SampleValue | undefined = $state(undefined);
+	let failedPods: SampleValue | undefined = $state(undefined);
 	async function fetchPods() {
 		const allocateResponse = await prometheusDriver.instantQuery(
 			`sum(kube_node_status_allocatable{resource="pods", juju_model="${scope}"})`
@@ -31,6 +32,11 @@
 			`sum(kube_pod_status_phase{phase="Pending", juju_model="${scope}"})`
 		);
 		pendingPods = pendingResponse.result[0]?.value ?? undefined;
+
+		const failedResponse = await prometheusDriver.instantQuery(
+			`sum(kube_pod_status_phase{phase="Failed", juju_model="${scope}"})`
+		);
+		failedPods = failedResponse.result[0]?.value ?? undefined;
 	}
 
 	async function fetch() {
@@ -63,12 +69,12 @@
 
 <Card.Root class="relative h-full min-h-[140px] gap-2 overflow-hidden">
 	<Icon
-		icon="ph:package"
+		icon="ph:cube"
 		class="absolute -right-10 bottom-0 size-36 text-8xl tracking-tight text-nowrap text-primary/5 uppercase group-hover:hidden"
 	/>
 	<Card.Header>
 		<Card.Title>Pods</Card.Title>
-		<Card.Description class="flex h-6 items-center">Cluster Pods State</Card.Description>
+		<!-- <Card.Description class="flex h-6 items-center">Cluster Pods State</Card.Description> -->
 	</Card.Header>
 	{#if !isLoaded}
 		<div class="flex h-9 w-full items-center justify-center">
@@ -80,25 +86,23 @@
 			<p class="p-0 text-xs text-muted-foreground">{m.no_data_display()}</p>
 		</div>
 	{:else}
-		<Card.Content>
-			<div class="flex gap-4">
-				<div class="flex flex-col">
-					<span class="text-3xl font-bold">{maxAllocatablePods?.value ?? 'N/A'}</span>
-					<span class="text-1xl font-medium tracking-wider text-muted-foreground uppercase"
-						>Allocatable</span
-					>
+		<Card.Content class="flex flex-col gap-4">
+			<div>
+				<p class="text-3xl font-bold">{maxAllocatablePods?.value ?? 'N/A'}</p>
+				<p class="text-1xl font-medium tracking-wider uppercase">Allocatable</p>
+			</div>
+			<div class="grid grid-cols-3">
+				<div>
+					<p class="text-3xl font-bold">{runningPods?.value ?? 'N/A'}</p>
+					<p class="text-1xl font-medium tracking-wider text-chart-2 uppercase">Running</p>
 				</div>
-				<div class="flex flex-col">
-					<span class="text-3xl font-bold">{runningPods?.value ?? 'N/A'}</span>
-					<span class="text-1xl font-medium tracking-wider text-muted-foreground uppercase"
-						>Running</span
-					>
+				<div>
+					<p class="text-3xl font-bold">{pendingPods?.value ?? 'N/A'}</p>
+					<p class="text-1xl font-medium tracking-wider text-muted-foreground uppercase">Pending</p>
 				</div>
-				<div class="flex flex-col">
-					<span class="text-3xl font-bold">{pendingPods?.value ?? 'N/A'}</span>
-					<span class="text-1xl font-medium tracking-wider text-muted-foreground uppercase"
-						>Pending</span
-					>
+				<div>
+					<p class="text-3xl font-bold">{failedPods?.value ?? 'N/A'}</p>
+					<p class="text-1xl font-medium tracking-wider text-chart-1 uppercase">Failed</p>
 				</div>
 			</div>
 		</Card.Content>

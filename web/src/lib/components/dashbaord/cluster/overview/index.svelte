@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { PrometheusDriver } from 'prometheus-query';
 
-	import CpuUsage from './cpu-usage.svelte';
+	import CpuUsage from './cpu.svelte';
 	import GPUMemorUsage from './gpu-memory-usage.svelte';
 	import GPUUtilization from './gpu-utilization.svelte';
 	import Health from './health.svelte';
-	import MemoryUsage from './memory-usage.svelte';
+	import MemoryUsage from './memory2.svelte';
 	import ClusterNodes from './nodes.svelte';
 	import Pods from './pods.svelte';
 	import Uptime from './uptime.svelte';

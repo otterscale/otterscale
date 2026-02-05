@@ -16,19 +16,42 @@
 		isReloading = $bindable()
 	}: { prometheusDriver: PrometheusDriver; scope: string; isReloading: boolean } = $props();
 
-	let gpuUtilization: SampleValue | undefined = $state(undefined);
+	let memoryUsage: SampleValue | undefined = $state(undefined);
 	async function fetchMemoryUsage() {
 		const usageResponse = await prometheusDriver.instantQuery(
 			`
 			avg(sum(Device_utilization_desc_of_container{juju_model="${scope}"}) by (deviceuuid, vdeviceid, podname, podnamespace))
 			`
 		);
-		gpuUtilization = usageResponse.result[0]?.value ?? undefined;
+
+		memoryUsage = usageResponse.result[0]?.value ?? undefined;
+	}
+
+	let memoryRequest: SampleValue | undefined = $state(undefined);
+	async function fetchMemoryRequest() {
+		const response = await prometheusDriver.instantQuery(
+			`
+			sum(vGPU_device_memory_limit_in_bytes{juju_model="${scope}"})
+			/
+			sum(GPUDeviceMemoryLimit{juju_model="${scope}"})
+			`
+		);
+		memoryRequest = response.result[0]?.value ?? undefined;
+	}
+
+	let allocatableMemory: SampleValue | undefined = $state(undefined);
+	async function fetchAllocatableMemory() {
+		const response = await prometheusDriver.instantQuery(
+			`
+			sum(GPUDeviceMemoryLimit{juju_model="${scope}"})
+			`
+		);
+		allocatableMemory = response.result[0]?.value?.value ?? undefined;
 	}
 
 	async function fetch() {
 		try {
-			await Promise.all([fetchMemoryUsage()]);
+			await Promise.all([fetchMemoryUsage(), fetchMemoryRequest(), fetchAllocatableMemory()]);
 		} catch (error) {
 			console.error('Failed to fetch CPU usage:', error);
 		}
@@ -65,16 +88,17 @@
 		class="absolute -right-10 bottom-0 -z-0 size-36 text-8xl tracking-tight text-nowrap text-primary/5 uppercase group-hover:hidden"
 	/>
 	<Card.Header>
-		<Card.Title>GPU Utilization</Card.Title>
+		<Card.Title>GPU Memory</Card.Title>
 		<Card.Description class="z-10 flex flex-col items-end">
-			<p>utilization: {Math.round(Number(gpuUtilization?.value ?? 0) * 100)} %</p>
+			<p>usage: {Math.round(Number(memoryUsage?.value ?? 0) * 100)} %</p>
+			<p>request: {Math.round(Number(memoryRequest?.value ?? 0) * 100)} %</p>
 		</Card.Description>
 	</Card.Header>
 	{#if !isLoaded}
 		<div class="flex h-9 w-full items-center justify-center">
 			<Icon icon="svg-spinners:6-dots-rotate" class="size-10" />
 		</div>
-	{:else if !gpuUtilization}
+	{:else if !memoryUsage}
 		<div class="flex h-full w-full flex-col items-center justify-center">
 			<Icon icon="ph:chart-bar-fill" class="size-6 animate-pulse text-muted-foreground" />
 			<p class="p-0 text-xs text-muted-foreground">{m.no_data_display()}</p>
@@ -90,7 +114,12 @@
 					range={[180, -180]}
 					maxValue={1}
 					series={[
-						{ key: 'usage', data: [{ key: 'usage', ...gpuUtilization }], color: 'var(--chart-1)' }
+						{ key: 'usage', data: [{ key: 'usage', ...memoryUsage }], color: 'var(--chart-1)' },
+						{
+							key: 'request',
+							data: [{ key: 'request', ...memoryRequest }],
+							color: 'var(--chart-2)'
+						}
 					]}
 					props={{
 						arc: { track: { fill: 'var(--muted)' }, motion: 'tween' },

@@ -49,10 +49,16 @@
 	});
 
 	function formatUptime(seconds: number): string {
-		const days = Math.floor(seconds / 86400);
-		const hours = Math.floor((seconds % 86400) / 3600);
-		const mins = Math.floor((seconds % 3600) / 60);
-		return `${days}d ${hours}h ${mins}m`;
+		const days = Math.floor(seconds / (24 * 60 * 60));
+		if (days > 0) return `${days} days`;
+
+		const hours = Math.floor(seconds / (60 * 60));
+		if (hours > 0) return `${hours} hour`;
+
+		const mins = Math.floor(seconds / 60);
+		if (mins > 0) return `${mins} minutes`;
+
+		return `${seconds} seconds`;
 	}
 </script>
 

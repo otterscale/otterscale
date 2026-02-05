@@ -7,7 +7,6 @@
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import * as Card from '$lib/components/ui/card/index.js';
 	import * as Chart from '$lib/components/ui/chart/index.js';
-	import { formatCapacity } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
 
 	let {
@@ -16,19 +15,39 @@
 		isReloading = $bindable()
 	}: { prometheusDriver: PrometheusDriver; scope: string; isReloading: boolean } = $props();
 
-	let gpuUtilization: SampleValue | undefined = $state(undefined);
-	async function fetchMemoryUsage() {
-		const usageResponse = await prometheusDriver.instantQuery(
+	let cpuUsage: SampleValue | undefined = $state(undefined);
+	async function fetchCPUUsage() {
+		const response = await prometheusDriver.instantQuery(
+			`sum(rate(node_cpu_seconds_total{mode!="idle", juju_model="${scope}"}[5m])) / sum(rate(node_cpu_seconds_total{juju_model="${scope}"}[5m]))`
+		);
+		cpuUsage = response.result[0]?.value ?? undefined;
+	}
+
+	let cpuRequest: SampleValue | undefined = $state(undefined);
+	async function fetchCPURequest() {
+		const response = await prometheusDriver.instantQuery(
 			`
-			avg(sum(Device_utilization_desc_of_container{juju_model="${scope}"}) by (deviceuuid, vdeviceid, podname, podnamespace))
+			sum(kube_pod_container_resource_requests{resource="cpu", unit="core", juju_model="${scope}", container!=""})
+			/
+			sum (kube_node_status_allocatable{cluster!="", juju_model="${scope}", resource="cpu"})
 			`
 		);
-		gpuUtilization = usageResponse.result[0]?.value ?? undefined;
+		cpuRequest = response.result[0]?.value ?? undefined;
+	}
+
+	let allocatableCPU: SampleValue | undefined = $state(undefined);
+	async function fetchAllocatableCPU() {
+		const response = await prometheusDriver.instantQuery(
+			`
+			sum(kube_node_status_allocatable{cluster!="", juju_model="${scope}", resource="cpu"})
+			`
+		);
+		allocatableCPU = response.result[0]?.value?.value ?? undefined;
 	}
 
 	async function fetch() {
 		try {
-			await Promise.all([fetchMemoryUsage()]);
+			await Promise.all([fetchCPUUsage(), fetchCPURequest(), fetchAllocatableCPU()]);
 		} catch (error) {
 			console.error('Failed to fetch CPU usage:', error);
 		}
@@ -61,20 +80,21 @@
 
 <Card.Root class="relative h-full min-h-[140px] gap-2 overflow-hidden">
 	<Icon
-		icon="ph:graphics-card"
+		icon="ph:cpu"
 		class="absolute -right-10 bottom-0 -z-0 size-36 text-8xl tracking-tight text-nowrap text-primary/5 uppercase group-hover:hidden"
 	/>
 	<Card.Header>
-		<Card.Title>GPU Utilization</Card.Title>
+		<Card.Title>CPU</Card.Title>
 		<Card.Description class="z-10 flex flex-col items-end">
-			<p>utilization: {Math.round(Number(gpuUtilization?.value ?? 0) * 100)} %</p>
+			<p>usage: {Math.round(Number(cpuUsage?.value ?? 0) * 100)} %</p>
+			<p>request: {Math.round(Number(cpuRequest?.value ?? 0) * 100)} %</p>
 		</Card.Description>
 	</Card.Header>
 	{#if !isLoaded}
 		<div class="flex h-9 w-full items-center justify-center">
 			<Icon icon="svg-spinners:6-dots-rotate" class="size-10" />
 		</div>
-	{:else if !gpuUtilization}
+	{:else if !cpuUsage}
 		<div class="flex h-full w-full flex-col items-center justify-center">
 			<Icon icon="ph:chart-bar-fill" class="size-6 animate-pulse text-muted-foreground" />
 			<p class="p-0 text-xs text-muted-foreground">{m.no_data_display()}</p>
@@ -90,7 +110,8 @@
 					range={[180, -180]}
 					maxValue={1}
 					series={[
-						{ key: 'usage', data: [{ key: 'usage', ...gpuUtilization }], color: 'var(--chart-1)' }
+						{ key: 'usage', data: [{ key: 'usage', ...cpuUsage }], color: 'var(--chart-1)' },
+						{ key: 'request', data: [{ key: 'request', ...cpuRequest }], color: 'var(--chart-2)' }
 					]}
 					props={{
 						arc: { track: { fill: 'var(--muted)' }, motion: 'tween' },
@@ -102,15 +123,14 @@
 					{/snippet}
 
 					{#snippet aboveMarks()}
-						{@const { value, unit } = formatCapacity(Number(allocatableMemory))}
 						<Text
-							{value}
+							value={String(allocatableCPU)}
 							textAnchor="middle"
 							verticalAnchor="middle"
 							class="fill-foreground text-3xl! font-bold"
 						/>
 						<Text
-							value={unit}
+							value="core"
 							textAnchor="middle"
 							verticalAnchor="middle"
 							class="fill-foreground text-xl! font-bold"

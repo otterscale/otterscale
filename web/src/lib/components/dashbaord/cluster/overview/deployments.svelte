@@ -51,7 +51,7 @@
 
 <Card.Root class="relative h-full min-h-[140px] gap-2 overflow-hidden">
 	<Icon
-		icon="ph:computer-tower"
+		icon="ph:package"
 		class="absolute -right-10 bottom-0 size-36 text-8xl tracking-tight text-nowrap text-primary/5 uppercase group-hover:hidden"
 	/>
 	<Card.Header>
