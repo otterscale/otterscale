@@ -11,6 +11,7 @@
 	import * as Chart from '$lib/components/ui/chart/index.js';
 	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
 	import { m } from '$lib/paraglide/messages';
+	import { activeNamespace } from '$lib/stores';
 
 	let {
 		prometheusDriver,
@@ -29,7 +30,7 @@
 	async function fetchCPUUsages() {
 		const response = await prometheusDriver.rangeQuery(
 			`
-			sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{juju_model="${scope}"})
+			sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{juju_model="${scope}",namespace="${$activeNamespace}"})
 			`,
 			Date.now() - 60 * 60 * 1000,
 			Date.now(),
@@ -50,7 +51,7 @@
 	async function fetchCPURequests() {
 		const response = await prometheusDriver.instantQuery(
 			`
-			sum(namespace_cpu:kube_pod_container_resource_requests:sum{juju_model="${scope}"})
+			sum(namespace_cpu:kube_pod_container_resource_requests:sum{juju_model="${scope}",namespace="${$activeNamespace}"})
 			`
 		);
 		cpuRequests = response.result[0]?.value?.value;
@@ -59,7 +60,7 @@
 	async function fetchCPULimits() {
 		const response = await prometheusDriver.instantQuery(
 			`
-			sum(namespace_cpu:kube_pod_container_resource_limits:sum{juju_model="${scope}"})
+			sum(namespace_cpu:kube_pod_container_resource_limits:sum{juju_model="${scope}",namespace="${$activeNamespace}"})
 			`
 		);
 		cpuLimits = response.result[0]?.value?.value;
@@ -94,6 +95,12 @@
 			reloadManager.restart();
 		} else {
 			reloadManager.stop();
+		}
+	});
+
+	$effect(() => {
+		if ($activeNamespace !== undefined) {
+			fetch();
 		}
 	});
 </script>

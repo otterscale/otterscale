@@ -6,6 +6,7 @@
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import * as Card from '$lib/components/ui/card';
 	import { m } from '$lib/paraglide/messages';
+	import { activeNamespace } from '$lib/stores';
 
 	let {
 		prometheusDriver,
@@ -19,16 +20,10 @@
 		try {
 			const response = await prometheusDriver.instantQuery(
 				`
-				sum(
-					kubelet_running_containers{job="kubelet",juju_model="${scope}",metrics_path="/metrics"}
-				)
-				or
-				sum(
-					kubelet_running_container_count{job="kubelet",juju_model="${scope}",metrics_path="/metrics"}
-				)
+				count(kube_pod_container_status_running{juju_model="${scope}",namespace="${$activeNamespace}"} == 1)
 				`
 			);
-			runningContainers = response.result[0]?.value?.value;
+			runningContainers = response.result[0]?.value?.value ?? 0;
 		} catch (error) {
 			console.error('Failed to fetch running containers:', error);
 		}
@@ -50,6 +45,12 @@
 			reloadManager.restart();
 		} else {
 			reloadManager.stop();
+		}
+	});
+
+	$effect(() => {
+		if ($activeNamespace !== undefined) {
+			fetch();
 		}
 	});
 </script>
