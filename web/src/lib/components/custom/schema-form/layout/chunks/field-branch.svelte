@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { getFormContext, uiOptionProps, type ComponentProps } from '@sjsf/form';
+	import { type ComponentProps, getFormContext, uiOptionProps } from '@sjsf/form';
 	import { getThemeContext } from '@sjsf/shadcn4-theme';
 
 	type Props = ComponentProps['layout'] & { attributes: any };
@@ -10,9 +10,6 @@
 	const { Field } = $derived(themeCtx.components);
 </script>
 
-<Field
-	data-invalid={errors.length > 0}
-	{...uiOptionProps('shadcn4Field')(attributes, config, ctx)}
->
+<Field data-invalid={errors.length > 0} {...uiOptionProps('shadcn4Field')(attributes, config, ctx)}>
 	{@render children()}
 </Field>

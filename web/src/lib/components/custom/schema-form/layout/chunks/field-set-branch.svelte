@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { getFormContext, uiOptionProps, type ComponentProps } from '@sjsf/form';
-	import type { HTMLFieldsetAttributes } from 'svelte/elements';
+	import { type ComponentProps, getFormContext, uiOptionProps } from '@sjsf/form';
 	import { getThemeContext } from '@sjsf/shadcn4-theme';
+	import type { HTMLFieldsetAttributes } from 'svelte/elements';
 
 	type Props = ComponentProps['layout'] & { attributes: any };
 	const { children, config, attributes }: Props = $props();

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { getFormContext, uiOptionProps, type ComponentProps } from '@sjsf/form';
+	import { type ComponentProps, getFormContext, uiOptionProps } from '@sjsf/form';
 	import { getThemeContext } from '@sjsf/shadcn4-theme';
 
 	// We extend the standard layout props to include the calculated attributes
