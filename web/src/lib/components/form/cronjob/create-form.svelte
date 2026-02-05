@@ -18,7 +18,7 @@
 		onsuccess
 	}: {
 		schema?: K8sOpenAPISchema;
-		onsuccess?: (cronjob?: any) => void;
+		onsuccess?: (cronjob?: Record<string, any>) => void;
 	} = $props();
 
 	const transport: Transport = getContext('transport');

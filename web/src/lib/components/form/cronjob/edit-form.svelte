@@ -87,7 +87,7 @@
 		isSubmitting = true;
 
 		// Construct the full resource object
-		const resourceObject: Record<string, any> = {
+		const resourceObject: Record<string, unknown> = {
 			apiVersion: 'batch/v1',
 			kind: 'CronJob',
 			...data
@@ -95,7 +95,7 @@
 
 		// Ensure name is correct
 		if (!resourceObject.metadata) resourceObject.metadata = {};
-		(resourceObject.metadata as any).name = name;
+		(resourceObject.metadata as Record<string, unknown>).name = name;
 
 		toast.promise(
 			async () => {
