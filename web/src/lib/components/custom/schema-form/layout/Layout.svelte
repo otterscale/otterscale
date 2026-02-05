@@ -2,15 +2,15 @@
 	import { type ComponentProps, getFormContext, layoutAttributes } from '@sjsf/form';
 	import { getContext, setContext } from 'svelte';
 
-	import ArrayItemControls from './chunks/ArrayItemControls.svelte';
-	import DefaultBranch from './chunks/DefaultBranch.svelte';
-	import FieldBranch from './chunks/FieldBranch.svelte';
-	import FieldGroupBranch from './chunks/FieldGroupBranch.svelte';
-	import FieldLegendBranch from './chunks/FieldLegendBranch.svelte';
-	import FieldSetBranch from './chunks/FieldSetBranch.svelte';
-	import FieldTitleRow from './chunks/FieldTitleRow.svelte';
-	import SimpleContent from './chunks/SimpleContent.svelte';
-	import LazyBranch from './LazyBranch.svelte';
+	import ArrayItemControls from './chunks/array-item-controls.svelte';
+	import DefaultBranch from './chunks/default-branch.svelte';
+	import FieldBranch from './chunks/field-branch.svelte';
+	import FieldGroupBranch from './chunks/field-group-branch.svelte';
+	import FieldLegendBranch from './chunks/field-legend-branch.svelte';
+	import FieldSetBranch from './chunks/field-set-branch.svelte';
+	import FieldTitleRow from './chunks/field-title-row.svelte';
+	import SimpleContent from './chunks/simple-content.svelte';
+	import LazyBranch from './lazy-branch.svelte';
 
 	let props: ComponentProps['layout'] = $props();
 	const { type, config } = props;

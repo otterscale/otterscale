@@ -1,6 +1,4 @@
 <script lang="ts">
-	// import '@sjsf/basic-theme/css/basic.css';
-	import Layout from '@sjsf/basic-theme/components/layout.svelte';
 	import {
 		Content,
 		createForm,
@@ -11,10 +9,9 @@
 		type UiSchema
 	} from '@sjsf/form';
 	import { overrideByRecord } from '@sjsf/form/lib/resolver';
-	import { theme as shadcnTheme } from '@sjsf/shadcn4-theme';
-	import CustomLayout from '$lib/components/custom/schema-form/layout/Layout.svelte';
-	import * as defaults from '$lib/components/custom/schema-form/defaults';
 
+	import * as defaults from '$lib/components/custom/schema-form/defaults';
+	import CustomLayout from '$lib/components/custom/schema-form/layout/layout.svelte';
 
 	const schema: Schema = {
 		type: 'object',

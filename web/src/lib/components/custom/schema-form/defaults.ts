@@ -7,7 +7,7 @@ import '@sjsf/form/fields/extra/unknown-native-file-include';
 import { overrideByRecord } from '@sjsf/form/lib/resolver';
 import { theme as shadcnTheme } from '@sjsf/shadcn4-theme';
 
-import CustomLayout from './layout/Layout.svelte';
+import CustomLayout from './layout/layout.svelte';
 
 export const theme = overrideByRecord(shadcnTheme, {
 	layout: CustomLayout
