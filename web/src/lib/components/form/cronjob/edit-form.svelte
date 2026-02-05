@@ -41,12 +41,9 @@
 	// Grouped fields for multi-step form
 	const groupedFields: GroupedFields = {
 		// Step 1: General Settings
-		'General Settings': {
-			'metadata.name': { title: 'Name', disabled: true },
-			'metadata.labels': { title: 'Labels' },
-			'metadata.annotations': { title: 'Annotations' },
+		General: {
+			'metadata.name': { title: 'Name' },
 			'spec.schedule': { title: 'Schedule', showDescription: true },
-			'spec.timeZone': { title: 'Time Zone' },
 			'spec.concurrencyPolicy': { title: 'Concurrency Policy' },
 			'spec.suspend': {
 				title: 'Suspend execution',
@@ -55,39 +52,17 @@
 						checkboxWidget: 'switchWidget'
 					}
 				}
-			},
-			'spec.startingDeadlineSeconds': { title: 'Starting Deadline Seconds', showDescription: true },
-			'spec.successfulJobsHistoryLimit': { title: 'Successful Jobs History Limit' },
-			'spec.failedJobsHistoryLimit': { title: 'Failed Jobs History Limit' }
+			}
 		},
-		// Step 2: Job Settings
-		'Job Settings': {
-			'spec.jobTemplate.spec.backoffLimit': { title: 'Backoff Limit', showDescription: true },
-			'spec.jobTemplate.spec.activeDeadlineSeconds': {
-				title: 'Active Deadline Seconds',
-				showDescription: true
-			},
-			'spec.jobTemplate.spec.ttlSecondsAfterFinished': {
-				title: 'TTL After Finished (seconds)',
-				showDescription: true
-			},
-			'spec.jobTemplate.spec.completions': { title: 'Completions' },
-			'spec.jobTemplate.spec.parallelism': { title: 'Parallelism' },
-			'spec.jobTemplate.spec.template.spec.restartPolicy': { title: 'Restart Policy' },
-			'spec.jobTemplate.spec.template.spec.serviceAccountName': { title: 'Service Account' }
-		},
-		// Step 3: Container Settings
-		'Container Settings': {
-			'spec.jobTemplate.spec.template.spec.containers': { title: 'Containers' },
-			'spec.jobTemplate.spec.template.spec.containers.name': { title: 'Container Name' },
+		// Step 2: Container Settings
+		Container: {
 			'spec.jobTemplate.spec.template.spec.containers.image': { title: 'Image' },
-			'spec.jobTemplate.spec.template.spec.containers.imagePullPolicy': {
-				title: 'Image Pull Policy'
-			},
 			'spec.jobTemplate.spec.template.spec.containers.command': { title: 'Command' },
 			'spec.jobTemplate.spec.template.spec.containers.args': { title: 'Arguments' },
-			'spec.jobTemplate.spec.template.spec.containers.workingDir': { title: 'Working Directory' },
-			'spec.jobTemplate.spec.template.spec.containers.env': { title: 'Environment Variables' },
+			'spec.jobTemplate.spec.template.spec.containers.env': { title: 'Environment Variables' }
+		},
+		// Step 3: Resources
+		Resources: {
 			'spec.jobTemplate.spec.template.spec.containers.resources.requests.cpu': {
 				title: 'Requests CPU'
 			},
@@ -100,13 +75,6 @@
 			'spec.jobTemplate.spec.template.spec.containers.resources.limits.memory': {
 				title: 'Limits Memory'
 			}
-		},
-		// Step 4: Storage & Scheduling
-		'Storage & Scheduling': {
-			'spec.jobTemplate.spec.template.spec.volumes': { title: 'Volumes' },
-			'spec.jobTemplate.spec.template.spec.containers.volumeMounts': { title: 'Volume Mounts' },
-			'spec.jobTemplate.spec.template.spec.imagePullSecrets': { title: 'Image Pull Secrets' },
-			'spec.jobTemplate.spec.template.spec.nodeSelector': { title: 'Node Selector' }
 		}
 	};
 
