@@ -16,26 +16,43 @@ type ObjectMaskType = (object: any) => Record<string, JsonValue>;
 
 import { cronjobColumnDefinitions, cronjobFieldsMask, cronjobObjectMask } from './cronjob.js';
 import { defaultColumnDefinitions, defaultFieldsMask, defaultObjectMask } from './default.js';
+import {
+	resourceQuotaColumnDefinitions,
+	resourceQuotaFieldsMask,
+	resourceQuotaObjectMask
+} from './resource-quota.js';
 
 function getFieldsGetter(kind: string): FieldsMaskType {
-	if (kind === 'CronJob') {
-		return cronjobFieldsMask as FieldsMaskType;
+	switch (kind) {
+		case 'CronJob':
+			return cronjobFieldsMask;
+		case 'ResourceQuota':
+			return resourceQuotaFieldsMask;
+		default:
+			return defaultFieldsMask;
 	}
-	return defaultFieldsMask as FieldsMaskType;
 }
 
 function getObjectGetter(kind: string): ObjectMaskType {
-	if (kind === 'CronJob') {
-		return cronjobObjectMask as ObjectMaskType;
+	switch (kind) {
+		case 'CronJob':
+			return cronjobObjectMask;
+		case 'ResourceQuota':
+			return resourceQuotaObjectMask;
+		default:
+			return defaultObjectMask;
 	}
-	return defaultObjectMask as ObjectMaskType;
 }
 
 function getColumnDefinitionsGetter(kind: string): ColumnDefinitionsType {
-	if (kind === 'CronJob') {
-		return cronjobColumnDefinitions as unknown as ColumnDefinitionsType;
+	switch (kind) {
+		case 'CronJob':
+			return cronjobColumnDefinitions;
+		case 'ResourceQuota':
+			return resourceQuotaColumnDefinitions;
+		default:
+			return defaultColumnDefinitions;
 	}
-	return defaultColumnDefinitions as unknown as ColumnDefinitionsType;
 }
 
 export { getColumnDefinitionsGetter, getFieldsGetter, getObjectGetter };

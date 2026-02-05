@@ -902,5 +902,7 @@
 	"console_guide_workspace": "Switch Workspaces",
 	"console_guide_workspace_description": "Once a cluster is selected, use this dropdown to navigate between different Workspaces.",
 	"console_guide_sidebar": "Sidebar Navigation",
-	"console_guide_sidebar_description": "Access all core features and navigate through the platform using this sidebar."
+	"console_guide_sidebar_description": "Access all core features and navigate through the platform using this sidebar.",
+	"cronjob": "CronJob",
+	"resource_quota": "ResourceQuota"
 }

@@ -2,6 +2,7 @@
 	import { type JsonValue, toJson } from '@bufbuild/protobuf';
 	import { StructSchema } from '@bufbuild/protobuf/wkt';
 	import { createClient, type Transport } from '@connectrpc/connect';
+	import { Cable, Unplug } from '@lucide/svelte';
 	import CircleAlert from '@lucide/svelte/icons/circle-alert';
 	import CloudBackup from '@lucide/svelte/icons/cloud-backup';
 	import Trash from '@lucide/svelte/icons/trash';
@@ -239,54 +240,15 @@
 {#if isMounted}
 	{#if columnDefinitions}
 		<DynamicTable {objects} {fields} {columnDefinitions}>
-			{#snippet bulkDelete({ table })}
-				{#if table.getSelectedRowModel().rows.length > 0}
-					<AlertDialog.Root>
-						<AlertDialog.Trigger>
-							{#snippet child({ props })}
-								<Button class="ml-auto text-destructive" variant="outline" {...props}>
-									<Trash class="opacity-60" size={16} aria-hidden="true" />
-									<Separator orientation="vertical" />
-									{table.getSelectedRowModel().rows.length}
-								</Button>
-							{/snippet}
-						</AlertDialog.Trigger>
-						<AlertDialog.Content>
-							<div class="flex flex-col gap-2 max-sm:items-center sm:flex-row sm:gap-4">
-								<div
-									class="flex size-9 shrink-0 items-center justify-center rounded-full border"
-									aria-hidden="true"
-								>
-									<CircleAlert class="opacity-80" size={16} />
-								</div>
-								<AlertDialog.Header>
-									<AlertDialog.Title>Are you absolutely sure?</AlertDialog.Title>
-									<AlertDialog.Description>
-										This action cannot be undone. This will permanently delete
-										{table.getSelectedRowModel().rows.length} selected
-										{table.getSelectedRowModel().rows.length === 1 ? 'row' : 'rows'}.
-									</AlertDialog.Description>
-								</AlertDialog.Header>
-							</div>
-							<AlertDialog.Footer>
-								<AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
-								<AlertDialog.Action onclick={() => handleDeleteRows(table)}
-									>Delete</AlertDialog.Action
-								>
-							</AlertDialog.Footer>
-						</AlertDialog.Content>
-					</AlertDialog.Root>
-				{/if}
-			{/snippet}
 			{#snippet create()}
 				<KindCreate {resource} />
 			{/snippet}
 			{#snippet reload()}
 				<Button onclick={handleReload} disabled={isWatching} variant="outline">
 					{#if isWatching}
-						<Spinner class="opacity-60" size={16} />
+						<Cable class="opacity-60" size={16} />
 					{:else}
-						<CloudBackup class="opacity-60" size={16} />
+						<Unplug class="text-destructive opacity-60" size={16} />
 					{/if}
 				</Button>
 			{/snippet}

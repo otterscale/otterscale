@@ -119,7 +119,7 @@
 							{kind}
 						</Item.Title>
 						<Item.Description class="text-base">
-							{group}/{version}
+							{!group ? 'core' : group}/{version}
 						</Item.Description>
 					</Item.Content>
 				</Item.Root>
