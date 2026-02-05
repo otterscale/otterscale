@@ -16,7 +16,7 @@
 		type PathOptions
 	} from './converter';
 	import * as defaults from './defaults';
-	import SchemaFormStep from './SchemaFormStep.svelte';
+	import SchemaFormStep from './schema-form-step.svelte';
 
 	interface Props {
 		/** The full K8s OpenAPI V3 Schema */

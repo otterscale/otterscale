@@ -21,7 +21,7 @@
 		type SchemaFormConfig
 	} from './converter';
 	import * as defaults from './defaults';
-	import SchemaFormStep from './SchemaFormStep.svelte';
+	import SchemaFormStep from './schema-form-step.svelte';
 	import { deepMerge } from './utils';
 
 	export type GroupedFields = Record<string, Record<string, PathOptions>>;
