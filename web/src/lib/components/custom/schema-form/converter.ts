@@ -232,7 +232,10 @@ export function buildSchemaFromK8s(
 				}
 
 				if (options.disabled) {
-					partUi['ui:disabled'] = true;
+					partUi['ui:options'] = deepMerge(
+						(partUi['ui:options'] as Record<string, unknown>) || {},
+						{ shadcn4Text: { disabled: true } }
+					);
 				}
 			}
 
