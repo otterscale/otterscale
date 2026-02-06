@@ -10,11 +10,6 @@ interface ClientCredentialsTokens {
 }
 
 export async function getClientCredentialsTokens(): Promise<ClientCredentialsTokens> {
-	if (!env.KEYCLOAK_ADMIN_REALM_URL) {
-		console.error('KEYCLOAK_ADMIN_REALM_URL is not configured');
-		throw new Error('Keycloak admin realm URL is not configured');
-	}
-
 	const response = await fetch(`${env.KEYCLOAK_REALM_URL}/protocol/openid-connect/token`, {
 		method: 'POST',
 		headers: {
@@ -68,8 +63,8 @@ export async function getUsers(options: GetUsersOptions = {}): Promise<User[]> {
 	const { search = '', first = 0, max = 10 } = options;
 	const tokens = await getClientCredentialsTokens();
 
-	if (!env.KEYCLOAK_ADMIN_REALM_URL) {
-		console.error('KEYCLOAK_ADMIN_REALM_URL is not configured');
+	if (!env.KEYCLOAK_REALM_URL) {
+		console.error('KEYCLOAK_REALM_URL is not configured');
 		throw new Error('Keycloak admin realm URL is not configured');
 	}
 
@@ -89,7 +84,8 @@ export async function getUsers(options: GetUsersOptions = {}): Promise<User[]> {
 		params.set('search', search);
 	}
 
-	const response = await fetch(`${env.KEYCLOAK_ADMIN_REALM_URL}/users?${params.toString()}`, {
+	const adminUrl = env.KEYCLOAK_REALM_URL.replace('/realms/', '/admin/realms/');
+	const response = await fetch(`${adminUrl}/users?${params}`, {
 		headers: {
 			Authorization: `Bearer ${tokens.access_token}`
 		}
