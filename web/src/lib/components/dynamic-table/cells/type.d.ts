@@ -8,4 +8,4 @@ type RatioType = {
 	denominator: number;
 };
 
-export type { RatioType, LinkType };
+export type { LinkType, RatioType };

@@ -75,24 +75,24 @@ function resourceQuotaObjectMask(
 		Labels: object?.metadata?.labels as JsonValue,
 		Annotations: object?.metadata?.annotations as JsonValue,
 		'CPU Limit': {
-			numerator: (object as any)['status']['used']['limits.cpu'],
-			denominator: (object as any)['status']['hard']['limits.cpu']
+			numerator: object?.status?.used?.['limits.cpu'],
+			denominator: object?.status?.hard?.['limits.cpu']
 		} as RatioType,
 		'Memory Limit': {
-			numerator: (object as any)['status']['used']['limits.memory'],
-			denominator: (object as any)['status']['hard']['limits.memory']
+			numerator: object?.status?.used?.['limits.memory'],
+			denominator: object?.status?.hard?.['limits.memory']
 		} as RatioType,
 		'CPU Request': {
-			numerator: (object as any)['status']['used']['requests.cpu'],
-			denominator: (object as any)['status']['hard']['requests.cpu']
+			numerator: object?.status?.used?.['requests.cpu'],
+			denominator: object?.status?.hard?.['requests.cpu']
 		} as RatioType,
 		'GPU Request': {
-			numerator: (object as any)['status']['used']['requests.otterscale.com/vgpu'],
-			denominator: (object as any)['status']['hard']['requests.otterscale.com/vgpu']
+			numerator: object?.status?.used?.['requests.otterscale.com/vgpu'],
+			denominator: object?.status?.hard?.['requests.otterscale.com/vgpu']
 		} as RatioType,
 		'Memory Request': {
-			numerator: (object as any)['status']['used']['requests.memory'],
-			denominator: (object as any)['status']['hard']['requests.memory']
+			numerator: object?.status?.used?.['requests.memory'],
+			denominator: object?.status?.hard?.['requests.memory']
 		} as RatioType,
 		Configuration: object as JsonValue,
 		raw: object as JsonValue

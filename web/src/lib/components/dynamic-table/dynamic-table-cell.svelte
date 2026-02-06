@@ -213,7 +213,7 @@
 	{/if}
 {/snippet}
 
-{#snippet DateCell({ data }: { data: Date })}
+<!-- {#snippet DateCell({ data }: { data: Date })}
 	{#if data && !isNaN(data.getTime())}
 		{new Intl.DateTimeFormat('en-CA', {
 			year: 'numeric',
@@ -221,7 +221,7 @@
 			day: '2-digit'
 		}).format(data)}
 	{/if}
-{/snippet}
+{/snippet} -->
 
 {#snippet DatetimeCell({ data }: { data: Date })}
 	{#if data && !isNaN(data.getTime())}
