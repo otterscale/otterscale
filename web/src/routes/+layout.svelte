@@ -12,7 +12,6 @@
 	import { ModeWatcher } from 'mode-watcher';
 	import { setContext } from 'svelte';
 
-	import { dev } from '$app/environment';
 	import { Toaster } from '$lib/components/ui/sonner';
 	import { Spinner } from '$lib/components/ui/spinner';
 
@@ -25,7 +24,6 @@
 
 	const transport = createConnectTransport({
 		baseUrl: '/',
-		useBinaryFormat: !dev,
 		interceptors: [proxyHeaderInterceptor],
 		fetch
 	});
