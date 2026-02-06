@@ -127,6 +127,11 @@ export function buildSchemaFromK8s(
 
 			i = nextIndex;
 			const part = key;
+
+			if (part === '__proto__' || part === 'constructor' || part === 'prototype') {
+				break;
+			}
+
 			cumulativePath = cumulativePath ? `${cumulativePath}.${part}` : part;
 
 			if (!sourceSchema) {
@@ -232,7 +237,10 @@ export function buildSchemaFromK8s(
 				}
 
 				if (options.disabled) {
-					partUi['ui:disabled'] = true;
+					partUi['ui:options'] = deepMerge(
+						(partUi['ui:options'] as Record<string, unknown>) || {},
+						{ shadcn4Text: { disabled: true } }
+					);
 				}
 			}
 
