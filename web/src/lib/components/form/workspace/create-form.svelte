@@ -38,10 +38,7 @@
 					'requests.otterscale.com/vgpumem': '0',
 					'requests.otterscale.com/vgpumem-percentage': '0',
 					'limits.cpu': '16',
-					'limits.memory': '32Gi',
-					'limits.otterscale.com/vgpu': '0',
-					'limits.otterscale.com/vgpumem': '0',
-					'limits.otterscale.com/vgpumem-percentage': '0'
+					'limits.memory': '32Gi'
 				}
 			},
 			limitRange: {
@@ -132,11 +129,6 @@
 			// Sync limits with requests
 			if (hard['requests.cpu']) hard['limits.cpu'] = hard['requests.cpu'];
 			if (hard['requests.memory']) hard['limits.memory'] = hard['requests.memory'];
-			// Ensure otterscale limits are 0 (or sync with requests which are 0)
-			hard['limits.otterscale.com/vgpu'] = hard['requests.otterscale.com/vgpu'] || '0';
-			hard['limits.otterscale.com/vgpumem'] = hard['requests.otterscale.com/vgpumem'] || '0';
-			hard['limits.otterscale.com/vgpumem-percentage'] =
-				hard['requests.otterscale.com/vgpumem-percentage'] || '0';
 		}
 
 		// Enforce fixed LimitRange

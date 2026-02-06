@@ -10,8 +10,8 @@
 		type DiscoveryRequest,
 		ResourceService
 	} from '$lib/api/resource/v1/resource_pb';
-	import ResourcesViewer from '$lib/components/resources-viewer/resources-viewer.svelte';
-	import Picker from '$lib/components/resources-viewer/resources-viewer-picker.svelte';
+	import KindViewer from '$lib/components/kind-viewer/kind-viewer.svelte';
+	import Picker from '$lib/components/kind-viewer/kind-viewer-picker.svelte';
 	import * as Alert from '$lib/components/ui/alert/index.js';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import * as Empty from '$lib/components/ui/empty/index.js';
@@ -103,12 +103,14 @@
 			</div>
 		</div>
 	{:then apiResources}
-		{@const apiResourceOptions = apiResources.map((apiResource) => ({
-			icon: 'ph:user',
-			label: apiResource.resource,
-			value: apiResource.resource,
-			description: `${apiResource.group}/${apiResource.version}/${apiResource.kind}`
-		}))}
+		{@const apiResourceOptions = apiResources
+			.filter((apiResource) => apiResource.resource.indexOf('/') < 0)
+			.map((apiResource) => ({
+				icon: 'ph:user',
+				label: apiResource.resource,
+				value: apiResource.resource,
+				description: `${apiResource.group}/${apiResource.version}/${apiResource.kind}`
+			}))}
 		<div class="space-y-4">
 			<div class="flex items-end justify-between gap-4">
 				<Item.Root class="p-0">
@@ -117,7 +119,7 @@
 							{kind}
 						</Item.Title>
 						<Item.Description class="text-base">
-							{group}/{version}
+							{!group ? 'core' : group}/{version}
 						</Item.Description>
 					</Item.Content>
 				</Item.Root>
@@ -136,15 +138,7 @@
 			{#key resource + namespace}
 				{#if selectedAPIResource}
 					{@const apiResource = selectedAPIResource}
-					<ResourcesViewer
-						{apiResource}
-						{cluster}
-						{group}
-						{version}
-						{kind}
-						{resource}
-						{namespace}
-					/>
+					<KindViewer {apiResource} {cluster} {group} {version} {kind} {resource} {namespace} />
 				{/if}
 			{/key}
 		</div>
