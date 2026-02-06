@@ -1,13 +1,12 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
-	import { ArcChart, Text } from 'layerchart';
+	import { ArcChart } from 'layerchart';
 	import type { PrometheusDriver, SampleValue } from 'prometheus-query';
 	import { onDestroy, onMount } from 'svelte';
 
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import * as Card from '$lib/components/ui/card/index.js';
 	import * as Chart from '$lib/components/ui/chart/index.js';
-	import { formatCapacity } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
 
 	let {
@@ -99,23 +98,6 @@
 				>
 					{#snippet tooltip()}
 						<Chart.Tooltip hideLabel nameKey="key" />
-					{/snippet}
-
-					{#snippet aboveMarks()}
-						{@const { value, unit } = formatCapacity(Number(allocatableMemory))}
-						<Text
-							{value}
-							textAnchor="middle"
-							verticalAnchor="middle"
-							class="fill-foreground text-3xl! font-bold"
-						/>
-						<Text
-							value={unit}
-							textAnchor="middle"
-							verticalAnchor="middle"
-							class="fill-foreground text-xl! font-bold"
-							dy={30}
-						/>
 					{/snippet}
 				</ArcChart>
 			</Chart.Container>

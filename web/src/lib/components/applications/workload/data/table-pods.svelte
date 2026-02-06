@@ -4,7 +4,7 @@
 	import { scaleUtc } from 'd3-scale';
 	import { curveNatural } from 'd3-shape';
 	import { AreaChart } from 'layerchart';
-	import { PrometheusDriver, SampleValue } from 'prometheus-query';
+	import { PrometheusDriver } from 'prometheus-query';
 	import { getContext } from 'svelte';
 	import { type Writable } from 'svelte/store';
 
@@ -16,7 +16,6 @@
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { Empty } from '$lib/components/custom/table';
-	import { getMapInstanceToMetric } from '$lib/components/machines/metals/utils.svelte';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
 	import * as Chart from '$lib/components/ui/chart';
@@ -66,7 +65,7 @@
 			2 * 60
 		);
 
-		return cpuResponse?.result[0]?.values ?? [];
+		return (cpuResponse?.result[0]?.values as any[]) ?? [];
 	}
 
 	async function fetchMemoryMetrics(pod: Application_Pod) {
@@ -90,7 +89,7 @@
 			2 * 60
 		);
 
-		return memoryResponse?.result[0]?.values ?? [];
+		return (memoryResponse?.result[0]?.values as any[]) ?? [];
 	}
 
 	async function fetchGPUMetrics(pod: Application_Pod) {
@@ -114,7 +113,7 @@
 			2 * 60
 		);
 
-		return gpuResponse?.result[0]?.values ?? [];
+		return (gpuResponse?.result[0]?.values as any[]) ?? [];
 	}
 
 	function openTerminal(pod: Application_Pod) {
