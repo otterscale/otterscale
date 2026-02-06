@@ -127,6 +127,11 @@ export function buildSchemaFromK8s(
 
 			i = nextIndex;
 			const part = key;
+
+			if (part === '__proto__' || part === 'constructor' || part === 'prototype') {
+				break;
+			}
+
 			cumulativePath = cumulativePath ? `${cumulativePath}.${part}` : part;
 
 			if (!sourceSchema) {
