@@ -10,7 +10,7 @@ type ColumnDefinitionsType = (
 type FieldsMaskType = (
 	schema: any
 ) => Record<string, { description: string; type: string; format?: string }>;
-type ObjectMaskType = (object: any) => Record<string, JsonValue | undefined>;
+type ObjectMaskType = (object: any) => Record<string, JsonValue>;
 
 import { cronjobColumnDefinitions, cronjobFieldsMask, cronjobObjectMask } from './cronjob.js';
 import { defaultColumnDefinitions, defaultFieldsMask, defaultObjectMask } from './default.js';

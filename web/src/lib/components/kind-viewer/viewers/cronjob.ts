@@ -34,15 +34,15 @@ function cronjobFieldsMask(
 	};
 }
 
-function cronjobObjectMask(object: BatchV1CronJob): Record<string, JsonValue | undefined> {
+function cronjobObjectMask(object: BatchV1CronJob): Record<string, JsonValue> {
 	return {
-		Name: object?.metadata?.name,
-		Namespace: object?.metadata?.namespace,
-		Schedule: object?.spec?.schedule,
-		Suspend: object?.spec?.suspend,
+		Name: object?.metadata?.name as JsonValue,
+		Namespace: object?.metadata?.namespace as JsonValue,
+		Schedule: object?.spec?.schedule as JsonValue,
+		Suspend: object?.spec?.suspend as JsonValue,
 		Active: object?.status?.active as JsonValue,
-		'Last Schedule': object?.status?.lastScheduleTime,
-		'Creation Timestamp': object?.metadata?.creationTimestamp,
+		'Last Schedule': object?.status?.lastScheduleTime as JsonValue,
+		'Creation Timestamp': object?.metadata?.creationTimestamp as JsonValue,
 		Images: object?.spec?.jobTemplate?.spec?.template?.spec?.containers.map(
 			(container) => container.image
 		) as JsonValue,

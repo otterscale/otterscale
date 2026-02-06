@@ -19,7 +19,7 @@ function defaultFieldsMask(
 		Configuration: schema
 	};
 }
-function defaultObjectMask(object: any): Record<string, JsonValue | undefined> {
+function defaultObjectMask(object: any): Record<string, JsonValue> {
 	return {
 		Name: lodash.get(object, 'metadata.name'),
 		Namespace: lodash.get(object, 'metadata.namespace'),

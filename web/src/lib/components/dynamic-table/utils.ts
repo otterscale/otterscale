@@ -1,3 +1,5 @@
+import type { JsonValue } from '@bufbuild/protobuf';
+
 function format(value: string) {
 	try {
 		return JSON.stringify(JSON.parse(value), null, 4);

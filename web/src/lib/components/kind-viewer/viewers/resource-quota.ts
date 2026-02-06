@@ -68,12 +68,12 @@ function resourceQuotaFieldsMask(
 
 function resourceQuotaObjectMask(
 	object: CoreV1ResourceQuota
-): Record<string, JsonValue | RatioType | undefined> {
+): Record<string, JsonValue | RatioType> {
 	return {
-		Name: object?.metadata?.name,
-		Namespace: object?.metadata?.namespace,
-		Labels: object?.metadata?.labels,
-		Annotations: object?.metadata?.annotations,
+		Name: object?.metadata?.name as JsonValue,
+		Namespace: object?.metadata?.namespace as JsonValue,
+		Labels: object?.metadata?.labels as JsonValue,
+		Annotations: object?.metadata?.annotations as JsonValue,
 		'CPU Limit': {
 			numerator: (object as any)['status']['used']['limits.cpu'],
 			denominator: (object as any)['status']['hard']['limits.cpu']
