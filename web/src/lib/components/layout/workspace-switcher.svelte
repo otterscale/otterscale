@@ -130,10 +130,11 @@
 			`/(auth)/${cluster}/Workspace/workspaces?group=tenant.otterscale.io&version=v1alpha1&name=${workspaceName}`
 		);
 
+		activeWorkspace = workspace;
+
 		goto(workspaceUrl);
 
 		if (workspaceName) {
-			activeWorkspaceName.set(workspaceName);
 			toast.success(m.switch_workspace({ name: workspaceName }));
 		}
 	}
