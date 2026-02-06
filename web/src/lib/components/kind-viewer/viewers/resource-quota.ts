@@ -4,51 +4,71 @@ import type { Column } from '@tanstack/table-core';
 import { type Row } from '@tanstack/table-core';
 import lodash from 'lodash';
 
+import { resolve } from '$app/paths';
 import { page } from '$app/state';
 import type { APIResource } from '$lib/api/resource/v1/resource_pb';
 import { DynamicTableCell, DynamicTableHeader } from '$lib/components/dynamic-table';
 import LinkCell from '$lib/components/dynamic-table/cells/link-cell.svelte';
 import RatioCell from '$lib/components/dynamic-table/cells/ratio-cell.svelte';
-import { renderComponent } from '$lib/components/ui/data-table';
 import type { RatioType } from '$lib/components/dynamic-table/cells/type';
+import { renderComponent } from '$lib/components/ui/data-table';
 
-function resourceQuotaFieldsMask(schema: any): Record<string, { description: string; type: string; format?: string }> {
+function resourceQuotaFieldsMask(
+	schema: any
+): Record<string, { description: string; type: string; format?: string }> {
 	return {
 		Name: lodash.get(schema, 'properties.metadata.properties.name'),
 		Namespace: lodash.get(schema, 'properties.metadata.properties.namespace'),
 		Labels: lodash.get(schema, 'properties.metadata.properties.labels'),
 		Annotations: lodash.get(schema, 'properties.metadata.properties.annotations'),
 		'CPU Limit': {
-			description: lodash.get(schema, 'properties.status.properties.used.properties["limits.cpu"].description'),
+			description: lodash.get(
+				schema,
+				'properties.status.properties.used.properties["limits.cpu"].description'
+			),
 			type: 'object',
 			format: 'ratio'
 		},
 		'Memory Limit': {
-			description: lodash.get(schema, 'properties.status.properties.used.properties["limits.memory"].description'),
+			description: lodash.get(
+				schema,
+				'properties.status.properties.used.properties["limits.memory"].description'
+			),
 			type: 'object',
 			format: 'ratio'
 		},
 		'CPU Request': {
-			description: lodash.get(schema, 'properties.status.properties.used.properties["requests.cpu"].description'),
+			description: lodash.get(
+				schema,
+				'properties.status.properties.used.properties["requests.cpu"].description'
+			),
 			type: 'object',
 			format: 'ratio'
 		},
 		'GPU Request': {
-			description: lodash.get(schema, 'properties.status.properties.used.properties["requests.otterscale.com/vgpu"].description'),
+			description: lodash.get(
+				schema,
+				'properties.status.properties.used.properties["requests.otterscale.com/vgpu"].description'
+			),
 			type: 'object',
 			format: 'ratio'
 		},
 		'Memory Request': {
-			description: lodash.get(schema, 'properties.status.properties.used.properties["requests.memory"].description'),
+			description: lodash.get(
+				schema,
+				'properties.status.properties.used.properties["requests.memory"].description'
+			),
 			type: 'object',
 			format: 'ratio'
 		},
 		Configuration: schema,
-		raw: schema,
+		raw: schema
 	};
 }
 
-function resourceQuotaObjectMask(object: BatchV1CronJob): Record<string, JsonValue | RatioType | undefined> {
+function resourceQuotaObjectMask(
+	object: BatchV1CronJob
+): Record<string, JsonValue | RatioType | undefined> {
 	return {
 		Name: object?.metadata?.name,
 		Namespace: object?.metadata?.namespace,
@@ -97,7 +117,9 @@ function resourceQuotaColumnDefinitions(apiResource: APIResource, fields: any) {
 			}) =>
 				renderComponent(LinkCell, {
 					display: String(row.original[column.id]),
-					hyperlink: `/(auth)/${page.params.cluster!}/ResourceQuota/resourcequotas?group=&version=v1&name=${row.original[column.id]}&namespace=${page.url.searchParams.get('namespace')!}`
+					hyperlink: resolve(
+						`/(auth)/${page.params.cluster!}/ResourceQuota/resourcequotas?group=&version=v1&name=${row.original[column.id]}&namespace=${page.url.searchParams.get('namespace')!}`
+					)
 				}),
 			accessorKey: 'Name'
 		},

@@ -11,7 +11,6 @@
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
-	import { Button } from '$lib/components/ui/button';
 	import { m } from '$lib/paraglide/messages';
 
 	let {
@@ -87,7 +86,7 @@
 	}}
 	{onOpenChangeComplete}
 >
-	<AlertDialog.Trigger class="flex items-center gap-2">
+	<AlertDialog.Trigger class="flex w-full items-center gap-2">
 		<Trash2 size={16} />
 		Delete
 	</AlertDialog.Trigger>

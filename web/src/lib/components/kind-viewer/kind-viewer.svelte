@@ -243,7 +243,7 @@
 				</Button>
 			{/snippet}
 			{#snippet rowActions({ row, fields, objects })}
-				<Actions {row} schema={fields.raw} object={objects[row.id].raw} />
+				<Actions {row} schema={fields['Configuration']} object={objects[row.id]['Configuration']} />
 			{/snippet}
 		</DynamicTable>
 	{/if}

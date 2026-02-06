@@ -60,12 +60,77 @@
 
 	import type { LayoutData } from './$types';
 
-	const navData = {
+	let {
+		data,
+		children
+	}: {
+		data: LayoutData;
+		children: Snippet;
+	} = $props();
+
+	const current = $derived($breadcrumbs.at(-1));
+
+	const transport: Transport = getContext('transport');
+	const scopeClient = createClient(ScopeService, transport);
+	const resourceClient = createClient(ResourceService, transport);
+
+	let activeScope = $state(page.params.scope ?? page.params.cluster ?? ''); //TODO: remove page.params.scope after route updated
+	let scopes = $state<Scope[]>([]);
+	let workspaces = $state<TenantOtterscaleIoV1Alpha1Workspace[]>([]);
+	let next = $state(false);
+
+	async function fetchScopes() {
+		try {
+			const response = await scopeClient.listScopes({});
+			scopes = response.scopes.filter((scope) => scope.name !== 'cos');
+		} catch (error) {
+			console.error('Failed to fetch scopes:', error);
+		}
+	}
+
+	async function fetchWorkspaces(cluster: string) {
+		try {
+			const response = await resourceClient.list({
+				cluster: cluster,
+				group: 'tenant.otterscale.io',
+				version: 'v1alpha1',
+				resource: 'workspaces',
+				labelSelector: 'user.otterscale.io/' + data.user.sub
+			});
+			workspaces = response.items.map((item) => item.object as TenantOtterscaleIoV1Alpha1Workspace);
+		} catch (error) {
+			console.error('Failed to fetch workspaces:', error);
+		}
+	}
+
+	async function onValueChange(cluster: string) {
+		await fetchWorkspaces(cluster);
+		await goto(resolve('/(auth)/scope/[scope]', { scope: cluster }));
+		toast.success(m.switch_scope({ name: cluster }));
+	}
+
+	async function onHomeClick() {
+		activeScope = '';
+		await goto(resolve('/(auth)/console'));
+	}
+
+	let isMounted = $state(false);
+	onMount(async () => {
+		await fetchScopes();
+
+		if (activeScope) {
+			await fetchWorkspaces(activeScope);
+		}
+
+		isMounted = true;
+	});
+
+	const navData = $derived({
 		overview: [
 			{
 				name: m.workspace(),
 				url: resolve(
-					`/(auth)/${page.params.scope ?? page.params.cluster}/Workspace/workspaces?group=tenant.otterscale.io&version=v1alpha1&name=${$activeWorkspaceName}`
+					`/(auth)/${activeScope}/Workspace/workspaces?group=tenant.otterscale.io&version=v1alpha1&name=${$activeWorkspaceName}`
 				),
 				icon: MapIcon,
 				edit: false
@@ -73,7 +138,7 @@
 			{
 				name: m.resource_quota(),
 				url: resolve(
-					`/(auth)/${page.params.scope ?? page.params.cluster}/ResourceQuota?group=&version=v1&namespace=${$activeNamespace}&resource=resourcequotas`
+					`/(auth)/${activeScope}/ResourceQuota?group=&version=v1&namespace=${$activeNamespace}&resource=resourcequotas`
 				),
 				icon: BoxIcon,
 				edit: false
@@ -431,71 +496,6 @@
 				]
 			}
 		]
-	};
-
-	let {
-		data,
-		children
-	}: {
-		data: LayoutData;
-		children: Snippet;
-	} = $props();
-
-	const current = $derived($breadcrumbs.at(-1));
-
-	const transport: Transport = getContext('transport');
-	const scopeClient = createClient(ScopeService, transport);
-	const resourceClient = createClient(ResourceService, transport);
-
-	let activeScope = $state(page.params.scope ?? page.params.cluster ?? ''); //TODO: remove page.params.scope after route updated
-	let scopes = $state<Scope[]>([]);
-	let workspaces = $state<TenantOtterscaleIoV1Alpha1Workspace[]>([]);
-	let next = $state(false);
-
-	async function fetchScopes() {
-		try {
-			const response = await scopeClient.listScopes({});
-			scopes = response.scopes.filter((scope) => scope.name !== 'cos');
-		} catch (error) {
-			console.error('Failed to fetch scopes:', error);
-		}
-	}
-
-	async function fetchWorkspaces(cluster: string) {
-		try {
-			const response = await resourceClient.list({
-				cluster: cluster,
-				group: 'tenant.otterscale.io',
-				version: 'v1alpha1',
-				resource: 'workspaces',
-				labelSelector: 'user.otterscale.io/' + data.user.sub
-			});
-			workspaces = response.items.map((item) => item.object as TenantOtterscaleIoV1Alpha1Workspace);
-		} catch (error) {
-			console.error('Failed to fetch workspaces:', error);
-		}
-	}
-
-	async function onValueChange(cluster: string) {
-		await fetchWorkspaces(cluster);
-		await goto(resolve('/(auth)/scope/[scope]', { scope: cluster }));
-		toast.success(m.switch_scope({ name: cluster }));
-	}
-
-	async function onHomeClick() {
-		activeScope = '';
-		await goto(resolve('/(auth)/console'));
-	}
-
-	let isMounted = $state(false);
-	onMount(async () => {
-		await fetchScopes();
-
-		if (activeScope) {
-			await fetchWorkspaces(activeScope);
-		}
-
-		isMounted = true;
 	});
 </script>
 

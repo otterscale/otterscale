@@ -4,6 +4,7 @@ import type { Column } from '@tanstack/table-core';
 import { type Row } from '@tanstack/table-core';
 import lodash from 'lodash';
 
+import { resolve } from '$app/paths';
 import { page } from '$app/state';
 import type { APIResource } from '$lib/api/resource/v1/resource_pb';
 import { DynamicTableCell, DynamicTableHeader } from '$lib/components/dynamic-table';
@@ -67,7 +68,9 @@ function cronjobColumnDefinitions(apiResource: APIResource, fields: any) {
 			}) =>
 				renderComponent(LinkCell, {
 					display: String(row.original[column.id]),
-					hyperlink: `/(auth)/${page.params.cluster!}/CronJob/cronjobs?group=batch&version=v1&name=${row.original[column.id]}&namespace=${page.url.searchParams.get('namespace')!}`
+					hyperlink: resolve(
+						`/(auth)/${page.params.cluster!}/CronJob/cronjobs?group=batch&version=v1&name=${row.original[column.id]}&namespace=${page.url.searchParams.get('namespace')!}`
+					)
 				}),
 			accessorKey: 'Name'
 		},

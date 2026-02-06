@@ -26,11 +26,10 @@
 		open = false;
 		onsuccess?.();
 	}
-	console.log('object', object);
 </script>
 
 <Sheet.Root bind:open {onOpenChangeComplete}>
-	<Sheet.Trigger class="flex items-center gap-2">
+	<Sheet.Trigger class="flex w-full items-center gap-2">
 		<Pencil size={16} />
 		Edit
 	</Sheet.Trigger>

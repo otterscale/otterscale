@@ -4,23 +4,6 @@
 	import * as AlertDialog from '$lib/components/ui/alert-dialog/index.js';
 	import { buttonVariants } from '$lib/components/ui/button/button.svelte';
 
-	let {
-		kind,
-		onsuccess,
-		...rest
-	}: {
-		cluster: string;
-		namespace: string;
-		group: string;
-		version: string;
-		kind: string;
-		resource: string;
-		onsuccess?: () => void;
-	} = $props();
-
-	// Suppress unused variable warning
-	void rest;
-
 	let createModalOpen = $state(false);
 </script>
 

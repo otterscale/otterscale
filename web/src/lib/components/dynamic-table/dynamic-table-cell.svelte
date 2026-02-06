@@ -1,6 +1,5 @@
 <script lang="ts">
 	import type { JsonObject, JsonValue } from '@bufbuild/protobuf';
-	import Braces from '@lucide/svelte/icons/braces';
 	import Circle from '@lucide/svelte/icons/circle';
 	import File from '@lucide/svelte/icons/file';
 	import FileCheck from '@lucide/svelte/icons/file-check';
@@ -20,7 +19,6 @@
 	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
 	import * as Collapsible from '$lib/components/ui/collapsible';
-	import * as Empty from '$lib/components/ui/empty/index.js';
 	import * as Item from '$lib/components/ui/item';
 	import * as Sheet from '$lib/components/ui/sheet/index.js';
 	import * as Table from '$lib/components/ui/table/index.js';
@@ -28,7 +26,7 @@
 	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
 	import { now } from '$lib/stores/now';
 
-	import { format, getRelativeTime } from './utils';
+	import { format, getColumnType, getRelativeTime } from './utils';
 
 	let {
 		ref = $bindable(null),
@@ -42,22 +40,22 @@
 		row: Row<Record<string, JsonValue>>;
 		fields: Record<string, { description: string; type: string; format: string }>;
 	} = $props();
+
+	const columnType = $derived(getColumnType(fields[column.id].type, fields[column.id].format));
 </script>
 
 <div class={className}>
 	{#if children}
 		{@render children()}
-	{:else if fields[column.id].type === 'object'}
+	{:else if columnType === 'object'}
 		{@render ObjectCell({ data: row.original[column.id] as JsonObject })}
-	{:else if fields[column.id].type === 'array'}
+	{:else if columnType === 'array'}
 		{@render ArrayCell({ data: row.original[column.id] as JsonValue[] })}
-	{:else if fields[column.id].type === 'string' && fields[column.id].format === 'date'}
-		{@render DateCell({ data: new Date(String(row.original[column.id])) })}
-	{:else if fields[column.id].type === 'string' && fields[column.id].format === 'date-time'}
+	{:else if columnType === 'time'}
 		{@render DatetimeCell({ data: new Date(String(row.original[column.id])) })}
-	{:else if fields[column.id].type === 'number' || fields[column.id].type === 'integer'}
+	{:else if columnType === 'number'}
 		{@render NumberCell({ data: Number(row.original[column.id]) })}
-	{:else if fields[column.id].type === 'boolean'}
+	{:else if columnType === 'boolean'}
 		{@render BooleanCell({ data: Boolean(row.original[column.id]) })}
 	{:else if row.original[column.id]}
 		{@render TextCell({ data: String(row.original[column.id]) })}
@@ -69,27 +67,33 @@
 {#snippet ObjectCell({ data }: { data: JsonObject })}
 	<Sheet.Root>
 		<Sheet.Trigger>
-			{#if data && !Object.values(data).some((value) => value && typeof value === 'object')}
-				<Button variant="ghost" class="hover:underline">
-					{Object.keys(data).length}
-				</Button>
-			{:else if data}
-				<Button variant="ghost">
+			{#if data}
+				{#if Object.values(data).some((value) => value && typeof value === 'object')}
+					<Button variant="ghost">
+						<FileCode />
+					</Button>
+				{:else}
+					<Button variant="ghost" class="hover:underline">
+						{Object.keys(data).length}
+					</Button>
+				{/if}
+			{:else}
+				<Button variant="ghost" disabled>
 					<FileCode />
 				</Button>
 			{/if}
 		</Sheet.Trigger>
-		<Sheet.Content
-			side="right"
-			class="flex h-full max-w-[62vw] min-w-[50vw] flex-col gap-0 overflow-y-auto p-4"
-		>
-			<Sheet.Header class="shrink-0 space-y-4">
-				<Sheet.Title>{column.id}</Sheet.Title>
-				<Sheet.Description>
-					{fields[column.id].description}
-				</Sheet.Description>
-			</Sheet.Header>
-			{#if data}
+		{#if data}
+			<Sheet.Content
+				side="right"
+				class="flex h-full max-w-[62vw] min-w-[50vw] flex-col gap-0 overflow-y-auto p-4"
+			>
+				<Sheet.Header class="shrink-0 space-y-4">
+					<Sheet.Title>{column.id}</Sheet.Title>
+					<Sheet.Description>
+						{fields[column.id].description}
+					</Sheet.Description>
+				</Sheet.Header>
 				{#if Object.values(data).some((value) => value && typeof value === 'object')}
 					<div class="p-4">
 						<Code.Root
@@ -189,23 +193,8 @@
 						</Tabs.Content>
 					</Tabs.Root>
 				{/if}
-			{:else}
-				<Empty.Root class="m-4 bg-muted/50">
-					<Empty.Header>
-						<Empty.Media variant="icon">
-							<Braces size={36} />
-						</Empty.Media>
-						<Empty.Title>No Data</Empty.Title>
-						<Empty.Description>
-							No data is currently available for this resource.
-							<br />
-							To populate this resource, please add properties or values through the resource editor.
-						</Empty.Description>
-					</Empty.Header>
-					<Empty.Content></Empty.Content>
-				</Empty.Root>
-			{/if}
-		</Sheet.Content>
+			</Sheet.Content>
+		{/if}
 	</Sheet.Root>
 {/snippet}
 
