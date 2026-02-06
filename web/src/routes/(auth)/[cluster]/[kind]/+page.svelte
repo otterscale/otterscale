@@ -1,9 +1,10 @@
 <script lang="ts">
 	import { createClient, type Transport } from '@connectrpc/connect';
-	import { Ban } from '@lucide/svelte';
+	import { Ban, Boxes } from '@lucide/svelte';
 	import { getContext } from 'svelte';
 
 	import { goto } from '$app/navigation';
+	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import {
 		type APIResource,
@@ -18,6 +19,16 @@
 	import * as Item from '$lib/components/ui/item';
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import * as Table from '$lib/components/ui/table/index.js';
+	import { Toggle } from '$lib/components/ui/toggle/index.js';
+	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
+	import { breadcrumbs } from '$lib/stores';
+
+	breadcrumbs.set([
+		{
+			title: 'manifest',
+			url: resolve('/')
+		}
+	]);
 
 	const cluster = $derived(page.params.cluster ?? '');
 	const kind = $derived(page.params.kind ?? '');
@@ -54,6 +65,8 @@
 				apiResource.resource === resource
 		)
 	);
+
+	let clustered = $state(false);
 </script>
 
 {#key cluster + group + version + kind}
@@ -123,22 +136,49 @@
 						</Item.Description>
 					</Item.Content>
 				</Item.Root>
-				<Picker
-					class="w-fit"
-					resource="resource"
-					value={resource}
-					options={apiResourceOptions}
-					onSelect={(option) => {
-						page.url.searchParams.set('resource', option.value);
-						// eslint-disable-next-line svelte/no-navigation-without-resolve
-						goto(page.url.href);
-					}}
-				/>
+				<div class="flex items-center gap-2">
+					<Tooltip.Provider>
+						<Tooltip.Root>
+							<Tooltip.Trigger class={page.data.user.roles.includes('admin') ? 'flex' : 'hidden'}>
+								<Toggle
+									bind:pressed={clustered}
+									aria-label="switch clustered"
+									variant="outline"
+									class="data-[state=on]:*:bg-transparent"
+								>
+									<Boxes size={16} />
+									All Namespaces
+								</Toggle>
+							</Tooltip.Trigger>
+							<Tooltip.Content>Press to view resources across all namespaces.</Tooltip.Content>
+						</Tooltip.Root>
+					</Tooltip.Provider>
+					<Picker
+						class="w-fit"
+						resource="resource"
+						value={resource}
+						options={apiResourceOptions}
+						onSelect={(option) => {
+							page.url.searchParams.set('resource', option.value);
+							// eslint-disable-next-line svelte/no-navigation-without-resolve
+							goto(page.url.href);
+						}}
+					/>
+				</div>
 			</div>
-			{#key resource + namespace}
+			{#key clustered + resource + namespace}
 				{#if selectedAPIResource}
 					{@const apiResource = selectedAPIResource}
-					<KindViewer {apiResource} {cluster} {group} {version} {kind} {resource} {namespace} />
+					<KindViewer
+						{apiResource}
+						{cluster}
+						{group}
+						{version}
+						{kind}
+						{resource}
+						{namespace}
+						{clustered}
+					/>
 				{/if}
 			{/key}
 		</div>

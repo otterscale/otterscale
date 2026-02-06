@@ -16,6 +16,7 @@
 	import Nodes from '$lib/components/dashbaord/cluster/overview/nodes.svelte';
 	import Pods from '$lib/components/dashbaord/cluster/overview/pods.svelte';
 	import Uptime from '$lib/components/dashbaord/cluster/overview/uptime.svelte';
+	import * as Tabs from '$lib/components/ui/tabs';
 	import { m } from '$lib/paraglide/messages';
 
 	const scope = $derived(page.params.scope!);
@@ -56,49 +57,53 @@
 						{m.k8s_overview_description()}
 					</p>
 				</div>
+				<Tabs.Root value="overview">
+					<div class="flex justify-between gap-2">
+						<Tabs.List>
+							<Tabs.Trigger value="overview">{m.overview()}</Tabs.Trigger>
+							<Tabs.Trigger value="analytics" disabled>{m.analytics()}</Tabs.Trigger>
+						</Tabs.List>
+						<Reloader bind:checked={isReloading} />
+					</div>
+					<Tabs.Content value="overview">
+						<div
+							class="grid auto-rows-[minmax(140px,auto)] grid-cols-2 gap-4 pt-4 md:gap-6 lg:grid-cols-1 2xl:grid-cols-4"
+						>
+							<div class="col-span-1 row-span-1">
+								<Health {prometheusDriver} {scope} bind:isReloading />
+							</div>
+							<div class="col-span-1 row-span-1">
+								<Uptime {prometheusDriver} {scope} bind:isReloading />
+							</div>
+							<div class="col-span-2 row-span-1">
+								<Information {prometheusDriver} {scope} bind:isReloading />
+							</div>
+							<div class="col-span-1 row-span-1">
+								<Nodes {prometheusDriver} {scope} bind:isReloading />
+							</div>
+							<div class="col-span-1 row-span-1">
+								<Deployments {prometheusDriver} {scope} bind:isReloading />
+							</div>
 
-				<div class="flex justify-end">
-					<Reloader bind:checked={isReloading} />
-				</div>
-
-				<div
-					class="grid auto-rows-[minmax(140px,auto)] grid-cols-2 gap-4 pt-4 md:gap-6 lg:grid-cols-4"
-				>
-					<div class="col-span-1 row-span-1">
-						<Health {prometheusDriver} {scope} bind:isReloading />
-					</div>
-					<div class="col-span-1 row-span-1">
-						<Uptime {prometheusDriver} {scope} bind:isReloading />
-					</div>
-					<div class="col-span-1 row-span-2">
-						<CpuUsage {prometheusDriver} {scope} bind:isReloading />
-					</div>
-					<div class="col-span-1 row-span-2">
-						<MemoryUsage {prometheusDriver} {scope} bind:isReloading />
-					</div>
-
-					<div class="col-span-1">
-						<Information {prometheusDriver} {scope} bind:isReloading />
-					</div>
-					<div class="col-span-1"></div>
-
-					<div class="col-span-1">
-						<Nodes {prometheusDriver} {scope} bind:isReloading />
-					</div>
-					<div class="col-span-1">
-						<Deployments {prometheusDriver} {scope} bind:isReloading />
-					</div>
-					<div class="col-span-1 row-span-2">
-						<GPUMemoryUsage {prometheusDriver} {scope} bind:isReloading />
-					</div>
-					<div class="col-span-1 row-span-2">
-						<GPUUtilization {prometheusDriver} {scope} bind:isReloading />
-					</div>
-
-					<div class="col-span-2">
-						<Pods {prometheusDriver} {scope} bind:isReloading />
-					</div>
-				</div>
+							<div class="col-span-2 row-span-1">
+								<Pods {prometheusDriver} {scope} bind:isReloading />
+							</div>
+							<div class="col-span-1 row-span-2">
+								<CpuUsage {prometheusDriver} {scope} bind:isReloading />
+							</div>
+							<div class="col-span-1 row-span-2">
+								<MemoryUsage {prometheusDriver} {scope} bind:isReloading />
+							</div>
+							<div class="col-span-1 row-span-2">
+								<GPUMemoryUsage {prometheusDriver} {scope} bind:isReloading />
+							</div>
+							<div class="col-span-1 row-span-2">
+								<GPUUtilization {prometheusDriver} {scope} bind:isReloading />
+							</div>
+						</div>
+					</Tabs.Content>
+					<Tabs.Content value="analytics"></Tabs.Content>
+				</Tabs.Root>
 			</div>
 		{/if}
 	</main>

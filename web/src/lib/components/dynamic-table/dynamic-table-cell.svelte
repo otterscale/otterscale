@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { JsonObject, JsonValue } from '@bufbuild/protobuf';
 	import Circle from '@lucide/svelte/icons/circle';
+	import CircleX from '@lucide/svelte/icons/circle-x';
 	import File from '@lucide/svelte/icons/file';
 	import FileCheck from '@lucide/svelte/icons/file-check';
 	import FileClock from '@lucide/svelte/icons/file-clock';
@@ -9,7 +10,6 @@
 	import FileText from '@lucide/svelte/icons/file-text';
 	import Grid from '@lucide/svelte/icons/grid';
 	import List from '@lucide/svelte/icons/list';
-	import X from '@lucide/svelte/icons/x';
 	import type { Column, Row } from '@tanstack/table-core';
 	import { type WithElementRef } from 'bits-ui';
 	import type { HTMLAttributes } from 'svelte/elements';
@@ -257,7 +257,7 @@
 	{#if data === true}
 		<Circle class="inline-block size-4 text-primary" />
 	{:else if data === false}
-		<X class="inline-block size-6 text-destructive" />
+		<CircleX class="inline-block size-6 text-destructive" />
 	{/if}
 {/snippet}
 

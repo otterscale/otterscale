@@ -20,7 +20,7 @@
 	async function fetchMemoryUsage() {
 		const usageResponse = await prometheusDriver.instantQuery(
 			`
-			(sum(node_memory_MemTotal_bytes{juju_model="${scope}"} - node_memory_MemAvailable_bytes{juju_model="${scope}"}))
+			100 * (sum(node_memory_MemTotal_bytes{juju_model="${scope}"} - node_memory_MemAvailable_bytes{juju_model="${scope}"}))
 			/
 			sum(node_memory_MemTotal_bytes{juju_model="${scope}"})
 			`
@@ -32,7 +32,7 @@
 	async function fetchMemoryRequest() {
 		const response = await prometheusDriver.instantQuery(
 			`
-			sum(kube_pod_container_resource_requests{resource="memory", unit="byte", juju_model="${scope}", container!=""})
+			100 * sum(kube_pod_container_resource_requests{resource="memory", unit="byte", juju_model="${scope}", container!=""})
 			/
 			sum(kube_node_status_allocatable{cluster!="", juju_model="${scope}", resource="memory"})
 			`
@@ -84,15 +84,10 @@
 </script>
 
 <Card.Root class="relative h-full min-h-[140px] gap-2 overflow-hidden">
-	<Icon
-		icon="ph:cube"
-		class="absolute -right-10 bottom-0 -z-0 size-36 text-8xl tracking-tight text-nowrap text-primary/5 uppercase group-hover:hidden"
-	/>
-	<Card.Header>
-		<Card.Title>Memory</Card.Title>
-		<Card.Description class="z-10 flex flex-col items-end">
-			<p>usage: {Math.round(Number(memoryUsage?.value ?? 0) * 100)} %</p>
-			<p>request: {Math.round(Number(memoryRequest?.value ?? 0) * 100)} %</p>
+	<Card.Header class="h-20">
+		<Card.Title>{m.memory()}</Card.Title>
+		<Card.Description class="flex">
+			{m.cluster_dashboard_memory_description()}
 		</Card.Description>
 	</Card.Header>
 	{#if !isLoaded}
@@ -113,24 +108,21 @@
 					innerRadius={-13}
 					padding={23}
 					range={[180, -180]}
-					maxValue={1}
+					maxValue={100}
 					series={[
-						{ key: 'usage', data: [{ key: 'usage', ...memoryUsage }], color: 'var(--chart-1)' },
 						{
 							key: 'request',
 							data: [{ key: 'request', ...memoryRequest }],
 							color: 'var(--chart-2)'
-						}
+						},
+						{ key: 'usage', data: [{ key: 'usage', ...memoryUsage }], color: 'var(--chart-1)' }
 					]}
 					props={{
 						arc: { track: { fill: 'var(--muted)' }, motion: 'tween' },
 						tooltip: { context: { hideDelay: 350 } }
 					}}
+					tooltip={false}
 				>
-					{#snippet tooltip()}
-						<Chart.Tooltip hideLabel nameKey="key" />
-					{/snippet}
-
 					{#snippet aboveMarks()}
 						{@const { value, unit } = formatCapacity(Number(allocatableMemory))}
 						<Text
@@ -149,6 +141,24 @@
 					{/snippet}
 				</ArcChart>
 			</Chart.Container>
+			<Card.Footer class="mt-auto w-full">
+				<div class="mx-auto grid w-fit grid-cols-2 py-2">
+					<p class="col-start-1 row-start-1">
+						<span class="mr-2 inline-block aspect-square size-3 bg-chart-1 align-middle"></span>
+						usage
+					</p>
+					<p class="col-start-2 row-start-1 ml-auto">
+						{Math.round(Number(memoryUsage?.value ?? 0))} %
+					</p>
+					<p class="col-start-1 row-start-2">
+						<span class="mr-2 inline-block aspect-square size-3 bg-chart-2 align-middle"></span>
+						request
+					</p>
+					<p class="col-start-2 row-start-2 ml-auto">
+						{Math.round(Number(memoryRequest?.value ?? 0))} %
+					</p>
+				</div>
+			</Card.Footer>
 		</Card.Content>
 	{/if}
 </Card.Root>

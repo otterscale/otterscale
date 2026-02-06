@@ -55,8 +55,10 @@
 		class="absolute -right-10 bottom-0 size-36 text-8xl tracking-tight text-nowrap text-primary/5 uppercase group-hover:hidden"
 	/>
 	<Card.Header>
-		<Card.Title>Nodes</Card.Title>
-		<Card.Description class="flex h-6 items-center"></Card.Description>
+		<Card.Title>{m.node()}</Card.Title>
+		<Card.Description class="flex h-6 items-center"
+			>{m.cluster_dashboard_node_description()}</Card.Description
+		>
 	</Card.Header>
 	{#if !isLoaded}
 		<div class="flex h-9 w-full items-center justify-center">
@@ -68,8 +70,10 @@
 			<p class="p-0 text-xs text-muted-foreground">{m.no_data_display()}</p>
 		</div>
 	{:else}
-		<Card.Content class="text-3xl"
-			>{clusterNodes?.value !== undefined ? clusterNodes?.value : 'N/A'}</Card.Content
-		>
+		<Card.Content>
+			<p class="text-3xl font-bold">
+				{clusterNodes?.value !== undefined ? clusterNodes?.value : 'N/A'}
+			</p>
+		</Card.Content>
 	{/if}
 </Card.Root>

@@ -8,4 +8,6 @@
 	} = $props();
 </script>
 
-{numerator}/{denominator}
+{#if denominator !== undefined}
+	{numerator ?? '?'}/{denominator}
+{/if}

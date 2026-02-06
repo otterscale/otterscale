@@ -5,7 +5,7 @@
 	import { type Writable, writable } from 'svelte/store';
 	import { toast } from 'svelte-sonner';
 
-	import { ApplicationService } from '$lib/api/application/v1/application_pb';
+	// import { ApplicationService } from '$lib/api/application/v1/application_pb';
 	import { type CreateModelArtifactRequest, ModelService } from '$lib/api/model/v1/model_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
@@ -14,6 +14,7 @@
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { Single as SingleSelect } from '$lib/components/custom/select';
 	import { m } from '$lib/paraglide/messages';
+	import { activeNamespace } from '$lib/stores';
 	import { cn } from '$lib/utils';
 
 	import ModelsStore from './util-models-store.svelte';
@@ -31,20 +32,32 @@
 
 	const transport: Transport = getContext('transport');
 	const modelClient = createClient(ModelService, transport);
-	const applicationClient = createClient(ApplicationService, transport);
+	// const applicationClient = createClient(ApplicationService, transport);
 
 	const namespaceOptions: Writable<SingleSelect.OptionType[]> = writable([]);
 	const huggingFaceModelOptions: Writable<OptionType[]> = writable([]);
 
 	async function fetchNamespaceOptions() {
-		const response = await applicationClient.listNamespaces({ scope });
-		namespaceOptions.set(
-			response.namespaces.map((namespace) => ({
-				value: namespace.name,
-				label: namespace.name,
+		// const response = await applicationClient.listNamespaces({ scope });
+		// namespaceOptions.set(
+		// 	response.namespaces.map((namespace) => ({
+		// 		value: namespace.name,
+		// 		label: namespace.name,
+		// 		icon: 'ph:cube'
+		// 	}))
+		// );
+		namespaceOptions.set([
+			{
+				value: 'llm-d',
+				label: 'llm-d',
 				icon: 'ph:cube'
-			}))
-		);
+			},
+			{
+				value: $activeNamespace,
+				label: $activeNamespace,
+				icon: 'ph:cube'
+			}
+		]);
 	}
 
 	async function fetchModelOptions() {
@@ -132,7 +145,7 @@
 						bind:invalid={invalidity.namespace}
 					>
 						<!-- TODO: Enable namespace selection when options other than 'llm-d' are available -->
-						<SingleSelect.Trigger disabled={true} />
+						<SingleSelect.Trigger />
 						<SingleSelect.Content>
 							<SingleSelect.Options>
 								<SingleSelect.Input />

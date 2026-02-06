@@ -704,6 +704,7 @@
 	"clone_virtual_machine_name_direction": "新虛擬機的名稱。",
 	"clone_virtual_machine_namespace_direction": "新虛擬機的命名空間。",
 	"gpu_memory": "GPU 記憶體",
+	"gpu_utilization": "GPU 算力",
 	"machine_dashboard_gpu_memory_tooltip": "所有機器的總 GPU 記憶體。",
 	"machine_dashboard_gpu_tooltip": "所有機器的總 GPU。",
 	"pieces": "個",
@@ -905,5 +906,12 @@
 	"k8s_overview_title": "Kubernetes 概覽",
 	"k8s_overview_description": "監控您的 Kubernetes 叢集狀態和資源",
 	"cronjob": "定時任務",
-	"resource_quota": "資源配額"
+	"resource_quota": "資源配額",
+	"cluster_dashboard_node_description": "顯示叢集中節點的總數。",
+	"cluster_dashboard_deployment_description": "顯示叢集中部署 (Deployment) 的總數。",
+	"cluster_dashboard_pod_description": "依狀態顯示叢集中 Pod 的總數。",
+	"cluster_dashboard_cpu_description": "顯示目前 CPU 使用率及已請求的 CPU 資源，佔可分配 CPU 總量的百分比。",
+	"cluster_dashboard_memory_description": "顯示目前記憶體使用率及已請求的記憶體資源，佔可分配記憶體總量的百分比。",
+	"cluster_dashboard_gpu_memory_description": "顯示目前 GPU 記憶體使用率及已請求的 GPU 記憶體資源，佔可分配 GPU 記憶體總量的百分比。",
+	"cluster_dashboard_gpu_utilization_description": "顯示目前 GPU 使用率，佔可用 GPU 資源總量的百分比。"
 }
