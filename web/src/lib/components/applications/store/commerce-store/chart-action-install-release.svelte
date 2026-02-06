@@ -1,6 +1,7 @@
 <script lang="ts" module>
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
+	import semver from 'semver';
 	import { getContext, onMount } from 'svelte';
 	import { type Writable, writable } from 'svelte/store';
 	import { toast } from 'svelte-sonner';
@@ -51,7 +52,16 @@
 			});
 			versions.set(response.versions);
 
-			versionReference = $versions[0].chartRef;
+			const stableVersions = $versions.filter(
+				(version) => semver.prerelease(version.chartVersion) === null
+			);
+
+			if (stableVersions.length > 0) {
+				stableVersions.sort((a, b) => semver.rcompare(a.chartVersion, b.chartVersion));
+				versionReference = stableVersions[0].chartRef;
+			} else if ($versions.length > 0) {
+				versionReference = $versions[0].chartRef;
+			}
 
 			versionReferenceOptions.set(
 				$versions.map((version) => ({
@@ -164,11 +174,13 @@
 				<Form.Label>
 					{m.configuration()}
 				</Form.Label>
-				<ReleaseValuesInputEdit
-					chartRef={versionReference}
-					bind:valuesYaml={request.valuesYaml}
-					bind:valuesMap={request.valuesMap}
-				/>
+				{#key request.chartRef}
+					<ReleaseValuesInputEdit
+						chartRef={request.chartRef}
+						bind:valuesYaml={request.valuesYaml}
+						bind:valuesMap={request.valuesMap}
+					/>
+				{/key}
 			</Form.Field>
 		</Form.Fieldset>
 

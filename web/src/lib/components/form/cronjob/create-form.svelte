@@ -75,7 +75,16 @@
 			'spec.jobTemplate.spec.template.spec.containers.name': { title: 'Name' },
 			'spec.jobTemplate.spec.template.spec.containers.image': { title: 'Image' },
 			'spec.jobTemplate.spec.template.spec.containers.command': { title: 'Command' },
-			'spec.jobTemplate.spec.template.spec.containers.args': { title: 'Arguments' },
+			'spec.jobTemplate.spec.template.spec.containers.args': {
+				title: 'Arguments',
+				uiSchema: {
+					items: {
+						'ui:components': {
+							textWidget: 'textareaWidget'
+						}
+					}
+				}
+			},
 			'spec.jobTemplate.spec.template.spec.containers.env': { title: 'Environment Variables' }
 		},
 		// Step 3: Resources

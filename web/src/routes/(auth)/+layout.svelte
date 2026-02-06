@@ -110,8 +110,7 @@
 	}
 
 	async function onHomeClick() {
-		activeScope = '';
-		await goto(resolve('/(auth)/console'));
+		await goto(resolve('/(auth)/scope/[scope]', { scope: activeScope }));
 	}
 
 	let isMounted = $state(false);
