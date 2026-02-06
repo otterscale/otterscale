@@ -105,7 +105,7 @@
 						</Table.Row>
 					</Table.Header>
 					<Table.Body>
-						{#each $modelArtifacts as modelArtifact (modelArtifact.name)}
+						{#each $modelArtifacts as modelArtifact, index (index)}
 							<Table.Row>
 								<Table.Cell>{modelArtifact.name}</Table.Cell>
 								<Table.Cell>{modelArtifact.namespace}</Table.Cell>
