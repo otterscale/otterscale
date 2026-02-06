@@ -79,6 +79,11 @@ export async function getUsers(options: GetUsersOptions = {}): Promise<User[]> {
 		params.set('search', search);
 	}
 
+	if (!env.KEYCLOAK_REALM_URL) {
+		console.error('KEYCLOAK_REALM_URL is not configured');
+		throw new Error('KEYCLOAK_REALM_URL is not configured');
+	}
+
 	const adminUrl = env.KEYCLOAK_REALM_URL.replace('/realms/', '/admin/realms/');
 	const response = await fetch(`${adminUrl}/users?${params}`, {
 		headers: {
