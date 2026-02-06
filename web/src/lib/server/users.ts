@@ -63,11 +63,6 @@ export async function getUsers(options: GetUsersOptions = {}): Promise<User[]> {
 	const { search = '', first = 0, max = 10 } = options;
 	const tokens = await getClientCredentialsTokens();
 
-	if (!env.KEYCLOAK_REALM_URL) {
-		console.error('KEYCLOAK_REALM_URL is not configured');
-		throw new Error('KEYCLOAK_REALM_URL is not configured');
-	}
-
 	if (!tokens.access_token) {
 		console.error('Access token is missing');
 		throw new Error('Access token is missing');
