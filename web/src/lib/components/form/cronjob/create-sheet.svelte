@@ -42,7 +42,7 @@
 		</Button>
 	</Sheet.Trigger>
 	<Sheet.Content
-		class="fixed top-1/2 left-1/2 h-[90vh] w-[90vw] max-w-4xl min-w-[800px] -translate-x-1/2 -translate-y-1/2 rounded-lg border bg-background shadow-lg"
+		class="fixed top-1/2 left-1/2 h-[90vh] w-[90vw] max-w-4xl min-w-3/4 -translate-x-1/2 -translate-y-1/2 rounded-lg border bg-background shadow-lg"
 	>
 		<Sheet.Header class="h-full p-0">
 			<div class="flex h-full flex-col">
