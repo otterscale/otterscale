@@ -83,7 +83,7 @@
 		"@bufbuild/protobuf": "^2.11.0",
 		"@connectrpc/connect": "^2.1.1",
 		"@connectrpc/connect-web": "^2.1.1",
-		"@dagrejs/dagre": "^2.0.3",
+		"@dagrejs/dagre": "^1.1.8",
 		"@iconify/svelte": "^5.2.1",
 		"@monaco-editor/loader": "^1.7.0",
 		"@oslojs/binary": "^1.0.0",
