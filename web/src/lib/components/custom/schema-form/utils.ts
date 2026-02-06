@@ -20,11 +20,27 @@ export function deepMerge(target: any, source: any): any {
 	if (typeof target !== 'object' || target === null) return source;
 	if (typeof source !== 'object' || source === null) return target;
 
-	// Arrays: only replace if source is not empty
+	// Arrays: merge element-by-element to preserve fields not in source
 	if (Array.isArray(target) || Array.isArray(source)) {
 		// If source is empty or contains only empty objects, keep target
 		if (isEmptyValue(source)) {
 			return target;
+		}
+		// If both are arrays, deep merge each element by index
+		if (Array.isArray(target) && Array.isArray(source)) {
+			const result = [...target];
+			for (let i = 0; i < source.length; i++) {
+				if (i < result.length) {
+					if (isEmptyValue(source[i])) {
+						// Keep original element if source element is empty
+						continue;
+					}
+					result[i] = deepMerge(result[i], source[i]);
+				} else {
+					result[i] = source[i];
+				}
+			}
+			return result;
 		}
 		return source;
 	}
