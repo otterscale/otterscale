@@ -15,7 +15,7 @@
 
 	let version: string | undefined = $state(undefined);
 	let platform: string | undefined = $state(undefined);
-	async function fetchBuildInfo() {
+	async function fetchBuildInformation() {
 		const response = await prometheusDriver.instantQuery(
 			`kubernetes_build_info{juju_model="${scope}", job="apiserver"}`
 		);
@@ -25,7 +25,7 @@
 
 	async function fetch() {
 		try {
-			await fetchBuildInfo();
+			await fetchBuildInformation();
 		} catch (error) {
 			console.error('Failed to fetch build info:', error);
 		}
@@ -53,12 +53,12 @@
 
 <Card.Root class="relative h-full min-h-[140px] gap-2 overflow-hidden">
 	<Icon
-		icon="ph:cube"
+		icon="ph:info"
 		class="absolute -right-10 bottom-0 size-36 text-8xl tracking-tight text-nowrap text-primary/5 uppercase group-hover:hidden"
 	/>
 	<Card.Header>
-		<Card.Title>Information</Card.Title>
-		<!-- <Card.Description class="flex h-6 items-center">Cluster Version and Platform</Card.Description> -->
+		<Card.Title>{m.information()}</Card.Title>
+		<Card.Description class="text-md flex h-6 items-center">{platform ?? 'N/A'}</Card.Description>
 	</Card.Header>
 	{#if !isLoaded}
 		<div class="flex h-9 w-full items-center justify-center">
@@ -70,10 +70,7 @@
 			<p class="p-0 text-xs text-muted-foreground">{m.no_data_display()}</p>
 		</div>
 	{:else}
-		<Card.Content class="flex flex-col gap-2">
-			<p class="text-1xl font-medium tracking-wider text-muted-foreground uppercase">
-				{platform ?? 'N/A'}
-			</p>
+		<Card.Content>
 			<p class="text-3xl">{version ?? 'N/A'}</p>
 		</Card.Content>
 	{/if}

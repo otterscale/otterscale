@@ -705,6 +705,7 @@
 	"clone_virtual_machine_name_direction": "Name for the new virtual machine.",
 	"clone_virtual_machine_namespace_direction": "Namespace for the new virtual machine.",
 	"gpu_memory": "GPU Memory",
+	"gpu_utilization": "GPU Utilization",
 	"machine_dashboard_gpu_memory_tooltip": "Total GPU memory across all machines.",
 	"machine_dashboard_gpu_tooltip": "Total GPU across all machines.",
 	"pieces": "Pieces",
@@ -906,5 +907,12 @@
 	"cronjob": "CronJob",
 	"resource_quota": "ResourceQuota",
 	"k8s_overview_title": "Kubernetes Overview",
-	"k8s_overview_description": "Monitor your Kubernetes cluster status and resources"
+	"k8s_overview_description": "Monitor your Kubernetes cluster status and resources",
+	"cluster_dashboard_node_description": "Displays the total number of nodes in the cluster.",
+	"cluster_dashboard_deployment_description": "Displays the total number of deployments in the cluster.",
+	"cluster_dashboard_pod_description": "Displays the total number of pods in the cluster by status.",
+	"cluster_dashboard_cpu_description": "Displays the current CPU usage and requested CPU resources as a percentage of total allocatable CPU.",
+	"cluster_dashboard_memory_description": "Displays the current memory usage and requested memory resources as a percentage of total allocatable memory.",
+	"cluster_dashboard_gpu_memory_description": "Displays the current GPU memory usage and requested GPU memory resources as a percentage of total allocatable GPU memory.",
+	"cluster_dashboard_gpu_utilization_description": "Displays the current GPU utilization as a percentage of total available GPU resources."
 }

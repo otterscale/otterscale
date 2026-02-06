@@ -23,6 +23,7 @@
 	import { getColumnDefinitionsGetter, getFieldsGetter, getObjectGetter } from './viewers';
 
 	let {
+		clustered,
 		apiResource,
 		cluster,
 		group,
@@ -31,6 +32,7 @@
 		resource,
 		namespace
 	}: {
+		clustered: boolean;
 		apiResource: APIResource;
 		cluster: string;
 		group: string;
@@ -87,7 +89,7 @@
 				const response = await resourceClient.list(
 					{
 						cluster: cluster,
-						namespace: apiResource.namespaced ? namespace : undefined,
+						namespace: clustered ? undefined : apiResource.namespaced ? namespace : undefined,
 						group: group,
 						version: version,
 						resource: resource,
@@ -129,7 +131,7 @@
 			const watchResourcesStream = resourceClient.watch(
 				{
 					cluster: cluster,
-					namespace: apiResource.namespaced ? namespace : undefined,
+					namespace: clustered ? undefined : apiResource.namespaced ? namespace : undefined,
 					group: group,
 					version: version,
 					resource: resource,

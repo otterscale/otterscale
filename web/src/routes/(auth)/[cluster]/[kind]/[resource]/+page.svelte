@@ -1,6 +1,15 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import { ResourceViewer } from '$lib/components/resource-viewer/index.js';
+	import { breadcrumbs } from '$lib/stores';
+
+	breadcrumbs.set([
+		{
+			title: 'resource',
+			url: resolve('/')
+		}
+	]);
 
 	const cluster = $derived(page.params.cluster ?? '');
 	const resource = $derived(page.params.resource ?? '');

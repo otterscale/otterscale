@@ -73,8 +73,10 @@
 		class="absolute -right-10 bottom-0 size-36 text-8xl tracking-tight text-nowrap text-primary/5 uppercase group-hover:hidden"
 	/>
 	<Card.Header>
-		<Card.Title>Pods</Card.Title>
-		<!-- <Card.Description class="flex h-6 items-center">Cluster Pods State</Card.Description> -->
+		<Card.Title>{m.pods()}</Card.Title>
+		<Card.Description class="flex h-6 items-center">
+			{m.cluster_dashboard_pod_description()}
+		</Card.Description>
 	</Card.Header>
 	{#if !isLoaded}
 		<div class="flex h-9 w-full items-center justify-center">
@@ -86,23 +88,23 @@
 			<p class="p-0 text-xs text-muted-foreground">{m.no_data_display()}</p>
 		</div>
 	{:else}
-		<Card.Content class="flex flex-col gap-4">
+		<Card.Content class="my-4 flex flex-col gap-4">
 			<div>
 				<p class="text-3xl font-bold">{maxAllocatablePods?.value ?? 'N/A'}</p>
 				<p class="text-1xl font-medium tracking-wider uppercase">Allocatable</p>
 			</div>
 			<div class="grid grid-cols-3">
-				<div>
+				<div class="text-chart-2">
 					<p class="text-3xl font-bold">{runningPods?.value ?? 'N/A'}</p>
-					<p class="text-1xl font-medium tracking-wider text-chart-2 uppercase">Running</p>
+					<p class="text-1xl font-medium tracking-wider uppercase">Running</p>
 				</div>
-				<div>
+				<div class="text-muted-foreground">
 					<p class="text-3xl font-bold">{pendingPods?.value ?? 'N/A'}</p>
-					<p class="text-1xl font-medium tracking-wider text-muted-foreground uppercase">Pending</p>
+					<p class="text-1xl font-medium tracking-wider uppercase">Pending</p>
 				</div>
-				<div>
+				<div class="text-chart-1">
 					<p class="text-3xl font-bold">{failedPods?.value ?? 'N/A'}</p>
-					<p class="text-1xl font-medium tracking-wider text-chart-1 uppercase">Failed</p>
+					<p class="text-1xl font-medium tracking-wider uppercase">Failed</p>
 				</div>
 			</div>
 		</Card.Content>

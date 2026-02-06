@@ -3,13 +3,13 @@
 	import {
 		Box,
 		CircleCheck,
+		CircleX,
 		Gauge,
 		Grid,
 		HeartPulse,
 		Network,
 		Shield,
 		Users,
-		X,
 		Zap
 	} from '@lucide/svelte';
 	import type { CoreV1ResourceQuota, TenantOtterscaleIoV1Alpha1Workspace } from '@otterscale/types';
@@ -393,8 +393,8 @@
 								{@const enabled = object.spec?.networkIsolation?.enabled ?? null}
 								{#if enabled === true}
 									<CircleCheck size={40} class="text-chart-2" />
-								{:else if enabled === false}
-									<X size={40} class="text-destructive" />
+								{:else}
+									<CircleX size={40} class="text-destructive" />
 								{/if}
 							</Item.Description>
 						</Item.Content>

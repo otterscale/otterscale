@@ -15,6 +15,7 @@
 	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
 	import { formatCapacity, formatTimeAgo } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
+	import { activeNamespace } from '$lib/stores';
 
 	import Create from './create.svelte';
 	import Delete from './delete.svelte';
@@ -35,11 +36,15 @@
 
 	let jobs = $state([] as Job[]);
 	async function fetchJobs() {
-		const response = await applicationClient.listJobs({
+		const llmdResponse = await applicationClient.listJobs({
 			scope: scope,
 			namespace: 'llm-d'
 		});
-		jobs = response.jobs;
+		const activeNamespaceResponse = await applicationClient.listJobs({
+			scope: scope,
+			namespace: $activeNamespace
+		});
+		jobs = [...llmdResponse.jobs, ...activeNamespaceResponse.jobs];
 	}
 	const jobMap = $derived(new Map(jobs.map((job) => [job.name, job])));
 

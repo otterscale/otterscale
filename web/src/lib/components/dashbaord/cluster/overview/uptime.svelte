@@ -14,11 +14,16 @@
 	}: { prometheusDriver: PrometheusDriver; scope: string; isReloading: boolean } = $props();
 
 	let uptime: SampleValue | undefined = $state(undefined);
+	let create_time: SampleValue | undefined = $state(undefined);
 	async function fetchUptime() {
-		const response = await prometheusDriver.instantQuery(
+		const uptimeResponse = await prometheusDriver.instantQuery(
 			`time() - min(kube_node_created{juju_model="${scope}"})`
 		);
-		uptime = response.result[0]?.value ?? undefined;
+		const createTimeResponse = await prometheusDriver.instantQuery(
+			`min(kube_node_created{juju_model="${scope}"}) * 1000`
+		);
+		uptime = uptimeResponse.result[0]?.value ?? undefined;
+		create_time = createTimeResponse.result[0]?.value?.value ?? undefined;
 	}
 
 	async function fetch() {
@@ -50,15 +55,15 @@
 
 	function formatUptime(seconds: number): string {
 		const days = Math.floor(seconds / (24 * 60 * 60));
-		if (days > 0) return `${days} days`;
+		if (days > 0) return `${days} ${m.day()}`;
 
 		const hours = Math.floor(seconds / (60 * 60));
-		if (hours > 0) return `${hours} hour`;
+		if (hours > 0) return `${hours} ${m.hour()}`;
 
-		const mins = Math.floor(seconds / 60);
-		if (mins > 0) return `${mins} minutes`;
+		const minutes = Math.floor(seconds / 60);
+		if (minutes > 0) return `${minutes} ${m.minute()}`;
 
-		return `${seconds} seconds`;
+		return `${seconds} ${m.second()}`;
 	}
 </script>
 
@@ -68,8 +73,10 @@
 		class="absolute -right-10 bottom-0 size-36 text-8xl tracking-tight text-nowrap text-primary/5 uppercase group-hover:hidden"
 	/>
 	<Card.Header>
-		<Card.Title>Uptime</Card.Title>
-		<Card.Description class="flex h-6 items-center">Cluster Uptime</Card.Description>
+		<Card.Title>{m.uptime()}</Card.Title>
+		<Card.Description class="flex h-6 items-center"
+			>{new Date(Number(create_time)).toLocaleDateString()}</Card.Description
+		>
 	</Card.Header>
 	{#if !isLoaded}
 		<div class="flex h-9 w-full items-center justify-center">
@@ -81,8 +88,8 @@
 			<p class="p-0 text-xs text-muted-foreground">{m.no_data_display()}</p>
 		</div>
 	{:else}
-		<Card.Content class="text-3xl"
-			>{uptime ? formatUptime(Number(uptime.value)) : 'N/A'}</Card.Content
-		>
+		<Card.Content class="text-3xl font-bold">
+			{uptime?.value ? formatUptime(Number(uptime.value)) : 'N/A'}
+		</Card.Content>
 	{/if}
 </Card.Root>

@@ -50,13 +50,17 @@
 </script>
 
 <Card.Root class="relative h-full min-h-[140px] gap-2 overflow-hidden">
+	<Icon
+		icon="ph:heartbeat"
+		class="absolute -right-10 bottom-0 size-36 text-8xl tracking-tight text-nowrap text-primary/5 uppercase group-hover:hidden"
+	/>
 	<Card.Header>
 		<Card.Title>{m.state()}</Card.Title>
 		{#if nodeNotReady && Number(nodeNotReady.value) === 0}
 			<Card.Description class="flex h-6 items-center">All Nodes Ready</Card.Description>
 		{:else if nodeNotReady && Number(nodeNotReady.value) !== 0}
 			<Card.Description class="flex h-6 items-center">
-				{Number(nodeNotReady.value)} nodes unready
+				{nodeNotReady?.value ? Number(nodeNotReady.value) : 'Some'} nodes unready
 			</Card.Description>
 		{/if}
 	</Card.Header>
@@ -70,8 +74,8 @@
 			<p class="p-0 text-xs text-muted-foreground">{m.no_data_display()}</p>
 		</div>
 	{:else if Number(nodeNotReady.value) === 0}
-		<Card.Content class="text-3xl">Healthy</Card.Content>
+		<Card.Content class="text-3xl font-bold text-chart-2">Healthy</Card.Content>
 	{:else}
-		<Card.Content class="text-3xl">Unhealthy</Card.Content>
+		<Card.Content class="text-3xl font-bold text-chart-1">Unhealthy</Card.Content>
 	{/if}
 </Card.Root>
