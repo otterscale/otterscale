@@ -112,7 +112,10 @@
 	}
 
 	async function handleFinalSubmit() {
-		collectAllFormData();
+		if (mode === 'basic') {
+			collectAllFormData();
+		}
+
 		if (transformData) {
 			masterData = transformData(masterData);
 		}
