@@ -1,117 +1,105 @@
 <script lang="ts">
-	import Icon from '@iconify/svelte';
+	import { createClient, type Transport } from '@connectrpc/connect';
+	import { PrometheusDriver } from 'prometheus-query';
+	import { getContext, onDestroy, onMount } from 'svelte';
 
-	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
-	import { HomeCard, HomeCell } from '$lib/components/scopes';
-	import { Button } from '$lib/components/ui/button';
+	import { EnvironmentService } from '$lib/api/environment/v1/environment_pb';
+	import { Reloader } from '$lib/components/custom/reloader';
+	import CpuUsage from '$lib/components/dashbaord/cluster/overview/cpu.svelte';
+	import Deployments from '$lib/components/dashbaord/cluster/overview/deployments.svelte';
+	import GPUMemoryUsage from '$lib/components/dashbaord/cluster/overview/gpu-memory.svelte';
+	import GPUUtilization from '$lib/components/dashbaord/cluster/overview/gpu-utilization.svelte';
+	import Health from '$lib/components/dashbaord/cluster/overview/health.svelte';
+	import Information from '$lib/components/dashbaord/cluster/overview/information.svelte';
+	import MemoryUsage from '$lib/components/dashbaord/cluster/overview/memory.svelte';
+	import Nodes from '$lib/components/dashbaord/cluster/overview/nodes.svelte';
+	import Pods from '$lib/components/dashbaord/cluster/overview/pods.svelte';
+	import Uptime from '$lib/components/dashbaord/cluster/overview/uptime.svelte';
 	import { m } from '$lib/paraglide/messages';
-	import { breadcrumbs } from '$lib/stores';
 
-	// Set breadcrumbs navigation
-	breadcrumbs.set([
-		{
-			title: m.scope(),
-			url: resolve('/(auth)/scope/[scope]', { scope: page.params.scope! })
-		}
-	]);
+	const scope = $derived(page.params.scope!);
 
-	const cards = [
-		{
-			background: 'bg-[#1c77c3]/30',
-			path: {
-				title: m.models(),
-				url: resolve('/(auth)/scope/[scope]/models', { scope: page.params.scope! })
-			},
-			description: m.models_description()
-		},
-		{
-			background: 'bg-[#39a9db]/30',
-			path: {
-				title: m.applications(),
-				url: resolve('/(auth)/scope/[scope]/applications', { scope: page.params.scope! })
-			},
-			description: m.applications_description()
-		},
-		{
-			background: 'bg-[#f39237]/30',
-			path: {
-				title: m.storage(),
-				url: resolve('/(auth)/scope/[scope]/storage', { scope: page.params.scope! })
-			},
-			description: m.storage_description()
-		},
-		{
-			background: 'bg-[#d63230]/30',
-			path: {
-				title: m.machines(),
-				url: resolve('/(auth)/machines')
-			},
-			description: m.machines_description()
+	const transport: Transport = getContext('transport');
+	const environmentService = createClient(EnvironmentService, transport);
+
+	let isReloading = $state(true);
+	let prometheusDriver = $state<PrometheusDriver | null>(null);
+
+	onMount(async () => {
+		try {
+			const response = await environmentService.getPrometheus({});
+			prometheusDriver = new PrometheusDriver({
+				endpoint: '/prometheus',
+				baseURL: response.baseUrl,
+				headers: {
+					'x-proxy-target': 'api'
+				}
+			});
+		} catch (error) {
+			console.error('Failed to initialize Prometheus driver:', error);
 		}
-	];
+	});
+
+	onDestroy(() => {
+		isReloading = false;
+	});
 </script>
 
-<!-- just-in-time  -->
-<dummy class="bg-[#1c77c3]/30"></dummy>
-<dummy class="bg-[#39a9db]/30"></dummy>
-<dummy class="bg-[#f39237]/30"></dummy>
-<dummy class="bg-[#d63230]/30"></dummy>
-<dummy class="text-[#f0424d]"></dummy>
-<dummy class="text-[#326de6]"></dummy>
-<dummy class="text-[#c72c48]"></dummy>
-<dummy class="text-[#dd4813]"></dummy>
-<dummy class="text-[#ea4b71]"></dummy>
-
-<div class="flex h-full flex-col justify-between">
-	<div class="mx-auto flex max-w-5xl px-4 xl:px-0">
-		<div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
-			{#each cards as card (card.path.url)}
-				<HomeCard background={card.background} path={card.path} description={card.description} />
-			{/each}
-		</div>
-	</div>
-
-	<div class="-mx-2 hidden rounded-b-xl bg-muted py-6 md:-mx-4 md:py-8 lg:-mx-8 lg:block">
-		<div class="mx-auto max-w-5xl px-6">
-			<div class="grid items-center gap-4 sm:grid-cols-2">
-				<div class="relative mx-auto w-fit dark:bg-muted/50">
-					<div class="absolute inset-0 z-10 bg-radial from-transparent to-muted to-75%"></div>
-					<div class="mx-auto mb-2 flex w-fit justify-center gap-2">
-						<HomeCell icon="logos:postgresql" />
-						<HomeCell icon="ph:circle-dashed" color="#f0424d" />
-						<HomeCell icon="ph:circle-dashed" color="#326de6" />
-						<HomeCell icon="ph:circle-dashed" color="#f0424d" />
-					</div>
-					<div class="mx-auto my-2 flex w-fit justify-center gap-2">
-						<HomeCell icon="simple-icons:n8n" color="#ea4b71" />
-						<HomeCell icon="logos:kubernetes" />
-						<HomeCell us={true} />
-						<HomeCell icon="simple-icons:ceph" color="#f0424d" />
-						<HomeCell icon="simple-icons:minio" color="#c72c48" />
-					</div>
-					<div class="mx-auto flex w-fit justify-center gap-2">
-						<HomeCell icon="ph:circle-dashed" color="#326de6" />
-						<HomeCell icon="simple-icons:maas" color="#dd4813" />
-						<HomeCell icon="logos:juju" />
-					</div>
-				</div>
-				<div class="mx-auto mt-6 max-w-lg space-y-4 text-center sm:mt-0 sm:text-left">
-					<h2 class="text-3xl font-semibold text-balance">
-						{m.home_integration()}
-					</h2>
+{#key scope}
+	<main class="space-y-4 py-4">
+		{#if prometheusDriver}
+			<div class="mx-auto grid w-full gap-6">
+				<div class="grid gap-1">
+					<h1 class="text-2xl font-bold tracking-tight md:text-3xl">{m.k8s_overview_title()}</h1>
 					<p class="text-muted-foreground">
-						{m.home_integration_description()}
+						{m.k8s_overview_description()}
 					</p>
+				</div>
 
-					<Button
-						href={resolve('/(auth)/scope/[scope]/applications', { scope: page.params.scope! })}
-					>
-						{m.home_get_started()}
-						<Icon icon="ph:cursor-click-fill" />
-					</Button>
+				<div class="flex justify-end">
+					<Reloader bind:checked={isReloading} />
+				</div>
+
+				<div
+					class="grid auto-rows-[minmax(140px,auto)] grid-cols-2 gap-4 pt-4 md:gap-6 lg:grid-cols-4"
+				>
+					<div class="col-span-1 row-span-1">
+						<Health {prometheusDriver} {scope} bind:isReloading />
+					</div>
+					<div class="col-span-1 row-span-1">
+						<Uptime {prometheusDriver} {scope} bind:isReloading />
+					</div>
+					<div class="col-span-1 row-span-2">
+						<CpuUsage {prometheusDriver} {scope} bind:isReloading />
+					</div>
+					<div class="col-span-1 row-span-2">
+						<MemoryUsage {prometheusDriver} {scope} bind:isReloading />
+					</div>
+
+					<div class="col-span-1">
+						<Information {prometheusDriver} {scope} bind:isReloading />
+					</div>
+					<div class="col-span-1"></div>
+
+					<div class="col-span-1">
+						<Nodes {prometheusDriver} {scope} bind:isReloading />
+					</div>
+					<div class="col-span-1">
+						<Deployments {prometheusDriver} {scope} bind:isReloading />
+					</div>
+					<div class="col-span-1 row-span-2">
+						<GPUMemoryUsage {prometheusDriver} {scope} bind:isReloading />
+					</div>
+					<div class="col-span-1 row-span-2">
+						<GPUUtilization {prometheusDriver} {scope} bind:isReloading />
+					</div>
+
+					<div class="col-span-2">
+						<Pods {prometheusDriver} {scope} bind:isReloading />
+					</div>
 				</div>
 			</div>
-		</div>
-	</div>
-</div>
+		{/if}
+	</main>
+{/key}
