@@ -901,5 +901,7 @@
 	"console_guide_workspace": "切換工作空間",
 	"console_guide_workspace_description": "選定叢集後，您可透過此選單在不同的工作空間之間快速切換。",
 	"console_guide_sidebar": "功能側邊欄",
-	"console_guide_sidebar_description": "您可透過側邊欄導覽平台頁面，並存取所有的核心功能。"
+	"console_guide_sidebar_description": "您可透過側邊欄導覽平台頁面，並存取所有的核心功能。",
+	"cronjob": "定時任務",
+	"resource_quota": "資源配額"
 }

@@ -1,18 +1,18 @@
 <script lang="ts">
+	import { Plus } from '@lucide/svelte';
+
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
+	import { page } from '$app/state';
+	import Button from '$lib/components/ui/button/button.svelte';
 	import * as Sheet from '$lib/components/ui/sheet';
 
 	import CreateCronJobForm from './create-form.svelte';
 
 	let {
-		open = $bindable(false),
-		cluster,
 		schema = undefined,
 		onsuccess
 	}: {
-		open: boolean;
-		cluster: string;
 		schema?: any;
 		onsuccess?: (cronjob?: any) => void;
 	} = $props();
@@ -23,18 +23,24 @@
 			onsuccess?.(cronjob);
 			goto(
 				resolve(
-					`/(auth)/${cluster}/CronJob/cronjobs?group=batch&version=v1&name=${cronjob.metadata.name}`
+					`/(auth)/${page.params.cluster}/CronJob/cronjobs?group=batch&version=v1&name=${cronjob.metadata.name}&namespace=${page.url.searchParams.get('namespace') ?? ''}`
 				)
 			);
 		}
 	}
 
+	let open = $state(false);
 	function handleOpenChange(isOpen: boolean) {
 		open = isOpen;
 	}
 </script>
 
 <Sheet.Root bind:open onOpenChange={handleOpenChange}>
+	<Sheet.Trigger>
+		<Button variant="outline" size="icon">
+			<Plus />
+		</Button>
+	</Sheet.Trigger>
 	<Sheet.Content
 		class="fixed top-1/2 left-1/2 h-[90vh] w-[90vw] max-w-4xl min-w-[800px] -translate-x-1/2 -translate-y-1/2 rounded-lg border bg-background shadow-lg"
 	>

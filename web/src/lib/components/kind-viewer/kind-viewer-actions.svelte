@@ -37,6 +37,7 @@
 		</DropdownMenu.Group>
 		<DropdownMenu.Separator />
 		<DropdownMenu.Item
+			disabled
 			onSelect={(e) => {
 				e.preventDefault();
 				deleteModalOpen = true;

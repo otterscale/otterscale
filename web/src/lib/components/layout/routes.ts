@@ -31,7 +31,7 @@ const globalRoutes = (): Route[] => [
 	}
 ];
 
-const platformRoutes = (scope: string): Route[] => [
+const platformRoutes = (scope: string, namespace: string): Route[] => [
 	{
 		path: { title: m.models(), url: resolve('/(auth)/scope/[scope]/models', { scope: scope }) },
 		items: [{ title: m.llm(), url: resolve('/(auth)/scope/[scope]/models/llm', { scope: scope }) }]
@@ -49,6 +49,12 @@ const platformRoutes = (scope: string): Route[] => [
 			{
 				title: m.services(),
 				url: resolve('/(auth)/scope/[scope]/applications/services', { scope: scope })
+			},
+			{
+				title: m.cronjob(),
+				url: resolve(
+					`/(auth)/${scope}/CronJob?group=batch&version=v1&namespace=${namespace}&resource=cronjobs`
+				)
 			},
 			{
 				title: m.secrets(),

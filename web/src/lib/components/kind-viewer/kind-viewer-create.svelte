@@ -10,7 +10,7 @@
 </script>
 
 <AlertDialog.Root bind:open={createModalOpen}>
-	<AlertDialog.Trigger class={buttonVariants({ variant: 'outline' })}>
+	<AlertDialog.Trigger disabled class={buttonVariants({ variant: 'outline' })}>
 		<Plus class="opacity-60" size={16} />
 	</AlertDialog.Trigger>
 	<AlertDialog.Content class="max-w-xl">

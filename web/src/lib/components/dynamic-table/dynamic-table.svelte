@@ -1,18 +1,25 @@
 <script lang="ts">
-	import { type JsonObject, type JsonValue } from '@bufbuild/protobuf';
-	import Binary from '@lucide/svelte/icons/binary';
-	import Braces from '@lucide/svelte/icons/braces';
-	import ChevronDown from '@lucide/svelte/icons/chevron-down';
-	import ChevronFirst from '@lucide/svelte/icons/chevron-first';
-	import ChevronLast from '@lucide/svelte/icons/chevron-last';
-	import ChevronLeft from '@lucide/svelte/icons/chevron-left';
-	import ChevronRight from '@lucide/svelte/icons/chevron-right';
-	import ChevronUp from '@lucide/svelte/icons/chevron-up';
-	import Clock from '@lucide/svelte/icons/clock';
-	import Columns3 from '@lucide/svelte/icons/columns-3';
-	import Eraser from '@lucide/svelte/icons/eraser';
-	import Hash from '@lucide/svelte/icons/hash';
-	import Type from '@lucide/svelte/icons/type';
+	import type { JsonValue } from '@bufbuild/protobuf';
+	import { type JsonObject } from '@bufbuild/protobuf';
+	import {
+		BinaryIcon,
+		BookIcon,
+		BracesIcon,
+		BracketsIcon,
+		ChevronDownIcon,
+		ChevronFirstIcon,
+		ChevronLastIcon,
+		ChevronLeftIcon,
+		ChevronRightIcon,
+		ChevronUpIcon,
+		ClockIcon,
+		CodeIcon,
+		Columns3Icon,
+		EraserIcon,
+		HashIcon,
+		PercentIcon,
+		TypeIcon
+	} from '@lucide/svelte';
 	import {
 		type ColumnDef,
 		type ColumnFiltersState,
@@ -22,17 +29,18 @@
 		getPaginationRowModel,
 		getSortedRowModel,
 		type PaginationState,
-		type Row,
 		type RowSelectionState,
 		type SortingState,
 		type Table as TanStackTabke,
 		type VisibilityState
 	} from '@tanstack/table-core';
-	import jsep from 'jsep';
+	import { compileExpression } from 'filtrex';
 	import lodash from 'lodash';
 	import { createRawSnippet, type Snippet } from 'svelte';
 
-	import { Button } from '$lib/components/ui/button/index.js';
+	import { shortcut } from '$lib/actions/shortcut.svelte';
+	import { Button, buttonVariants } from '$lib/components/ui/button/index.js';
+	import * as ButtonGroup from '$lib/components/ui/button-group/index.js';
 	import { Checkbox } from '$lib/components/ui/checkbox/index.js';
 	import {
 		createSvelteTable,
@@ -42,13 +50,16 @@
 	} from '$lib/components/ui/data-table';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 	import * as Empty from '$lib/components/ui/empty/index.js';
+	import * as InputGroup from '$lib/components/ui/input-group/index.js';
+	import * as Kbd from '$lib/components/ui/kbd/index.js';
 	import { Label } from '$lib/components/ui/label/index.js';
 	import * as Pagination from '$lib/components/ui/pagination/index.js';
 	import { Select, SelectContent, SelectItem, SelectTrigger } from '$lib/components/ui/select';
+	import * as Sheet from '$lib/components/ui/sheet';
 	import * as Table from '$lib/components/ui/table';
 	import { cn } from '$lib/utils';
 
-	import DynamicalTableQuery, { evaluate } from './dynamical-table-query.svelte';
+	import { getColumnType } from './utils';
 
 	let {
 		objects,
@@ -66,7 +77,7 @@
 		columnDefinitions: ColumnDef<Record<string, JsonValue>>[];
 		create?: Snippet;
 		bulkDelete?: Snippet<[{ table: TanStackTabke<Record<string, JsonValue>> }]>;
-		rowActions?: Snippet<[{ row: Row<Record<string, JsonValue>> }]>;
+		rowActions?: Snippet<[{ row: any; fields: any; objects: any }]>;
 		reload: Snippet;
 	} = $props();
 
@@ -95,7 +106,12 @@
 		...columnDefinitions,
 		{
 			id: 'actions',
-			cell: ({ row }) => renderSnippet(rowActions, { row: row }),
+			cell: ({ row }) =>
+				renderSnippet(rowActions, {
+					row: row,
+					objects: objects,
+					fields: fields
+				}),
 			header: () =>
 				renderSnippet(
 					createRawSnippet(() => {
@@ -112,6 +128,27 @@
 	];
 
 	let globalFilter = $state('');
+	let globalFilterInput = $state('');
+	let globalFilterError: Error | null = $state(null);
+
+	const extraFunctions = {
+		Time: (time: string | number | Date) => new Date(time).getTime(),
+
+		now: () => Date.now(),
+
+		Seconds: (time: number) => time * 1000,
+		Minutes: (time: number) => time * 60 * 1000,
+		Hours: (time: number) => time * 60 * 60 * 1000,
+		Days: (time: number) => time * 24 * 60 * 60 * 1000,
+		Years: (time: number) => time * 365 * 24 * 60 * 60 * 1000,
+
+		length: (array: unknown[]) => (array ? array.length : 0)
+	};
+
+	const constants = {
+		true: true,
+		false: false
+	};
 
 	let rowSelection = $state<RowSelectionState>({});
 	let columnFilters = $state<ColumnFiltersState>([]);
@@ -191,21 +228,17 @@
 				return sorting;
 			}
 		},
-		globalFilterFn: (row, _, filterValue: string) => {
-			if (!filterValue) return true;
+		globalFilterFn: (row) => {
+			if (!globalFilter) return true;
 			try {
-				const ast = jsep(filterValue);
-				return evaluate(ast, row.original);
-			} catch (error) {
-				console.error('Parse error:', error);
-				return true;
+				const expression = compileExpression(globalFilter, { extraFunctions, constants });
+				const result = expression(row.original);
+				return Boolean(result);
+			} catch {
+				return false;
 			}
 		}
 	});
-
-	function handleResetFilter() {
-		expression = '';
-	}
 
 	// eslint-disable-next-line
 	function getAlignment(field: any): 'start' | 'center' | 'end' {
@@ -248,19 +281,151 @@
 		}
 	}
 
-	let expression = $state('');
+	function handleKeyDown(event: KeyboardEvent) {
+		if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
+			event.preventDefault();
+			handleSearch();
+		}
+
+		if (event.key === 'Escape') {
+			event.preventDefault();
+			handleClear();
+		}
+	}
+	function handleSearch() {
+		try {
+			globalFilterError = null;
+			if (globalFilterInput) {
+				compileExpression(globalFilterInput, { extraFunctions, constants });
+			}
+			globalFilter = globalFilterInput;
+			table.setGlobalFilter(globalFilterInput);
+		} catch (error) {
+			globalFilterError = error as Error;
+		}
+	}
+	function handleClear() {
+		globalFilterInput = '';
+		globalFilter = '';
+		globalFilterError = null;
+		table.setGlobalFilter('');
+	}
 </script>
 
+<svelte:window
+	use:shortcut={{
+		key: '/',
+		ctrl: false,
+		callback: () => {
+			const input = document.getElementById('global_filter');
+			if (input) (input as HTMLInputElement).focus();
+		}
+	}}
+/>
 <div class="space-y-4">
 	<!-- Controllers -->
 	<div class="flex w-full items-center gap-2">
 		<!-- Filters -->
-		<DynamicalTableQuery bind:expression {table} />
+		<ButtonGroup.Root class="w-full">
+			<InputGroup.Root>
+				<InputGroup.Addon>
+					<CodeIcon size={16} />
+				</InputGroup.Addon>
+				<InputGroup.Input
+					id="global_filter"
+					placeholder="Search via Query Language"
+					bind:value={globalFilterInput}
+					class="peer w-full"
+					onkeydown={handleKeyDown}
+				/>
+				<InputGroup.Addon align="inline-end" class="hidden peer-focus:flex">
+					<Kbd.Group>
+						<Kbd.Root>ctrl</Kbd.Root>
+						<Kbd.Root>⏎</Kbd.Root>
+					</Kbd.Group>
+				</InputGroup.Addon>
+				<InputGroup.Addon align="inline-end" class="peer-focus:hidden">
+					<Kbd.Group>
+						<Kbd.Root>/</Kbd.Root>
+					</Kbd.Group>
+				</InputGroup.Addon>
+			</InputGroup.Root>
+			<Sheet.Root>
+				<Sheet.Trigger
+					aria-label="Document"
+					class={buttonVariants({ variant: 'outline', size: 'icon' })}
+				>
+					<BookIcon size={16} />
+				</Sheet.Trigger>
+				<Sheet.Content side="right" class="min-w-[23vw]">
+					<Sheet.Header>
+						<Sheet.Title>Filtrex Query Language Documentation</Sheet.Title>
+						<Sheet.Description>
+							Filtrex is a simple, safe, and powerful expression language for filtering and
+							searching data. You can use Filtrex queries in the search box to filter table rows
+							using custom logic.
+						</Sheet.Description>
+					</Sheet.Header>
+					<div class="overflow-auto p-4 text-sm">
+						<h3 class="font-semibold">Basic Syntax</h3>
+						<div class="p-4 font-mono">
+							<p>Field comparison: age &gt; 18</p>
+							<p>String matching: name == "Alice"</p>
+							<p>Logical operators: status == "active" and score &gt; 80</p>
+							<p>Field names with spaces: 'full name' == "Alice Smith"</p>
+						</div>
+
+						<br />
+
+						<h3 class="font-semibold">Operators</h3>
+						<div class="p-4 font-mono">
+							<p>and, or, not</p>
+							<p>==, ~=, &gt;, &gt;=, &lt;, &lt;=</p>
+						</div>
+
+						<br />
+
+						<h3 class="font-semibold">Functions</h3>
+						<div class="p-4 font-mono">
+							<p>length(array) — Get array length</p>
+							<p>Time(date) — Convert date to timestamp</p>
+							<p>now() — Current timestamp</p>
+							<p>Seconds(n), Minutes(n), Hours(n), Days(n), Years(n)</p>
+						</div>
+
+						<br />
+
+						<h3 class="font-semibold">Constants</h3>
+						<div class="p-4 font-mono">
+							<p>true, false</p>
+						</div>
+
+						<br />
+
+						<h3 class="font-semibold">Tips</h3>
+						<div class="p-4 font-mono">
+							<p>Use <kbd>ctrl</kbd> + <kbd>⏎</kbd> to search.</p>
+							<p>Press <kbd>/</kbd> to focus the search box.</p>
+							<p>Press <kbd>esc</kbd> to clear the filter.</p>
+						</div>
+					</div>
+					<Sheet.Footer>
+						<p class="mt-4 text-xs text-muted-foreground">
+							For advanced usage, refer to the <a
+								href="https://github.com/joewalnes/filtrex"
+								target="_blank"
+								class="underline">Filtrex documentation</a
+							>.
+						</p>
+					</Sheet.Footer>
+				</Sheet.Content>
+			</Sheet.Root>
+		</ButtonGroup.Root>
 		<DropdownMenu.Root>
 			<DropdownMenu.Trigger>
 				{#snippet child({ props })}
 					<Button variant="outline" {...props}>
-						<Columns3 class="-ms-1 opacity-60" size={16} aria-hidden="true" />
+						<Columns3Icon class="-ms-1 opacity-60" size={16} aria-hidden="true" />
 					</Button>
 				{/snippet}
 			</DropdownMenu.Trigger>
@@ -276,21 +441,22 @@
 					>
 						{@const type = lodash.get(fields, `${column.id}.type`)}
 						{@const format = lodash.get(fields, `${column.id}.format`)}
-						<div>
-							{#if type === 'boolean'}
-								<Binary />
-							{:else if type === 'number' || type === 'integer'}
-								<Hash />
-							{:else if type === 'string' && (format === 'date' || format === 'date-time')}
-								<Clock />
-							{:else if type === 'string'}
-								<Type />
-							{:else if type === 'array'}
-								<Braces />
-							{:else if type === 'object'}
-								<Braces />
-							{/if}
-						</div>
+						{@const columnType = getColumnType(type, format)}
+						{#if columnType === 'boolean'}
+							<BinaryIcon />
+						{:else if columnType === 'number'}
+							<HashIcon />
+						{:else if columnType === 'time'}
+							<ClockIcon />
+						{:else if columnType === 'string'}
+							<TypeIcon />
+						{:else if columnType === 'array'}
+							<BracketsIcon />
+						{:else if columnType === 'object'}
+							<BracesIcon />
+						{:else if columnType === 'ratio'}
+							<PercentIcon />
+						{/if}
 						{column.id}
 					</DropdownMenu.Item>
 				{/each}
@@ -305,6 +471,11 @@
 			{@render reload()}
 		</div>
 	</div>
+	{#if globalFilterError}
+		<p class="text-xs text-destructive">
+			{globalFilterError.message}
+		</p>
+	{/if}
 	<!-- Table -->
 	<div class="overflow-hidden rounded-md border bg-background">
 		<Table.Root class="table-fixed">
@@ -312,7 +483,10 @@
 				{#each table.getHeaderGroups() as headerGroup (headerGroup.id)}
 					<Table.Row class="hover:bg-transparent">
 						{#each headerGroup.headers as header (header.id)}
-							<Table.Head style="width: {header.getSize()}px" class="h-11">
+							<Table.Head
+								style="width: {header.getSize()}px"
+								class={cn(lodash.get(header.column.columnDef.meta, 'class'), 'h-11')}
+							>
 								{#if !header.isPlaceholder && header.column.getCanSort()}
 									<div
 										class={cn(
@@ -340,9 +514,9 @@
 											context={header.getContext()}
 										/>
 										{#if header.column.getIsSorted() === 'asc'}
-											<ChevronUp class="shrink-0 opacity-60" size={16} aria-hidden="true" />
+											<ChevronUpIcon class="shrink-0 opacity-60" size={16} aria-hidden="true" />
 										{:else if header.column.getIsSorted() === 'desc'}
-											<ChevronDown class="shrink-0 opacity-60" size={16} aria-hidden="true" />
+											<ChevronDownIcon class="shrink-0 opacity-60" size={16} aria-hidden="true" />
 										{/if}
 									</div>
 								{:else if !header.isPlaceholder && !header.column.getCanSort()}
@@ -361,7 +535,12 @@
 					{#each table.getRowModel().rows as row (row.id)}
 						<Table.Row data-state={row.getIsSelected() && 'selected'}>
 							{#each row.getVisibleCells() as cell (cell.id)}
-								<Table.Cell class={getCellAlignment(fields[cell.column.id])}>
+								<Table.Cell
+									class={cn(
+										getCellAlignment(fields[cell.column.id]),
+										lodash.get(cell.column.columnDef.meta, 'class')
+									)}
+								>
 									<FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
 								</Table.Cell>
 							{/each}
@@ -373,7 +552,7 @@
 							<Empty.Root>
 								<Empty.Header>
 									<Empty.Media variant="icon">
-										<Columns3 size={32} class="opacity-60" aria-hidden="true" />
+										<Columns3Icon size={32} class="opacity-60" aria-hidden="true" />
 									</Empty.Media>
 									<Empty.Title>No Resources Found</Empty.Title>
 									<Empty.Description>
@@ -382,8 +561,8 @@
 									</Empty.Description>
 								</Empty.Header>
 								<Empty.Content>
-									<Button onclick={handleResetFilter}>
-										<Eraser size={16} class="opacity-60" />
+									<Button onclick={handleClear}>
+										<EraserIcon size={16} class="opacity-60" />
 										Reset
 									</Button>
 								</Empty.Content>
@@ -457,7 +636,7 @@
 							disabled={!table.getCanPreviousPage()}
 							aria-label="Go to first page"
 						>
-							<ChevronFirst size={16} aria-hidden="true" />
+							<ChevronFirstIcon size={16} aria-hidden="true" />
 						</Button>
 					</Pagination.Item>
 					<!-- Previous page button -->
@@ -470,7 +649,7 @@
 							disabled={!table.getCanPreviousPage()}
 							aria-label="Go to previous page"
 						>
-							<ChevronLeft size={16} aria-hidden="true" />
+							<ChevronLeftIcon size={16} aria-hidden="true" />
 						</Button>
 					</Pagination.Item>
 					<!-- Next page button -->
@@ -483,7 +662,7 @@
 							disabled={!table.getCanNextPage()}
 							aria-label="Go to next page"
 						>
-							<ChevronRight size={16} aria-hidden="true" />
+							<ChevronRightIcon size={16} aria-hidden="true" />
 						</Button>
 					</Pagination.Item>
 					<!-- Last page button -->
@@ -496,7 +675,7 @@
 							disabled={!table.getCanNextPage()}
 							aria-label="Go to last page"
 						>
-							<ChevronLast size={16} aria-hidden="true" />
+							<ChevronLastIcon size={16} aria-hidden="true" />
 						</Button>
 					</Pagination.Item>
 				</Pagination.Content>
