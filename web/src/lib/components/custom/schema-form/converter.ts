@@ -1,4 +1,6 @@
 import type { Schema, UiSchemaRoot } from '@sjsf/form';
+import lodash from 'lodash';
+import pluralize from 'pluralize';
 
 import { deepMerge, deleteByPath, getByPath, setByPath } from './utils';
 
@@ -265,7 +267,11 @@ export function buildSchemaFromK8s(
 					if (sourceProp.type === 'array') {
 						currentTarget.properties[part] = {
 							type: 'array',
-							items: { type: 'object', properties: {} }
+							items: {
+								type: 'object',
+								title: formatName(part), // TODO: Check for correctness
+								properties: {}
+							}
 						};
 					} else {
 						currentTarget.properties[part] = {
@@ -458,4 +464,8 @@ export function filterDataBySchema(data: unknown, schema: Schema): Record<string
 	}
 
 	return result;
+}
+
+function formatName(text: string): string {
+	return lodash.startCase(pluralize.singular(text));
 }
