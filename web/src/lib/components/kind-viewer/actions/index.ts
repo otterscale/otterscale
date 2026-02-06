@@ -1,6 +1,6 @@
 import type { Component } from 'svelte';
 
-import CronJob from './cronjonb.svelte';
+import CronJob from './cronjob.svelte';
 import Default from './default.svelte';
 
 type ActionsProps = { row: any; schema?: any; object?: any; onsuccess?: () => void };

@@ -62,7 +62,7 @@
 					// Redirect after delete - using scope root for now
 					goto(
 						resolve(
-							`/(auth)/${cluster}/CronJob?group=batch&version=v1&namespace=${page.url.searchParams.get('namespace') ?? ''}&resource=cronjobs&resource=cronjobs`
+							`/(auth)/${cluster}/CronJob?group=batch&version=v1&namespace=${page.url.searchParams.get('namespace') ?? ''}&resource=cronjobs`
 						)
 					);
 					return `Successfully deleted cronjob ${name}`;

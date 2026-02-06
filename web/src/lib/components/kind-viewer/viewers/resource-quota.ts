@@ -1,5 +1,5 @@
 import { type JsonValue } from '@bufbuild/protobuf';
-import type { BatchV1CronJob } from '@otterscale/types';
+import type { CoreV1ResourceQuota } from '@otterscale/types';
 import type { Column } from '@tanstack/table-core';
 import { type Row } from '@tanstack/table-core';
 import lodash from 'lodash';
@@ -67,7 +67,7 @@ function resourceQuotaFieldsMask(
 }
 
 function resourceQuotaObjectMask(
-	object: BatchV1CronJob
+	object: CoreV1ResourceQuota
 ): Record<string, JsonValue | RatioType | undefined> {
 	return {
 		Name: object?.metadata?.name,

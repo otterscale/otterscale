@@ -53,7 +53,7 @@ const platformRoutes = (scope: string, namespace: string): Route[] => [
 			{
 				title: m.cronjob(),
 				url: resolve(
-					`/(auth)/[scope]/CronJob?group=batch&version=v1&namespace=${namespace}&resource=cronjobs&resource=cronjobs`,
+					`/(auth)/[scope]/CronJob?group=batch&version=v1&namespace=${namespace}&resource=cronjobs`,
 					{ scope: scope }
 				)
 			},
