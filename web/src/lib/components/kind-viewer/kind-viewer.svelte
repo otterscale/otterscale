@@ -19,7 +19,7 @@
 	import Button from '$lib/components/ui/button/button.svelte';
 
 	import { type ActionsType, getActions } from './actions';
-	import { type CreatorType, getCreator } from './creations';
+	import { type CreatorType, getCreator } from './creators';
 	import { getColumnDefinitionsGetter, getFieldsGetter, getObjectGetter } from './viewers';
 
 	let {
@@ -49,7 +49,7 @@
 
 	// eslint-disable-next-line
 	let schema: any = $state({});
-	let fields: Record<string, { description: string; type: string; format: string }> = $state({});
+	let fields: Record<string, { description: string; type: string; format?: string }> = $state({});
 	async function fetchSchema() {
 		try {
 			const schemaResponse = await resourceClient.schema({
@@ -216,14 +216,7 @@
 			watchAbortController.abort();
 		}
 	});
-	// function handleDeleteRows(table: Table<Record<string, JsonValue>>) {
-	// 	const selectedRows = table.getSelectedRowModel().rows;
-	// 	objects = objects.filter(
-	// 		(object) =>
-	// 			!selectedRows.some((row) => row.original && object && row.original.id === object.id)
-	// 	);
-	// 	table.resetRowSelection();
-	// }
+
 	function handleReload() {
 		if (!isWatching) {
 			watchResources();
@@ -250,7 +243,7 @@
 				</Button>
 			{/snippet}
 			{#snippet rowActions({ row, fields, objects })}
-				<Actions {row} schema={fields['Configuration']} object={objects[row.id]['Configuration']} />
+				<Actions {row} schema={fields.raw} object={objects[row.id].raw} />
 			{/snippet}
 		</DynamicTable>
 	{/if}

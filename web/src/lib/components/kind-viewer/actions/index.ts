@@ -10,7 +10,6 @@ function getActions(kind: string): ActionsType {
 	switch (kind) {
 		case 'CronJob':
 			return CronJob as ActionsType;
-
 		default:
 			return Default as ActionsType;
 	}

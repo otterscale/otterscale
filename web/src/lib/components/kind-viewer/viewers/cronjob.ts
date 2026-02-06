@@ -13,7 +13,7 @@ import { renderComponent } from '$lib/components/ui/data-table';
 
 function cronjobFieldsMask(
 	schema: any
-): Record<string, { description: string; type: string; format: string }> {
+): Record<string, { description: string; type: string; format?: string }> {
 	return {
 		Name: lodash.get(schema, 'properties.metadata.properties.name'),
 		Namespace: lodash.get(schema, 'properties.metadata.properties.namespace'),

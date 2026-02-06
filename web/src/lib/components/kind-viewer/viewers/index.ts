@@ -1,5 +1,3 @@
-// import type { Component } from 'svelte';
-
 import type { JsonValue } from '@bufbuild/protobuf';
 import type { ColumnDef } from '@tanstack/table-core';
 
@@ -11,8 +9,8 @@ type ColumnDefinitionsType = (
 ) => ColumnDef<Record<string, JsonValue>>[];
 type FieldsMaskType = (
 	schema: any
-) => Record<string, { description: string; type: string; format: string }>;
-type ObjectMaskType = (object: any) => Record<string, JsonValue>;
+) => Record<string, { description: string; type: string; format?: string }>;
+type ObjectMaskType = (object: any) => Record<string, JsonValue | undefined>;
 
 import { cronjobColumnDefinitions, cronjobFieldsMask, cronjobObjectMask } from './cronjob.js';
 import { defaultColumnDefinitions, defaultFieldsMask, defaultObjectMask } from './default.js';

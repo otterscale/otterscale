@@ -9,7 +9,7 @@ import { renderComponent } from '$lib/components/ui/data-table';
 
 function defaultFieldsMask(
 	schema: any
-): Record<string, { description: string; type: string; format: string }> {
+): Record<string, { description: string; type: string; format?: string }> {
 	return {
 		Name: lodash.get(schema, 'properties.metadata.properties.name'),
 		Namespace: lodash.get(schema, 'properties.metadata.properties.namespace'),
@@ -19,7 +19,7 @@ function defaultFieldsMask(
 		Configuration: schema
 	};
 }
-function defaultObjectMask(object: any): Record<string, JsonValue> {
+function defaultObjectMask(object: any): Record<string, JsonValue | undefined> {
 	return {
 		Name: lodash.get(object, 'metadata.name'),
 		Namespace: lodash.get(object, 'metadata.namespace'),

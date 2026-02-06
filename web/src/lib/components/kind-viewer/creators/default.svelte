@@ -28,23 +28,4 @@
 	<AlertDialog.Trigger disabled class={buttonVariants({ variant: 'outline' })}>
 		<Plus class="opacity-60" size={16} />
 	</AlertDialog.Trigger>
-	<AlertDialog.Content class="max-w-xl">
-		<AlertDialog.Header>
-			<AlertDialog.Title>Create {kind}</AlertDialog.Title>
-		</AlertDialog.Header>
-
-		<AlertDialog.Footer>
-			<AlertDialog.Cancel class={buttonVariants({ variant: 'destructive' })}>
-				Cancel
-			</AlertDialog.Cancel>
-			<AlertDialog.Action
-				onclick={() => {
-					createModalOpen = false;
-					onsuccess?.();
-				}}
-			>
-				Confirm
-			</AlertDialog.Action>
-		</AlertDialog.Footer>
-	</AlertDialog.Content>
 </AlertDialog.Root>
