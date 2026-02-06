@@ -79,7 +79,7 @@
 	<AlertDialog.Trigger class={buttonVariants({ variant: 'outline' })}>
 		{m.view_edit()}
 	</AlertDialog.Trigger>
-	<AlertDialog.Content class="max-w-[78vw] min-w-[62vw]">
+	<AlertDialog.Content class="max-w-[95vw] min-w-[90vw]">
 		<AlertDialog.Header>
 			<div class="flex items-end justify-between gap-2">
 				<div>
@@ -139,10 +139,10 @@
 				{#if $chartInformationLoading}
 					<div class="flex-col space-y-4 pr-4">
 						{#each Array(3)}
-							<Skeleton class="h-[40px] w-full" />
-							<Skeleton class="h-[20px] w-3/4" />
-							<Skeleton class="h-[20px] w-1/2" />
-							<Skeleton class="h-[20px] w-1/2" />
+							<Skeleton class="h-10 w-full" />
+							<Skeleton class="h-5 w-3/4" />
+							<Skeleton class="h-5 w-1/2" />
+							<Skeleton class="h-5 w-1/2" />
 						{/each}
 					</div>
 				{:else}
