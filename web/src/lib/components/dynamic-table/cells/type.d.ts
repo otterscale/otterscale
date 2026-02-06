@@ -1,11 +1,11 @@
 type LinkType = {
-    display: string;
-    hyperlink: string;
+	display: string;
+	hyperlink: string;
 };
 
 type RatioType = {
-    numerator: number;
-    denominator: number;
+	numerator: number;
+	denominator: number;
 };
 
-export type { RatioType, LinkType }
+export type { RatioType, LinkType };
