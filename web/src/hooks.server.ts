@@ -46,16 +46,12 @@ const handleAuth: Handle = async ({ event, resolve }) => {
 
 	const token = getSessionTokenCookie(event.cookies);
 
-	console.log(1, token);
-
 	if (!token) {
 		event.locals.session = null;
 		return resolve(event);
 	}
 
 	const { session, fresh } = await validateSessionToken(token);
-
-	console.log(2, session, fresh);
 
 	if (session) {
 		if (fresh) {
@@ -117,7 +113,6 @@ const handleRefreshToken: Handle = async ({ event, resolve }) => {
 };
 
 const handleGuard: Handle = async ({ event, resolve }) => {
-	console.log(3, event.locals.session, event.request.headers);
 	if (isFlexibleBooleanTrue(env.BOOTSTRAP_MODE) || event.locals.session) {
 		return resolve(event);
 	}
