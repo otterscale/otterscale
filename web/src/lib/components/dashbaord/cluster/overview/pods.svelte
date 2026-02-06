@@ -89,11 +89,11 @@
 		</div>
 	{:else}
 		<Card.Content class="my-4 flex flex-col gap-4">
-			<div>
-				<p class="text-3xl font-bold">{maxAllocatablePods?.value ?? 'N/A'}</p>
-				<p class="text-1xl font-medium tracking-wider uppercase">Allocatable</p>
-			</div>
-			<div class="grid grid-cols-3">
+			<div class="grid grid-cols-4">
+				<div>
+					<p class="text-3xl font-bold">{maxAllocatablePods?.value ?? 'N/A'}</p>
+					<p class="text-1xl font-medium tracking-wider uppercase">Allocatable</p>
+				</div>
 				<div class="text-chart-2">
 					<p class="text-3xl font-bold">{runningPods?.value ?? 'N/A'}</p>
 					<p class="text-1xl font-medium tracking-wider uppercase">Running</p>

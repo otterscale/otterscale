@@ -70,7 +70,7 @@
 			<p class="p-0 text-xs text-muted-foreground">{m.no_data_display()}</p>
 		</div>
 	{:else}
-		<Card.Content>
+		<Card.Content class="my-auto">
 			<p class="text-3xl font-bold">
 				{clusterNodes?.value !== undefined ? clusterNodes?.value : 'N/A'}
 			</p>
