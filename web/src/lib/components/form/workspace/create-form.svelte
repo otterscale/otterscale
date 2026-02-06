@@ -46,12 +46,12 @@
 					{
 						type: 'Container',
 						default: {
-							cpu: '500m',
-							memory: '512Mi'
+							cpu: '1',
+							memory: '2Gi'
 						},
 						defaultRequest: {
-							cpu: '500m',
-							memory: '512Mi'
+							cpu: '1',
+							memory: '2Gi'
 						}
 					}
 				]
