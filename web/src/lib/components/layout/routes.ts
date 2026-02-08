@@ -47,8 +47,14 @@ const platformRoutes = (scope: string, namespace: string): Route[] => [
 				url: resolve('/(auth)/scope/[scope]/applications/workloads', { scope: scope })
 			},
 			{
+				title: m.pods(),
+				url: resolve(`/(auth)/${scope}/Pod?group=&version=v1&namespace=${namespace}&resource=pods`)
+			},
+			{
 				title: m.services(),
-				url: resolve('/(auth)/scope/[scope]/applications/services', { scope: scope })
+				url: resolve(
+					`/(auth)/${scope}/Service?group=&version=v1&namespace=${namespace}&resource=services`
+				)
 			},
 			{
 				title: m.cronjob(),

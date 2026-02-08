@@ -15,7 +15,7 @@ function defaultFieldsMask(
 		Namespace: lodash.get(schema, 'properties.metadata.properties.namespace'),
 		Labels: lodash.get(schema, 'properties.metadata.properties.labels'),
 		Annotations: lodash.get(schema, 'properties.metadata.properties.annotations'),
-		CreateTime: lodash.get(schema, 'properties.metadata.properties.creationTimestamp'),
+		Age: lodash.get(schema, 'properties.metadata.properties.creationTimestamp'),
 		Configuration: schema
 	};
 }
@@ -25,7 +25,7 @@ function defaultObjectMask(object: any): Record<string, JsonValue> {
 		Namespace: lodash.get(object, 'metadata.namespace'),
 		Labels: lodash.get(object, 'metadata.labels'),
 		Annotations: lodash.get(object, 'metadata.annotations'),
-		CreateTime: lodash.get(object, 'metadata.creationTimestamp'),
+		Age: lodash.get(object, 'metadata.creationTimestamp'),
 		Configuration: object
 	};
 }
@@ -120,7 +120,7 @@ function defaultColumnDefinitions(apiResource: APIResource, fields: any) {
 				row['Labels'] ? Object.keys(row['Labels']).length : null
 		},
 		{
-			id: 'CreateTime',
+			id: 'Age',
 			header: ({ column }: { column: Column<Record<string, JsonValue>> }) =>
 				renderComponent(DynamicTableHeader, {
 					column: column,
@@ -138,7 +138,7 @@ function defaultColumnDefinitions(apiResource: APIResource, fields: any) {
 					column: column,
 					fields: fields
 				}),
-			accessorKey: 'CreateTime'
+			accessorKey: 'Age'
 		},
 		{
 			id: 'Configuration',
