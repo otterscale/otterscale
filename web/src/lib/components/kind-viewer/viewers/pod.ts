@@ -1,4 +1,5 @@
 import { type JsonValue } from '@bufbuild/protobuf';
+import type { CoreV1Pod } from '@otterscale/types';
 import type { Column } from '@tanstack/table-core';
 import { type Row } from '@tanstack/table-core';
 import lodash from 'lodash';
@@ -7,7 +8,7 @@ import type { APIResource } from '$lib/api/resource/v1/resource_pb';
 import { DynamicTableCell, DynamicTableHeader } from '$lib/components/dynamic-table';
 import { renderComponent } from '$lib/components/ui/data-table';
 
-function defaultFieldsMask(
+function podFieldsMask(
 	schema: any
 ): Record<string, { description: string; type: string; format?: string }> {
 	return {
@@ -19,17 +20,19 @@ function defaultFieldsMask(
 		Configuration: schema
 	};
 }
-function defaultObjectMask(object: any): Record<string, JsonValue> {
+
+function podObjectMask(object: CoreV1Pod): Record<string, JsonValue> {
 	return {
-		Name: lodash.get(object, 'metadata.name'),
-		Namespace: lodash.get(object, 'metadata.namespace'),
-		Labels: lodash.get(object, 'metadata.labels'),
-		Annotations: lodash.get(object, 'metadata.annotations'),
-		Age: lodash.get(object, 'metadata.creationTimestamp'),
-		Configuration: object
+		Name: object?.metadata?.name as JsonValue,
+		Namespace: object?.metadata?.namespace as JsonValue,
+		Labels: object?.metadata?.labels as JsonValue,
+		Annotations: object?.metadata?.annotations as JsonValue,
+		Age: object?.metadata?.creationTimestamp as JsonValue,
+		Configuration: object as JsonValue
 	};
 }
-function defaultColumnDefinitions(apiResource: APIResource, fields: any) {
+
+function podColumnDefinitions(apiResource: APIResource, fields: any) {
 	return [
 		{
 			id: 'Name',
@@ -164,4 +167,4 @@ function defaultColumnDefinitions(apiResource: APIResource, fields: any) {
 	];
 }
 
-export { defaultColumnDefinitions, defaultFieldsMask, defaultObjectMask };
+export { podColumnDefinitions, podFieldsMask, podObjectMask };

@@ -47,7 +47,7 @@ const platformRoutes = (scope: string, namespace: string): Route[] => [
 				url: resolve('/(auth)/scope/[scope]/applications/workloads', { scope: scope })
 			},
 			{
-				title: m.pod(),
+				title: m.pods(),
 				url: resolve(`/(auth)/${scope}/Pod?group=&version=v1&namespace=${namespace}&resource=pods`)
 			},
 			{

@@ -14,6 +14,7 @@ type ObjectMaskType = (object: any) => Record<string, JsonValue>;
 
 import { cronjobColumnDefinitions, cronjobFieldsMask, cronjobObjectMask } from './cronjob.js';
 import { defaultColumnDefinitions, defaultFieldsMask, defaultObjectMask } from './default.js';
+import { podColumnDefinitions, podFieldsMask, podObjectMask } from './pod.js';
 import {
 	resourceQuotaColumnDefinitions,
 	resourceQuotaFieldsMask,
@@ -24,6 +25,8 @@ function getFieldsGetter(kind: string): FieldsMaskType {
 	switch (kind) {
 		case 'CronJob':
 			return cronjobFieldsMask;
+		case 'Pod':
+			return podFieldsMask;
 		case 'ResourceQuota':
 			return resourceQuotaFieldsMask;
 		default:
@@ -35,6 +38,8 @@ function getObjectGetter(kind: string): ObjectMaskType {
 	switch (kind) {
 		case 'CronJob':
 			return cronjobObjectMask;
+		case 'Pod':
+			return podObjectMask;
 		case 'ResourceQuota':
 			return resourceQuotaObjectMask;
 		default:
@@ -46,6 +51,8 @@ function getColumnDefinitionsGetter(kind: string): ColumnDefinitionsType {
 	switch (kind) {
 		case 'CronJob':
 			return cronjobColumnDefinitions;
+		case 'Pod':
+			return podColumnDefinitions;
 		case 'ResourceQuota':
 			return resourceQuotaColumnDefinitions;
 		default:
