@@ -125,18 +125,6 @@
 		}
 	}
 
-	function goBack() {
-		if (!isFirstStep) {
-			currentStep--;
-		}
-	}
-
-	function goToStep(index: number) {
-		if (index <= currentStep) {
-			currentStep = index;
-		}
-	}
-
 	function syncMasterDataToYaml() {
 		try {
 			advanceYaml = yaml.dump(masterData, {
@@ -223,7 +211,11 @@
 											? 'border-primary bg-background text-primary'
 											: 'border-muted bg-muted text-muted-foreground'
 								)}
-								onclick={() => goToStep(index)}
+								onclick={() => {
+									if (index <= currentStep) {
+										currentStep = index;
+									}
+								}}
 								disabled={index > currentStep}
 							>
 								{#if index < currentStep}
@@ -265,7 +257,16 @@
 			</div>
 
 			<div class="mt-auto flex justify-between px-6 py-4">
-				<Button variant="outline" onclick={goBack} disabled={isFirstStep} type="button">
+				<Button
+					variant="outline"
+					onclick={() => {
+						if (!isFirstStep) {
+							currentStep--;
+						}
+					}}
+					disabled={isFirstStep}
+					type="button"
+				>
 					← Previous
 				</Button>
 
