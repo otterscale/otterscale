@@ -130,26 +130,6 @@
 			if (hard['requests.cpu']) hard['limits.cpu'] = hard['requests.cpu'];
 			if (hard['requests.memory']) hard['limits.memory'] = hard['requests.memory'];
 		}
-
-		// Enforce fixed LimitRange
-		if (spec) {
-			spec.limitRange = {
-				limits: [
-					{
-						type: 'Container',
-						default: {
-							cpu: '500m',
-							memory: '512Mi'
-						},
-						defaultRequest: {
-							cpu: '500m',
-							memory: '512Mi'
-						}
-					}
-				]
-			};
-		}
-
 		return data;
 	}
 
