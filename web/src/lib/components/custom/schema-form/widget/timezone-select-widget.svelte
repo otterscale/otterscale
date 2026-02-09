@@ -8,73 +8,52 @@
 	import * as Popover from '$lib/components/ui/popover';
 	import { cn } from '$lib/utils';
 
-	// IANA Timezone list - K8s compatible format
-	// Grouped by region for better UX
-	const TIMEZONES = [
-		// UTC
-		'Etc/UTC',
-		// Africa
-		'Africa/Cairo',
-		'Africa/Casablanca',
-		'Africa/Johannesburg',
-		'Africa/Lagos',
-		'Africa/Nairobi',
-		// America
-		'America/Anchorage',
-		'America/Argentina/Buenos_Aires',
-		'America/Bogota',
-		'America/Chicago',
-		'America/Denver',
-		'America/Los_Angeles',
-		'America/Mexico_City',
-		'America/New_York',
-		'America/Phoenix',
-		'America/Santiago',
-		'America/Sao_Paulo',
-		'America/Toronto',
-		'America/Vancouver',
-		// Asia
-		'Asia/Bangkok',
-		'Asia/Dubai',
-		'Asia/Ho_Chi_Minh',
-		'Asia/Hong_Kong',
-		'Asia/Jakarta',
-		'Asia/Jerusalem',
-		'Asia/Karachi',
-		'Asia/Kolkata',
-		'Asia/Kuala_Lumpur',
-		'Asia/Manila',
-		'Asia/Seoul',
-		'Asia/Shanghai',
-		'Asia/Singapore',
-		'Asia/Taipei',
-		'Asia/Tokyo',
-		// Australia
-		'Australia/Brisbane',
-		'Australia/Melbourne',
-		'Australia/Perth',
-		'Australia/Sydney',
-		// Europe
-		'Europe/Amsterdam',
-		'Europe/Berlin',
-		'Europe/Dublin',
-		'Europe/Istanbul',
-		'Europe/London',
-		'Europe/Madrid',
-		'Europe/Moscow',
-		'Europe/Paris',
-		'Europe/Rome',
-		'Europe/Stockholm',
-		'Europe/Warsaw',
-		'Europe/Zurich',
-		// Pacific
-		'Pacific/Auckland',
-		'Pacific/Fiji',
-		'Pacific/Honolulu',
-		'Pacific/Samoa'
-	];
+	// Get full IANA timezone list from browser - K8s compatible format
+	// This includes all ~400+ IANA timezones
+	function getAllTimezones(): string[] {
+		try {
+			// Intl.supportedValuesOf is available in modern browsers
+			const timezones = Intl.supportedValuesOf('timeZone');
+			// Ensure UTC is at the top
+			return ['Etc/UTC', ...timezones.filter((tz) => tz !== 'Etc/UTC')];
+		} catch {
+			// Fallback for older browsers
+			return [
+				'Etc/UTC',
+				'Africa/Cairo',
+				'Africa/Johannesburg',
+				'Africa/Lagos',
+				'Africa/Nairobi',
+				'America/Anchorage',
+				'America/Chicago',
+				'America/Denver',
+				'America/Los_Angeles',
+				'America/New_York',
+				'America/Sao_Paulo',
+				'America/Toronto',
+				'Asia/Dubai',
+				'Asia/Hong_Kong',
+				'Asia/Kolkata',
+				'Asia/Seoul',
+				'Asia/Shanghai',
+				'Asia/Singapore',
+				'Asia/Taipei',
+				'Asia/Tokyo',
+				'Australia/Melbourne',
+				'Australia/Sydney',
+				'Europe/Amsterdam',
+				'Europe/Berlin',
+				'Europe/London',
+				'Europe/Moscow',
+				'Europe/Paris',
+				'Pacific/Auckland',
+				'Pacific/Honolulu'
+			];
+		}
+	}
 
-	// This widget handles a single timezone string field
+	const TIMEZONES = getAllTimezones();
+
 	let { value = $bindable(), config }: ComponentProps['textWidget'] = $props();
 
 	// Popover state
@@ -124,7 +103,9 @@
 	}
 
 	// Display text for the button
-	const displayText = $derived(value ? `${value} (${getUtcOffset(value as string)})` : 'Select timezone...');
+	const displayText = $derived(
+		value ? `${value} (${getUtcOffset(value as string)})` : 'Select timezone...'
+	);
 
 	function handleSelect(timezone: string) {
 		value = timezone;
