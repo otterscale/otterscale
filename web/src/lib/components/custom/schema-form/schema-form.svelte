@@ -20,28 +20,22 @@
 	import SchemaFormStep from './schema-form-step.svelte';
 	import { deepMerge } from './utils';
 
+	// ── Types ──────────────────────────────────────────────────
+
 	interface Props {
-		/** The full K8s OpenAPI V3 Schema */
 		apiSchema: K8sOpenAPISchema;
-		/** Paths to include in basic mode (dot notation, e.g. "spec.running") */
 		paths: string[] | Record<string, PathOptions>;
-		/** Allow binding the form instance back to parent */
 		form?: FormState<Record<string, unknown>>;
-		/** Optional initial value override */
 		initialData?: Record<string, unknown>;
-		/** Current mode: 'basic' | 'advance' */
 		mode?: 'basic' | 'advance';
-		/** Form title */
 		title?: string;
-		/** Callback when mode changes */
 		onModeChange?: (mode: 'basic' | 'advance') => void;
-		/** Callback when submit button is clicked */
 		onSubmit?: (data: Record<string, unknown>) => Promise<void> | void;
-		/** Transform data before submission */
 		transformData?: (data: Record<string, unknown>) => Record<string, unknown>;
-		/** Whether YAML editor is editable */
 		yamlEditable?: boolean;
 	}
+
+	// ── Props & State ──────────────────────────────────────────
 
 	let {
 		apiSchema,
@@ -64,6 +58,23 @@
 	let yamlParseError = $state<string | null>(null);
 	let ref: HTMLFormElement | undefined;
 
+	// ── Helpers ────────────────────────────────────────────────
+
+	/** Merge form data into masterData after converting to K8s format (preserves data not in form paths) */
+	function mergeIntoMaster(data: Record<string, unknown>) {
+		const k8sData = formDataToK8s(data, formConfig.transformationMappings);
+		masterData = normalizeArrays(deepMerge(masterData, k8sData)) as Record<string, unknown>;
+	}
+
+	/** Apply transformData callback if provided */
+	function applyTransform() {
+		if (transformData) {
+			masterData = transformData(masterData);
+		}
+	}
+
+	// ── Form Lifecycle ─────────────────────────────────────────
+
 	function initForm(data: Record<string, unknown>) {
 		return createForm<Record<string, unknown>>({
 			...defaults,
@@ -77,19 +88,53 @@
 
 	form = initForm(initialValue);
 
+	// ── Event Handlers ─────────────────────────────────────────
+
+	function handleFormSubmit(data: Record<string, unknown>) {
+		const k8sData = formDataToK8s(data, formConfig.transformationMappings);
+		submitFinalData(k8sData);
+	}
+
+	function submitFinalData(data: Record<string, unknown>) {
+		masterData = data;
+		applyTransform();
+
+		if (onSubmit) {
+			onSubmit(masterData);
+		} else {
+			onModeChange?.(mode);
+		}
+	}
+
+	function handleSubmitClick() {
+		if (mode === 'advance') {
+			syncYamlToForm();
+			submitFinalData(masterData);
+		} else {
+			ref?.requestSubmit();
+		}
+	}
+
+	function handleModeChange(newMode: string) {
+		const targetMode = newMode as 'basic' | 'advance';
+
+		if (targetMode === 'basic' && mode === 'advance') {
+			syncYamlToForm();
+		}
+
+		mode = targetMode;
+		onModeChange?.(mode);
+	}
+
+	// ── YAML Sync ──────────────────────────────────────────────
+
 	function syncFormToYaml() {
 		try {
-			const rawData = form ? getValueSnapshot(form) : initialValue;
-			const k8sData = formDataToK8s(rawData, formConfig.transformationMappings);
-			// Use deepMerge to preserve data not in the form paths
-			masterData = normalizeArrays(deepMerge(masterData, k8sData)) as Record<string, unknown>;
-
-			advanceYaml = yaml.dump(masterData, {
-				indent: 2,
-				lineWidth: -1
-			});
+			const rawData = form ? (getValueSnapshot(form) as Record<string, unknown>) : initialValue;
+			mergeIntoMaster(rawData);
+			advanceYaml = yaml.dump(masterData, { indent: 2, lineWidth: -1 });
 		} catch (error) {
-			console.error(`Error during syncing form to YAML:`, error);
+			console.error('Error syncing form to YAML:', error);
 		}
 	}
 
@@ -105,47 +150,9 @@
 				masterData = parsed;
 			}
 		} catch (error) {
-			const errorMsg = `Invalid YAML: ${error instanceof Error ? error.message : 'Unknown error'}`;
-			yamlParseError = errorMsg;
-			console.error(`Error during parsing YAML:`, error);
+			yamlParseError = `Invalid YAML: ${error instanceof Error ? error.message : 'Unknown error'}`;
+			console.error('Error parsing YAML:', error);
 		}
-	}
-
-	function submitFinalData(k8sData: Record<string, unknown>) {
-		try {
-			if (transformData) {
-				k8sData = transformData(k8sData);
-			}
-			masterData = k8sData;
-
-			if (onSubmit) {
-				onSubmit(k8sData);
-			} else {
-				onModeChange?.(mode);
-			}
-		} catch (error) {
-			console.error(`Error during form submission:`, error);
-		}
-	}
-
-	function handleFormSubmit(data: Record<string, unknown>) {
-		try {
-			const k8sData = formDataToK8s(data, formConfig.transformationMappings);
-			submitFinalData(k8sData);
-		} catch (error) {
-			console.error(`Error during form submission:`, error);
-		}
-	}
-
-	function handleModeChange(newMode: string) {
-		const targetMode = newMode as 'basic' | 'advance';
-
-		if (targetMode === 'basic' && mode === 'advance') {
-			syncYamlToForm();
-		}
-
-		mode = targetMode;
-		onModeChange?.(mode);
 	}
 
 	$effect(() => {
@@ -205,19 +212,5 @@
 		</Tabs.Content>
 	</Tabs.Root>
 
-	<Button
-		class="mt-6 w-full"
-		onclick={() => {
-			if (mode === 'advance') {
-				syncYamlToForm();
-				if (masterData) {
-					submitFinalData(masterData);
-				}
-			} else {
-				ref?.requestSubmit();
-			}
-		}}
-	>
-		Submit
-	</Button>
+	<Button class="mt-6 w-full" onclick={handleSubmitClick}>Submit</Button>
 </div>
