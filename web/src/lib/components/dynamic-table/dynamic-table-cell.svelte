@@ -27,6 +27,7 @@
 	import { now } from '$lib/stores/now';
 
 	import { format, getColumnType, getRelativeTime } from './utils';
+	import type { FieldsType, ValuesType } from '../kind-viewer/type';
 
 	let {
 		ref = $bindable(null),
@@ -36,9 +37,9 @@
 		children,
 		class: className
 	}: WithElementRef<HTMLAttributes<HTMLDivElement>> & {
-		column: Column<Record<string, JsonValue>>;
-		row: Row<Record<string, JsonValue>>;
-		fields: Record<string, { description: string; type: string; format: string }>;
+		column: Column<ValuesType>;
+		row: Row<ValuesType>;
+		fields: FieldsType;
 	} = $props();
 
 	const columnType = $derived(getColumnType(fields[column.id].type, fields[column.id].format));

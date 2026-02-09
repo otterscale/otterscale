@@ -1,15 +1,19 @@
 import { type JsonValue } from '@bufbuild/protobuf';
-import type { Column } from '@tanstack/table-core';
+import type { Column, ColumnDef } from '@tanstack/table-core';
 import { type Row } from '@tanstack/table-core';
 import lodash from 'lodash';
 
+import { resolve } from '$app/paths';
+import { page } from '$app/state';
 import type { APIResource } from '$lib/api/resource/v1/resource_pb';
 import { DynamicTableCell, DynamicTableHeader } from '$lib/components/dynamic-table';
+import LinkCell from '$lib/components/dynamic-table/cells/link-cell.svelte';
 import { renderComponent } from '$lib/components/ui/data-table';
+import type { FieldsType, ValuesType } from '../type';
 
-function defaultFieldsMask(
+function getDefaultFields(
 	schema: any
-): Record<string, { description: string; type: string; format?: string }> {
+): FieldsType {
 	return {
 		Name: lodash.get(schema, 'properties.metadata.properties.name'),
 		Namespace: lodash.get(schema, 'properties.metadata.properties.namespace'),
@@ -19,7 +23,7 @@ function defaultFieldsMask(
 		Configuration: schema
 	};
 }
-function defaultObjectMask(object: any): Record<string, JsonValue> {
+function getDefaultValues(object: any): ValuesType {
 	return {
 		Name: lodash.get(object, 'metadata.name'),
 		Namespace: lodash.get(object, 'metadata.namespace'),
@@ -29,11 +33,11 @@ function defaultObjectMask(object: any): Record<string, JsonValue> {
 		Configuration: object
 	};
 }
-function defaultColumnDefinitions(apiResource: APIResource, fields: any) {
+function getDefaultColumnDefinitions(apiResource: APIResource, fields: FieldsType): ColumnDef<ValuesType>[] {
 	return [
 		{
 			id: 'Name',
-			header: ({ column }: { column: Column<Record<string, JsonValue>> }) =>
+			header: ({ column }: { column: Column<ValuesType> }) =>
 				renderComponent(DynamicTableHeader, {
 					column: column,
 					fields: fields
@@ -42,20 +46,21 @@ function defaultColumnDefinitions(apiResource: APIResource, fields: any) {
 				column,
 				row
 			}: {
-				column: Column<Record<string, JsonValue>>;
-				row: Row<Record<string, JsonValue>>;
+				column: Column<ValuesType>;
+				row: Row<ValuesType>;
 			}) =>
-				renderComponent(DynamicTableCell, {
-					row: row,
-					column: column,
-					fields: fields
+				renderComponent(LinkCell, {
+					display: String(row.original[column.id]),
+					hyperlink: resolve(
+						`/(auth)/${page.params.cluster!}/${apiResource.kind}/${apiResource.resource}?group=${apiResource.group}&version=${apiResource.version}&name=${row.original[column.id]}&namespace=${page.url.searchParams.get('namespace') ?? ''}`
+					)
 				}),
 			accessorKey: 'Name'
 		},
 		...[
 			{
 				id: 'Namespace',
-				header: ({ column }: { column: Column<Record<string, JsonValue>> }) =>
+				header: ({ column }: { column: Column<ValuesType> }) =>
 					renderComponent(DynamicTableHeader, {
 						column: column,
 						fields: fields
@@ -64,8 +69,8 @@ function defaultColumnDefinitions(apiResource: APIResource, fields: any) {
 					column,
 					row
 				}: {
-					column: Column<Record<string, JsonValue>>;
-					row: Row<Record<string, JsonValue>>;
+					column: Column<ValuesType>;
+					row: Row<ValuesType>;
 				}) =>
 					renderComponent(DynamicTableCell, {
 						row: row,
@@ -77,7 +82,7 @@ function defaultColumnDefinitions(apiResource: APIResource, fields: any) {
 		].filter(() => apiResource.namespaced),
 		{
 			id: 'Annotations',
-			header: ({ column }: { column: Column<Record<string, JsonValue>> }) =>
+			header: ({ column }: { column: Column<ValuesType> }) =>
 				renderComponent(DynamicTableHeader, {
 					column: column,
 					fields: fields
@@ -86,20 +91,20 @@ function defaultColumnDefinitions(apiResource: APIResource, fields: any) {
 				column,
 				row
 			}: {
-				column: Column<Record<string, JsonValue>>;
-				row: Row<Record<string, JsonValue>>;
+				column: Column<ValuesType>;
+				row: Row<ValuesType>;
 			}) =>
 				renderComponent(DynamicTableCell, {
 					row: row,
 					column: column,
 					fields: fields
 				}),
-			accessorFn: (row: Record<string, JsonValue>) =>
+			accessorFn: (row: ValuesType) =>
 				row['Annotations'] ? Object.keys(row['Annotations']).length : null
 		},
 		{
 			id: 'Labels',
-			header: ({ column }: { column: Column<Record<string, JsonValue>> }) =>
+			header: ({ column }: { column: Column<ValuesType> }) =>
 				renderComponent(DynamicTableHeader, {
 					column: column,
 					fields: fields
@@ -108,20 +113,25 @@ function defaultColumnDefinitions(apiResource: APIResource, fields: any) {
 				column,
 				row
 			}: {
-				column: Column<Record<string, JsonValue>>;
-				row: Row<Record<string, JsonValue>>;
+				column: Column<ValuesType>;
+				row: Row<ValuesType>;
 			}) =>
 				renderComponent(DynamicTableCell, {
 					row: row,
 					column: column,
 					fields: fields
 				}),
-			accessorFn: (row: Record<string, JsonValue>) =>
+			accessorFn: (row: ValuesType) =>
 				row['Labels'] ? Object.keys(row['Labels']).length : null
 		},
 		{
+<<<<<<< Updated upstream
 			id: 'Age',
 			header: ({ column }: { column: Column<Record<string, JsonValue>> }) =>
+=======
+			id: 'CreateTime',
+			header: ({ column }: { column: Column<ValuesType> }) =>
+>>>>>>> Stashed changes
 				renderComponent(DynamicTableHeader, {
 					column: column,
 					fields: fields
@@ -130,8 +140,8 @@ function defaultColumnDefinitions(apiResource: APIResource, fields: any) {
 				column,
 				row
 			}: {
-				column: Column<Record<string, JsonValue>>;
-				row: Row<Record<string, JsonValue>>;
+				column: Column<ValuesType>;
+				row: Row<ValuesType>;
 			}) =>
 				renderComponent(DynamicTableCell, {
 					row: row,
@@ -142,7 +152,7 @@ function defaultColumnDefinitions(apiResource: APIResource, fields: any) {
 		},
 		{
 			id: 'Configuration',
-			header: ({ column }: { column: Column<Record<string, JsonValue>> }) =>
+			header: ({ column }: { column: Column<ValuesType> }) =>
 				renderComponent(DynamicTableHeader, {
 					column: column,
 					fields: fields
@@ -151,17 +161,20 @@ function defaultColumnDefinitions(apiResource: APIResource, fields: any) {
 				column,
 				row
 			}: {
-				column: Column<Record<string, JsonValue>>;
-				row: Row<Record<string, JsonValue>>;
+				column: Column<ValuesType>;
+				row: Row<ValuesType>;
 			}) =>
 				renderComponent(DynamicTableCell, {
 					row: row,
 					column: column,
 					fields: fields
 				}),
-			accessorKey: 'Configuration'
+			accessorKey: 'Configuration',
+			meta: {
+				class: 'hidden xl:table-cell'
+			}
 		}
 	];
 }
 
-export { defaultColumnDefinitions, defaultFieldsMask, defaultObjectMask };
+export { getDefaultColumnDefinitions, getDefaultFields, getDefaultValues };

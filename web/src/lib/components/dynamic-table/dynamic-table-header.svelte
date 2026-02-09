@@ -8,6 +8,7 @@
 	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
 
 	import { getColumnType } from './utils';
+	import type { FieldsType, ValuesType } from '../kind-viewer/type';
 
 	let {
 		ref = $bindable(null),
@@ -16,8 +17,8 @@
 		fields,
 		class: className
 	}: WithElementRef<HTMLAttributes<HTMLDivElement>> & {
-		column: Column<Record<string, JsonValue>>;
-		fields: Record<string, { description: string; type: string; format: string }>;
+		column: Column<ValuesType>;
+		fields: FieldsType;
 	} = $props();
 
 	const type = $derived(lodash.get(fields, `${column.id}.type`));

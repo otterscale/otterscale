@@ -1,20 +1,21 @@
 import { type JsonValue } from '@bufbuild/protobuf';
 import type { BatchV1CronJob } from '@otterscale/types';
-import type { Column } from '@tanstack/table-core';
+import type { Column, ColumnDef } from '@tanstack/table-core';
 import { type Row } from '@tanstack/table-core';
 import lodash from 'lodash';
 
 import { resolve } from '$app/paths';
 import { page } from '$app/state';
-import type { APIResource } from '$lib/api/resource/v1/resource_pb';
 import { DynamicTableCell, DynamicTableHeader } from '$lib/components/dynamic-table';
 import ArrayOfObjectCell from '$lib/components/dynamic-table/cells/array-of-object-cell.svelte';
 import LinkCell from '$lib/components/dynamic-table/cells/link-cell.svelte';
 import { renderComponent } from '$lib/components/ui/data-table';
+import type { FieldsType, ValuesType } from '../type';
+import type { APIResource } from '$lib/api/resource/v1/resource_pb';
 
-function cronjobFieldsMask(
+function getCronJobFields(
 	schema: any
-): Record<string, { description: string; type: string; format?: string }> {
+): FieldsType {
 	return {
 		Name: lodash.get(schema, 'properties.metadata.properties.name'),
 		Namespace: lodash.get(schema, 'properties.metadata.properties.namespace'),
@@ -34,7 +35,7 @@ function cronjobFieldsMask(
 	};
 }
 
-function cronjobObjectMask(object: BatchV1CronJob): Record<string, JsonValue> {
+function getCronJobValues(object: BatchV1CronJob): ValuesType {
 	return {
 		Name: object?.metadata?.name as JsonValue,
 		Namespace: object?.metadata?.namespace as JsonValue,
@@ -50,11 +51,11 @@ function cronjobObjectMask(object: BatchV1CronJob): Record<string, JsonValue> {
 	};
 }
 
-function cronjobColumnDefinitions(apiResource: APIResource, fields: any) {
+function getCronJobColumnDefinitions(apiResource: APIResource, fields: FieldsType): ColumnDef<ValuesType>[] {
 	return [
 		{
 			id: 'Name',
-			header: ({ column }: { column: Column<Record<string, JsonValue>> }) =>
+			header: ({ column }: { column: Column<ValuesType> }) =>
 				renderComponent(DynamicTableHeader, {
 					column: column,
 					fields: fields
@@ -63,20 +64,20 @@ function cronjobColumnDefinitions(apiResource: APIResource, fields: any) {
 				column,
 				row
 			}: {
-				column: Column<Record<string, JsonValue>>;
-				row: Row<Record<string, JsonValue>>;
+				column: Column<ValuesType>;
+				row: Row<ValuesType>;
 			}) =>
 				renderComponent(LinkCell, {
 					display: String(row.original[column.id]),
 					hyperlink: resolve(
-						`/(auth)/${page.params.cluster!}/CronJob/cronjobs?group=batch&version=v1&name=${row.original[column.id]}&namespace=${page.url.searchParams.get('namespace')!}`
+						`/(auth)/${page.params.cluster!}/${apiResource.kind}/${apiResource.resource}?group=${apiResource.group}&version=${apiResource.version}&name=${row.original[column.id]}&namespace=${page.url.searchParams.get('namespace')!}`
 					)
 				}),
 			accessorKey: 'Name'
 		},
 		{
 			id: 'Namespace',
-			header: ({ column }: { column: Column<Record<string, JsonValue>> }) =>
+			header: ({ column }: { column: Column<ValuesType> }) =>
 				renderComponent(DynamicTableHeader, {
 					column: column,
 					fields: fields
@@ -85,8 +86,8 @@ function cronjobColumnDefinitions(apiResource: APIResource, fields: any) {
 				column,
 				row
 			}: {
-				column: Column<Record<string, JsonValue>>;
-				row: Row<Record<string, JsonValue>>;
+				column: Column<ValuesType>;
+				row: Row<ValuesType>;
 			}) =>
 				renderComponent(DynamicTableCell, {
 					row: row,
@@ -97,7 +98,7 @@ function cronjobColumnDefinitions(apiResource: APIResource, fields: any) {
 		},
 		{
 			id: 'Schedule',
-			header: ({ column }: { column: Column<Record<string, JsonValue>> }) =>
+			header: ({ column }: { column: Column<ValuesType> }) =>
 				renderComponent(DynamicTableHeader, {
 					column: column,
 					fields: fields
@@ -106,8 +107,8 @@ function cronjobColumnDefinitions(apiResource: APIResource, fields: any) {
 				column,
 				row
 			}: {
-				column: Column<Record<string, JsonValue>>;
-				row: Row<Record<string, JsonValue>>;
+				column: Column<ValuesType>;
+				row: Row<ValuesType>;
 			}) =>
 				renderComponent(DynamicTableCell, {
 					row: row,
@@ -118,7 +119,7 @@ function cronjobColumnDefinitions(apiResource: APIResource, fields: any) {
 		},
 		{
 			id: 'Suspend',
-			header: ({ column }: { column: Column<Record<string, JsonValue>> }) =>
+			header: ({ column }: { column: Column<ValuesType> }) =>
 				renderComponent(DynamicTableHeader, {
 					column: column,
 					fields: fields
@@ -127,8 +128,8 @@ function cronjobColumnDefinitions(apiResource: APIResource, fields: any) {
 				column,
 				row
 			}: {
-				column: Column<Record<string, JsonValue>>;
-				row: Row<Record<string, JsonValue>>;
+				column: Column<ValuesType>;
+				row: Row<ValuesType>;
 			}) =>
 				renderComponent(DynamicTableCell, {
 					row: row,
@@ -139,7 +140,7 @@ function cronjobColumnDefinitions(apiResource: APIResource, fields: any) {
 		},
 		{
 			id: 'Active',
-			header: ({ column }: { column: Column<Record<string, JsonValue>> }) =>
+			header: ({ column }: { column: Column<ValuesType> }) =>
 				renderComponent(DynamicTableHeader, {
 					column: column,
 					fields: fields
@@ -148,8 +149,8 @@ function cronjobColumnDefinitions(apiResource: APIResource, fields: any) {
 				column,
 				row
 			}: {
-				column: Column<Record<string, JsonValue>>;
-				row: Row<Record<string, JsonValue>>;
+				column: Column<ValuesType>;
+				row: Row<ValuesType>;
 			}) =>
 				renderComponent(ArrayOfObjectCell, {
 					keys: {
@@ -165,7 +166,7 @@ function cronjobColumnDefinitions(apiResource: APIResource, fields: any) {
 		},
 		{
 			id: 'Last Schedule',
-			header: ({ column }: { column: Column<Record<string, JsonValue>> }) =>
+			header: ({ column }: { column: Column<ValuesType> }) =>
 				renderComponent(DynamicTableHeader, {
 					column: column,
 					fields: fields
@@ -174,8 +175,8 @@ function cronjobColumnDefinitions(apiResource: APIResource, fields: any) {
 				column,
 				row
 			}: {
-				column: Column<Record<string, JsonValue>>;
-				row: Row<Record<string, JsonValue>>;
+				column: Column<ValuesType>;
+				row: Row<ValuesType>;
 			}) =>
 				renderComponent(DynamicTableCell, {
 					row: row,
@@ -186,7 +187,7 @@ function cronjobColumnDefinitions(apiResource: APIResource, fields: any) {
 		},
 		{
 			id: 'Creation Timestamp',
-			header: ({ column }: { column: Column<Record<string, JsonValue>> }) =>
+			header: ({ column }: { column: Column<ValuesType> }) =>
 				renderComponent(DynamicTableHeader, {
 					column: column,
 					fields: fields
@@ -195,8 +196,8 @@ function cronjobColumnDefinitions(apiResource: APIResource, fields: any) {
 				column,
 				row
 			}: {
-				column: Column<Record<string, JsonValue>>;
-				row: Row<Record<string, JsonValue>>;
+				column: Column<ValuesType>;
+				row: Row<ValuesType>;
 			}) =>
 				renderComponent(DynamicTableCell, {
 					row: row,
@@ -207,7 +208,7 @@ function cronjobColumnDefinitions(apiResource: APIResource, fields: any) {
 		},
 		{
 			id: 'Images',
-			header: ({ column }: { column: Column<Record<string, JsonValue>> }) =>
+			header: ({ column }: { column: Column<ValuesType> }) =>
 				renderComponent(DynamicTableHeader, {
 					column: column,
 					fields: fields
@@ -216,8 +217,8 @@ function cronjobColumnDefinitions(apiResource: APIResource, fields: any) {
 				column,
 				row
 			}: {
-				column: Column<Record<string, JsonValue>>;
-				row: Row<Record<string, JsonValue>>;
+				column: Column<ValuesType>;
+				row: Row<ValuesType>;
 			}) =>
 				renderComponent(DynamicTableCell, {
 					row: row,
@@ -231,7 +232,7 @@ function cronjobColumnDefinitions(apiResource: APIResource, fields: any) {
 		},
 		{
 			id: 'Configuration',
-			header: ({ column }: { column: Column<Record<string, JsonValue>> }) =>
+			header: ({ column }: { column: Column<ValuesType> }) =>
 				renderComponent(DynamicTableHeader, {
 					column: column,
 					fields: fields
@@ -240,8 +241,8 @@ function cronjobColumnDefinitions(apiResource: APIResource, fields: any) {
 				column,
 				row
 			}: {
-				column: Column<Record<string, JsonValue>>;
-				row: Row<Record<string, JsonValue>>;
+				column: Column<ValuesType>;
+				row: Row<ValuesType>;
 			}) =>
 				renderComponent(DynamicTableCell, {
 					row: row,
@@ -256,4 +257,4 @@ function cronjobColumnDefinitions(apiResource: APIResource, fields: any) {
 	];
 }
 
-export { cronjobColumnDefinitions, cronjobFieldsMask, cronjobObjectMask };
+export { getCronJobFields, getCronJobValues, getCronJobColumnDefinitions };

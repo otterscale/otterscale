@@ -33,7 +33,17 @@ function getRelativeTime(now: number, timestamp: number) {
 	return { value: years, unit: 'year' };
 }
 
-function getColumnType(type: JsonValue, format: JsonValue) {
+// Determine Column Icon, Component and Evaluation
+type ColumnType =
+	| 'boolean'
+	| 'number'
+	| 'time'
+	| 'string'
+	| 'array'
+	| 'ratio'
+	| 'object'
+	| undefined;
+function getColumnType(type: JsonValue, format?: JsonValue): ColumnType {
 	if (type === 'boolean') {
 		return 'boolean';
 	} else if (type === 'number' || type === 'integer') {
@@ -52,5 +62,24 @@ function getColumnType(type: JsonValue, format: JsonValue) {
 		return undefined;
 	}
 }
+
+interface ColumnConfig {
+	icon: unknown;
+	cell: unknown;
+	type: ColumnType;
+}
+const COLUMN_CONFIGURATIONS: Record<NonNullable<ColumnType>, ColumnConfig> & {
+	undefined: ColumnConfig;
+} = {
+	boolean: { icon: BooleanIcon, cell: BooleanCell, label: 'Boolean' },
+	number: { icon: NumberIcon, cell: NumberCell, label: 'Number' },
+	time: { icon: TimeIcon, cell: TimeCell, label: 'Time' },
+	string: { icon: StringIcon, cell: StringCell, label: 'String' },
+	array: { icon: ArrayIcon, cell: ArrayCell, label: 'Array' },
+	ratio: { icon: RatioIcon, cell: RatioCell, label: 'Ratio' },
+	object: { icon: ObjectIcon, cell: ObjectCell, label: 'Object' },
+	undefined: { icon: DefaultIcon, cell: DefaultCell, label: 'Unknown' }
+	// ❌ TypeScript Error: Property 'json' is missing in type
+};
 
 export { format, getColumnType, getRelativeTime };

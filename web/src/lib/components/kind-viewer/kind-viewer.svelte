@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { type JsonValue, toJson } from '@bufbuild/protobuf';
+	import { toJson } from '@bufbuild/protobuf';
 	import { StructSchema } from '@bufbuild/protobuf/wkt';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { Cable, Unplug } from '@lucide/svelte';
@@ -20,7 +20,12 @@
 
 	import { type ActionsType, getActions } from './actions';
 	import { type CreatorType, getCreator } from './creators';
-	import { getColumnDefinitionsGetter, getFieldsGetter, getObjectGetter } from './viewers';
+	import {
+		getColumnDefinitionsDynamically,
+		getFieldsDynamically,
+		getValuesDynamically
+	} from './viewers';
+	import type { FieldsType, ValuesType } from './type';
 
 	let {
 		clustered,
@@ -45,13 +50,9 @@
 	const transport: Transport = getContext('transport');
 	const resourceClient = createClient(ResourceService, transport);
 
-	const getFields = getFieldsGetter(kind);
-	const getObject = getObjectGetter(kind);
-	const getColumnDefinitions = getColumnDefinitionsGetter(kind);
-
 	// eslint-disable-next-line
 	let schema: any = $state({});
-	let fields: Record<string, { description: string; type: string; format?: string }> = $state({});
+	let fields: FieldsType = $state({});
 	async function fetchSchema() {
 		try {
 			const schemaResponse = await resourceClient.schema({
@@ -62,15 +63,15 @@
 			} as SchemaRequest);
 
 			schema = toJson(StructSchema, schemaResponse);
-			fields = getFields(schema);
+			fields = getFieldsDynamically(kind, schema);
 		} catch (error) {
 			console.error('Failed to fetch schema:', error);
 			return null;
 		}
 	}
 
-	let objects: Record<string, JsonValue>[] = $state([]);
-	let columnDefinitions: ColumnDef<Record<string, JsonValue>>[] | undefined = $state(undefined);
+	let dataset: ValuesType[] = $state([]);
+	let columnDefinitions: ColumnDef<ValuesType>[] | undefined = $state(undefined);
 
 	let listAbortController: AbortController | null = null;
 	let watchAbortController: AbortController | null = null;
@@ -102,8 +103,8 @@
 				resourceVersion = response.resourceVersion;
 				continueToken = response.continue;
 
-				const newObjects = response.items.map((item) => getObject(item.object));
-				objects = [...objects, ...newObjects];
+				const newObjects = response.items.map((item) => getValuesDynamically(kind, item.object));
+				dataset = [...dataset, ...newObjects];
 
 				if (listAbortController.signal.aborted) {
 					break;
@@ -156,30 +157,28 @@
 				resourceVersion = response.resource?.object?.metadata?.resourceVersion;
 
 				if (response.type === WatchEvent_Type.ADDED) {
-					const addedObject = getObject(response.resource?.object);
+					const addedData = getValuesDynamically(kind, response.resource?.object);
 
-					const index = objects.findIndex(
-						(object) =>
-							object.Namespace === addedObject.Namespace && object.Name === addedObject.Name
+					const index = dataset.findIndex(
+						(object) => object.Namespace === addedData.Namespace && object.Name === addedData.Name
 					);
 
 					if (index < 0) {
-						objects = [...objects, addedObject];
+						dataset = [...dataset, addedData];
 					}
 				} else if (response.type === WatchEvent_Type.MODIFIED) {
-					const modifiedObject = getObject(response.resource?.object);
+					const modifiedData = getValuesDynamically(kind, response.resource?.object);
 
-					objects = objects.map((object) =>
-						object.Namespace === modifiedObject.Namespace && object.Name === modifiedObject.Name
-							? modifiedObject
+					dataset = dataset.map((object) =>
+						object.Namespace === modifiedData.Namespace && object.Name === modifiedData.Name
+							? modifiedData
 							: object
 					);
 				} else if (response.type === WatchEvent_Type.DELETED) {
-					const deletedObject = getObject(response.resource?.object);
-
-					objects = objects.filter(
+					const deletedData = getValuesDynamically(kind, response.resource?.object);
+					dataset = dataset.filter(
 						(object) =>
-							object.Namespace === deletedObject.Namespace && object.Name !== deletedObject.Name
+							object.Namespace === deletedData.Namespace && object.Name !== deletedData.Name
 					);
 				} else {
 					console.log('Unknown response type: ', response);
@@ -201,7 +200,7 @@
 	onMount(async () => {
 		await fetchSchema();
 		await listResources();
-		columnDefinitions = getColumnDefinitions(apiResource, fields);
+		columnDefinitions = getColumnDefinitionsDynamically(kind, apiResource, fields);
 		watchResources();
 
 		isMounted = true;
@@ -231,7 +230,7 @@
 
 {#if isMounted}
 	{#if columnDefinitions}
-		<DynamicTable {objects} {fields} {columnDefinitions}>
+		<DynamicTable {dataset} {fields} {columnDefinitions}>
 			{#snippet create()}
 				<Creator {schema} />
 			{/snippet}
@@ -244,8 +243,9 @@
 					{/if}
 				</Button>
 			{/snippet}
-			{#snippet rowActions({ row, fields, objects })}
-				<Actions {row} schema={fields['Configuration']} object={objects[row.id]['Configuration']} />
+			{#snippet rowActions({ row, fields, dataset })}
+				{@const objects: ValuesType = dataset[Number(row.id)]}
+				<Actions {row} schema={fields['Configuration']} object={objects['Configuration']} />
 			{/snippet}
 		</DynamicTable>
 	{/if}

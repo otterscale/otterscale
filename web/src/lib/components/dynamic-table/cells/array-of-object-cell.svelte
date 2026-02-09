@@ -26,6 +26,7 @@
 	import { Label } from '$lib/components/ui/label/index.js';
 	import { Select, SelectContent, SelectItem, SelectTrigger } from '$lib/components/ui/select';
 	import * as Sheet from '$lib/components/ui/sheet/index.js';
+	import type { FieldsType, ValuesType } from '$lib/components/kind-viewer/type';
 
 	let {
 		keys,
@@ -38,9 +39,9 @@
 			description: string;
 			actions: string;
 		};
-		row: Row<Record<string, JsonValue>>;
-		column: Column<Record<string, JsonValue>>;
-		fields: Record<string, { description: string; type: string; format: string }>;
+		row: Row<ValuesType>;
+		column: Column<ValuesType>;
+		fields: FieldsType;
 	} = $props();
 
 	const data = $derived(row.original[column.id] as JsonObject[]);

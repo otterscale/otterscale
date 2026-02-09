@@ -1,6 +1,4 @@
 <script lang="ts">
-	import type { JsonValue } from '@bufbuild/protobuf';
-	import { type JsonObject } from '@bufbuild/protobuf';
 	import {
 		BinaryIcon,
 		BookIcon,
@@ -29,6 +27,7 @@
 		getPaginationRowModel,
 		getSortedRowModel,
 		type PaginationState,
+		type Row,
 		type RowSelectionState,
 		type SortingState,
 		type Table as TanStackTabke,
@@ -60,9 +59,10 @@
 	import { cn } from '$lib/utils';
 
 	import { getColumnType } from './utils';
+	import type { FieldsType, ValuesType } from '../kind-viewer/type';
 
 	let {
-		objects,
+		dataset,
 		fields,
 		columnDefinitions,
 		create,
@@ -72,16 +72,16 @@
 			render: () => ''
 		}))
 	}: {
-		objects: Record<string, JsonValue>[];
-		fields: Record<string, JsonValue>;
-		columnDefinitions: ColumnDef<Record<string, JsonValue>>[];
+		dataset: ValuesType[];
+		fields: FieldsType;
+		columnDefinitions: ColumnDef<ValuesType>[];
 		create?: Snippet;
-		bulkDelete?: Snippet<[{ table: TanStackTabke<Record<string, JsonValue>> }]>;
-		rowActions?: Snippet<[{ row: any; fields: any; objects: any }]>;
+		bulkDelete?: Snippet<[{ table: TanStackTabke<ValuesType> }]>;
+		rowActions?: Snippet<[{ row: Row<ValuesType>; fields: FieldsType; dataset: ValuesType[] }]>;
 		reload: Snippet;
 	} = $props();
 
-	const columns: ColumnDef<Record<string, JsonValue>>[] = [
+	const columns: ColumnDef<ValuesType>[] = [
 		{
 			id: 'select',
 			header: ({ table }) =>
@@ -109,7 +109,7 @@
 			cell: ({ row }) =>
 				renderSnippet(rowActions, {
 					row: row,
-					objects: objects,
+					dataset: dataset,
 					fields: fields
 				}),
 			header: () =>
@@ -156,10 +156,10 @@
 	let sorting = $state<SortingState>([]);
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 
-	let table = createSvelteTable<JsonObject>({
+	let table = createSvelteTable<ValuesType>({
 		columns,
 		get data() {
-			return objects;
+			return dataset;
 		},
 		getCoreRowModel: getCoreRowModel(),
 		getFacetedUniqueValues: getFacetedUniqueValues(),

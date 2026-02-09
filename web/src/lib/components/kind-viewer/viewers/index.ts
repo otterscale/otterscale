@@ -1,56 +1,43 @@
-import type { JsonValue } from '@bufbuild/protobuf';
-import type { ColumnDef } from '@tanstack/table-core';
-
+import { getCronJobColumnDefinitions, getCronJobFields, getCronJobValues } from './cronjob.js';
+import { getDefaultColumnDefinitions, getDefaultFields, getDefaultValues } from './default.js';
+import {
+	getResourceQuotaColumnDefinitions, getResourceQuotaFields, getResourceQuotaValues
+} from './resource-quota.js';
+import type { FieldsType, ValuesType } from '../type.js';
+import type { Column, ColumnDef } from '@tanstack/table-core';
 import type { APIResource } from '$lib/api/resource/v1/resource_pb.js';
 
-type ColumnDefinitionsType = (
-	apiResource: APIResource,
-	fields: any
-) => ColumnDef<Record<string, JsonValue>>[];
-type FieldsMaskType = (
-	schema: any
-) => Record<string, { description: string; type: string; format?: string }>;
-type ObjectMaskType = (object: any) => Record<string, JsonValue>;
-
-import { cronjobColumnDefinitions, cronjobFieldsMask, cronjobObjectMask } from './cronjob.js';
-import { defaultColumnDefinitions, defaultFieldsMask, defaultObjectMask } from './default.js';
-import {
-	resourceQuotaColumnDefinitions,
-	resourceQuotaFieldsMask,
-	resourceQuotaObjectMask
-} from './resource-quota.js';
-
-function getFieldsGetter(kind: string): FieldsMaskType {
+function getFieldsDynamically(kind: string, schema: any): FieldsType {
 	switch (kind) {
 		case 'CronJob':
-			return cronjobFieldsMask;
+			return getCronJobFields(schema);
 		case 'ResourceQuota':
-			return resourceQuotaFieldsMask;
+			return getResourceQuotaFields(schema);
 		default:
-			return defaultFieldsMask;
+			return getDefaultFields(schema);
 	}
 }
 
-function getObjectGetter(kind: string): ObjectMaskType {
+function getValuesDynamically(kind: string, object: any): ValuesType {
 	switch (kind) {
 		case 'CronJob':
-			return cronjobObjectMask;
+			return getCronJobValues(object);
 		case 'ResourceQuota':
-			return resourceQuotaObjectMask;
+			return getResourceQuotaValues(object);
 		default:
-			return defaultObjectMask;
+			return getDefaultValues(object);
 	}
 }
 
-function getColumnDefinitionsGetter(kind: string): ColumnDefinitionsType {
+function getColumnDefinitionsDynamically(kind: string, apiResource: APIResource, fields: FieldsType): ColumnDef<ValuesType>[] {
 	switch (kind) {
 		case 'CronJob':
-			return cronjobColumnDefinitions;
+			return getCronJobColumnDefinitions(apiResource, fields);
 		case 'ResourceQuota':
-			return resourceQuotaColumnDefinitions;
+			return getResourceQuotaColumnDefinitions(apiResource, fields);
 		default:
-			return defaultColumnDefinitions;
+			return getDefaultColumnDefinitions(apiResource, fields);
 	}
 }
 
-export { getColumnDefinitionsGetter, getFieldsGetter, getObjectGetter };
+export { getFieldsDynamically, getValuesDynamically, getColumnDefinitionsDynamically };

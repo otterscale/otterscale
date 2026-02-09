@@ -1,6 +1,6 @@
 import { type JsonValue } from '@bufbuild/protobuf';
 import type { CoreV1ResourceQuota } from '@otterscale/types';
-import type { Column } from '@tanstack/table-core';
+import type { Column, ColumnDef } from '@tanstack/table-core';
 import { type Row } from '@tanstack/table-core';
 import lodash from 'lodash';
 
@@ -12,10 +12,11 @@ import LinkCell from '$lib/components/dynamic-table/cells/link-cell.svelte';
 import RatioCell from '$lib/components/dynamic-table/cells/ratio-cell.svelte';
 import type { RatioType } from '$lib/components/dynamic-table/cells/type';
 import { renderComponent } from '$lib/components/ui/data-table';
+import type { FieldsType, ValuesType } from '../type';
 
-function resourceQuotaFieldsMask(
+function getResourceQuotaFields(
 	schema: any
-): Record<string, { description: string; type: string; format?: string }> {
+): FieldsType {
 	return {
 		Name: lodash.get(schema, 'properties.metadata.properties.name'),
 		Namespace: lodash.get(schema, 'properties.metadata.properties.namespace'),
@@ -66,9 +67,9 @@ function resourceQuotaFieldsMask(
 	};
 }
 
-function resourceQuotaObjectMask(
+function getResourceQuotaValues(
 	object: CoreV1ResourceQuota
-): Record<string, JsonValue | RatioType> {
+): ValuesType {
 	return {
 		Name: object?.metadata?.name as JsonValue,
 		Namespace: object?.metadata?.namespace as JsonValue,
@@ -77,33 +78,33 @@ function resourceQuotaObjectMask(
 		'CPU Limit': {
 			numerator: object?.status?.used?.['limits.cpu'],
 			denominator: object?.status?.hard?.['limits.cpu']
-		} as RatioType,
+		} as JsonValue,
 		'Memory Limit': {
 			numerator: object?.status?.used?.['limits.memory'],
 			denominator: object?.status?.hard?.['limits.memory']
-		} as RatioType,
+		} as JsonValue,
 		'CPU Request': {
 			numerator: object?.status?.used?.['requests.cpu'],
 			denominator: object?.status?.hard?.['requests.cpu']
-		} as RatioType,
+		} as JsonValue,
 		'GPU Request': {
 			numerator: object?.status?.used?.['requests.otterscale.com/vgpu'],
 			denominator: object?.status?.hard?.['requests.otterscale.com/vgpu']
-		} as RatioType,
+		} as JsonValue,
 		'Memory Request': {
 			numerator: object?.status?.used?.['requests.memory'],
 			denominator: object?.status?.hard?.['requests.memory']
-		} as RatioType,
+		} as JsonValue,
 		Configuration: object as JsonValue,
 		raw: object as JsonValue
 	};
 }
 
-function resourceQuotaColumnDefinitions(apiResource: APIResource, fields: any) {
+function getResourceQuotaColumnDefinitions(apiResource: APIResource, fields: FieldsType): ColumnDef<ValuesType>[] {
 	return [
 		{
 			id: 'Name',
-			header: ({ column }: { column: Column<Record<string, JsonValue>> }) =>
+			header: ({ column }: { column: Column<ValuesType> }) =>
 				renderComponent(DynamicTableHeader, {
 					column: column,
 					fields: fields
@@ -112,20 +113,20 @@ function resourceQuotaColumnDefinitions(apiResource: APIResource, fields: any) {
 				column,
 				row
 			}: {
-				column: Column<Record<string, JsonValue>>;
-				row: Row<Record<string, JsonValue>>;
+				column: Column<ValuesType>;
+				row: Row<ValuesType>;
 			}) =>
 				renderComponent(LinkCell, {
 					display: String(row.original[column.id]),
 					hyperlink: resolve(
-						`/(auth)/${page.params.cluster!}/ResourceQuota/resourcequotas?group=&version=v1&name=${row.original[column.id]}&namespace=${page.url.searchParams.get('namespace')!}`
+						`/(auth)/${page.params.cluster!}/${apiResource.kind}/${apiResource.resource}?group=${apiResource.group}&version=${apiResource.version}&name=${row.original[column.id]}&namespace=${page.url.searchParams.get('namespace') ?? ''}`
 					)
 				}),
 			accessorKey: 'Name'
 		},
 		{
 			id: 'Namespace',
-			header: ({ column }: { column: Column<Record<string, JsonValue>> }) =>
+			header: ({ column }: { column: Column<ValuesType> }) =>
 				renderComponent(DynamicTableHeader, {
 					column: column,
 					fields: fields
@@ -134,8 +135,8 @@ function resourceQuotaColumnDefinitions(apiResource: APIResource, fields: any) {
 				column,
 				row
 			}: {
-				column: Column<Record<string, JsonValue>>;
-				row: Row<Record<string, JsonValue>>;
+				column: Column<ValuesType>;
+				row: Row<ValuesType>;
 			}) =>
 				renderComponent(DynamicTableCell, {
 					row: row,
@@ -146,7 +147,7 @@ function resourceQuotaColumnDefinitions(apiResource: APIResource, fields: any) {
 		},
 		{
 			id: 'Annotations',
-			header: ({ column }: { column: Column<Record<string, JsonValue>> }) =>
+			header: ({ column }: { column: Column<ValuesType> }) =>
 				renderComponent(DynamicTableHeader, {
 					column: column,
 					fields: fields
@@ -155,20 +156,20 @@ function resourceQuotaColumnDefinitions(apiResource: APIResource, fields: any) {
 				column,
 				row
 			}: {
-				column: Column<Record<string, JsonValue>>;
-				row: Row<Record<string, JsonValue>>;
+				column: Column<ValuesType>;
+				row: Row<ValuesType>;
 			}) =>
 				renderComponent(DynamicTableCell, {
 					row: row,
 					column: column,
 					fields: fields
 				}),
-			accessorFn: (row: Record<string, JsonValue>) =>
+			accessorFn: (row: ValuesType) =>
 				row['Annotations'] ? Object.keys(row['Annotations']).length : null
 		},
 		{
 			id: 'Labels',
-			header: ({ column }: { column: Column<Record<string, JsonValue>> }) =>
+			header: ({ column }: { column: Column<ValuesType> }) =>
 				renderComponent(DynamicTableHeader, {
 					column: column,
 					fields: fields
@@ -177,20 +178,20 @@ function resourceQuotaColumnDefinitions(apiResource: APIResource, fields: any) {
 				column,
 				row
 			}: {
-				column: Column<Record<string, JsonValue>>;
-				row: Row<Record<string, JsonValue>>;
+				column: Column<ValuesType>;
+				row: Row<ValuesType>;
 			}) =>
 				renderComponent(DynamicTableCell, {
 					row: row,
 					column: column,
 					fields: fields
 				}),
-			accessorFn: (row: Record<string, JsonValue>) =>
+			accessorFn: (row: ValuesType) =>
 				row['Labels'] ? Object.keys(row['Labels']).length : null
 		},
 		{
 			id: 'CPU Limit',
-			header: ({ column }: { column: Column<Record<string, JsonValue>> }) =>
+			header: ({ column }: { column: Column<ValuesType> }) =>
 				renderComponent(DynamicTableHeader, {
 					column: column,
 					fields: fields
@@ -315,4 +316,4 @@ function resourceQuotaColumnDefinitions(apiResource: APIResource, fields: any) {
 	];
 }
 
-export { resourceQuotaColumnDefinitions, resourceQuotaFieldsMask, resourceQuotaObjectMask };
+export { getResourceQuotaColumnDefinitions, getResourceQuotaFields, getResourceQuotaValues };
