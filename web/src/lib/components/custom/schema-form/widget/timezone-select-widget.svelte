@@ -75,7 +75,7 @@
 	];
 
 	// This widget handles a single timezone string field
-	let { value = $bindable(), config }: ComponentProps['stringField'] = $props();
+	let { value = $bindable(), config }: ComponentProps['textWidget'] = $props();
 
 	// Popover state
 	let open = $state(false);
