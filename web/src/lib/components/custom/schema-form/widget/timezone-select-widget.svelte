@@ -141,6 +141,7 @@
 					placeholder="Search timezones..."
 					value={searchQuery}
 					oninput={(e) => (searchQuery = e.currentTarget.value)}
+					onkeydown={(e) => e.stopPropagation()}
 				/>
 				<Command.List>
 					<Command.Empty>No timezones found.</Command.Empty>
