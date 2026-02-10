@@ -1,6 +1,6 @@
 import type { Component } from 'svelte';
 
-import CronJob from '$lib/components/form/cronjob/create-sheet.svelte';
+import CronJob from '$lib/components/dynamic-form/cronjob/create-sheet.svelte';
 
 type CreatorProps = { schema?: any };
 type CreatorType = Component<CreatorProps> | null;
