@@ -86,8 +86,14 @@
 			: TIMEZONES
 	);
 
-	// Get UTC offset for a timezone
+	// Cache UTC offsets to avoid creating Intl.DateTimeFormat on every render
+	const utcOffsetCache = new Map<string, string>();
+
+	// Get UTC offset for a timezone (lazy cached)
 	function getUtcOffset(timezone: string): string {
+		const cached = utcOffsetCache.get(timezone);
+		if (cached !== undefined) return cached;
+
 		try {
 			const date = new Date();
 			const formatter = new Intl.DateTimeFormat('en-US', {
@@ -96,8 +102,11 @@
 			});
 			const parts = formatter.formatToParts(date);
 			const offsetPart = parts.find((p) => p.type === 'timeZoneName');
-			return offsetPart?.value || '';
+			const result = offsetPart?.value || '';
+			utcOffsetCache.set(timezone, result);
+			return result;
 		} catch {
+			utcOffsetCache.set(timezone, '');
 			return '';
 		}
 	}
