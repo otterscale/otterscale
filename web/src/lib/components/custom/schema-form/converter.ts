@@ -40,7 +40,6 @@ export interface PathOptions {
 
 // ── Internal Types ─────────────────────────────────────────
 
-/** Shared build context threaded through all helper functions. */
 interface BuildContext {
 	readonly rootSchema: Schema;
 	readonly uiSchema: UiSchemaRoot;
@@ -49,15 +48,10 @@ interface BuildContext {
 	readonly allOptions: Record<string, PathOptions>;
 }
 
-/** Mutable cursors for traversing source & target schemas in parallel. */
 interface TraversalState {
-	/** Cursor into the K8s source schema tree */
 	source: K8sOpenAPISchema;
-	/** Cursor into the JSON Schema being built */
 	target: Schema;
-	/** Cursor into the UI Schema being built */
 	uiTarget: Record<string, unknown>;
-	/** Dot-delimited path accumulated so far (e.g. "spec.containers") */
 	cumulativePath: string;
 }
 
@@ -76,12 +70,17 @@ function isMapSchema(schema: K8sOpenAPISchema): boolean {
 // ── Key Resolution ─────────────────────────────────────────
 
 /**
- * Resolves the next key and source schema, handling dotted keys in Maps.
+ * Resolves the next key and its source schema, merging dotted Map keys.
  *
- * K8s Map keys (e.g. annotation keys like "app.kubernetes.io/name") may
- * contain dots. When the current source is a Map schema, this function
- * greedily merges consecutive path parts into a single key until it hits
- * a recognized property or another Map boundary.
+ * @example path: "spec.resourceQuota.hard.requests.cpu"
+ * // parts=["spec","resourceQuota","hard","requests","cpu"]
+ * //
+ * // index=0 → "spec"          (direct property match)
+ * // index=1 → "resourceQuota" (direct property match)
+ * // index=2 → "hard"          (direct property match)
+ * // index=3 → "hard" is a Map (additionalProperties: { anyOf:[integer,string] })
+ * //           "requests" not in value schema props, "cpu" also not
+ * //           → merged key="requests.cpu", nextIndex=4
  */
 function resolveNextKey(
 	currentSource: K8sOpenAPISchema,
@@ -117,15 +116,14 @@ function resolveNextKey(
 		return { key, nextIndex, sourceSchema: mapValueSchema };
 	}
 
-	// Case 3: Not found in source schema
 	return { key, nextIndex, sourceSchema: undefined };
 }
 
 // ── Schema Helpers ─────────────────────────────────────────
 
 /**
- * Simplifies K8s "Quantity" schemas (oneOf/anyOf: [string, number/integer])
- * to a single string type for form rendering (handles values like "100m", "2Gi").
+ * { oneOf: [{type:"string"},{type:"integer"}] }  →  { type: "string" }
+ * Lets the form use a single text input for K8s Quantity values ("100m", "2Gi").
  */
 function simplifyQuantitySchema(target: Schema, source: K8sOpenAPISchema): void {
 	const variants = source.oneOf || source.anyOf;
@@ -141,7 +139,7 @@ function simplifyQuantitySchema(target: Schema, source: K8sOpenAPISchema): void 
 	}
 }
 
-/** Applies PathOptions (title, description) onto a target schema node. */
+/** Applies user-provided title / description overrides onto a schema node. */
 function applySchemaOptions(
 	target: Schema,
 	source: K8sOpenAPISchema,
@@ -158,11 +156,12 @@ function applySchemaOptions(
 // ── Map Hoisting ───────────────────────────────────────────
 
 /**
- * Hoists a K8s Map field (additionalProperties) to the root-level schema
- * as an array of `{key, value}` pairs, making it editable via form controls.
+ * Hoists a K8s Map (additionalProperties) to root as an editable array.
  *
- * Records the path mapping in `transformationMappings` so that
- * `k8sToFormData` and `formDataToK8s` can convert between representations.
+ * @example
+ * // path: "metadata.labels"  →  formPath: "metadata_labels"
+ * // K8s:  { metadata: { labels: { app: "web", env: "prod" } } }
+ * // Form: { metadata_labels: [{ key: "app", value: "web" }, { key: "env", value: "prod" }] }
  */
 function hoistMapToRoot(
 	ctx: BuildContext,
@@ -207,7 +206,7 @@ function hoistMapToRoot(
 
 // ── Required Handling ──────────────────────────────────────
 
-/** Adds `part` to the target's required array when appropriate. */
+/** Marks field as required (PathOptions overrides K8s source at leaf level). */
 function applyRequiredIfNeeded(
 	target: Schema,
 	part: string,
@@ -231,8 +230,12 @@ function applyRequiredIfNeeded(
 // ── UI Schema Building ─────────────────────────────────────
 
 /**
- * Builds the UI schema node for a single path segment.
- * Returns the `partUi` reference used for deeper traversal.
+ * Builds UI schema for one path segment. Returns the partUi cursor.
+ *
+ * @example
+ * // Intermediate: { "ui:options": { label: false } }
+ * // Leaf with enum: { "ui:components": { stringField: "enumField" } }
+ * // Leaf with title: { "ui:title": "Name", "ui:options": { label: true } }
  */
 function buildUiSchemaNode(
 	uiTarget: Record<string, unknown>,
@@ -247,14 +250,11 @@ function buildUiSchemaNode(
 	}
 	const partUi = uiTarget[part] as Record<string, unknown>;
 
-	// Hide labels for intermediate (non-user-specified) path segments
 	if (!flags.isExplicit) {
 		partUi['ui:options'] = { label: false };
 	}
 
 	if (!flags.isLeaf) return partUi;
-
-	// ── Leaf-only UI configuration ──
 
 	if (Array.isArray(sourceProp.enum)) {
 		partUi['ui:components'] = { stringField: 'enumField' };
@@ -284,7 +284,7 @@ function buildUiSchemaNode(
 
 // ── Schema Property Creation ───────────────────────────────
 
-/** Creates a full schema property for a terminal leaf (complete copy from source). */
+/** Full copy of source schema for a terminal leaf (no deeper paths reference it). */
 function createTerminalLeafProperty(
 	sourceProp: K8sOpenAPISchema,
 	options: PathOptions
@@ -304,7 +304,7 @@ function createTerminalLeafProperty(
 	return prop;
 }
 
-/** Creates a skeleton schema property for an intermediate (non-terminal) node. */
+/** Skeleton schema (type: object/array) for nodes that have deeper children. */
 function createIntermediateProperty(
 	sourceProp: K8sOpenAPISchema,
 	part: string,
@@ -339,11 +339,7 @@ function createIntermediateProperty(
 // ── Array Traversal ────────────────────────────────────────
 
 /**
- * Advances all three traversal cursors through an array's `items` level.
- *
- * K8s paths treat arrays transparently (`spec.containers.image`
- * rather than `spec.containers[0].image`), so we "dive into" the
- * array's items schema for the next iteration.
+ * Dives all cursors into array `items` (K8s uses "spec.containers.image" not "[0].image").
  */
 function advanceThroughArray(
 	state: TraversalState,
@@ -367,11 +363,17 @@ function advanceThroughArray(
 // ── Main: buildSchemaFromK8s ───────────────────────────────
 
 /**
- * Subsets the full K8s OpenAPI schema to include only the specified paths,
- * producing:
- * - `schema`:  JSON Schema Draft-07 compatible schema for form rendering
- * - `uiSchema`: UI configuration for SJSF form controls
- * - `transformationMappings`: Map ↔ Array conversion lookup for data transforms
+ * Extracts a subset of a K8s OpenAPI schema → SJSF-compatible { schema, uiSchema, transformationMappings }.
+ *
+ * @example
+ * const { schema, uiSchema, transformationMappings } = buildSchemaFromK8s(k8sSchema, {
+ *   'metadata.name':   { title: 'Name' },
+ *   'metadata.labels':  { title: 'Labels' },          // Map → hoisted as array of {key,value}
+ *   'spec.replicas':    { title: 'Replicas' },
+ *   'spec.containers.image': { title: 'Image' },       // Array traversal (containers is array)
+ * });
+ * // schema.properties   → { metadata: { properties: { name: ... } }, metadata_labels: [...], spec: ... }
+ * // transformationMappings → { "metadata.labels": "metadata_labels" }
  */
 export function buildSchemaFromK8s(
 	fullSchema: K8sOpenAPISchema,
@@ -398,11 +400,7 @@ export function buildSchemaFromK8s(
 	return { schema: rootSchema, uiSchema, transformationMappings };
 }
 
-/**
- * Processes a single dot-delimited path, walking the source K8s schema
- * and building up the target JSON Schema, UI Schema, and transformation
- * mappings for that path.
- */
+/** Walks one dot-delimited path, building target schema + uiSchema + mappings. */
 function processPath(
 	ctx: BuildContext,
 	fullSchema: K8sOpenAPISchema,
@@ -420,17 +418,12 @@ function processPath(
 	};
 
 	for (let i = 0; i < parts.length; i++) {
-		// 1. Resolve key (handles dotted Map keys like annotation keys)
 		const { key: part, nextIndex, sourceSchema } = resolveNextKey(state.source, parts, i);
 		i = nextIndex;
 
-		// 2. Reject prototype-pollution keys
 		if (UNSAFE_KEYS.has(part)) break;
-
-		// 3. Track cumulative path
 		state.cumulativePath = state.cumulativePath ? `${state.cumulativePath}.${part}` : part;
 
-		// 4. Bail if path segment not found in source
 		if (!sourceSchema) {
 			console.warn(`Path segment "${part}" not found in source schema (full path: ${path})`);
 			break;
@@ -441,24 +434,20 @@ function processPath(
 		const isLeaf = i === parts.length - 1;
 		const isExplicit = ctx.allPaths.includes(state.cumulativePath);
 
-		// 5. Hoist Map fields → root-level array of {key, value}
 		if (isLeaf && isMapSchema(sourceSchema)) {
 			hoistMapToRoot(ctx, path, sourceSchema, options, customUiOptions);
 			break;
 		}
 
-		// 6. Ensure properties object exists & handle required
 		if (!state.target.properties) state.target.properties = {};
 		applyRequiredIfNeeded(state.target, part, parentSource, options, isLeaf);
 
-		// 7. Build UI schema node
 		const partUi = buildUiSchemaNode(
 			state.uiTarget, part, sourceSchema,
 			options, customUiOptions,
 			{ isLeaf, isExplicit }
 		);
 
-		// 8. Create or update the schema property
 		const isTerminalLeaf =
 			isLeaf &&
 			!ctx.allPaths.some(
@@ -475,7 +464,6 @@ function processPath(
 			simplifyQuantitySchema(existing, sourceSchema);
 		}
 
-		// 9. Advance cursors: dive into array items or descend normally
 		if (sourceSchema.type === 'array' && sourceSchema.items && !isLeaf) {
 			advanceThroughArray(state, part, partUi);
 			continue;
@@ -493,7 +481,14 @@ function processPath(
 
 // ── Data Conversion: K8s ↔ Form ───────────────────────────
 
-/** Converts K8s Object → Form data (Maps become key-value arrays). */
+/**
+ * K8s → Form: converts Map objects to key-value arrays based on mappings.
+ *
+ * @example
+ * // mappings: { "metadata.labels": "metadata_labels" }
+ * // input:  { metadata: { labels: { app: "web" } } }
+ * // output: { metadata: {}, metadata_labels: [{ key: "app", value: "web" }] }
+ */
 export function k8sToFormData(
 	data: unknown,
 	mappings: Record<string, string>
@@ -518,7 +513,14 @@ export function k8sToFormData(
 	return formData;
 }
 
-/** Converts Form data → K8s Object (key-value arrays become Maps). */
+/**
+ * Form → K8s: converts key-value arrays back to Map objects.
+ *
+ * @example
+ * // mappings: { "metadata.labels": "metadata_labels" }
+ * // input:  { metadata_labels: [{ key: "app", value: "web" }] }
+ * // output: { metadata: { labels: { app: "web" } } }
+ */
 export function formDataToK8s(
 	formData: unknown,
 	mappings: Record<string, string>
@@ -544,7 +546,6 @@ export function formDataToK8s(
 		}
 	}
 
-	// Normalize numeric-keyed objects back to arrays
 	k8sData = normalizeArrays(k8sData) as Record<string, unknown>;
 
 	return k8sData;
@@ -552,7 +553,9 @@ export function formDataToK8s(
 
 // ── Array Normalization ────────────────────────────────────
 
-/** Recursively converts objects with all-numeric keys back to arrays. */
+/**
+ * { "0": "a", "1": "b" } → ["a", "b"]  (recursively)
+ */
 export function normalizeArrays(obj: unknown): unknown {
 	if (obj === null || obj === undefined) return obj;
 	if (Array.isArray(obj)) return obj.map(normalizeArrays);
@@ -565,7 +568,7 @@ export function normalizeArrays(obj: unknown): unknown {
 	if (allNumeric) {
 		const numericKeys = keys.map(Number).sort((a, b) => a - b);
 
-		// Safety check: Prevent sparse arrays with excessively large indices
+		// Prevent sparse arrays with excessively large indices
 		if (numericKeys.length > 0 && numericKeys[numericKeys.length - 1] > 10000) {
 			return recurseObjectValues(record);
 		}
@@ -580,7 +583,6 @@ export function normalizeArrays(obj: unknown): unknown {
 	return recurseObjectValues(record);
 }
 
-/** Recursively normalizes all values in a plain object. */
 function recurseObjectValues(record: Record<string, unknown>): Record<string, unknown> {
 	const result: Record<string, unknown> = {};
 	for (const key of Object.keys(record)) {
@@ -591,7 +593,14 @@ function recurseObjectValues(record: Record<string, unknown>): Record<string, un
 
 // ── Data Filtering ─────────────────────────────────────────
 
-/** Filters data to only include properties defined in the schema. */
+/**
+ * Keeps only the data fields present in the schema (deep recursive).
+ *
+ * @example
+ * // schema defines: { name: string, image: string }
+ * // input:  { name: "web", image: "nginx", extra: true }
+ * // output: { name: "web", image: "nginx" }
+ */
 export function filterDataBySchema(data: unknown, schema: Schema): Record<string, unknown> {
 	if (!data || typeof data !== 'object' || Array.isArray(data)) return {};
 	if (!schema || schema.type !== 'object' || !schema.properties) return {};
@@ -620,7 +629,6 @@ export function filterDataBySchema(data: unknown, schema: Schema): Record<string
 	return result;
 }
 
-/** Checks if a value is a non-array object whose schema has sub-properties to recurse into. */
 function isFilterableObject(prop: Schema, value: unknown): value is Record<string, unknown> {
 	return (
 		prop.type === 'object' &&
@@ -631,7 +639,6 @@ function isFilterableObject(prop: Schema, value: unknown): value is Record<strin
 	);
 }
 
-/** Filters each array element against the items schema when applicable. */
 function filterArrayItems(value: unknown[], prop: Schema): unknown[] {
 	if (prop.items && typeof prop.items === 'object' && !Array.isArray(prop.items)) {
 		return value.map((item) =>
