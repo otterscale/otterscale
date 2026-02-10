@@ -40,7 +40,7 @@
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import { shortcut } from '$lib/actions/shortcut.svelte';
-	import CreateSheet from '$lib/components/form/workspace/create-sheet.svelte';
+	import CreateSheet from '$lib/components/dynamic-form/workspace/create-sheet.svelte';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
 	import { useSidebar } from '$lib/components/ui/sidebar/index.js';

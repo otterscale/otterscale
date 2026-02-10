@@ -1,7 +1,7 @@
 import type { Component } from 'svelte';
 
-import DeleteDialog from '$lib/components/form/workspace/delete-dialog.svelte';
-import EditSheet from '$lib/components/form/workspace/edit-sheet.svelte';
+import DeleteDialog from '$lib/components/dynamic-form/workspace/delete-dialog.svelte';
+import EditSheet from '$lib/components/dynamic-form/workspace/edit-sheet.svelte';
 
 import Default from './default.svelte';
 import Workspaces from './workspaces.svelte';
