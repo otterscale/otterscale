@@ -1,0 +1,1106 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`buildSchemaFromK8s > should generate expected schema, uiSchema and transformationMappings for workspace form > schema 1`] = `
+{
+  "properties": {
+    "metadata": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "title": "Workspace Name",
+          "type": "string",
+        },
+      },
+      "title": "",
+      "type": "object",
+    },
+    "spec": {
+      "additionalProperties": false,
+      "properties": {
+        "limitRange": {
+          "additionalProperties": false,
+          "properties": {
+            "limits": {
+              "items": {
+                "properties": {
+                  "default": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "cpu": {
+                        "pattern": "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$",
+                        "readOnly": true,
+                        "title": "Default CPU Limit",
+                        "type": "string",
+                        "x-kubernetes-int-or-string": true,
+                      },
+                      "memory": {
+                        "pattern": "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$",
+                        "readOnly": true,
+                        "title": "Default Memory Limit",
+                        "type": "string",
+                        "x-kubernetes-int-or-string": true,
+                      },
+                    },
+                    "title": "",
+                    "type": "object",
+                  },
+                  "defaultRequest": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "cpu": {
+                        "pattern": "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$",
+                        "readOnly": true,
+                        "title": "Default CPU Request",
+                        "type": "string",
+                        "x-kubernetes-int-or-string": true,
+                      },
+                      "memory": {
+                        "pattern": "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$",
+                        "readOnly": true,
+                        "title": "Default Memory Request",
+                        "type": "string",
+                        "x-kubernetes-int-or-string": true,
+                      },
+                    },
+                    "title": "",
+                    "type": "object",
+                  },
+                  "type": {
+                    "readOnly": true,
+                    "title": "Type",
+                    "type": "string",
+                  },
+                },
+                "required": [
+                  "type",
+                ],
+                "title": "Limit",
+                "type": "object",
+              },
+              "title": "Limit Range",
+              "type": "array",
+            },
+          },
+          "required": [
+            "limits",
+          ],
+          "title": "",
+          "type": "object",
+        },
+        "namespace": {
+          "description": "Namespace is the name of the Kubernetes Namespace to be created for this workspace.
+It must be unique across all Workspaces.",
+          "maxLength": 63,
+          "minLength": 1,
+          "pattern": "^([a-z0-9]([-a-z0-9]*[a-z0-9])?)$",
+          "title": "Namespace",
+          "type": "string",
+          "x-kubernetes-validations": [
+            {
+              "message": "namespace is immutable",
+              "rule": "self == oldSelf",
+            },
+          ],
+        },
+        "networkIsolation": {
+          "additionalProperties": false,
+          "properties": {
+            "allowedNamespaces": {
+              "items": {
+                "type": "string",
+              },
+              "title": "Allowed Namespaces",
+              "type": "array",
+              "x-kubernetes-list-type": "set",
+            },
+            "enabled": {
+              "title": "Enable Network Isolation",
+              "type": "boolean",
+            },
+          },
+          "title": "Network Isolation",
+          "type": "object",
+        },
+        "resourceQuota": {
+          "additionalProperties": false,
+          "properties": {
+            "hard": {
+              "additionalProperties": false,
+              "properties": {
+                "limits.cpu": {
+                  "pattern": "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$",
+                  "readOnly": true,
+                  "title": "Limits CPU",
+                  "type": "string",
+                  "x-kubernetes-int-or-string": true,
+                },
+                "limits.memory": {
+                  "pattern": "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$",
+                  "readOnly": true,
+                  "title": "Limits Memory",
+                  "type": "string",
+                  "x-kubernetes-int-or-string": true,
+                },
+                "limits.nvidia.com/gpu": {
+                  "pattern": "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$",
+                  "readOnly": true,
+                  "title": "Limits GPU",
+                  "type": "string",
+                  "x-kubernetes-int-or-string": true,
+                },
+                "requests.cpu": {
+                  "pattern": "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$",
+                  "readOnly": true,
+                  "title": "Requests CPU",
+                  "type": "string",
+                  "x-kubernetes-int-or-string": true,
+                },
+                "requests.memory": {
+                  "pattern": "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$",
+                  "readOnly": true,
+                  "title": "Requests Memory",
+                  "type": "string",
+                  "x-kubernetes-int-or-string": true,
+                },
+                "requests.nvidia.com/gpu": {
+                  "pattern": "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$",
+                  "readOnly": true,
+                  "title": "Requests GPU",
+                  "type": "string",
+                  "x-kubernetes-int-or-string": true,
+                },
+              },
+              "title": "",
+              "type": "object",
+            },
+          },
+          "title": "",
+          "type": "object",
+        },
+        "users": {
+          "items": {
+            "description": "WorkspaceUser defines a single user entity associated with a workspace.",
+            "properties": {
+              "name": {
+                "description": "Name is the human-readable display name of the user.",
+                "type": "string",
+              },
+              "role": {
+                "description": "Role defines the authorization level (Admin, Edit, View).",
+                "enum": [
+                  "admin",
+                  "edit",
+                  "view",
+                ],
+                "type": "string",
+              },
+              "subject": {
+                "description": "Subject is the unique identifier of the user (e.g., OIDC subject or username).
+This identifier maps directly to the Kubernetes RBAC Subject.",
+                "maxLength": 63,
+                "minLength": 1,
+                "pattern": "^([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9]$",
+                "type": "string",
+              },
+            },
+            "required": [
+              "role",
+              "subject",
+            ],
+            "type": "object",
+          },
+          "minItems": 1,
+          "title": "Users",
+          "type": "array",
+          "x-kubernetes-list-map-keys": [
+            "subject",
+          ],
+          "x-kubernetes-list-type": "map",
+        },
+      },
+      "required": [
+        "namespace",
+        "users",
+      ],
+      "title": "",
+      "type": "object",
+    },
+  },
+  "required": [
+    "spec",
+  ],
+  "title": "",
+  "type": "object",
+}
+`;
+
+exports[`buildSchemaFromK8s > should generate expected schema, uiSchema and transformationMappings for workspace form > transformationMappings 1`] = `{}`;
+
+exports[`buildSchemaFromK8s > should generate expected schema, uiSchema and transformationMappings for workspace form > uiSchema 1`] = `
+{
+  "metadata": {
+    "name": {
+      "ui:options": {
+        "label": true,
+      },
+      "ui:title": "Workspace Name",
+    },
+    "ui:options": {
+      "label": false,
+    },
+  },
+  "spec": {
+    "limitRange": {
+      "limits": {
+        "items": {
+          "default": {
+            "cpu": {
+              "ui:options": {
+                "label": true,
+                "shadcn4Text": {
+                  "disabled": true,
+                },
+              },
+              "ui:title": "Default CPU Limit",
+            },
+            "memory": {
+              "ui:options": {
+                "label": true,
+                "shadcn4Text": {
+                  "disabled": true,
+                },
+              },
+              "ui:title": "Default Memory Limit",
+            },
+            "ui:options": {
+              "label": false,
+            },
+          },
+          "defaultRequest": {
+            "cpu": {
+              "ui:options": {
+                "label": true,
+                "shadcn4Text": {
+                  "disabled": true,
+                },
+              },
+              "ui:title": "Default CPU Request",
+            },
+            "memory": {
+              "ui:options": {
+                "label": true,
+                "shadcn4Text": {
+                  "disabled": true,
+                },
+              },
+              "ui:title": "Default Memory Request",
+            },
+            "ui:options": {
+              "label": false,
+            },
+          },
+          "type": {
+            "ui:options": {
+              "label": true,
+              "shadcn4Text": {
+                "disabled": true,
+              },
+            },
+            "ui:title": "Type",
+          },
+        },
+        "ui:options": {
+          "addable": false,
+          "orderable": false,
+          "removable": false,
+        },
+      },
+      "ui:options": {
+        "label": false,
+      },
+    },
+    "namespace": {
+      "ui:options": {
+        "label": true,
+      },
+      "ui:title": "Namespace",
+    },
+    "networkIsolation": {
+      "allowedNamespaces": {
+        "ui:options": {
+          "label": true,
+        },
+        "ui:title": "Allowed Namespaces",
+      },
+      "enabled": {
+        "ui:components": {
+          "checkboxWidget": "switchWidget",
+        },
+      },
+      "ui:options": {
+        "label": true,
+      },
+      "ui:title": "Network Isolation",
+    },
+    "resourceQuota": {
+      "hard": {
+        "limits.cpu": {
+          "ui:options": {
+            "label": true,
+            "shadcn4Text": {
+              "disabled": true,
+            },
+          },
+          "ui:title": "Limits CPU",
+        },
+        "limits.memory": {
+          "ui:options": {
+            "label": true,
+            "shadcn4Text": {
+              "disabled": true,
+            },
+          },
+          "ui:title": "Limits Memory",
+        },
+        "limits.nvidia.com/gpu": {
+          "ui:options": {
+            "label": true,
+            "shadcn4Text": {
+              "disabled": true,
+            },
+          },
+          "ui:title": "Limits GPU",
+        },
+        "requests.cpu": {
+          "ui:options": {
+            "label": true,
+            "shadcn4Text": {
+              "disabled": true,
+            },
+          },
+          "ui:title": "Requests CPU",
+        },
+        "requests.memory": {
+          "ui:options": {
+            "label": true,
+            "shadcn4Text": {
+              "disabled": true,
+            },
+          },
+          "ui:title": "Requests Memory",
+        },
+        "requests.nvidia.com/gpu": {
+          "ui:options": {
+            "label": true,
+            "shadcn4Text": {
+              "disabled": true,
+            },
+          },
+          "ui:title": "Requests GPU",
+        },
+        "ui:options": {
+          "label": false,
+        },
+      },
+      "ui:options": {
+        "label": false,
+      },
+    },
+    "ui:options": {
+      "label": false,
+    },
+    "users": {
+      "items": {
+        "ui:components": {
+          "objectField": "UserSelectWidget",
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`buildSchemaFromK8s > should handle map (additionalProperties) fields correctly > map-paths-schema 1`] = `
+{
+  "properties": {
+    "spec": {
+      "additionalProperties": false,
+      "properties": {
+        "resourceQuota": {
+          "additionalProperties": false,
+          "properties": {
+            "hard": {
+              "additionalProperties": false,
+              "properties": {
+                "requests.cpu": {
+                  "pattern": "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$",
+                  "title": "Requests CPU",
+                  "type": "string",
+                  "x-kubernetes-int-or-string": true,
+                },
+              },
+              "title": "",
+              "type": "object",
+            },
+          },
+          "title": "",
+          "type": "object",
+        },
+      },
+      "title": "",
+      "type": "object",
+    },
+  },
+  "required": [
+    "spec",
+  ],
+  "title": "",
+  "type": "object",
+}
+`;
+
+exports[`buildSchemaFromK8s > should handle map (additionalProperties) fields correctly > map-paths-transformationMappings 1`] = `{}`;
+
+exports[`buildSchemaFromK8s > should handle map (additionalProperties) fields correctly > map-paths-uiSchema 1`] = `
+{
+  "spec": {
+    "resourceQuota": {
+      "hard": {
+        "requests.cpu": {
+          "ui:options": {
+            "label": true,
+          },
+          "ui:title": "Requests CPU",
+        },
+        "ui:options": {
+          "label": false,
+        },
+      },
+      "ui:options": {
+        "label": false,
+      },
+    },
+    "ui:options": {
+      "label": false,
+    },
+  },
+}
+`;
+
+exports[`buildSchemaFromK8s > should handle nested array paths correctly > array-paths-schema 1`] = `
+{
+  "properties": {
+    "spec": {
+      "additionalProperties": false,
+      "properties": {
+        "users": {
+          "items": {
+            "properties": {
+              "role": {
+                "enum": [
+                  "admin",
+                  "edit",
+                  "view",
+                ],
+                "title": "Role",
+                "type": "string",
+              },
+              "subject": {
+                "maxLength": 63,
+                "minLength": 1,
+                "pattern": "^([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9]$",
+                "title": "Subject",
+                "type": "string",
+              },
+            },
+            "required": [
+              "subject",
+              "role",
+            ],
+            "title": "User",
+            "type": "object",
+          },
+          "title": "Users",
+          "type": "array",
+        },
+      },
+      "required": [
+        "users",
+      ],
+      "title": "",
+      "type": "object",
+    },
+  },
+  "required": [
+    "spec",
+  ],
+  "title": "",
+  "type": "object",
+}
+`;
+
+exports[`buildSchemaFromK8s > should handle nested array paths correctly > array-paths-uiSchema 1`] = `
+{
+  "spec": {
+    "ui:options": {
+      "label": false,
+    },
+    "users": {
+      "items": {
+        "role": {
+          "ui:components": {
+            "stringField": "enumField",
+          },
+          "ui:options": {
+            "label": true,
+          },
+          "ui:title": "Role",
+        },
+        "subject": {
+          "ui:options": {
+            "label": true,
+          },
+          "ui:title": "Subject",
+        },
+      },
+      "ui:options": {
+        "label": true,
+      },
+      "ui:title": "Users",
+    },
+  },
+}
+`;
+
+exports[`buildSchemaFromK8s > should handle simple array of paths > simple-paths-schema 1`] = `
+{
+  "properties": {
+    "metadata": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "title": undefined,
+          "type": "string",
+        },
+      },
+      "title": "",
+      "type": "object",
+    },
+    "spec": {
+      "additionalProperties": false,
+      "properties": {
+        "namespace": {
+          "maxLength": 63,
+          "minLength": 1,
+          "pattern": "^([a-z0-9]([-a-z0-9]*[a-z0-9])?)$",
+          "title": undefined,
+          "type": "string",
+          "x-kubernetes-validations": [
+            {
+              "message": "namespace is immutable",
+              "rule": "self == oldSelf",
+            },
+          ],
+        },
+      },
+      "required": [
+        "namespace",
+      ],
+      "title": "",
+      "type": "object",
+    },
+  },
+  "required": [
+    "spec",
+  ],
+  "title": "",
+  "type": "object",
+}
+`;
+
+exports[`buildSchemaFromK8s > should handle simple array of paths > simple-paths-transformationMappings 1`] = `{}`;
+
+exports[`buildSchemaFromK8s > should handle simple array of paths > simple-paths-uiSchema 1`] = `
+{
+  "metadata": {
+    "name": {},
+    "ui:options": {
+      "label": false,
+    },
+  },
+  "spec": {
+    "namespace": {},
+    "ui:options": {
+      "label": false,
+    },
+  },
+}
+`;
+
+exports[`buildSchemaFromK8s - CronJob > should generate expected schema, uiSchema and transformationMappings for cronjob form > cronjob-schema 1`] = `
+{
+  "properties": {
+    "metadata": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string",
+        },
+      },
+      "title": "",
+      "type": "object",
+    },
+    "spec": {
+      "additionalProperties": false,
+      "properties": {
+        "concurrencyPolicy": {
+          "enum": [
+            "Allow",
+            "Forbid",
+            "Replace",
+          ],
+          "title": "Concurrency Policy",
+          "type": "string",
+        },
+        "jobTemplate": {
+          "additionalProperties": false,
+          "properties": {
+            "spec": {
+              "additionalProperties": false,
+              "properties": {
+                "template": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "spec": {
+                      "additionalProperties": false,
+                      "properties": {
+                        "containers": {
+                          "items": {
+                            "properties": {
+                              "args": {
+                                "items": {
+                                  "default": "",
+                                  "type": "string",
+                                },
+                                "title": "Arguments",
+                                "type": "array",
+                                "x-kubernetes-list-type": "atomic",
+                              },
+                              "command": {
+                                "items": {
+                                  "default": "",
+                                  "type": "string",
+                                },
+                                "title": "Command",
+                                "type": "array",
+                                "x-kubernetes-list-type": "atomic",
+                              },
+                              "env": {
+                                "items": {
+                                  "description": "EnvVar represents an environment variable present in a Container.",
+                                  "properties": {
+                                    "name": {
+                                      "default": "",
+                                      "description": "Name of the environment variable. Must be a C_IDENTIFIER.",
+                                      "type": "string",
+                                    },
+                                    "value": {
+                                      "description": "Variable references $(VAR_NAME) are expanded using the previously defined environment variables in the container and any service environment variables. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Defaults to "".",
+                                      "type": "string",
+                                    },
+                                    "valueFrom": {
+                                      "description": "EnvVarSource represents a source for the value of an EnvVar.",
+                                      "properties": {
+                                        "configMapKeyRef": {
+                                          "description": "Selects a key from a ConfigMap.",
+                                          "properties": {
+                                            "key": {
+                                              "default": "",
+                                              "description": "The key to select.",
+                                              "type": "string",
+                                            },
+                                            "name": {
+                                              "default": "",
+                                              "description": "Name of the referent. This field is effectively required, but due to backwards compatibility is allowed to be empty. Instances of this type with an empty value here are almost certainly wrong. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names",
+                                              "type": "string",
+                                            },
+                                            "optional": {
+                                              "description": "Specify whether the ConfigMap or its key must be defined",
+                                              "type": "boolean",
+                                            },
+                                          },
+                                          "required": [
+                                            "key",
+                                          ],
+                                          "type": "object",
+                                          "x-kubernetes-map-type": "atomic",
+                                        },
+                                        "fieldRef": {
+                                          "description": "ObjectFieldSelector selects an APIVersioned field of an object.",
+                                          "properties": {
+                                            "apiVersion": {
+                                              "description": "Version of the schema the FieldPath is written in terms of, defaults to "v1".",
+                                              "type": "string",
+                                            },
+                                            "fieldPath": {
+                                              "default": "",
+                                              "description": "Path of the field to select in the specified API version.",
+                                              "type": "string",
+                                            },
+                                          },
+                                          "required": [
+                                            "fieldPath",
+                                          ],
+                                          "type": "object",
+                                          "x-kubernetes-map-type": "atomic",
+                                        },
+                                        "resourceFieldRef": {
+                                          "description": "ResourceFieldSelector represents container resources (cpu, memory) and their output format",
+                                          "properties": {
+                                            "containerName": {
+                                              "description": "Container name: required for volumes, optional for env vars",
+                                              "type": "string",
+                                            },
+                                            "divisor": {
+                                              "description": "Quantity is a fixed-point representation of a number. It provides convenient marshaling/unmarshaling in JSON and YAML, in addition to String() and AsInt64() accessors.
+
+The serialization format is:
+
+\`\`\` <quantity>        ::= <signedNumber><suffix>
+
+	(Note that <suffix> may be empty, from the "" case in <decimalSI>.)
+
+<digit>           ::= 0 | 1 | ... | 9 <digits>          ::= <digit> | <digit><digits> <number>          ::= <digits> | <digits>.<digits> | <digits>. | .<digits> <sign>            ::= "+" | "-" <signedNumber>    ::= <number> | <sign><number> <suffix>          ::= <binarySI> | <decimalExponent> | <decimalSI> <binarySI>        ::= Ki | Mi | Gi | Ti | Pi | Ei
+
+	(International System of units; See: http://physics.nist.gov/cuu/Units/binary.html)
+
+<decimalSI>       ::= m | "" | k | M | G | T | P | E
+
+	(Note that 1024 = 1Ki but 1000 = 1k; I didn't choose the capitalization.)
+
+<decimalExponent> ::= "e" <signedNumber> | "E" <signedNumber> \`\`\`
+
+No matter which of the three exponent forms is used, no quantity may represent a number greater than 2^63-1 in magnitude, nor may it have more than 3 decimal places. Numbers larger or more precise will be capped or rounded up. (E.g.: 0.1m will rounded up to 1m.) This may be extended in the future if we require larger or smaller quantities.
+
+When a Quantity is parsed from a string, it will remember the type of suffix it had, and will use the same type again when it is serialized.
+
+Before serializing, Quantity will be put in "canonical form". This means that Exponent/suffix will be adjusted up or down (with a corresponding increase or decrease in Mantissa) such that:
+
+- No precision is lost - No fractional digits will be emitted - The exponent (or suffix) is as large as possible.
+
+The sign will be omitted unless the number is negative.
+
+Examples:
+
+- 1.5 will be serialized as "1500m" - 1.5Gi will be serialized as "1536Mi"
+
+Note that the quantity will NEVER be internally represented by a floating point number. That is the whole point of this exercise.
+
+Non-canonical values will still parse as long as they are well formed, but will be re-emitted in their canonical form. (So always use canonical form, or don't diff.)
+
+This format is intended to make it difficult to use these numbers without writing some sort of special handling code in the hopes that that will cause implementors to also use a fixed point implementation.",
+                                              "oneOf": [
+                                                {
+                                                  "type": "string",
+                                                },
+                                                {
+                                                  "type": "number",
+                                                },
+                                              ],
+                                            },
+                                            "resource": {
+                                              "default": "",
+                                              "description": "Required: resource to select",
+                                              "type": "string",
+                                            },
+                                          },
+                                          "required": [
+                                            "resource",
+                                          ],
+                                          "type": "object",
+                                          "x-kubernetes-map-type": "atomic",
+                                        },
+                                        "secretKeyRef": {
+                                          "description": "SecretKeySelector selects a key of a Secret.",
+                                          "properties": {
+                                            "key": {
+                                              "default": "",
+                                              "description": "The key of the secret to select from.  Must be a valid secret key.",
+                                              "type": "string",
+                                            },
+                                            "name": {
+                                              "default": "",
+                                              "description": "Name of the referent. This field is effectively required, but due to backwards compatibility is allowed to be empty. Instances of this type with an empty value here are almost certainly wrong. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names",
+                                              "type": "string",
+                                            },
+                                            "optional": {
+                                              "description": "Specify whether the Secret or its key must be defined",
+                                              "type": "boolean",
+                                            },
+                                          },
+                                          "required": [
+                                            "key",
+                                          ],
+                                          "type": "object",
+                                          "x-kubernetes-map-type": "atomic",
+                                        },
+                                      },
+                                      "type": "object",
+                                    },
+                                  },
+                                  "required": [
+                                    "name",
+                                  ],
+                                  "type": "object",
+                                },
+                                "title": "Environment Variables",
+                                "type": "array",
+                                "x-kubernetes-list-map-keys": [
+                                  "name",
+                                ],
+                                "x-kubernetes-list-type": "map",
+                                "x-kubernetes-patch-merge-key": "name",
+                                "x-kubernetes-patch-strategy": "merge",
+                              },
+                              "image": {
+                                "title": "Image",
+                                "type": "string",
+                              },
+                              "name": {
+                                "default": "",
+                                "title": "Name",
+                                "type": "string",
+                              },
+                              "resources": {
+                                "additionalProperties": false,
+                                "properties": {
+                                  "limits": {
+                                    "additionalProperties": false,
+                                    "properties": {
+                                      "cpu": {
+                                        "title": "Limits CPU",
+                                        "type": "string",
+                                      },
+                                      "memory": {
+                                        "title": "Limits Memory",
+                                        "type": "string",
+                                      },
+                                    },
+                                    "title": "",
+                                    "type": "object",
+                                  },
+                                  "requests": {
+                                    "additionalProperties": false,
+                                    "properties": {
+                                      "cpu": {
+                                        "title": "Requests CPU",
+                                        "type": "string",
+                                      },
+                                      "memory": {
+                                        "title": "Requests Memory",
+                                        "type": "string",
+                                      },
+                                    },
+                                    "title": "",
+                                    "type": "object",
+                                  },
+                                },
+                                "title": "",
+                                "type": "object",
+                              },
+                            },
+                            "required": [
+                              "name",
+                            ],
+                            "title": "Container",
+                            "type": "object",
+                          },
+                          "title": "",
+                          "type": "array",
+                        },
+                      },
+                      "required": [
+                        "containers",
+                      ],
+                      "title": "",
+                      "type": "object",
+                    },
+                  },
+                  "title": "",
+                  "type": "object",
+                },
+              },
+              "required": [
+                "template",
+              ],
+              "title": "",
+              "type": "object",
+            },
+          },
+          "title": "",
+          "type": "object",
+        },
+        "schedule": {
+          "default": "",
+          "description": "The schedule in Cron format, see https://en.wikipedia.org/wiki/Cron.",
+          "title": "Schedule",
+          "type": "string",
+        },
+        "suspend": {
+          "title": "Suspend execution",
+          "type": "boolean",
+        },
+      },
+      "required": [
+        "schedule",
+        "jobTemplate",
+      ],
+      "title": "",
+      "type": "object",
+    },
+  },
+  "required": [],
+  "title": "",
+  "type": "object",
+}
+`;
+
+exports[`buildSchemaFromK8s - CronJob > should generate expected schema, uiSchema and transformationMappings for cronjob form > cronjob-transformationMappings 1`] = `{}`;
+
+exports[`buildSchemaFromK8s - CronJob > should generate expected schema, uiSchema and transformationMappings for cronjob form > cronjob-uiSchema 1`] = `
+{
+  "metadata": {
+    "name": {
+      "ui:options": {
+        "label": true,
+      },
+      "ui:title": "Name",
+    },
+    "ui:options": {
+      "label": false,
+    },
+  },
+  "spec": {
+    "concurrencyPolicy": {
+      "ui:components": {
+        "stringField": "enumField",
+      },
+      "ui:options": {
+        "label": true,
+      },
+      "ui:title": "Concurrency Policy",
+    },
+    "jobTemplate": {
+      "spec": {
+        "template": {
+          "spec": {
+            "containers": {
+              "items": {
+                "args": {
+                  "ui:options": {
+                    "label": true,
+                  },
+                  "ui:title": "Arguments",
+                },
+                "command": {
+                  "ui:options": {
+                    "label": true,
+                  },
+                  "ui:title": "Command",
+                },
+                "env": {
+                  "ui:options": {
+                    "label": true,
+                  },
+                  "ui:title": "Environment Variables",
+                },
+                "image": {
+                  "ui:options": {
+                    "label": true,
+                  },
+                  "ui:title": "Image",
+                },
+                "name": {
+                  "ui:options": {
+                    "label": true,
+                  },
+                  "ui:title": "Name",
+                },
+                "resources": {
+                  "limits": {
+                    "cpu": {
+                      "ui:options": {
+                        "label": true,
+                      },
+                      "ui:title": "Limits CPU",
+                    },
+                    "memory": {
+                      "ui:options": {
+                        "label": true,
+                      },
+                      "ui:title": "Limits Memory",
+                    },
+                    "ui:options": {
+                      "label": false,
+                    },
+                  },
+                  "requests": {
+                    "cpu": {
+                      "ui:options": {
+                        "label": true,
+                      },
+                      "ui:title": "Requests CPU",
+                    },
+                    "memory": {
+                      "ui:options": {
+                        "label": true,
+                      },
+                      "ui:title": "Requests Memory",
+                    },
+                    "ui:options": {
+                      "label": false,
+                    },
+                  },
+                  "ui:options": {
+                    "label": false,
+                  },
+                },
+              },
+              "ui:options": {
+                "label": false,
+              },
+            },
+            "ui:options": {
+              "label": false,
+            },
+          },
+          "ui:options": {
+            "label": false,
+          },
+        },
+        "ui:options": {
+          "label": false,
+        },
+      },
+      "ui:options": {
+        "label": false,
+      },
+    },
+    "schedule": {
+      "ui:options": {
+        "label": true,
+      },
+      "ui:title": "Schedule",
+    },
+    "suspend": {
+      "ui:components": {
+        "checkboxWidget": "switchWidget",
+      },
+    },
+    "ui:options": {
+      "label": false,
+    },
+  },
+}
+`;

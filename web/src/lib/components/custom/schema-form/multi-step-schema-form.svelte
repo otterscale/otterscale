@@ -24,6 +24,8 @@
 	import SchemaFormStep from './schema-form-step.svelte';
 	import { deepMerge } from './utils';
 
+	// ── Types ──────────────────────────────────────────────────
+
 	export type GroupedFields = Record<string, Record<string, PathOptions>>;
 
 	interface StepFormData {
@@ -45,6 +47,8 @@
 		yamlEditable?: boolean;
 	}
 
+	// ── Props & State ──────────────────────────────────────────
+
 	let {
 		apiSchema,
 		fields,
@@ -64,46 +68,66 @@
 	let yamlParseError = $state<string | null>(null);
 	let formRefs = $state<(HTMLFormElement | undefined)[]>([]);
 
+	// ── Derived ────────────────────────────────────────────────
+
 	const stepNames = $derived(Object.keys(fields));
 	const totalSteps = $derived(stepNames.length);
 	const isFirstStep = $derived(currentStep === 0);
 	const isLastStep = $derived(currentStep === totalSteps - 1);
 
-	function createStepForms(sourceData: Record<string, unknown>) {
-		const forms: StepFormData[] = [];
+	// ── Helpers ────────────────────────────────────────────────
 
-		for (const [stepName, paths] of Object.entries(fields)) {
+	/** Merge form data into masterData after converting to K8s format */
+	function mergeStepIntoMaster(
+		data: Record<string, unknown>,
+		mappings: SchemaFormConfig['transformationMappings']
+	) {
+		const k8sData = formDataToK8s(data, mappings);
+		masterData = normalizeArrays(deepMerge(masterData, k8sData)) as Record<string, unknown>;
+	}
+
+	/** Collect current data from all step forms into masterData */
+	function collectAllFormData() {
+		for (const { form, formConfig } of stepForms) {
+			const formData = getValueSnapshot(form) as Record<string, unknown>;
+			mergeStepIntoMaster(formData, formConfig.transformationMappings);
+		}
+	}
+
+	/** Apply transformData callback if provided */
+	function applyTransform() {
+		if (transformData) {
+			masterData = transformData(masterData);
+		}
+	}
+
+	// ── Form Lifecycle ─────────────────────────────────────────
+
+	function createStepForms(sourceData: Record<string, unknown>) {
+		stepForms = Object.entries(fields).map(([stepName, paths]) => {
 			const formConfig = buildSchemaFromK8s(apiSchema, paths);
-			// Filter initialData to only include fields defined in this step's schema
 			const transformedData = k8sToFormData(sourceData, formConfig.transformationMappings);
-			const stepInitialValue = filterDataBySchema(transformedData, formConfig.schema);
+			const initialValue = filterDataBySchema(transformedData, formConfig.schema);
 
 			const form = createForm<Record<string, unknown>>({
 				...defaults,
 				idPrefix: `k8s-step-${stepName.replace(/\s+/g, '-').toLowerCase()}`,
-				initialValue: stepInitialValue,
+				initialValue: initialValue,
 				schema: formConfig.schema,
 				uiSchema: formConfig.uiSchema,
-				onSubmit: (data) => handleStepSubmit(stepName, data, formConfig)
+				onSubmit: (data) => handleStepSubmit(data, formConfig)
 			});
 
-			forms.push({ stepName, paths, formConfig, form });
-		}
-
-		stepForms = forms;
+			return { stepName, paths, formConfig, form };
+		});
 	}
 
-	// Initialize step forms once on component creation
 	createStepForms(masterData);
 
-	function handleStepSubmit(
-		stepName: string,
-		data: Record<string, unknown>,
-		formConfig: SchemaFormConfig
-	) {
-		const k8sData = formDataToK8s(data, formConfig.transformationMappings);
-		masterData = normalizeArrays(deepMerge(masterData, k8sData)) as Record<string, unknown>;
+	// ── Event Handlers ─────────────────────────────────────────
 
+	function handleStepSubmit(data: Record<string, unknown>, formConfig: SchemaFormConfig) {
+		mergeStepIntoMaster(data, formConfig.transformationMappings);
 		if (isLastStep) {
 			handleFinalSubmit();
 		} else {
@@ -112,55 +136,9 @@
 	}
 
 	async function handleFinalSubmit() {
-		if (mode === 'basic') {
-			collectAllFormData();
-		}
-
-		if (transformData) {
-			masterData = transformData(masterData);
-		}
-
-		if (onSubmit) {
-			await onSubmit(masterData);
-		}
-	}
-
-	function goBack() {
-		if (!isFirstStep) {
-			currentStep--;
-		}
-	}
-
-	function goToStep(index: number) {
-		if (index <= currentStep) {
-			currentStep = index;
-		}
-	}
-
-	function syncMasterDataToYaml() {
-		try {
-			advanceYaml = yaml.dump(masterData, {
-				indent: 2,
-				lineWidth: -1
-			});
-		} catch (error) {
-			console.error('Error syncing master data to YAML:', error);
-		}
-	}
-
-	function syncYamlToMasterData() {
-		try {
-			yamlParseError = null;
-			const parsed = yaml.load(advanceYaml) as Record<string, unknown> | null;
-
-			if (parsed && typeof parsed === 'object') {
-				masterData = parsed;
-			}
-		} catch (error) {
-			const errorMsg = `Invalid YAML: ${error instanceof Error ? error.message : 'Unknown error'}`;
-			yamlParseError = errorMsg;
-			console.error('Error parsing YAML:', error);
-		}
+		if (mode === 'basic') collectAllFormData();
+		applyTransform();
+		await onSubmit?.(masterData);
 	}
 
 	function handleModeChange(newMode: string) {
@@ -171,9 +149,7 @@
 			createStepForms(masterData);
 		} else if (targetMode === 'advance') {
 			collectAllFormData();
-			if (transformData) {
-				masterData = transformData(masterData);
-			}
+			applyTransform();
 			syncMasterDataToYaml();
 		}
 
@@ -181,14 +157,25 @@
 		onModeChange?.(mode);
 	}
 
-	function collectAllFormData() {
-		for (const stepForm of stepForms) {
-			const formData = getValueSnapshot(stepForm.form);
-			const k8sData = formDataToK8s(formData, stepForm.formConfig.transformationMappings);
-			masterData = deepMerge(masterData, k8sData);
+	// ── YAML Sync ──────────────────────────────────────────────
+
+	function syncMasterDataToYaml() {
+		try {
+			advanceYaml = yaml.dump(masterData, { indent: 2, lineWidth: -1 });
+		} catch (error) {
+			console.error('Error syncing master data to YAML:', error);
 		}
-		// Normalize all numeric-keyed objects to arrays
-		masterData = normalizeArrays(masterData) as Record<string, unknown>;
+	}
+
+	function syncYamlToMasterData() {
+		try {
+			yamlParseError = null;
+			const parsed = yaml.load(advanceYaml) as Record<string, unknown> | null;
+			if (parsed && typeof parsed === 'object') masterData = parsed;
+		} catch (error) {
+			yamlParseError = `Invalid YAML: ${error instanceof Error ? error.message : 'Unknown error'}`;
+			console.error('Error parsing YAML:', error);
+		}
 	}
 </script>
 
@@ -223,7 +210,11 @@
 											? 'border-primary bg-background text-primary'
 											: 'border-muted bg-muted text-muted-foreground'
 								)}
-								onclick={() => goToStep(index)}
+								onclick={() => {
+									if (index <= currentStep) {
+										currentStep = index;
+									}
+								}}
 								disabled={index > currentStep}
 							>
 								{#if index < currentStep}
@@ -265,21 +256,22 @@
 			</div>
 
 			<div class="mt-auto flex justify-between px-6 py-4">
-				<Button variant="outline" onclick={goBack} disabled={isFirstStep} type="button">
+				<Button
+					variant="outline"
+					onclick={() => {
+						if (!isFirstStep) {
+							currentStep--;
+						}
+					}}
+					disabled={isFirstStep}
+					type="button"
+				>
 					← Previous
 				</Button>
 
-				<div class="flex gap-2">
-					{#if !isLastStep}
-						<Button type="button" onclick={() => formRefs[currentStep]?.requestSubmit()}>
-							Next →
-						</Button>
-					{:else}
-						<Button type="button" onclick={() => formRefs[currentStep]?.requestSubmit()}>
-							Submit
-						</Button>
-					{/if}
-				</div>
+				<Button type="button" onclick={() => formRefs[currentStep]?.requestSubmit()}>
+					{isLastStep ? 'Submit' : 'Next →'}
+				</Button>
 			</div>
 		</Tabs.Content>
 
