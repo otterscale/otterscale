@@ -2,6 +2,7 @@
 	import { Check, ChevronsUpDown, Globe } from '@lucide/svelte';
 	import type { ComponentProps } from '@sjsf/form';
 	import { onMount } from 'svelte';
+	import { SvelteMap } from 'svelte/reactivity';
 
 	import { Button } from '$lib/components/ui/button';
 	import * as Command from '$lib/components/ui/command';
@@ -61,6 +62,14 @@
 	let searchQuery = $state('');
 	let triggerRef = $state<HTMLButtonElement | null>(null);
 
+	// Pre-computed UTC offset map (populated on mount)
+	const utcOffsets = new SvelteMap<string, string>();
+
+	// Simple lookup — returns pre-computed offset or empty string before mount
+	function getUtcOffset(timezone: string): string {
+		return utcOffsets.get(timezone) ?? '';
+	}
+
 	// Get browser's default timezone
 	function getBrowserTimezone(): string {
 		try {
@@ -70,12 +79,27 @@
 		}
 	}
 
-	// Set default timezone from browser on mount if value is empty
 	onMount(() => {
+		// Set default timezone from browser if value is empty
 		if (!value) {
 			const browserTz = getBrowserTimezone();
-			// Use browser timezone if it's in our list, otherwise default to UTC
 			value = TIMEZONES.includes(browserTz) ? browserTz : 'Etc/UTC';
+		}
+
+		// Pre-compute all UTC offsets in a single batch, sharing one Date instance
+		const date = new Date();
+		for (const tz of TIMEZONES) {
+			try {
+				const formatter = new Intl.DateTimeFormat('en-US', {
+					timeZone: tz,
+					timeZoneName: 'shortOffset'
+				});
+				const parts = formatter.formatToParts(date);
+				const offsetPart = parts.find((p) => p.type === 'timeZoneName');
+				utcOffsets.set(tz, offsetPart?.value || '');
+			} catch {
+				utcOffsets.set(tz, '');
+			}
 		}
 	});
 
@@ -85,31 +109,6 @@
 			? TIMEZONES.filter((tz) => tz.toLowerCase().includes(searchQuery.toLowerCase()))
 			: TIMEZONES
 	);
-
-	// Cache UTC offsets to avoid creating Intl.DateTimeFormat on every render
-	const utcOffsetCache = new Map<string, string>();
-
-	// Get UTC offset for a timezone (lazy cached)
-	function getUtcOffset(timezone: string): string {
-		const cached = utcOffsetCache.get(timezone);
-		if (cached !== undefined) return cached;
-
-		try {
-			const date = new Date();
-			const formatter = new Intl.DateTimeFormat('en-US', {
-				timeZone: timezone,
-				timeZoneName: 'shortOffset'
-			});
-			const parts = formatter.formatToParts(date);
-			const offsetPart = parts.find((p) => p.type === 'timeZoneName');
-			const result = offsetPart?.value || '';
-			utcOffsetCache.set(timezone, result);
-			return result;
-		} catch {
-			utcOffsetCache.set(timezone, '');
-			return '';
-		}
-	}
 
 	// Display text for the button
 	const displayText = $derived(
