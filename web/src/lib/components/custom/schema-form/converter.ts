@@ -41,8 +41,8 @@ export interface PathOptions {
 // ── Internal Types ─────────────────────────────────────────
 
 interface BuildContext {
-	readonly rootSchema: Schema;
-	readonly uiSchema: UiSchemaRoot;
+	readonly schema: Schema;
+	readonly uiSchema: UiSchemaRoot & Record<string, unknown>;
 	readonly transformationMappings: Record<string, string>;
 	readonly allPaths: string[];
 	readonly allOptions: Record<string, PathOptions>;
@@ -50,8 +50,8 @@ interface BuildContext {
 
 interface TraversalState {
 	source: K8sOpenAPISchema;
-	target: Schema;
-	uiTarget: Record<string, unknown>;
+	schema: Schema;
+	uiSchema: Record<string, unknown>;
 	cumulativePath: string;
 }
 
@@ -125,32 +125,32 @@ function resolveNextKey(
  * { oneOf: [{type:"string"},{type:"integer"}] }  →  { type: "string" }
  * Lets the form use a single text input for K8s Quantity values ("100m", "2Gi").
  */
-function simplifyQuantitySchema(target: Schema, source: K8sOpenAPISchema): void {
+function simplifyQuantitySchema(schema: Schema, source: K8sOpenAPISchema): void {
 	const variants = source.oneOf || source.anyOf;
 	if (
 		Array.isArray(variants) &&
 		variants.some((v) => v.type === 'string') &&
 		variants.some((v) => v.type === 'number' || v.type === 'integer')
 	) {
-		target.type = 'string';
-		target.title = source.title ?? target.title ?? '';
-		delete target.oneOf;
-		delete target.anyOf;
+		schema.type = 'string';
+		schema.title = source.title ?? schema.title ?? '';
+		delete schema.oneOf;
+		delete schema.anyOf;
 	}
 }
 
 /** Applies user-provided title / description overrides onto a schema node. */
 function applySchemaOptions(
-	target: Schema,
+	schema: Schema,
 	source: K8sOpenAPISchema,
 	options: PathOptions,
 	isLeaf: boolean
 ): void {
-	if (options.title) target.title = options.title;
-	else target.title = source.title;
+	if (options.title) schema.title = options.title;
+	else schema.title = source.title;
 
-	if (isLeaf && options.showDescription) target.description = source.description;
-	else delete target.description;
+	if (isLeaf && options.showDescription) schema.description = source.description;
+	else delete schema.description;
 }
 
 // ── Map Hoisting ───────────────────────────────────────────
@@ -189,17 +189,17 @@ function hoistMapToRoot(
 	};
 	applySchemaOptions(arrayProp, sourceProp, options, true);
 
-	if (!ctx.rootSchema.properties) ctx.rootSchema.properties = {};
-	ctx.rootSchema.properties[formPath] = arrayProp;
+	if (!ctx.schema.properties) ctx.schema.properties = {};
+	ctx.schema.properties[formPath] = arrayProp;
 
 	if (Object.keys(customUiOptions).length > 0) {
 		ctx.uiSchema[formPath] = deepMerge(ctx.uiSchema[formPath] || {}, customUiOptions);
 	}
 
 	if (options.required) {
-		if (!ctx.rootSchema.required) ctx.rootSchema.required = [];
-		if (!ctx.rootSchema.required.includes(formPath)) {
-			ctx.rootSchema.required.push(formPath);
+		if (!ctx.schema.required) ctx.schema.required = [];
+		if (!ctx.schema.required.includes(formPath)) {
+			ctx.schema.required.push(formPath);
 		}
 	}
 }
@@ -208,7 +208,7 @@ function hoistMapToRoot(
 
 /** Marks field as required (PathOptions overrides K8s source at leaf level). */
 function applyRequiredIfNeeded(
-	target: Schema,
+	schema: Schema,
 	part: string,
 	parentSource: K8sOpenAPISchema,
 	options: PathOptions,
@@ -220,9 +220,9 @@ function applyRequiredIfNeeded(
 	}
 
 	if (shouldBeRequired) {
-		if (!target.required) target.required = [];
-		if (!target.required.includes(part)) {
-			target.required.push(part);
+		if (!schema.required) schema.required = [];
+		if (!schema.required.includes(part)) {
+			schema.required.push(part);
 		}
 	}
 }
@@ -238,17 +238,17 @@ function applyRequiredIfNeeded(
  * // Leaf with title: { "ui:title": "Name", "ui:options": { label: true } }
  */
 function buildUiSchemaNode(
-	uiTarget: Record<string, unknown>,
+	uiSchema: Record<string, unknown>,
 	part: string,
 	sourceProp: K8sOpenAPISchema,
 	options: PathOptions,
 	customUiOptions: Record<string, unknown>,
 	flags: { isLeaf: boolean; isExplicit: boolean }
 ): Record<string, unknown> {
-	if (!uiTarget[part]) {
-		uiTarget[part] = {};
+	if (!uiSchema[part]) {
+		uiSchema[part] = {};
 	}
-	const partUi = uiTarget[part] as Record<string, unknown>;
+	const partUi = uiSchema[part] as Record<string, unknown>;
 
 	if (!flags.isExplicit) {
 		partUi['ui:options'] = { label: false };
@@ -261,22 +261,20 @@ function buildUiSchemaNode(
 	}
 
 	if (Object.keys(customUiOptions).length > 0) {
-		uiTarget[part] = deepMerge(partUi, customUiOptions);
+		uiSchema[part] = deepMerge(partUi, customUiOptions);
 	}
 
 	if (options.title) {
 		partUi['ui:title'] = options.title;
-		partUi['ui:options'] = deepMerge(
-			(partUi['ui:options'] as Record<string, unknown>) || {},
-			{ label: true }
-		);
+		partUi['ui:options'] = deepMerge((partUi['ui:options'] as Record<string, unknown>) || {}, {
+			label: true
+		});
 	}
 
 	if (options.disabled) {
-		partUi['ui:options'] = deepMerge(
-			(partUi['ui:options'] as Record<string, unknown>) || {},
-			{ shadcn4Text: { disabled: true } }
-		);
+		partUi['ui:options'] = deepMerge((partUi['ui:options'] as Record<string, unknown>) || {}, {
+			shadcn4Text: { disabled: true }
+		});
 	}
 
 	return partUi;
@@ -285,10 +283,7 @@ function buildUiSchemaNode(
 // ── Schema Property Creation ───────────────────────────────
 
 /** Full copy of source schema for a terminal leaf (no deeper paths reference it). */
-function createTerminalLeafProperty(
-	sourceProp: K8sOpenAPISchema,
-	options: PathOptions
-): Schema {
+function createTerminalLeafProperty(sourceProp: K8sOpenAPISchema, options: PathOptions): Schema {
 	const prop = { ...sourceProp } as Schema;
 	if (prop.type === 'object' && !prop.properties) {
 		prop.properties = {};
@@ -348,16 +343,16 @@ function advanceThroughArray(
 ): void {
 	state.source = state.source.items!;
 
-	const arrayProp = state.target.properties![part] as Schema;
+	const arrayProp = state.schema.properties![part] as Schema;
 	if (!arrayProp.items || Array.isArray(arrayProp.items)) {
 		arrayProp.items = { type: 'object', properties: {} };
 	}
-	state.target = arrayProp.items as Schema;
+	state.schema = arrayProp.items as Schema;
 
 	if (!partUi.items) {
 		partUi.items = {};
 	}
-	state.uiTarget = partUi.items as Record<string, unknown>;
+	state.uiSchema = partUi.items as Record<string, unknown>;
 }
 
 // ── Main: buildSchemaFromK8s ───────────────────────────────
@@ -379,41 +374,37 @@ export function buildSchemaFromK8s(
 	fullSchema: K8sOpenAPISchema,
 	paths: string[] | Record<string, PathOptions>
 ): SchemaFormConfig {
-	const rootSchema: Schema = {
+	const schema: Schema = {
 		type: 'object',
 		properties: {},
 		required: [],
 		title: fullSchema.title ?? ''
 	};
 
-	const uiSchema: UiSchemaRoot = {};
+	const uiSchema = {} as UiSchemaRoot & Record<string, unknown>;
 	const transformationMappings: Record<string, string> = {};
 
 	const allPaths = Array.isArray(paths) ? paths : Object.keys(paths);
 	const allOptions = Array.isArray(paths) ? {} : paths;
-	const ctx: BuildContext = { rootSchema, uiSchema, transformationMappings, allPaths, allOptions };
+	const ctx: BuildContext = { schema, uiSchema, transformationMappings, allPaths, allOptions };
 
 	for (const path of allPaths) {
 		processPath(ctx, fullSchema, path);
 	}
 
-	return { schema: rootSchema, uiSchema, transformationMappings };
+	return { schema, uiSchema, transformationMappings };
 }
 
-/** Walks one dot-delimited path, building target schema + uiSchema + mappings. */
-function processPath(
-	ctx: BuildContext,
-	fullSchema: K8sOpenAPISchema,
-	path: string
-): void {
+/** Walks one dot-delimited path, building schema + uiSchema + mappings. */
+function processPath(ctx: BuildContext, fullSchema: K8sOpenAPISchema, path: string): void {
 	const options: PathOptions = ctx.allOptions[path] || {};
 	const customUiOptions = options.uiSchema || {};
 	const parts = path.split('.');
 
 	const state: TraversalState = {
 		source: fullSchema,
-		target: ctx.rootSchema,
-		uiTarget: ctx.uiSchema,
+		schema: ctx.schema,
+		uiSchema: ctx.uiSchema as Record<string, unknown>,
 		cumulativePath: ''
 	};
 
@@ -439,14 +430,13 @@ function processPath(
 			break;
 		}
 
-		if (!state.target.properties) state.target.properties = {};
-		applyRequiredIfNeeded(state.target, part, parentSource, options, isLeaf);
+		if (!state.schema.properties) state.schema.properties = {};
+		applyRequiredIfNeeded(state.schema, part, parentSource, options, isLeaf);
 
-		const partUi = buildUiSchemaNode(
-			state.uiTarget, part, sourceSchema,
-			options, customUiOptions,
-			{ isLeaf, isExplicit }
-		);
+		const partUi = buildUiSchemaNode(state.uiSchema, part, sourceSchema, options, customUiOptions, {
+			isLeaf,
+			isExplicit
+		});
 
 		const isTerminalLeaf =
 			isLeaf &&
@@ -454,12 +444,12 @@ function processPath(
 				(k) => k !== state.cumulativePath && k.startsWith(state.cumulativePath + '.')
 			);
 
-		if (!state.target.properties[part]) {
-			state.target.properties[part] = isTerminalLeaf
+		if (!state.schema.properties[part]) {
+			state.schema.properties[part] = isTerminalLeaf
 				? createTerminalLeafProperty(sourceSchema, options)
 				: createIntermediateProperty(sourceSchema, part, options, isExplicit);
 		} else if (isLeaf) {
-			const existing = state.target.properties[part] as Schema;
+			const existing = state.schema.properties[part] as Schema;
 			applySchemaOptions(existing, sourceSchema, options, true);
 			simplifyQuantitySchema(existing, sourceSchema);
 		}
@@ -470,11 +460,11 @@ function processPath(
 		}
 
 		if (!isLeaf) {
-			const nextTarget = state.target.properties[part];
+			const nextTarget = state.schema.properties[part];
 			if (typeof nextTarget === 'object' && nextTarget !== null) {
-				state.target = nextTarget as Schema;
+				state.schema = nextTarget as Schema;
 			}
-			state.uiTarget = partUi;
+			state.uiSchema = partUi;
 		}
 	}
 }
