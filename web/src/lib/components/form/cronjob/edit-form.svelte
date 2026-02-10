@@ -8,7 +8,8 @@
 	import {
 		type GroupedFields,
 		type K8sOpenAPISchema,
-		MultiStepSchemaForm
+		MultiStepSchemaForm,
+		TimezoneSelectWidget
 	} from '$lib/components/custom/schema-form';
 
 	let {
@@ -44,6 +45,14 @@
 		General: {
 			'metadata.name': { title: 'Name' },
 			'spec.schedule': { title: 'Schedule', showDescription: true },
+			'spec.timeZone': {
+				title: 'Time Zone',
+				uiSchema: {
+					'ui:components': {
+						textWidget: TimezoneSelectWidget
+					}
+				}
+			},
 			'spec.concurrencyPolicy': { title: 'Concurrency Policy' },
 			'spec.suspend': {
 				title: 'Suspend execution',
