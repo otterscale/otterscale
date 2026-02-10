@@ -1,115 +1,116 @@
-/**
- * Check if value is empty (null, undefined, empty object, or array of empty objects)
- */
+// ── Predicates ─────────────────────────────────────────────
+
+const UNSAFE_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
+
+/** null, undefined, {}, [], or array of only empty values. */
 function isEmptyValue(value: any): boolean {
 	if (value === null || value === undefined) return true;
-	if (Array.isArray(value)) {
-		return value.length === 0 || value.every((item) => isEmptyValue(item));
-	}
-	if (typeof value === 'object') {
-		return Object.keys(value).length === 0;
-	}
+	if (Array.isArray(value)) return value.length === 0 || value.every(isEmptyValue);
+	if (typeof value === 'object') return Object.keys(value).length === 0;
 	return false;
 }
 
+// ── Deep Merge ─────────────────────────────────────────────
+
 /**
- * Deep merge two objects.
- * Skips merging if source value is empty to preserve existing data.
+ * Recursively merges `source` into `target`. Skips empty source values to preserve existing data.
+ *
+ * @example
+ * deepMerge({ a: 1, b: { x: 1 } }, { b: { y: 2 }, c: 3 })
+ * // → { a: 1, b: { x: 1, y: 2 }, c: 3 }
+ *
+ * deepMerge([{ name: "a" }], [{}])
+ * // → [{ name: "a" }]  (empty source element is skipped)
  */
 export function deepMerge(target: any, source: any): any {
 	if (typeof target !== 'object' || target === null) return source;
 	if (typeof source !== 'object' || source === null) return target;
 
-	// Arrays: merge element-by-element to preserve fields not in source
 	if (Array.isArray(target) || Array.isArray(source)) {
-		// If source is empty or contains only empty objects, keep target
-		if (isEmptyValue(source)) {
-			return target;
-		}
-		// If both are arrays, deep merge each element by index
-		if (Array.isArray(target) && Array.isArray(source)) {
-			const result = [...target];
-			for (let i = 0; i < source.length; i++) {
-				if (i < result.length) {
-					if (isEmptyValue(source[i])) {
-						// Keep original element if source element is empty
-						continue;
-					}
-					result[i] = deepMerge(result[i], source[i]);
-				} else {
-					result[i] = source[i];
-				}
-			}
-			return result;
-		}
-		return source;
+		return mergeArrays(target, source);
 	}
 
+	return mergeObjects(target, source);
+}
+
+function mergeArrays(target: any, source: any): any {
+	if (isEmptyValue(source)) return target;
+
+	if (Array.isArray(target) && Array.isArray(source)) {
+		const result = [...target];
+		for (let i = 0; i < source.length; i++) {
+			if (i < result.length) {
+				if (isEmptyValue(source[i])) continue;
+				result[i] = deepMerge(result[i], source[i]);
+			} else {
+				result[i] = source[i];
+			}
+		}
+		return result;
+	}
+
+	return source;
+}
+
+function mergeObjects(target: any, source: any): any {
 	const output = { ...target };
-	Object.keys(source).forEach((key) => {
-		// Guard against prototype pollution
-		if (key === '__proto__' || key === 'constructor' || key === 'prototype') return;
 
-		const sourceValue = source[key];
-		const targetValue = target[key];
+	for (const key of Object.keys(source)) {
+		if (UNSAFE_KEYS.has(key)) continue;
 
-		// Skip if source value is empty and target has data
-		if (isEmptyValue(sourceValue) && targetValue !== undefined && !isEmptyValue(targetValue)) {
-			return;
-		}
+		const srcVal = source[key];
+		const tgtVal = target[key];
 
-		if (typeof sourceValue === 'object' && sourceValue !== null && key in target) {
-			output[key] = deepMerge(targetValue, sourceValue);
-		} else {
-			output[key] = sourceValue;
-		}
-	});
+		if (isEmptyValue(srcVal) && tgtVal !== undefined && !isEmptyValue(tgtVal)) continue;
+
+		output[key] =
+			typeof srcVal === 'object' && srcVal !== null && key in target
+				? deepMerge(tgtVal, srcVal)
+				: srcVal;
+	}
+
 	return output;
 }
 
+// ── Dot-Path Accessors ─────────────────────────────────────
+
 /**
- * Access nested property by dot path
+ * @example getByPath({ a: { b: 1 } }, "a.b") // → 1
  */
 export function getByPath(obj: any, path: string): any {
 	return path.split('.').reduce((acc, part) => acc && acc[part], obj);
 }
 
 /**
- * Set nested property by dot path, creating objects as needed
+ * @example
+ * const o = {};
+ * setByPath(o, "a.b.c", 42) // → o = { a: { b: { c: 42 } } }
  */
 export function setByPath(obj: any, path: string, value: any): void {
 	const parts = path.split('.');
-	// Guard against prototype pollution
-	if (
-		parts.some((part) => part === '__proto__' || part === 'constructor' || part === 'prototype')
-	) {
-		return;
-	}
+	if (parts.some((p) => UNSAFE_KEYS.has(p))) return;
+
 	let current = obj;
 	for (let i = 0; i < parts.length - 1; i++) {
-		const part = parts[i];
-		if (!current[part]) current[part] = {};
-		current = current[part];
+		if (!current[parts[i]]) current[parts[i]] = {};
+		current = current[parts[i]];
 	}
 	current[parts[parts.length - 1]] = value;
 }
 
 /**
- * Deletes nested property by dot path
+ * @example
+ * const o = { a: { b: 1, c: 2 } };
+ * deleteByPath(o, "a.b") // → o = { a: { c: 2 } }
  */
 export function deleteByPath(obj: any, path: string): void {
 	const parts = path.split('.');
-	// Guard against prototype pollution
-	if (
-		parts.some((part) => part === '__proto__' || part === 'constructor' || part === 'prototype')
-	) {
-		return;
-	}
+	if (parts.some((p) => UNSAFE_KEYS.has(p))) return;
+
 	let current = obj;
 	for (let i = 0; i < parts.length - 1; i++) {
-		const part = parts[i];
-		if (!current[part]) return;
-		current = current[part];
+		if (!current[parts[i]]) return;
+		current = current[parts[i]];
 	}
 	delete current[parts[parts.length - 1]];
 }
