@@ -149,4 +149,3 @@ describe('buildSchemaFromK8s - CronJob', () => {
 		expect(result.transformationMappings).toMatchSnapshot('cronjob-transformationMappings');
 	});
 });
-

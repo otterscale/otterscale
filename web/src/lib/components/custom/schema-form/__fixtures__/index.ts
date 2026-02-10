@@ -26,4 +26,3 @@ export function loadSchemaFixture(filename: string): K8sOpenAPISchema {
 // Pre-loaded fixtures for convenience
 export const workspaceSchema = loadSchemaFixture('workspace_api.json');
 export const cronjobSchema = loadSchemaFixture('cron_api.json');
-
