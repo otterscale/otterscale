@@ -13,6 +13,7 @@
 	import { type Column, type Row } from '@tanstack/table-core';
 
 	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
+	import { onMount } from 'svelte';
 	let {
 		row,
 		column,
@@ -24,6 +25,12 @@
 	} = $props();
 
 	const data = $derived(row.original[column.id] as number);
+
+	onMount(() => {
+		if (metadata === undefined) {
+			console.warn(`Expected metadata of ${column.id} for RatioCell, but got metadata:`, metadata);
+		}
+	});
 </script>
 
 {#if metadata.denominator !== undefined}

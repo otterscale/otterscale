@@ -38,6 +38,7 @@
 	import { Label } from '$lib/components/ui/label/index.js';
 	import { Select, SelectContent, SelectItem, SelectTrigger } from '$lib/components/ui/select';
 	import * as Sheet from '$lib/components/ui/sheet/index.js';
+	import { onMount } from 'svelte';
 
 	let {
 		row,
@@ -80,6 +81,15 @@
 			get pagination() {
 				return pagination;
 			}
+		}
+	});
+
+	onMount(() => {
+		if (metadata === undefined) {
+			console.warn(
+				`Expected metadata of ${column.id} for ArrayOfObjectCell, but got metadata:`,
+				metadata
+			);
 		}
 	});
 </script>

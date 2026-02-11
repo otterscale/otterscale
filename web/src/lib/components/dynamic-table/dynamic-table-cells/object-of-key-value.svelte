@@ -26,6 +26,7 @@
 	import * as Tabs from '$lib/components/ui/tabs/index.js';
 
 	import { format } from '../utils';
+	import { onMount } from 'svelte';
 
 	let {
 		row,
@@ -38,6 +39,15 @@
 	} = $props();
 
 	const data = $derived(row.original[column.id] as number);
+
+	onMount(() => {
+		if (metadata === undefined) {
+			console.warn(
+				`Expected metadata of ${column.id} for ObjectOfKeyValue, but got metadata:`,
+				metadata
+			);
+		}
+	});
 </script>
 
 {#if !data}
