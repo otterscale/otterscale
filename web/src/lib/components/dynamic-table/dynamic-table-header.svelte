@@ -2,28 +2,24 @@
 	import type { JsonValue } from '@bufbuild/protobuf';
 	import type { Column } from '@tanstack/table-core';
 	import { type WithElementRef } from 'bits-ui';
-	import lodash from 'lodash';
 	import type { HTMLAttributes } from 'svelte/elements';
 
 	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
 
-	import { getColumnType } from './utils';
-	import type { FieldsType, ValuesType } from '../kind-viewer/type';
+	import type { DataSchemaType } from './utils';
 
 	let {
 		ref = $bindable(null),
 		column,
+		dataSchemas,
 		children,
-		fields,
 		class: className
 	}: WithElementRef<HTMLAttributes<HTMLDivElement>> & {
-		column: Column<ValuesType>;
-		fields: FieldsType;
+		column: Column<Record<string, JsonValue>>;
+		dataSchemas: Record<string, DataSchemaType>;
 	} = $props();
 
-	const type = $derived(lodash.get(fields, `${column.id}.type`));
-	const format = $derived(lodash.get(fields, `${column.id}.format`));
-	const columnType = $derived(getColumnType(type, format));
+	const dataSchema = $derived(dataSchemas[column.id]);
 </script>
 
 <div class={className}>
@@ -36,9 +32,9 @@
 					<h3>{column.id}</h3>
 				{/if}
 			</Tooltip.Trigger>
-			{#if columnType}
+			{#if dataSchema}
 				<Tooltip.Content>
-					{columnType}
+					{dataSchema}
 				</Tooltip.Content>
 			{/if}
 		</Tooltip.Root>

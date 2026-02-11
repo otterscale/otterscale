@@ -1,282 +1,63 @@
 <script lang="ts">
-	import type { JsonObject, JsonValue } from '@bufbuild/protobuf';
-	import Circle from '@lucide/svelte/icons/circle';
-	import CircleX from '@lucide/svelte/icons/circle-x';
-	import File from '@lucide/svelte/icons/file';
-	import FileCheck from '@lucide/svelte/icons/file-check';
-	import FileClock from '@lucide/svelte/icons/file-clock';
-	import FileCode from '@lucide/svelte/icons/file-code';
-	import FileDigit from '@lucide/svelte/icons/file-digit';
-	import FileText from '@lucide/svelte/icons/file-text';
-	import Grid from '@lucide/svelte/icons/grid';
-	import List from '@lucide/svelte/icons/list';
+	import type { JsonValue } from '@bufbuild/protobuf';
 	import type { Column, Row } from '@tanstack/table-core';
 	import { type WithElementRef } from 'bits-ui';
 	import type { HTMLAttributes } from 'svelte/elements';
-	import { stringify } from 'yaml';
 
-	import * as Code from '$lib/components/custom/code/index.js';
-	import { Badge } from '$lib/components/ui/badge';
-	import { Button } from '$lib/components/ui/button';
-	import * as Collapsible from '$lib/components/ui/collapsible';
-	import * as Item from '$lib/components/ui/item';
-	import * as Sheet from '$lib/components/ui/sheet/index.js';
-	import * as Table from '$lib/components/ui/table/index.js';
-	import * as Tabs from '$lib/components/ui/tabs/index.js';
-	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
-	import { now } from '$lib/stores/now';
-
-	import { format, getColumnType, getRelativeTime } from './utils';
-	import type { FieldsType, ValuesType } from '../kind-viewer/type';
+	import ArrayOfObjectCell, {
+		type ArrayOfObjectMetadata
+	} from './dynamic-table-cells/array-of-object-cell.svelte';
+	import DefaultArrayCell from './dynamic-table-cells/default-array-cell.svelte';
+	import DefaultBooleanCell from './dynamic-table-cells/default-boolean-cell.svelte';
+	import DefaultEmptyCell from './dynamic-table-cells/default-empty-cell.svelte';
+	import DefaultNumberCell from './dynamic-table-cells/default-number-cell.svelte';
+	import DefaultObjectCell from './dynamic-table-cells/default-object-cell.svelte';
+	import DefaultTextCell from './dynamic-table-cells/default-text-cell.svelte';
+	import DefaultTimeCell from './dynamic-table-cells/default-time-cell.svelte';
+	import LinkCell, { type LinkMetadata } from './dynamic-table-cells/link-cell.svelte';
+	import ObjectOfKeyValue, {
+		type ObjectOfKeyValueMetadata
+	} from './dynamic-table-cells/object-of-key-value.svelte';
+	import RatioCell, { type RatioMetadata } from './dynamic-table-cells/ratio-cell.svelte';
+	import type { UISchemaType } from './utils';
 
 	let {
 		ref = $bindable(null),
-		column,
+		uiSchemas,
 		row,
-		fields,
-		children,
-		class: className
+		column,
+		metadata
 	}: WithElementRef<HTMLAttributes<HTMLDivElement>> & {
-		column: Column<ValuesType>;
-		row: Row<ValuesType>;
-		fields: FieldsType;
+		uiSchemas: Record<string, UISchemaType>;
+		row: Row<Record<string, JsonValue>>;
+		column: Column<Record<string, JsonValue>>;
+		metadata?: ArrayOfObjectMetadata | LinkMetadata | RatioMetadata | ObjectOfKeyValueMetadata;
 	} = $props();
 
-	const columnType = $derived(getColumnType(fields[column.id].type, fields[column.id].format));
+	const uiSchema = $derived(uiSchemas[column.id]);
 </script>
 
-<div class={className}>
-	{#if children}
-		{@render children()}
-	{:else if columnType === 'object'}
-		{@render ObjectCell({ data: row.original[column.id] as JsonObject })}
-	{:else if columnType === 'array'}
-		{@render ArrayCell({ data: row.original[column.id] as JsonValue[] })}
-	{:else if columnType === 'time'}
-		{@render DatetimeCell({ data: new Date(String(row.original[column.id])) })}
-	{:else if columnType === 'number'}
-		{@render NumberCell({ data: Number(row.original[column.id]) })}
-	{:else if columnType === 'boolean'}
-		{@render BooleanCell({ data: Boolean(row.original[column.id]) })}
-	{:else if row.original[column.id]}
-		{@render TextCell({ data: String(row.original[column.id]) })}
-	{:else}
-		{@render EmptyCell()}
-	{/if}
-</div>
-
-{#snippet ObjectCell({ data }: { data: JsonObject })}
-	<Sheet.Root>
-		<Sheet.Trigger>
-			{#if data}
-				{#if Object.values(data).some((value) => value && typeof value === 'object')}
-					<Button variant="ghost">
-						<FileCode />
-					</Button>
-				{:else}
-					<Button variant="ghost" class="hover:underline">
-						{Object.keys(data).length}
-					</Button>
-				{/if}
-			{:else}
-				<Button variant="ghost" disabled>
-					<FileCode />
-				</Button>
-			{/if}
-		</Sheet.Trigger>
-		{#if data}
-			<Sheet.Content
-				side="right"
-				class="flex h-full max-w-[62vw] min-w-[50vw] flex-col gap-0 overflow-y-auto p-4"
-			>
-				<Sheet.Header class="shrink-0 space-y-4">
-					<Sheet.Title>{column.id}</Sheet.Title>
-					<Sheet.Description>
-						{fields[column.id].description}
-					</Sheet.Description>
-				</Sheet.Header>
-				{#if Object.values(data).some((value) => value && typeof value === 'object')}
-					<div class="p-4">
-						<Code.Root
-							variant="secondary"
-							lang="yaml"
-							class="no-shiki-limit w-full border-none"
-							code={stringify(data)}
-						/>
-					</div>
-				{:else}
-					<Tabs.Root value="grid" class="p-4">
-						<Tabs.List class="ml-auto">
-							<Tabs.Trigger value="grid">
-								<Grid />
-							</Tabs.Trigger>
-							<Tabs.Trigger value="table">
-								<List />
-							</Tabs.Trigger>
-						</Tabs.List>
-						<Tabs.Content value="grid">
-							<div class="space-y-0">
-								{#each Object.entries(data) as [key, value], index (index)}
-									{#if typeof value === 'string'}
-										{@const data = format(value)}
-										{@const isExpandable = data.split('\n').length > 2}
-										<Collapsible.Root
-											class="rounded-lg transition-colors duration-200 hover:bg-muted/50"
-										>
-											<Collapsible.Trigger
-												disabled={!isExpandable}
-												class="w-full transition-colors duration-200 hover:underline"
-											>
-												<Item.Root size="sm">
-													<Item.Media variant="icon">
-														{#if !value}
-															<File />
-														{:else if ['true', 'false'].includes(value)}
-															<FileCheck />
-														{:else if !isNaN(Number(value))}
-															<FileDigit />
-														{:else if !isNaN(Date.parse(value))}
-															<FileClock />
-														{:else}
-															<FileText />
-														{/if}
-													</Item.Media>
-													<Item.Content class="min-w-0 flex-1 text-left">
-														<Item.Title class="w-full">
-															{key}
-														</Item.Title>
-														<Item.Description class="wrap-break-words breaks-all">
-															{value}
-														</Item.Description>
-													</Item.Content>
-												</Item.Root>
-											</Collapsible.Trigger>
-											<Collapsible.Content
-												class="overflow-hidden transition-all duration-300 ease-in-out"
-											>
-												<Code.Root
-													lang="json"
-													hideLines
-													code={data}
-													class="border-none bg-transparent px-8"
-												/>
-											</Collapsible.Content>
-										</Collapsible.Root>
-									{/if}
-								{/each}
-							</div>
-						</Tabs.Content>
-						<Tabs.Content value="table">
-							<div>
-								<Table.Root class="[&_td:first-child]:rounded-l-lg [&_td:last-child]:rounded-r-lg">
-									<Table.Header>
-										<Table.Row class="hover:[&>th,td]:bg-transparent!">
-											<Table.Head>Key</Table.Head>
-											<Table.Head>Value</Table.Head>
-										</Table.Row>
-									</Table.Header>
-									<Table.Body>
-										{#each Object.entries(data) as [key, value], index (index)}
-											<Table.Row class="border-none align-top">
-												<Table.Cell class="align-top">{key}</Table.Cell>
-												<Table.Cell class="align-top">
-													<p
-														class="wrap-break-words max-w-3xl text-sm leading-normal font-normal text-balance break-all text-muted-foreground"
-													>
-														{value}
-													</p>
-												</Table.Cell>
-											</Table.Row>
-										{/each}
-									</Table.Body>
-								</Table.Root>
-							</div>
-						</Tabs.Content>
-					</Tabs.Root>
-				{/if}
-			</Sheet.Content>
-		{/if}
-	</Sheet.Root>
-{/snippet}
-
-{#snippet ArrayCell({ data }: { data: JsonValue[] })}
-	{#if data && data.length > 0}
-		{@const [anyDatum] = data}
-		{#if typeof anyDatum == 'object'}
-			{data.length}
-		{:else}
-			<div class="flex items-center gap-1">
-				{#each data as datum, index (index)}
-					<Badge variant="outline">{datum}</Badge>
-				{/each}
-			</div>
-		{/if}
-	{/if}
-{/snippet}
-
-<!-- {#snippet DateCell({ data }: { data: Date })}
-	{#if data && !isNaN(data.getTime())}
-		{new Intl.DateTimeFormat('en-CA', {
-			year: 'numeric',
-			month: '2-digit',
-			day: '2-digit'
-		}).format(data)}
-	{/if}
-{/snippet} -->
-
-{#snippet DatetimeCell({ data }: { data: Date })}
-	{#if data && !isNaN(data.getTime())}
-		{@const { value, unit } = getRelativeTime($now, data.getTime())}
-		<Tooltip.Provider>
-			<Tooltip.Root>
-				<Tooltip.Trigger>
-					{value}
-					{unit}
-				</Tooltip.Trigger>
-				<Tooltip.Content>
-					{new Intl.DateTimeFormat('en-CA', {
-						year: 'numeric',
-						month: '2-digit',
-						day: '2-digit',
-						hour: '2-digit',
-						minute: '2-digit',
-						second: '2-digit',
-						hour12: false,
-						timeZoneName: 'longOffset'
-					}).format(data)}
-				</Tooltip.Content>
-			</Tooltip.Root>
-		</Tooltip.Provider>
-	{/if}
-{/snippet}
-
-{#snippet NumberCell({ data }: { data: number })}
-	{data}
-{/snippet}
-
-{#snippet BooleanCell({ data }: { data: boolean })}
-	{#if data === true}
-		<Circle class="inline-block size-4 text-primary" />
-	{:else if data === false}
-		<CircleX class="inline-block size-6 text-destructive" />
-	{/if}
-{/snippet}
-
-{#snippet TextCell({ data }: { data: string })}
-	<p class="truncate">
-		{data}
-	</p>
-{/snippet}
-
-{#snippet EmptyCell()}
-	<p class="text-muted-foreground">no data</p>
-{/snippet}
-
-<style>
-	@reference '../../../app.css';
-
-	:global(.no-shiki-limit pre.shiki:not([data-code-overflow] *):not([data-code-overflow])) {
-		overflow-y: visible !important;
-		max-height: none !important;
-	}
-</style>
+{#if uiSchema === 'array-of-object'}
+	<ArrayOfObjectCell {row} {column} metadata={metadata as ArrayOfObjectMetadata} />
+{:else if uiSchema === 'array'}
+	<DefaultArrayCell {row} {column} />
+{:else if uiSchema === 'boolean'}
+	<DefaultBooleanCell {row} {column} />
+{:else if uiSchema === 'number'}
+	<DefaultNumberCell {row} {column} />
+{:else if uiSchema === 'object'}
+	<DefaultObjectCell {row} {column} />
+{:else if uiSchema === 'text'}
+	<DefaultTextCell {row} {column} />
+{:else if uiSchema === 'time'}
+	<DefaultTimeCell {row} {column} />
+{:else if uiSchema === 'link'}
+	<LinkCell {row} {column} metadata={metadata as LinkMetadata} />
+{:else if uiSchema === 'object-of-key-value'}
+	{console.log(metadata)}
+	<ObjectOfKeyValue {row} {column} metadata={metadata as ObjectOfKeyValueMetadata} />
+{:else if uiSchema === 'ratio'}
+	<RatioCell {row} {column} metadata={metadata as RatioMetadata} />
+{:else}
+	<DefaultEmptyCell />
+{/if}

@@ -1,5 +1,18 @@
+<script lang="ts" module>
+	import type { JsonValue } from '@bufbuild/protobuf';
+
+	export type ArrayOfObjectItemType = {
+		title: JsonValue;
+		description: JsonValue;
+		actions: JsonValue;
+	};
+
+	export type ArrayOfObjectItemsType = ArrayOfObjectItemType[];
+
+	export type ArrayOfObjectMetadata = { items: ArrayOfObjectItemsType };
+</script>
+
 <script lang="ts">
-	import type { JsonObject, JsonValue } from '@bufbuild/protobuf';
 	import Braces from '@lucide/svelte/icons/braces';
 	import ChevronFirst from '@lucide/svelte/icons/chevron-first';
 	import ChevronLast from '@lucide/svelte/icons/chevron-last';
@@ -15,7 +28,6 @@
 		type PaginationState,
 		type Row
 	} from '@tanstack/table-core';
-	import lodash from 'lodash';
 
 	import * as CodeBlock from '$lib/components/custom/code/index.js';
 	import { Button } from '$lib/components/ui/button';
@@ -26,28 +38,22 @@
 	import { Label } from '$lib/components/ui/label/index.js';
 	import { Select, SelectContent, SelectItem, SelectTrigger } from '$lib/components/ui/select';
 	import * as Sheet from '$lib/components/ui/sheet/index.js';
-	import type { FieldsType, ValuesType } from '$lib/components/kind-viewer/type';
 
 	let {
-		keys,
 		row,
 		column,
-		fields
+		metadata
 	}: {
-		keys: {
-			title: string;
-			description: string;
-			actions: string;
-		};
-		row: Row<ValuesType>;
-		column: Column<ValuesType>;
-		fields: FieldsType;
+		row: Row<Record<string, JsonValue>>;
+		column: Column<Record<string, JsonValue>>;
+		metadata: ArrayOfObjectMetadata;
 	} = $props();
 
-	const data = $derived(row.original[column.id] as JsonObject[]);
+	const data = $derived(row.original[column.id] as number);
+
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 
-	const columns: ColumnDef<JsonObject>[] = [
+	const columns: ColumnDef<ArrayOfObjectItemType>[] = [
 		{
 			id: 'item',
 			accessorFn: (row) => row,
@@ -55,10 +61,10 @@
 		}
 	];
 
-	let table = createSvelteTable<JsonObject>({
+	let table = createSvelteTable<ArrayOfObjectItemType>({
 		columns,
 		get data() {
-			return data;
+			return metadata.items;
 		},
 		getCoreRowModel: getCoreRowModel(),
 		getFilteredRowModel: getFilteredRowModel(),
@@ -81,25 +87,22 @@
 <Sheet.Root>
 	<Sheet.Trigger>
 		<Button variant="ghost" class="hover:underline">
-			{data ? data.length : 0}
+			{data}
 		</Button>
 	</Sheet.Trigger>
-	{#if data}
+	{#if metadata.items}
 		<Sheet.Content
 			side="right"
 			class="flex h-full max-w-[50vw] min-w-[38vw] flex-col gap-0 overflow-y-auto p-4"
 		>
 			<Sheet.Header class="shrink-0 space-y-4">
 				<Sheet.Title>{column.id}</Sheet.Title>
-				<Sheet.Description>
-					{fields[column.id].description}
-				</Sheet.Description>
 			</Sheet.Header>
 
 			{#if table.getRowModel().rows.length > 0}
 				<div class="flex-1 space-y-0 overflow-y-auto">
 					{#each table.getRowModel().rows as row (row.id)}
-						{@const datum = row.original}
+						{@const item = row.original}
 						<Collapsible.Root class="rounded-lg transition-colors duration-200 hover:bg-muted/50">
 							<Collapsible.Trigger class="w-full transition-colors duration-200 hover:underline">
 								<Item.Root size="sm">
@@ -108,14 +111,14 @@
 									</Item.Media>
 									<Item.Content class="min-w-0 flex-1 text-left">
 										<Item.Title class="w-full">
-											{lodash.get(datum, [keys.title])}
+											{item.title}
 										</Item.Title>
 										<Item.Description class="wrap-break-words breaks-all">
-											{lodash.get(datum, [keys.description])}
+											{item.description}
 										</Item.Description>
 									</Item.Content>
 									<Item.Actions>
-										{lodash.get(datum, [keys.actions])}
+										{item.actions}
 									</Item.Actions>
 								</Item.Root>
 							</Collapsible.Trigger>
@@ -123,7 +126,7 @@
 								<CodeBlock.Root
 									lang="json"
 									hideLines
-									code={JSON.stringify(datum, null, 4)}
+									code={JSON.stringify(item, null, 4)}
 									class="border-none bg-transparent px-8"
 								/>
 							</Collapsible.Content>

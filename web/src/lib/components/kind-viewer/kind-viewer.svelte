@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { toJson } from '@bufbuild/protobuf';
+	import { type JsonValue, toJson } from '@bufbuild/protobuf';
 	import { StructSchema } from '@bufbuild/protobuf/wkt';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { Cable, Unplug } from '@lucide/svelte';
@@ -18,14 +18,15 @@
 	import { DynamicTable } from '$lib/components/dynamic-table';
 	import Button from '$lib/components/ui/button/button.svelte';
 
-	import { type ActionsType, getActions } from './actions';
-	import { type CreatorType, getCreator } from './creators';
+	import type { DataSchemaType, UISchemaType } from '../dynamic-table/utils';
+	import type { ActionsType, CreateType } from './kind-viewer-actions';
+	import { getActions, getCreate } from './kind-viewer-actions';
 	import {
-		getColumnDefinitionsDynamically,
-		getFieldsDynamically,
-		getValuesDynamically
-	} from './viewers';
-	import type { FieldsType, ValuesType } from './type';
+		getColumnDefinitions,
+		getDataSchemas,
+		getDataSet as getData,
+		getUISchemas
+	} from './kind-viewers';
 
 	let {
 		clustered,
@@ -50,9 +51,12 @@
 	const transport: Transport = getContext('transport');
 	const resourceClient = createClient(ResourceService, transport);
 
+	const uiSchemas: Record<string, UISchemaType> = $derived(getUISchemas(kind));
+	const dataSchemas: Record<string, DataSchemaType> = $derived(getDataSchemas(kind));
+
 	// eslint-disable-next-line
 	let schema: any = $state({});
-	let fields: FieldsType = $state({});
+
 	async function fetchSchema() {
 		try {
 			const schemaResponse = await resourceClient.schema({
@@ -63,15 +67,14 @@
 			} as SchemaRequest);
 
 			schema = toJson(StructSchema, schemaResponse);
-			fields = getFieldsDynamically(kind, schema);
 		} catch (error) {
 			console.error('Failed to fetch schema:', error);
 			return null;
 		}
 	}
 
-	let dataset: ValuesType[] = $state([]);
-	let columnDefinitions: ColumnDef<ValuesType>[] | undefined = $state(undefined);
+	let dataset: Record<string, JsonValue>[] = $state([]);
+	let columnDefinitions: ColumnDef<Record<string, JsonValue>>[] | undefined = $state(undefined);
 
 	let listAbortController: AbortController | null = null;
 	let watchAbortController: AbortController | null = null;
@@ -103,8 +106,8 @@
 				resourceVersion = response.resourceVersion;
 				continueToken = response.continue;
 
-				const newObjects = response.items.map((item) => getValuesDynamically(kind, item.object));
-				dataset = [...dataset, ...newObjects];
+				const newData = response.items.map((item) => getData(kind, item.object));
+				dataset = [...dataset, ...newData];
 
 				if (listAbortController.signal.aborted) {
 					break;
@@ -157,29 +160,44 @@
 				resourceVersion = response.resource?.object?.metadata?.resourceVersion;
 
 				if (response.type === WatchEvent_Type.ADDED) {
-					const addedData = getValuesDynamically(kind, response.resource?.object);
+					const addedData = getData(kind, response.resource?.object);
 
-					const index = dataset.findIndex(
-						(object) => object.Namespace === addedData.Namespace && object.Name === addedData.Name
-					);
+					const index = dataset.findIndex((object) => {
+						if (apiResource.namespaced) {
+							return object.Namespace === addedData.Namespace && object.Name === addedData.Name;
+						} else {
+							return object.Name === addedData.Name;
+						}
+					});
 
 					if (index < 0) {
 						dataset = [...dataset, addedData];
 					}
 				} else if (response.type === WatchEvent_Type.MODIFIED) {
-					const modifiedData = getValuesDynamically(kind, response.resource?.object);
+					const modifiedData = getData(kind, response.resource?.object);
 
-					dataset = dataset.map((object) =>
-						object.Namespace === modifiedData.Namespace && object.Name === modifiedData.Name
-							? modifiedData
-							: object
-					);
+					dataset = dataset.map((object) => {
+						if (
+							apiResource.namespaced &&
+							object.Namespace === modifiedData.Namespace &&
+							object.Name === modifiedData.Name
+						) {
+							return modifiedData;
+						} else if (!apiResource.namespaced && object.Name === modifiedData.Name) {
+							return modifiedData;
+						}
+
+						return object;
+					});
 				} else if (response.type === WatchEvent_Type.DELETED) {
-					const deletedData = getValuesDynamically(kind, response.resource?.object);
-					dataset = dataset.filter(
-						(object) =>
-							object.Namespace === deletedData.Namespace && object.Name !== deletedData.Name
-					);
+					const deletedData = getData(kind, response.resource?.object);
+					dataset = dataset.filter((object) => {
+						if (apiResource.namespaced) {
+							return object.Namespace === deletedData.Namespace && object.Name !== deletedData.Name;
+						} else {
+							return object.Name !== deletedData.Name;
+						}
+					});
 				} else {
 					console.log('Unknown response type: ', response);
 				}
@@ -200,7 +218,7 @@
 	onMount(async () => {
 		await fetchSchema();
 		await listResources();
-		columnDefinitions = getColumnDefinitionsDynamically(kind, apiResource, fields);
+		columnDefinitions = getColumnDefinitions(kind, apiResource, uiSchemas, dataSchemas);
 		watchResources();
 
 		isMounted = true;
@@ -224,15 +242,15 @@
 		}
 	}
 
-	const Creator: CreatorType = $derived(getCreator(kind));
+	const Create: CreateType = $derived(getCreate(kind));
 	const Actions: ActionsType = $derived(getActions(kind));
 </script>
 
 {#if isMounted}
 	{#if columnDefinitions}
-		<DynamicTable {dataset} {fields} {columnDefinitions}>
+		<DynamicTable {dataset} {columnDefinitions} {uiSchemas} {dataSchemas}>
 			{#snippet create()}
-				<Creator {schema} />
+				<Create {schema} />
 			{/snippet}
 			{#snippet reload()}
 				<Button onclick={handleReload} disabled={isWatching} variant="outline">
@@ -243,9 +261,8 @@
 					{/if}
 				</Button>
 			{/snippet}
-			{#snippet rowActions({ row, fields, dataset })}
-				{@const objects: ValuesType = dataset[Number(row.id)]}
-				<Actions {row} schema={fields['Configuration']} object={objects['Configuration']} />
+			{#snippet rowActions({ row })}
+				<Actions {row} {schema} object={row.original.raw} />
 			{/snippet}
 		</DynamicTable>
 	{/if}

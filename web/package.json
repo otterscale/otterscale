@@ -86,6 +86,7 @@
 		"@connectrpc/connect-web": "^2.1.1",
 		"@dagrejs/dagre": "^1.1.8",
 		"@iconify/svelte": "^5.2.1",
+		"@kubernetes/client-node": "^1.4.0",
 		"@monaco-editor/loader": "^1.7.0",
 		"@oslojs/binary": "^1.0.0",
 		"@oslojs/crypto": "^1.0.1",
