@@ -158,13 +158,13 @@
 </script>
 
 <Dialog.Root bind:open {onOpenChangeComplete}>
-	<Dialog.Trigger>
-		<Item.Root class="p-0" size="sm">
+	<Dialog.Trigger class="w-full">
+		<Item.Root class="p-0 text-xs" size="sm">
 			<Item.Media>
 				<Pencil />
 			</Item.Media>
 			<Item.Content>
-				<Item.Description>Update</Item.Description>
+				<Item.Title>Update</Item.Title>
 			</Item.Content>
 		</Item.Root>
 	</Dialog.Trigger>

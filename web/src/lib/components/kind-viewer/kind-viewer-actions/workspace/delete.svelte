@@ -74,13 +74,13 @@
 </script>
 
 <Dialog.Root bind:open {onOpenChangeComplete}>
-	<Dialog.Trigger>
-		<Item.Root class="p-0 **:text-destructive" size="sm">
+	<Dialog.Trigger class="w-full">
+		<Item.Root class="p-0 text-xs **:text-destructive" size="sm">
 			<Item.Media>
 				<Trash2 />
 			</Item.Media>
 			<Item.Content>
-				<Item.Description>Delete</Item.Description>
+				<Item.Title>Delete</Item.Title>
 			</Item.Content>
 		</Item.Root>
 	</Dialog.Trigger>

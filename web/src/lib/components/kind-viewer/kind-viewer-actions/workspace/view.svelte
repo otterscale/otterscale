@@ -13,20 +13,20 @@
 	}: {
 		schema: any;
 		object: Record<string, unknown>;
-		onOpenChangeComplete: () => void;
+		onOpenChangeComplete?: () => void;
 	} = $props();
 
 	let open = $state(false);
 </script>
 
 <Dialog.Root bind:open {onOpenChangeComplete}>
-	<Dialog.Trigger>
-		<Item.Root class="p-0" size="sm">
+	<Dialog.Trigger class="w-full">
+		<Item.Root class="p-0 text-xs" size="sm">
 			<Item.Media>
 				<Eye />
 			</Item.Media>
 			<Item.Content>
-				<Item.Description>View</Item.Description>
+				<Item.Title>View</Item.Title>
 			</Item.Content>
 		</Item.Root>
 	</Dialog.Trigger>

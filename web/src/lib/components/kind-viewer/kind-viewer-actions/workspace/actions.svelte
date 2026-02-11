@@ -31,13 +31,7 @@
 					e.preventDefault();
 				}}
 			>
-				<View
-					{schema}
-					{object}
-					onOpenChangeComplete={() => {
-						actionsOpen = false;
-					}}
-				/>
+				<View {schema} {object} />
 			</DropdownMenu.Item>
 			<DropdownMenu.Separator />
 			<DropdownMenu.Item
