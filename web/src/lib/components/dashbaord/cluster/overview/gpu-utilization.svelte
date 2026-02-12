@@ -18,11 +18,9 @@
 	let gpuUtilization: SampleValue | undefined = $state(undefined);
 	async function fetchMemoryUsage() {
 		const usageResponse = await prometheusDriver.instantQuery(
-			`
-			100 * avg(sum(Device_utilization_desc_of_container{juju_model="${scope}"}) by (deviceuuid, vdeviceid, podname, podnamespace))
-			`
+			`avg(Device_utilization_desc_of_container{juju_model="${scope}"})`
 		);
-		gpuUtilization = usageResponse.result[0]?.value.value ?? undefined;
+		gpuUtilization = usageResponse.result[0]?.value?.value ?? undefined;
 	}
 
 	async function fetch() {
@@ -85,7 +83,7 @@
 					range={[180, -180]}
 					maxValue={100}
 					series={[
-						{ key: 'usage', data: [{ key: 'usage', ...gpuUtilization }], color: 'var(--chart-1)' }
+						{ key: 'usage', data: [{ key: 'usage', value: gpuUtilization }], color: 'var(--chart-1)' }
 					]}
 					props={{
 						arc: { track: { fill: 'var(--muted)' }, motion: 'tween' },

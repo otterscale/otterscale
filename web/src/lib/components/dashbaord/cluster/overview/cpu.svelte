@@ -18,7 +18,7 @@
 	let cpuUsage: SampleValue | undefined = $state(undefined);
 	async function fetchCPUUsage() {
 		const response = await prometheusDriver.instantQuery(
-			`100 * sum(rate(node_cpu_seconds_total{mode!="idle", juju_model="${scope}"}[5m])) / sum(rate(node_cpu_seconds_total{juju_model="${scope}"}[5m]))`
+			`100 * sum(rate(node_cpu_seconds_total{mode!="idle", juju_model="${scope}", container!=""}[5m])) / sum(rate(node_cpu_seconds_total{juju_model="${scope}", container!=""}[5m]))`
 		);
 		cpuUsage = response.result[0]?.value ?? undefined;
 	}

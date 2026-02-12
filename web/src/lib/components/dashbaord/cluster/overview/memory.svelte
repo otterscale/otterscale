@@ -20,9 +20,9 @@
 	async function fetchMemoryUsage() {
 		const usageResponse = await prometheusDriver.instantQuery(
 			`
-			100 * (sum(node_memory_MemTotal_bytes{juju_model="${scope}"} - node_memory_MemAvailable_bytes{juju_model="${scope}"}))
+			100 * (sum(node_memory_MemTotal_bytes{juju_model="${scope}", container!=""} - node_memory_MemAvailable_bytes{juju_model="${scope}", container!=""}))
 			/
-			sum(node_memory_MemTotal_bytes{juju_model="${scope}"})
+			sum(node_memory_MemTotal_bytes{juju_model="${scope}", container!=""})
 			`
 		);
 		memoryUsage = usageResponse.result[0]?.value ?? undefined;
