@@ -19,22 +19,22 @@
 	let failedPods: SampleValue | undefined = $state(undefined);
 	async function fetchPods() {
 		const allocateResponse = await prometheusDriver.instantQuery(
-			`sum(kube_node_status_allocatable{resource="pods", juju_model="${scope}"})`
+			`sum(kube_node_status_allocatable{resource="pods", juju_model="${scope}", container!=""})`
 		);
 		maxAllocatablePods = allocateResponse.result[0]?.value ?? undefined;
 
 		const runningResponse = await prometheusDriver.instantQuery(
-			`sum(kube_pod_status_phase{phase="Running", juju_model="${scope}"})`
+			`sum(kube_pod_status_phase{phase="Running", juju_model="${scope}", container!=""})`
 		);
 		runningPods = runningResponse.result[0]?.value ?? undefined;
 
 		const pendingResponse = await prometheusDriver.instantQuery(
-			`sum(kube_pod_status_phase{phase="Pending", juju_model="${scope}"})`
+			`sum(kube_pod_status_phase{phase="Pending", juju_model="${scope}", container!=""})`
 		);
 		pendingPods = pendingResponse.result[0]?.value ?? undefined;
 
 		const failedResponse = await prometheusDriver.instantQuery(
-			`sum(kube_pod_status_phase{phase="Failed", juju_model="${scope}"})`
+			`sum(kube_pod_status_phase{phase="Failed", juju_model="${scope}", container!=""})`
 		);
 		failedPods = failedResponse.result[0]?.value ?? undefined;
 	}

@@ -20,11 +20,13 @@
 	async function fetchMemoryUsage() {
 		const usageResponse = await prometheusDriver.instantQuery(
 			`
-			100 * avg(sum(Device_utilization_desc_of_container{juju_model="${scope}"}) by (deviceuuid, vdeviceid, podname, podnamespace))
+			100 * 
+			sum(Device_memory_desc_of_container{juju_model="${scope}"})
+			/
+			sum(GPUDeviceMemoryLimit{juju_model="${scope}"})
 			`
 		);
-
-		memoryUsage = usageResponse.result[0]?.value?.value ?? undefined;
+		memoryUsage = usageResponse.result[0]?.value ?? undefined;
 	}
 
 	let memoryRequest: SampleValue | undefined = $state(undefined);

@@ -16,7 +16,7 @@
 	let deployments: SampleValue | undefined = $state(undefined);
 	async function fetchdeployments() {
 		const response = await prometheusDriver.instantQuery(
-			`count(kube_deployment_created{juju_model="${scope}"})`
+			`count(kube_deployment_created{juju_model="${scope}", container!=""})`
 		);
 		deployments = response.result[0]?.value ?? undefined;
 	}
