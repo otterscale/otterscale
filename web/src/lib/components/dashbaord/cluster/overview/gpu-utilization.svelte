@@ -23,9 +23,17 @@
 		gpuUtilization = usageResponse.result[0]?.value?.value ?? undefined;
 	}
 
+	let units: SampleValue | undefined = $state(undefined);
+	async function fetchGraphicCardUnits() {
+		const usageResponse = await prometheusDriver.instantQuery(
+			`count(DCGM_FI_DEV_GPU_UTIL{juju_model="${scope}"})`
+		);
+		units = usageResponse.result[0]?.value?.value ?? undefined;
+	}
+
 	async function fetch() {
 		try {
-			await Promise.all([fetchMemoryUsage()]);
+			await Promise.all([fetchMemoryUsage(), fetchGraphicCardUnits()]);
 		} catch (error) {
 			console.error('Failed to fetch CPU usage:', error);
 		}
@@ -83,7 +91,11 @@
 					range={[180, -180]}
 					maxValue={100}
 					series={[
-						{ key: 'usage', data: [{ key: 'usage', value: gpuUtilization }], color: 'var(--chart-1)' }
+						{
+							key: 'usage',
+							data: [{ key: 'usage', value: gpuUtilization }],
+							color: 'var(--chart-1)'
+						}
 					]}
 					props={{
 						arc: { track: { fill: 'var(--muted)' }, motion: 'tween' },
@@ -93,10 +105,17 @@
 				>
 					{#snippet aboveMarks()}
 						<Text
-							value={`${gpuUtilization} %`}
+							value={String(units)}
 							textAnchor="middle"
 							verticalAnchor="middle"
 							class="fill-foreground text-3xl! font-bold"
+						/>
+						<Text
+							value="unit"
+							textAnchor="middle"
+							verticalAnchor="middle"
+							class="fill-foreground text-xl! font-bold"
+							dy={30}
 						/>
 					{/snippet}
 				</ArcChart>

@@ -6,6 +6,7 @@
 	import { page } from '$app/state';
 	import { EnvironmentService } from '$lib/api/environment/v1/environment_pb';
 	import { Reloader } from '$lib/components/custom/reloader';
+	import Consumption from '$lib/components/dashbaord/cluster/overview/consumption.svelte';
 	import CpuUsage from '$lib/components/dashbaord/cluster/overview/cpu.svelte';
 	import Deployments from '$lib/components/dashbaord/cluster/overview/deployments.svelte';
 	import GPUMemoryUsage from '$lib/components/dashbaord/cluster/overview/gpu-memory.svelte';
@@ -75,9 +76,13 @@
 							<div class="col-span-1 row-span-1">
 								<Uptime {prometheusDriver} {scope} bind:isReloading />
 							</div>
-							<div class="col-span-2 row-span-1">
+							<div class="col-span-1 row-span-1">
 								<Information {prometheusDriver} {scope} bind:isReloading />
 							</div>
+							<div class="col-span-1 row-span-1">
+								<Consumption {prometheusDriver} {scope} bind:isReloading />
+							</div>
+
 							<div class="col-span-1 row-span-1">
 								<Nodes {prometheusDriver} {scope} bind:isReloading />
 							</div>
