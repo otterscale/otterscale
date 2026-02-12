@@ -1,5 +1,6 @@
 <script lang="ts">
 	import '../app.css';
+	import '@sjsf/basic-theme/css/basic.css';
 
 	import type { Interceptor } from '@connectrpc/connect';
 	import { createConnectTransport } from '@connectrpc/connect-web';
