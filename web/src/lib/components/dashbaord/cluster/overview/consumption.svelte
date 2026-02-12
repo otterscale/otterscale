@@ -48,10 +48,10 @@
 		class="absolute -right-10 bottom-0 size-36 text-8xl tracking-tight text-nowrap text-primary/5 uppercase group-hover:hidden"
 	/>
 	<Card.Header>
-		<!-- <Card.Title>{m.consumption()}</Card.Title> -->
-		<Card.Title>consumption</Card.Title>
-		<!-- <Card.Description class="text-md flex h-6 items-center">{consumption ?? 'N/A'}</Card.Description
-		> -->
+		<Card.Title>{m.power_usage()}</Card.Title>
+		<Card.Description class="text-md flex h-6 items-center"
+			>{m.cluster_dashboard_power_usage_description()}</Card.Description
+		>
 	</Card.Header>
 	{#if !isLoaded}
 		<div class="flex h-9 w-full items-center justify-center">
@@ -64,7 +64,7 @@
 		</div>
 	{:else}
 		<Card.Content>
-			<p class="text-3xl">{consumption}</p>
+			<p class="text-3xl">{Number(consumption).toFixed(2)} Watt</p>
 		</Card.Content>
 	{/if}
 </Card.Root>
