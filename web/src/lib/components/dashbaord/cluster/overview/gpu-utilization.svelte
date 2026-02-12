@@ -111,7 +111,7 @@
 							class="fill-foreground text-3xl! font-bold"
 						/>
 						<Text
-							value="unit"
+							value="cards"
 							textAnchor="middle"
 							verticalAnchor="middle"
 							class="fill-foreground text-xl! font-bold"
