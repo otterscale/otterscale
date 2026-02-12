@@ -18,7 +18,6 @@
 		const response = await prometheusDriver.instantQuery(
 			`sum(DCGM_FI_DEV_POWER_USAGE{juju_model="${scope}"})`
 		);
-		console.log(response);
 		consumption = response.result[0]?.value?.value ?? undefined;
 	}
 

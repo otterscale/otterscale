@@ -15,7 +15,7 @@
 		isReloading = $bindable()
 	}: { prometheusDriver: PrometheusDriver; scope: string; isReloading: boolean } = $props();
 
-	let gpuUtilization: SampleValue | undefined = $state(undefined);
+	let gpuUtilization: number | undefined = $state(undefined);
 	async function fetchMemoryUsage() {
 		const usageResponse = await prometheusDriver.instantQuery(
 			`avg(Device_utilization_desc_of_container{juju_model="${scope}"})`
@@ -23,7 +23,7 @@
 		gpuUtilization = usageResponse.result[0]?.value?.value ?? undefined;
 	}
 
-	let units: SampleValue | undefined = $state(undefined);
+	let units: number | undefined = $state(undefined);
 	async function fetchGraphicCardUnits() {
 		const usageResponse = await prometheusDriver.instantQuery(
 			`count(DCGM_FI_DEV_GPU_UTIL{juju_model="${scope}"})`
@@ -35,7 +35,7 @@
 		try {
 			await Promise.all([fetchMemoryUsage(), fetchGraphicCardUnits()]);
 		} catch (error) {
-			console.error('Failed to fetch CPU usage:', error);
+			console.error('Failed to fetch GPU utilization:', error);
 		}
 	}
 

@@ -29,7 +29,7 @@
 		runningPods = runningResponse.result[0]?.value ?? undefined;
 
 		const pendingResponse = await prometheusDriver.instantQuery(
-			`sum(kube_pod_status_phase{phase="Pending", juju_model="${scope}", container!="", container!=""})`
+			`sum(kube_pod_status_phase{phase="Pending", juju_model="${scope}", container!=""})`
 		);
 		pendingPods = pendingResponse.result[0]?.value ?? undefined;
 
