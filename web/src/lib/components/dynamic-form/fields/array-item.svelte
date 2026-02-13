@@ -91,7 +91,7 @@
 	</div>
 {/snippet}
 
-<div class="border-l py-2 pl-4 *:flex *:*:w-full *:flex-col">
+<div class="py-2 pl-4 *:flex *:*:w-full *:flex-col">
 	<Template
 		type="template"
 		{index}

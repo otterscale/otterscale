@@ -12,7 +12,7 @@
 
 	import * as defaults from '$lib/form-defaults';
 
-	import MultiStepField, { setStepperContext } from './multi-step-field.svelte';
+	import MultipleStepField, { setStepperContext } from './multiple-step-field.svelte';
 
 	let step = $state.raw(0);
 	const stepperCtx: Ref<number> = {
@@ -69,7 +69,7 @@
 
 	const uiSchema = {
 		'ui:components': {
-			tupleField: MultiStepField
+			tupleField: MultipleStepField
 		}
 	} satisfies UiSchemaRoot;
 
