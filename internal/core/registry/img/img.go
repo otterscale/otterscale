@@ -1,4 +1,4 @@
-package image
+package img
 
 import ocispec "github.com/opencontainers/image-spec/specs-go/v1"
 
@@ -7,8 +7,6 @@ type (
 	Image = ocispec.Image
 
 	// ImageConfig represents a OCI ImageConfig resource.
-	//
-	//nolint:revive // allows this type alias for brevity.
 	ImageConfig = ocispec.ImageConfig
 
 	// Platform represents a OCI Platform resource.

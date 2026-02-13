@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/otterscale/otterscale/internal/core/registry/chart"
-	"github.com/otterscale/otterscale/internal/core/registry/image"
+	"github.com/otterscale/otterscale/internal/core/registry/img"
 )
 
 type Manifest struct {
@@ -12,7 +12,7 @@ type Manifest struct {
 	Tag        string
 	Digest     string
 	SizeBytes  uint64
-	Image      *image.Image
+	Image      *img.Image
 	Chart      *chart.Chart
 }
 

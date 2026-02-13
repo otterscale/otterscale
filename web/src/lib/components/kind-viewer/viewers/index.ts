@@ -19,6 +19,11 @@ import {
 	resourceQuotaFieldsMask,
 	resourceQuotaObjectMask
 } from './resource-quota.js';
+import {
+	simpleappColumnDefinitions,
+	simpleappFieldsMask,
+	simpleappObjectMask
+} from './simpleapp.js';
 
 function getFieldsGetter(kind: string): FieldsMaskType {
 	switch (kind) {
@@ -26,6 +31,8 @@ function getFieldsGetter(kind: string): FieldsMaskType {
 			return cronjobFieldsMask;
 		case 'ResourceQuota':
 			return resourceQuotaFieldsMask;
+		case 'SimpleApp':
+			return simpleappFieldsMask;
 		default:
 			return defaultFieldsMask;
 	}
@@ -37,6 +44,8 @@ function getObjectGetter(kind: string): ObjectMaskType {
 			return cronjobObjectMask;
 		case 'ResourceQuota':
 			return resourceQuotaObjectMask;
+		case 'SimpleApp':
+			return simpleappObjectMask;
 		default:
 			return defaultObjectMask;
 	}
@@ -48,6 +57,8 @@ function getColumnDefinitionsGetter(kind: string): ColumnDefinitionsType {
 			return cronjobColumnDefinitions;
 		case 'ResourceQuota':
 			return resourceQuotaColumnDefinitions;
+		case 'SimpleApp':
+			return simpleappColumnDefinitions;
 		default:
 			return defaultColumnDefinitions;
 	}
