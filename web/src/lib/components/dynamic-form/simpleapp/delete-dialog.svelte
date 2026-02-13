@@ -1,4 +1,10 @@
 <script lang="ts">
+	import type { ConnectError } from '@connectrpc/connect';
+	import { createClient, type Transport } from '@connectrpc/connect';
+	import { Trash2 } from '@lucide/svelte';
+	import { getContext } from 'svelte';
+	import { toast } from 'svelte-sonner';
+
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import { page } from '$app/stores';
@@ -6,11 +12,6 @@
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
-	import { createClient, type Transport } from '@connectrpc/connect';
-	import type { ConnectError } from '@connectrpc/connect';
-	import { Trash2 } from '@lucide/svelte';
-	import { getContext } from 'svelte';
-	import { toast } from 'svelte-sonner';
 
 	let {
 		name,

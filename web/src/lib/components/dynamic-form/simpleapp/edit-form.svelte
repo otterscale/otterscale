@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
+	import type { Transport } from '@connectrpc/connect';
+	import { ConnectError, createClient } from '@connectrpc/connect';
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
 

@@ -1,11 +1,12 @@
 <script lang="ts">
-	import { page } from '$app/stores';
-	import { type GroupedFields, MultiStepSchemaForm } from '$lib/components/custom/schema-form';
-	import { ResourceService } from '$lib/api/resource/v1/resource_pb';
-	import { toast } from 'svelte-sonner';
-	import { getContext } from 'svelte';
-	import { createClient, type Transport } from '@connectrpc/connect';
 	import type { ConnectError } from '@connectrpc/connect';
+	import { createClient, type Transport } from '@connectrpc/connect';
+	import { getContext } from 'svelte';
+	import { toast } from 'svelte-sonner';
+
+	import { page } from '$app/stores';
+	import { ResourceService } from '$lib/api/resource/v1/resource_pb';
+	import { type GroupedFields, MultiStepSchemaForm } from '$lib/components/custom/schema-form';
 
 	type Props = {
 		schema?: any;
