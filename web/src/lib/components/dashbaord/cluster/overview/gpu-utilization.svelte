@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
 	import { ArcChart, Text } from 'layerchart';
-	import type { PrometheusDriver, SampleValue } from 'prometheus-query';
+	import type { PrometheusDriver } from 'prometheus-query';
 	import { onDestroy, onMount } from 'svelte';
 
 	import { ReloadManager } from '$lib/components/custom/reloader';

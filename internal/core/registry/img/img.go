@@ -1,4 +1,4 @@
-package image
+package img
 
 import ocispec "github.com/opencontainers/image-spec/specs-go/v1"
 

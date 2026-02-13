@@ -11,7 +11,7 @@ import (
 	"github.com/otterscale/otterscale/api/registry/v1/pbconnect"
 	"github.com/otterscale/otterscale/internal/core/registry"
 	"github.com/otterscale/otterscale/internal/core/registry/chart"
-	"github.com/otterscale/otterscale/internal/core/registry/image"
+	"github.com/otterscale/otterscale/internal/core/registry/img"
 )
 
 type RegistryService struct {
@@ -171,7 +171,7 @@ func toProtoManifest(m *registry.Manifest) *pb.Manifest {
 	return ret
 }
 
-func toProtoRegistryImage(i *image.Image) *pb.Image {
+func toProtoRegistryImage(i *img.Image) *pb.Image {
 	ret := &pb.Image{}
 
 	createdAt := i.Created
@@ -186,7 +186,7 @@ func toProtoRegistryImage(i *image.Image) *pb.Image {
 	return ret
 }
 
-func toProtoRegistryImagePlatform(p *image.Platform) *pb.Image_Platform {
+func toProtoRegistryImagePlatform(p *img.Platform) *pb.Image_Platform {
 	ret := &pb.Image_Platform{}
 	ret.SetArchitecture(p.Architecture)
 	ret.SetOs(p.OS)
@@ -196,7 +196,7 @@ func toProtoRegistryImagePlatform(p *image.Platform) *pb.Image_Platform {
 	return ret
 }
 
-func toProtoRegistryImageImageConfig(ic *image.ImageConfig) *pb.Image_Config {
+func toProtoRegistryImageImageConfig(ic *img.ImageConfig) *pb.Image_Config {
 	ret := &pb.Image_Config{}
 	ret.SetUser(ic.User)
 
@@ -222,7 +222,7 @@ func toProtoRegistryImageImageConfig(ic *image.ImageConfig) *pb.Image_Config {
 	return ret
 }
 
-func toProtoRegistryImageRootFS(r *image.RootFS) *pb.Image_RootFS {
+func toProtoRegistryImageRootFS(r *img.RootFS) *pb.Image_RootFS {
 	ret := &pb.Image_RootFS{}
 	ret.SetType(r.Type)
 

@@ -13,7 +13,7 @@ import (
 
 	"github.com/otterscale/otterscale/internal/core/registry"
 	"github.com/otterscale/otterscale/internal/core/registry/chart"
-	"github.com/otterscale/otterscale/internal/core/registry/image"
+	"github.com/otterscale/otterscale/internal/core/registry/img"
 )
 
 type manifestRepo struct {
@@ -139,7 +139,7 @@ func fetchManifest(ctx context.Context, repo orasregistry.Repository, reference 
 }
 
 //nolint:gocritic // ignore hugeParam and unnamedResult
-func fetchConfig(ctx context.Context, repo orasregistry.Repository, config ocispec.Descriptor) (*image.Image, *chart.Chart, error) {
+func fetchConfig(ctx context.Context, repo orasregistry.Repository, config ocispec.Descriptor) (*img.Image, *chart.Chart, error) {
 	reader, err := repo.Fetch(ctx, config)
 	if err != nil {
 		return nil, nil, err
@@ -154,9 +154,9 @@ func fetchConfig(ctx context.Context, repo orasregistry.Repository, config ocisp
 	return parseConfig(content, config.MediaType)
 }
 
-func parseConfig(content []byte, mediaType string) (*image.Image, *chart.Chart, error) {
+func parseConfig(content []byte, mediaType string) (*img.Image, *chart.Chart, error) {
 	var (
-		image image.Image
+		image img.Image
 		chart chart.Chart
 	)
 
