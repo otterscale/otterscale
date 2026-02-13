@@ -63,6 +63,10 @@ const platformRoutes = (scope: string, namespace: string): Route[] => [
 				)
 			},
 			{
+				title: m.simpleapps(),
+				url: resolve('/(auth)/scope/[scope]/simpleapps', { scope: scope })
+			},
+			{
 				title: m.secrets(),
 				url: resolve('/(auth)/scope/[scope]/applications/secrets', { scope: scope })
 			},
