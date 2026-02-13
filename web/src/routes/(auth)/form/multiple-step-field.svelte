@@ -11,7 +11,6 @@
 		getChildPath,
 		getFieldComponent,
 		getFormContext,
-		getValueSnapshot,
 		retrieveTranslate,
 		retrieveUiOption,
 		retrieveUiSchema,
@@ -23,7 +22,6 @@
 	import type { Ref } from '@sjsf/form/lib/svelte.svelte';
 	import { mode as themeMode } from 'mode-watcher';
 	import Monaco from 'svelte-monaco';
-	import { stringify } from 'yaml';
 
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
 	import Button, { buttonVariants } from '$lib/components/ui/button/button.svelte';
@@ -77,13 +75,13 @@
 		Multiple Step Form
 	</AlertDialog.Trigger>
 	<AlertDialog.Content class="flex max-h-[90vh] min-h-[90vh] min-w-[50vw] flex-col gap-0 p-4">
-		{#if isBasicMode}
-			<AlertDialog.Header>
+		<AlertDialog.Header class="h-30">
+			{#if isBasicMode}
 				<Item.Root>
-					<Item.Content class="h-15 text-left">
-						<Item.Title class="text-lg font-bold"
-							>{stepSchemas[stepperCtx.current].title}</Item.Title
-						>
+					<Item.Content class="text-left">
+						<Item.Title class="text-lg font-bold">
+							{stepSchemas[stepperCtx.current].title}
+						</Item.Title>
 						<Item.Description>{stepSchemas[stepperCtx.current].description}</Item.Description>
 					</Item.Content>
 					<Item.Actions>
@@ -91,7 +89,19 @@
 					</Item.Actions>
 					<Progress value={(stepperCtx.current + 1) / stepSchemas.length} max={1} />
 				</Item.Root>
-			</AlertDialog.Header>
+			{:else}
+				<Item.Root>
+					<Item.Content class="h-15 text-left">
+						<Item.Title class="text-lg font-bold">Dynamic Form</Item.Title>
+						<Item.Description>Description for dynamic form.</Item.Description>
+					</Item.Content>
+					<Item.Actions>
+						<Switch bind:checked={isBasicMode} />
+					</Item.Actions>
+				</Item.Root>
+			{/if}
+		</AlertDialog.Header>
+		{#if isBasicMode}
 			<!-- Form -->
 			<div class="h-full overflow-y-auto p-4">
 				<Form
@@ -113,8 +123,26 @@
 					}
 				/>
 			</div>
-			<!-- Actions -->
-			<AlertDialog.Footer class="mt-auto flex items-center justify-between p-4">
+		{:else}
+			<!-- YAML -->
+			<div class="mt-auto h-[80vh]">
+				<Monaco
+					options={{
+						language: 'yaml',
+						padding: { top: 16, bottom: 8 },
+						automaticLayout: true,
+						minimap: { enabled: false },
+						scrollBeyondLastLine: false,
+						readOnly: !isBasicMode
+					}}
+					theme={themeMode.current === 'dark' ? 'vs-dark' : 'vs'}
+					value={JSON.stringify(value, null, 2)}
+				/>
+			</div>
+		{/if}
+		<!-- Actions -->
+		<AlertDialog.Footer class="mt-auto flex items-center justify-between p-4">
+			{#if isBasicMode}
 				<Button
 					size="sm"
 					class="mr-auto"
@@ -143,44 +171,19 @@
 						Continue
 					</Button>
 				{/if}
-				{#if stepperCtx.current === stepSchemas.length - 1}
-					<Button
-						size="sm"
-						type="submit"
-						onclick={() => {
-							open = false;
-						}}
-					>
-						Submit
-					</Button>
-				{/if}
-			</AlertDialog.Footer>
-		{:else}
-			<AlertDialog.Header>
-				<Item.Root>
-					<Item.Content class="h-15 text-left">
-						<Item.Title class="text-lg font-bold">Dynamic Form</Item.Title>
-						<Item.Description>Description for dynamic form.</Item.Description>
-					</Item.Content>
-					<Item.Actions>
-						<Switch bind:checked={isBasicMode} />
-					</Item.Actions>
-				</Item.Root>
-			</AlertDialog.Header>
-			<div class="mt-auto h-[80vh]">
-				<Monaco
-					options={{
-						language: 'yaml',
-						padding: { top: 16, bottom: 8 },
-						automaticLayout: true,
-						minimap: { enabled: false },
-						scrollBeyondLastLine: false,
-						readOnly: !isBasicMode
+			{/if}
+			{#if (isBasicMode && stepperCtx.current === stepSchemas.length - 1) || !isBasicMode}
+				<Button
+					class={isBasicMode ? 'w-fit' : 'w-full'}
+					size="sm"
+					type="submit"
+					onclick={() => {
+						open = false;
 					}}
-					theme={themeMode.current === 'dark' ? 'vs-dark' : 'vs'}
-					value={JSON.stringify(value, null, 2)}
-				/>
-			</div>
-		{/if}
+				>
+					Submit
+				</Button>
+			{/if}
+		</AlertDialog.Footer>
 	</AlertDialog.Content>
 </AlertDialog.Root>
