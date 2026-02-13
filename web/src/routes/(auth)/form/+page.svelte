@@ -3,6 +3,7 @@
 		Content,
 		createForm,
 		Form,
+		getValueSnapshot,
 		type Schema,
 		setFormContext,
 		type UiSchemaRoot
@@ -28,6 +29,119 @@
 	setStepperContext(stepperCtx);
 
 	const schema: Schema = {
+		definitions: {
+			listOfStrings: {
+				type: 'array',
+				title: 'A list of strings',
+				items: {
+					type: 'string',
+					default: 'bazinga'
+				}
+			},
+			multipleChoicesList: {
+				type: 'array',
+				title: 'A multiple choices list',
+				items: {
+					type: 'string',
+					enum: ['foo', 'bar', 'fuzz', 'qux']
+				},
+				uniqueItems: true
+			},
+			fixedItemsList: {
+				type: 'array',
+				title: 'A list of fixed items',
+				items: [
+					{
+						title: 'A string value',
+						type: 'string',
+						default: 'lorem ipsum'
+					},
+					{
+						title: 'a boolean value',
+						type: 'boolean'
+					}
+				],
+				additionalItems: {
+					title: 'Additional item',
+					type: 'number'
+				}
+			},
+			defaultsAndMinItems: {
+				type: 'array',
+				title: 'List and item level defaults',
+				minItems: 5,
+				default: ['carp', 'trout', 'bream'],
+				items: {
+					type: 'string',
+					default: 'unidentified'
+				}
+			},
+			nestedList: {
+				type: 'array',
+				title: 'Nested list',
+				items: {
+					type: 'array',
+					title: 'Inner list',
+					items: {
+						type: 'string',
+						default: 'lorem ipsum'
+					}
+				}
+			},
+			unorderable: {
+				title: 'Unorderable items',
+				type: 'array',
+				items: {
+					type: 'string',
+					default: 'lorem ipsum'
+				}
+			},
+			copyable: {
+				title: 'Copyable items',
+				type: 'array',
+				items: {
+					type: 'string',
+					default: 'lorem ipsum'
+				}
+			},
+			unremovable: {
+				title: 'Unremovable items',
+				type: 'array',
+				items: {
+					type: 'string',
+					default: 'lorem ipsum'
+				}
+			},
+			noToolbar: {
+				title: 'No add, remove and order buttons',
+				type: 'array',
+				items: {
+					type: 'string',
+					default: 'lorem ipsum'
+				}
+			},
+			fixedNoToolbar: {
+				title: 'Fixed array without buttons',
+				type: 'array',
+				items: [
+					{
+						title: 'A number',
+						type: 'number',
+						default: 42
+					},
+					{
+						title: 'A boolean',
+						type: 'boolean',
+						default: false
+					}
+				],
+				additionalItems: {
+					title: 'A string',
+					type: 'string',
+					default: 'lorem ipsum'
+				}
+			}
+		},
 		type: 'array',
 		items: [
 			{
@@ -35,40 +149,7 @@
 				type: 'object',
 				properties: {
 					listOfStrings: {
-						type: 'array',
-						title: 'A list of strings',
-						items: {
-							type: 'string',
-							default: 'bazinga'
-						}
-					},
-					multipleChoicesList: {
-						type: 'array',
-						title: 'A multiple choices list',
-						items: {
-							type: 'string',
-							enum: ['foo', 'bar', 'fuzz', 'qux']
-						},
-						uniqueItems: true
-					},
-					fixedItemsList: {
-						type: 'array',
-						title: 'A list of fixed items',
-						items: [
-							{
-								title: 'A string value',
-								type: 'string',
-								default: 'lorem ipsum'
-							},
-							{
-								title: 'a boolean value',
-								type: 'boolean'
-							}
-						],
-						additionalItems: {
-							title: 'Additional item',
-							type: 'number'
-						}
+						$ref: '#/definitions/listOfStrings'
 					}
 				}
 			},
@@ -77,35 +158,11 @@
 				description: 'advanced form',
 				type: 'object',
 				properties: {
-					defaultsAndMinItems: {
-						type: 'array',
-						title: 'List and item level defaults',
-						minItems: 5,
-						default: ['carp', 'trout', 'bream'],
-						items: {
-							type: 'string',
-							default: 'unidentified'
-						}
+					multipleChoicesList: {
+						$ref: '#/definitions/multipleChoicesList'
 					},
-					nestedList: {
-						type: 'array',
-						title: 'Nested list',
-						items: {
-							type: 'array',
-							title: 'Inner list',
-							items: {
-								type: 'string',
-								default: 'lorem ipsum'
-							}
-						}
-					},
-					unorderable: {
-						title: 'Unorderable items',
-						type: 'array',
-						items: {
-							type: 'string',
-							default: 'lorem ipsum'
-						}
+					fixedItemsList: {
+						$ref: '#/definitions/fixedItemsList'
 					}
 				}
 			},
@@ -114,50 +171,14 @@
 				description: 'form for export',
 				type: 'object',
 				properties: {
-					copyable: {
-						title: 'Copyable items',
-						type: 'array',
-						items: {
-							type: 'string',
-							default: 'lorem ipsum'
-						}
+					defaultsAndMinItems: {
+						$ref: '#/definitions/defaultsAndMinItems'
 					},
-					unremovable: {
-						title: 'Unremovable items',
-						type: 'array',
-						items: {
-							type: 'string',
-							default: 'lorem ipsum'
-						}
+					nestedList: {
+						$ref: '#/definitions/nestedList'
 					},
-					noToolbar: {
-						title: 'No add, remove and order buttons',
-						type: 'array',
-						items: {
-							type: 'string',
-							default: 'lorem ipsum'
-						}
-					},
-					fixedNoToolbar: {
-						title: 'Fixed array without buttons',
-						type: 'array',
-						items: [
-							{
-								title: 'A number',
-								type: 'number',
-								default: 42
-							},
-							{
-								title: 'A boolean',
-								type: 'boolean',
-								default: false
-							}
-						],
-						additionalItems: {
-							title: 'A string',
-							type: 'string',
-							default: 'lorem ipsum'
-						}
+					unorderable: {
+						$ref: '#/definitions/unorderable'
 					}
 				}
 			}
@@ -167,50 +188,6 @@
 	const uiSchema = {
 		'ui:components': {
 			tupleField: MultiStepField
-		},
-		listOfStrings: {
-			'ui:options': {
-				translations: {
-					'add-array-item': 'Add string'
-				}
-			},
-			items: {
-				'ui:options': {
-					stringEmptyValue: ''
-				}
-			}
-		},
-		multipleChoicesList: {
-			'ui:options': {}
-		},
-		unorderable: {
-			'ui:options': {
-				orderable: false
-			}
-		},
-		copyable: {
-			'ui:options': {
-				copyable: true
-			}
-		},
-		unremovable: {
-			'ui:options': {
-				removable: false
-			}
-		},
-		noToolbar: {
-			'ui:options': {
-				addable: false,
-				orderable: false,
-				removable: false
-			}
-		},
-		fixedNoToolbar: {
-			'ui:options': {
-				addable: false,
-				orderable: false,
-				removable: false
-			}
 		}
 	} satisfies UiSchemaRoot;
 
@@ -239,6 +216,9 @@
 	setFormContext(form);
 </script>
 
-<Form attributes={{ novalidate: true }}>
-	<Content />
-</Form>
+<div class="grid grid-cols-[1fr_auto] gap-8">
+	<Form attributes={{ novalidate: true }}>
+		<Content />
+	</Form>
+	<pre><code>{JSON.stringify(getValueSnapshot(form), null, 2)}</code></pre>
+</div>
