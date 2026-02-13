@@ -905,7 +905,7 @@
 	"console_guide_sidebar": "Sidebar Navigation",
 	"console_guide_sidebar_description": "Access all core features and navigate through the platform using this sidebar.",
 	"cronjob": "CronJob",
-	"simpleapps": "Simple Apps",
+	"simpleapp": "Simple App",
 	"resource_quota": "ResourceQuota",
 	"k8s_overview_title": "Kubernetes Overview",
 	"k8s_overview_description": "Monitor your Kubernetes cluster status and resources",
