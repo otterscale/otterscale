@@ -63,8 +63,10 @@ const platformRoutes = (scope: string, namespace: string): Route[] => [
 				)
 			},
 			{
-				title: m.simpleapps(),
-				url: resolve('/(auth)/scope/[scope]/simpleapps', { scope: scope })
+				title: m.simpleapp(),
+				url: resolve(
+					`/(auth)/${scope}/SimpleApp?group=apps.otterscale.io&version=v1alpha1&namespace=${namespace}&resource=simpleapps`
+				)
 			},
 			{
 				title: m.secrets(),
