@@ -11,6 +11,7 @@
 		getChildPath,
 		getFieldComponent,
 		getFormContext,
+		getValueSnapshot,
 		retrieveTranslate,
 		retrieveUiOption,
 		retrieveUiSchema,
@@ -20,6 +21,9 @@
 	} from '@sjsf/form';
 	import { isSchemaObject } from '@sjsf/form/lib/json-schema';
 	import type { Ref } from '@sjsf/form/lib/svelte.svelte';
+	import { mode as themeMode } from 'mode-watcher';
+	import Monaco from 'svelte-monaco';
+	import { stringify } from 'yaml';
 
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
 	import Button, { buttonVariants } from '$lib/components/ui/button/button.svelte';
@@ -73,20 +77,21 @@
 		Multiple Step Form
 	</AlertDialog.Trigger>
 	<AlertDialog.Content class="flex max-h-[90vh] min-h-[90vh] min-w-[50vw] flex-col gap-0 p-4">
-		<AlertDialog.Header>
-			<Item.Root>
-				<Progress value={(stepperCtx.current + 1) / stepSchemas.length} max={1} />
-
-				<Item.Content class="text-left">
-					<Item.Title class="text-lg font-bold">{stepSchemas[stepperCtx.current].title}</Item.Title>
-					<Item.Description>{stepSchemas[stepperCtx.current].description}</Item.Description>
-				</Item.Content>
-				<Item.Actions>
-					<Switch bind:checked={isBasicMode} />
-				</Item.Actions>
-			</Item.Root>
-		</AlertDialog.Header>
 		{#if isBasicMode}
+			<AlertDialog.Header>
+				<Item.Root>
+					<Item.Content class="h-15 text-left">
+						<Item.Title class="text-lg font-bold"
+							>{stepSchemas[stepperCtx.current].title}</Item.Title
+						>
+						<Item.Description>{stepSchemas[stepperCtx.current].description}</Item.Description>
+					</Item.Content>
+					<Item.Actions>
+						<Switch bind:checked={isBasicMode} />
+					</Item.Actions>
+					<Progress value={(stepperCtx.current + 1) / stepSchemas.length} max={1} />
+				</Item.Root>
+			</AlertDialog.Header>
 			<!-- Form -->
 			<div class="h-full overflow-y-auto p-4">
 				<Form
@@ -151,7 +156,31 @@
 				{/if}
 			</AlertDialog.Footer>
 		{:else}
-			132
+			<AlertDialog.Header>
+				<Item.Root>
+					<Item.Content class="h-15 text-left">
+						<Item.Title class="text-lg font-bold">Dynamic Form</Item.Title>
+						<Item.Description>Description for dynamic form.</Item.Description>
+					</Item.Content>
+					<Item.Actions>
+						<Switch bind:checked={isBasicMode} />
+					</Item.Actions>
+				</Item.Root>
+			</AlertDialog.Header>
+			<div class="mt-auto h-[80vh]">
+				<Monaco
+					options={{
+						language: 'yaml',
+						padding: { top: 16, bottom: 8 },
+						automaticLayout: true,
+						minimap: { enabled: false },
+						scrollBeyondLastLine: false,
+						readOnly: !isBasicMode
+					}}
+					theme={themeMode.current === 'dark' ? 'vs-dark' : 'vs'}
+					value={JSON.stringify(value, null, 2)}
+				/>
+			</div>
 		{/if}
 	</AlertDialog.Content>
 </AlertDialog.Root>
