@@ -16,17 +16,23 @@ function simpleappFieldsMask(
 	return {
 		Name: lodash.get(schema, 'properties.metadata.properties.name'),
 		Namespace: lodash.get(schema, 'properties.metadata.properties.namespace'),
-		Ready: lodash.get(schema, 'properties.status.properties.ready') || { 
-			description: 'Ready status', 
-			type: 'boolean' 
+		Ready: lodash.get(schema, 'properties.status.properties.ready') || {
+			description: 'Ready status',
+			type: 'boolean'
 		},
-		Replicas: lodash.get(schema, 'properties.spec.properties.deploymentSpec.properties.replicas') || { 
-			description: 'Number of replicas', 
-			type: 'integer' 
+		Replicas: lodash.get(
+			schema,
+			'properties.spec.properties.deploymentSpec.properties.replicas'
+		) || {
+			description: 'Number of replicas',
+			type: 'integer'
 		},
-		'Service Type': lodash.get(schema, 'properties.spec.properties.serviceSpec.properties.type') || { 
-			description: 'Service type', 
-			type: 'string' 
+		'Service Type': lodash.get(
+			schema,
+			'properties.spec.properties.serviceSpec.properties.type'
+		) || {
+			description: 'Service type',
+			type: 'string'
 		},
 		Age: lodash.get(schema, 'properties.metadata.properties.creationTimestamp'),
 		Configuration: schema
@@ -41,7 +47,8 @@ function simpleappObjectMask(object: any): Record<string, JsonValue> {
 		const readyCondition = object.status.conditions.find(
 			(condition: any) => condition?.type === 'Ready'
 		);
-		ready = readyCondition?.status === 'True' ? true : (readyCondition?.status === 'False' ? false : null);
+		ready =
+			readyCondition?.status === 'True' ? true : readyCondition?.status === 'False' ? false : null;
 	}
 
 	return {

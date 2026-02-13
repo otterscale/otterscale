@@ -19,7 +19,11 @@ import {
 	resourceQuotaFieldsMask,
 	resourceQuotaObjectMask
 } from './resource-quota.js';
-import { simpleappColumnDefinitions, simpleappFieldsMask, simpleappObjectMask } from './simpleapp.js';
+import {
+	simpleappColumnDefinitions,
+	simpleappFieldsMask,
+	simpleappObjectMask
+} from './simpleapp.js';
 
 function getFieldsGetter(kind: string): FieldsMaskType {
 	switch (kind) {

@@ -1,9 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import {
-		type GroupedFields,
-		MultiStepSchemaForm
-	} from '$lib/components/custom/schema-form';
+	import { type GroupedFields, MultiStepSchemaForm } from '$lib/components/custom/schema-form';
 	import { ResourceService } from '$lib/api/resource/v1/resource_pb';
 	import { toast } from 'svelte-sonner';
 	import { getContext } from 'svelte';
@@ -41,7 +38,7 @@
 							{
 								name: 'app',
 								image: '',
-								command: [ "bin/bash", "sleep 3600s"],
+								command: ['bin/bash', 'sleep 3600s'],
 								ports: [
 									{
 										containerPort: 8080,
@@ -81,7 +78,7 @@
 						storage: '1Gi'
 					}
 				},
-				storageClassName: '',
+				storageClassName: ''
 			}
 		}
 	};
@@ -137,7 +134,7 @@
 		Port: {
 			'spec.serviceSpec.type': { title: 'Service Type' },
 			'spec.serviceSpec.ports.port': { title: 'Service Port' },
-			'spec.serviceSpec.ports.targetPort': { 
+			'spec.serviceSpec.ports.targetPort': {
 				title: 'Target Port',
 				uiSchema: {
 					'ui:options': {
@@ -184,10 +181,10 @@
 			if (Array.isArray(ports)) {
 				ports.forEach((port: any) => {
 					if (port.targetPort !== undefined) {
-							const numValue = parseInt(port.targetPort, 10);
-							if (!isNaN(numValue) && String(numValue) === port.targetPort.trim()) {
-								port.targetPort = numValue;
-							}
+						const numValue = parseInt(port.targetPort, 10);
+						if (!isNaN(numValue) && String(numValue) === port.targetPort.trim()) {
+							port.targetPort = numValue;
+						}
 						// If already a number, keep it as number
 					}
 				});
