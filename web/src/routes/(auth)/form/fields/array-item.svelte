@@ -9,8 +9,6 @@
 	} from '@sjsf/form';
 	import { getArrayContext } from '@sjsf/form/fields/array/context.svelte';
 
-	import Template from './array-template.svelte';
-
 	let {
 		index,
 		value = $bindable(),
@@ -22,6 +20,7 @@
 	const ctx = getFormContext();
 	const arrayCtx = getArrayContext();
 
+	const Template = $derived(getComponent(ctx, 'arrayItemTemplate', config));
 	const Field = $derived(getFieldComponent(ctx, config));
 	const Button = $derived(getComponent(ctx, 'button', config));
 
@@ -35,7 +34,7 @@
 
 {#snippet buttons()}
 	<div
-		class="flex items-center gap-2 [&_button]:size-7 [&_button]:border-none [&_button]:bg-transparent [&_button]:shadow-none"
+		class="ml-auto flex items-center gap-2 [&_button]:size-7 [&_button]:border-none [&_button]:shadow-none"
 	>
 		{#if arrayCtx.orderable()}
 			<Button
@@ -91,7 +90,8 @@
 		{/if}
 	</div>
 {/snippet}
-<div class="border-l-2 py-4 pl-6">
+
+<div class="border-l py-2 pl-4 *:flex *:*:w-full *:flex-col">
 	<Template
 		type="template"
 		{index}

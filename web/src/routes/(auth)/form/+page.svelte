@@ -5,13 +5,13 @@
 		getValueSnapshot,
 		type Schema,
 		setFormContext,
-		type UiSchema
+		type UiSchemaRoot
 	} from '@sjsf/form';
 	import { overrideByRecord } from '@sjsf/form/lib/resolver';
 
 	import * as defaults from '$lib/form-defaults';
 
-	import ArrayField from './fields/array.svelte';
+	import arrayItemField from './fields/array-item.svelte';
 
 	const schema: Schema = {
 		definitions: {
@@ -149,7 +149,14 @@
 		}
 	};
 
-	const uiSchema: UiSchema = {
+	const uiSchema: UiSchemaRoot = {
+		'ui:options': {
+			layouts: {
+				'object-properties': {
+					class: 'border p-4 rounded-lg'
+				}
+			}
+		},
 		listOfStrings: {
 			'ui:options': {
 				translations: {
@@ -163,13 +170,7 @@
 			}
 		},
 		multipleChoicesList: {
-			'ui:options': {
-				layouts: {
-					'field-content': {
-						style: 'display: flex; flex-direction: column; gap: 0.2rem'
-					}
-				}
-			}
+			'ui:options': {}
 		},
 		unorderable: {
 			'ui:options': {
@@ -178,12 +179,7 @@
 		},
 		copyable: {
 			'ui:options': {
-				copyable: true,
-				layouts: {
-					'array-item': {
-						style: ''
-					}
-				}
+				copyable: true
 			}
 		},
 		unremovable: {
@@ -208,7 +204,7 @@
 	};
 
 	const theme = overrideByRecord(defaults.theme, {
-		arrayField: ArrayField
+		arrayItemField: arrayItemField
 	});
 
 	const form = createForm({
@@ -223,5 +219,4 @@
 </script>
 
 <Content />
-
 <pre><code>{JSON.stringify(getValueSnapshot(form), null, 2)}</code></pre>
