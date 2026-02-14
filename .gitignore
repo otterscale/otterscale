@@ -30,3 +30,9 @@ go.work.sum
 # Editor/IDE
 # .idea/
 # .vscode/
+
+# Other files to ignore
+bin/
+otterscale
+*.pem
+manifests/bootstrap/*.yaml

@@ -1,0 +1,37 @@
+# Version control
+.git
+.gitignore
+
+# Build artifacts
+bin/
+coverage.txt
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Test files
+test/
+
+# Documentation
+README.md
+
+# CI/CD and tooling
+.golangci.yml
+Makefile
+
+# Environment files
+.env
+.env.*
+
+# Proto source files (generated Go files are kept)
+third_party/
+api/*.proto
+api/**/*.proto
+
+# Docker files (avoid recursive builds)
+Dockerfile
+.dockerignore

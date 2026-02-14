@@ -1,0 +1,289 @@
+edition = "2023";
+
+package otterscale.runtime.v1;
+
+import "api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/otterscale/otterscale/api/runtime/v1;pb";
+
+// RuntimeService provides runtime operations for Kubernetes workloads,
+// including log streaming, interactive exec, port forwarding, scaling,
+// and rolling restarts.
+service RuntimeService {
+  // PodLog streams log output from a container, similar to `kubectl logs -f`.
+  rpc PodLog(PodLogRequest) returns (stream PodLogResponse) {
+    option (otterscale.api.feature) = {
+      name: "runtime-enabled"
+    };
+  };
+
+  // ExecuteTTY starts an interactive exec session in a container and streams
+  // stdout/stderr back. Due to browser limitations, bidirectional streaming
+  // cannot be used; stdin is sent via the separate WriteTTY RPC.
+  rpc ExecuteTTY(ExecuteTTYRequest) returns (stream ExecuteTTYResponse) {
+    option (otterscale.api.feature) = {
+      name: "runtime-enabled"
+    };
+  };
+
+  // WriteTTY sends stdin data to an active exec session identified by session_id.
+  rpc WriteTTY(WriteTTYRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "runtime-enabled"
+    };
+  };
+
+  // ResizeTTY updates the terminal dimensions of an active exec session.
+  rpc ResizeTTY(ResizeTTYRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "runtime-enabled"
+    };
+  };
+
+  // PortForward opens a port-forward session to a pod and streams data back.
+  // Due to browser limitations, bidirectional streaming cannot be used;
+  // data to the pod is sent via the separate WritePortForward RPC.
+  rpc PortForward(PortForwardRequest) returns (stream PortForwardResponse) {
+    option (otterscale.api.feature) = {
+      name: "runtime-enabled"
+    };
+  };
+
+  // WritePortForward sends data to an active port-forward session.
+  rpc WritePortForward(WritePortForwardRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "runtime-enabled"
+    };
+  };
+
+  // Scale updates the replica count of a scalable workload
+  // (Deployment, StatefulSet, ReplicaSet) via the /scale subresource.
+  rpc Scale(ScaleRequest) returns (ScaleResponse) {
+    option (otterscale.api.feature) = {
+      name: "runtime-enabled"
+    };
+  };
+
+  // Restart triggers a rolling restart of a workload by patching the
+  // pod template annotation, equivalent to `kubectl rollout restart`.
+  rpc Restart(RestartRequest) returns (google.protobuf.Empty) {
+    option (otterscale.api.feature) = {
+      name: "runtime-enabled"
+    };
+  };
+}
+
+// ---------------------------------------------------------------------------
+// PodLog
+// ---------------------------------------------------------------------------
+
+// PodLogRequest defines the parameters for streaming container logs.
+// Fields align with corev1.PodLogOptions.
+message PodLogRequest {
+  // The target Kubernetes cluster identifier.
+  string cluster = 1;
+
+  // The namespace of the pod.
+  string namespace = 2;
+
+  // The name of the pod.
+  string name = 3;
+
+  // The container name. If omitted, the first container in the pod is used.
+  string container = 4;
+
+  // If true, stream logs as they are produced (like `kubectl logs -f`).
+  bool follow = 5;
+
+  // Number of lines from the end of the logs to show. If not set, all logs are shown.
+  int64 tail_lines = 6;
+
+  // A relative time in seconds before the current time from which to show logs.
+  int64 since_seconds = 7;
+
+  // An absolute time from which to show logs. Mutually exclusive with since_seconds.
+  google.protobuf.Timestamp since_time = 8;
+
+  // If true, return the logs for the previous terminated container instance.
+  bool previous = 9;
+
+  // If true, add an RFC3339 timestamp at the beginning of every line of log output.
+  bool timestamps = 10;
+
+  // Limit the number of bytes returned from the server.
+  int64 limit_bytes = 11;
+}
+
+// PodLogResponse contains a chunk of log data.
+message PodLogResponse {
+  // Raw log data bytes.
+  bytes data = 1;
+}
+
+// ---------------------------------------------------------------------------
+// ExecuteTTY / WriteTTY / ResizeTTY
+// ---------------------------------------------------------------------------
+
+// ExecuteTTYRequest defines the parameters for starting an interactive
+// exec session in a container. Fields align with corev1.PodExecOptions.
+message ExecuteTTYRequest {
+  // The target Kubernetes cluster identifier.
+  string cluster = 1;
+
+  // The namespace of the pod.
+  string namespace = 2;
+
+  // The name of the pod.
+  string name = 3;
+
+  // The container to exec into. If omitted, the first container is used.
+  string container = 4;
+
+  // The command to execute (e.g. ["/bin/sh"]).
+  repeated string command = 5;
+
+  // If true, allocate a TTY for the exec session.
+  bool tty = 6;
+
+  // Initial terminal height in rows.
+  uint32 rows = 7;
+
+  // Initial terminal width in columns.
+  uint32 cols = 8;
+}
+
+// ExecuteTTYResponse streams output from the exec session.
+message ExecuteTTYResponse {
+  // The session identifier, set only in the first response message.
+  // Subsequent WriteTTY / ResizeTTY calls must reference this ID.
+  string session_id = 1;
+
+  // Stdout data from the exec session.
+  bytes stdout = 2;
+
+  // Stderr data from the exec session (only when tty is false).
+  bytes stderr = 3;
+}
+
+// WriteTTYRequest sends stdin data to an active exec session.
+message WriteTTYRequest {
+  // The session identifier returned in the first ExecuteTTYResponse.
+  string session_id = 1;
+
+  // Stdin data to write.
+  bytes stdin = 2;
+}
+
+// ResizeTTYRequest updates the terminal dimensions of an exec session.
+message ResizeTTYRequest {
+  // The session identifier returned in the first ExecuteTTYResponse.
+  string session_id = 1;
+
+  // New terminal height in rows.
+  uint32 rows = 2;
+
+  // New terminal width in columns.
+  uint32 cols = 3;
+}
+
+// ---------------------------------------------------------------------------
+// PortForward
+// ---------------------------------------------------------------------------
+
+// PortForwardRequest defines the parameters for starting a port-forward session.
+message PortForwardRequest {
+  // The target Kubernetes cluster identifier.
+  string cluster = 1;
+
+  // The namespace of the pod.
+  string namespace = 2;
+
+  // The name of the pod.
+  string name = 3;
+
+  // The container port to forward to.
+  int32 port = 4;
+}
+
+// PortForwardResponse streams data received from the forwarded port.
+message PortForwardResponse {
+  // The session identifier, set only in the first response message.
+  // Subsequent WritePortForward calls must reference this ID.
+  string session_id = 1;
+
+  // Data received from the forwarded port on the pod.
+  bytes data = 2;
+}
+
+// WritePortForwardRequest sends data to an active port-forward session.
+message WritePortForwardRequest {
+  // The session identifier returned in the first PortForwardResponse.
+  string session_id = 1;
+
+  // Data to send to the forwarded port on the pod.
+  bytes data = 2;
+}
+
+// ---------------------------------------------------------------------------
+// Scale
+// ---------------------------------------------------------------------------
+
+// ScaleRequest defines the parameters for scaling a workload.
+// Uses the Kubernetes /scale subresource for correctness.
+message ScaleRequest {
+  // The target Kubernetes cluster identifier.
+  string cluster = 1;
+
+  // Kubernetes API Group (e.g., "apps").
+  string group = 2;
+
+  // Kubernetes API Version (e.g., "v1").
+  string version = 3;
+
+  // Kubernetes API Resource name in plural (e.g., "deployments").
+  string resource = 4;
+
+  // The namespace of the workload.
+  string namespace = 5;
+
+  // The name of the workload.
+  string name = 6;
+
+  // The desired number of replicas.
+  int32 replicas = 7;
+}
+
+// ScaleResponse contains the updated replica count after scaling.
+message ScaleResponse {
+  // The current number of replicas after the scale operation.
+  int32 replicas = 1;
+}
+
+// ---------------------------------------------------------------------------
+// Restart
+// ---------------------------------------------------------------------------
+
+// RestartRequest defines the parameters for triggering a rolling restart.
+// This patches the pod template annotation with kubectl.kubernetes.io/restartedAt,
+// equivalent to `kubectl rollout restart`.
+message RestartRequest {
+  // The target Kubernetes cluster identifier.
+  string cluster = 1;
+
+  // Kubernetes API Group (e.g., "apps").
+  string group = 2;
+
+  // Kubernetes API Version (e.g., "v1").
+  string version = 3;
+
+  // Kubernetes API Resource name in plural (e.g., "deployments").
+  string resource = 4;
+
+  // The namespace of the workload.
+  string namespace = 5;
+
+  // The name of the workload.
+  string name = 6;
+}
