@@ -1,4 +1,3 @@
-.github
-scripts
-web
+.svelte-kit
+node_modules
 *.md
