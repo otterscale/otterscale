@@ -25,7 +25,7 @@
 		"@fontsource/noto-sans-tc": "^5.2.9",
 		"@iconify-json/logos": "^1.2.10",
 		"@iconify-json/ph": "^1.2.2",
-		"@iconify-json/simple-icons": "^1.2.69",
+		"@iconify-json/simple-icons": "^1.2.70",
 		"@inlang/paraglide-js": "^2.10.0",
 		"@internationalized/date": "^3.11.0",
 		"@lucide/svelte": "^0.563.1",
