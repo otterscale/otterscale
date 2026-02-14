@@ -5,16 +5,13 @@
 
 version: 2
 updates:
-  - package-ecosystem: "gomod"
-    directory: "/"
-    schedule:
-      interval: "daily"
   - package-ecosystem: "npm"
-    directory: "/web"
+    directory: "/"
     schedule:
       interval: "daily"
     exclude-paths:
       - "static/**"
+
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
@@ -22,10 +19,5 @@ updates:
 
   - package-ecosystem: docker
     directory: /
-    schedule:
-      interval: daily
-
-  - package-ecosystem: docker
-    directory: /web
     schedule:
       interval: daily
