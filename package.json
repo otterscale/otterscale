@@ -1,5 +1,5 @@
 {
-	"name": "@otterscale/web",
+	"name": "otterscale-console",
 	"version": "0.7.0",
 	"packageManager": "pnpm@10.28.1",
 	"private": true,
