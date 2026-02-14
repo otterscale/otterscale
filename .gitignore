@@ -1,43 +1,36 @@
-# Binaries for programs and plugins
-*.exe
-*.exe~
-*.dll
-*.so
-*.dylib
+test-results
+node_modules
 
-# Test binary, built with `go test -c`
-*.test
+# Output
+.output
+.vercel
+.netlify
+.wrangler
+/.svelte-kit
+/build
 
-# Output of the go coverage tool, specifically when used with LiteIDE
-*.out
+# OS
+.DS_Store
+Thumbs.db
 
-# Dependency directories (remove the comment below to include it)
-# vendor/
-
-# Go workspace file
-go.work
-go.work.sum
-
-# env file
+# Env
 .env
 .env.*
 !.env.example
 !.env.test
 
-# Mac
-.DS_Store
+# Vite
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*
 
-# VS Code
-.vscode
+# Paraglide
+src/lib/paraglide
+project.inlang/cache
+project.inlang/project_id
 
-# Temp folder
-tmp
+# Coverage
+coverage
 
-# Cert files
-*.crt
+# ESLint
+.eslintcache
 
-# YAML
-*.yaml
-
-# bin folder
-bin/
