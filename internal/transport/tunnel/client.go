@@ -13,6 +13,9 @@ import (
 	chclient "github.com/jpillora/chisel/client"
 )
 
+// secretFilePerm is the file permission for TLS files.
+const secretFilePerm = 0o600
+
 // Sentinel errors for well-known failure modes.
 var (
 	ErrLocalPortRequired = errors.New("tunnel: local port is required")
@@ -246,13 +249,13 @@ func (c *Client) dial(ctx context.Context) (*chclient.Client, error) {
 	certFile := filepath.Join(dir, "cert.pem")
 	keyFile := filepath.Join(dir, "key.pem")
 
-	if err := os.WriteFile(caFile, result.CACertPEM, 0o600); err != nil {
+	if err := os.WriteFile(caFile, result.CACertPEM, secretFilePerm); err != nil {
 		return nil, fmt.Errorf("write CA cert: %w", err)
 	}
-	if err := os.WriteFile(certFile, result.CertPEM, 0o600); err != nil {
+	if err := os.WriteFile(certFile, result.CertPEM, secretFilePerm); err != nil {
 		return nil, fmt.Errorf("write client cert: %w", err)
 	}
-	if err := os.WriteFile(keyFile, result.KeyPEM, 0o600); err != nil {
+	if err := os.WriteFile(keyFile, result.KeyPEM, secretFilePerm); err != nil {
 		return nil, fmt.Errorf("write client key: %w", err)
 	}
 

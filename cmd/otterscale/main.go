@@ -38,6 +38,7 @@ func main() {
 		// Cobra is configured with SilenceErrors: true, so we
 		// print the error here for consistent formatting.
 		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+		stop()
 		os.Exit(1)
 	}
 }

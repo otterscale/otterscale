@@ -40,8 +40,8 @@ type backoff struct {
 	current time.Duration
 }
 
-func newBackoff(base, max time.Duration) *backoff {
-	return &backoff{base: base, max: max, current: base}
+func newBackoff(base, maxInterval time.Duration) *backoff {
+	return &backoff{base: base, max: maxInterval, current: base}
 }
 
 // Next returns a jittered delay based on the current backoff interval,
@@ -51,7 +51,7 @@ func newBackoff(base, max time.Duration) *backoff {
 func (b *backoff) Next() time.Duration {
 	d := b.current
 	// Full jitter: uniform random in [0, current].
-	jittered := time.Duration(rand.Int64N(int64(d) + 1))
+	jittered := time.Duration(rand.Int64N(int64(d) + 1)) //nolint:gosec // weak random is intentional for jitter
 	if next := b.current * 2; next > b.max {
 		b.current = b.max
 	} else {
