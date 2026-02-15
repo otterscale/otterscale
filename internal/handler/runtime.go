@@ -106,7 +106,7 @@ func (s *RuntimeService) ExecuteTTY(ctx context.Context, req *pb.ExecuteTTYReque
 			fmt.Errorf("terminal dimensions out of range (max %d)", math.MaxUint16))
 	}
 
-	sess, stdoutR, stderrR, err := s.runtime.StartExec(ctx, core.StartExecParams{
+	sess, stdoutR, stderrR, err := s.runtime.StartExec(ctx, &core.StartExecParams{
 		Cluster:   req.GetCluster(),
 		Namespace: req.GetNamespace(),
 		Name:      req.GetName(),
@@ -128,62 +128,7 @@ func (s *RuntimeService) ExecuteTTY(ctx context.Context, req *pb.ExecuteTTYReque
 		return err
 	}
 
-	// Merge stdout and stderr into a single output channel.
-	// A WaitGroup tracks the two reader goroutines so that the
-	// channel is closed once both finish, preventing goroutine leaks.
-	ch := make(chan execChunk, 8)
-	var readerWg sync.WaitGroup
-	readerWg.Add(2)
-
-	// Read stdout. The send to ch is guarded by ctx.Done() so that
-	// the goroutine exits promptly when the stream's context is
-	// canceled, even if the channel buffer is full and nobody is
-	// draining it anymore.
-	go func() {
-		defer readerWg.Done()
-		defer stdoutR.Close()
-		buf := make([]byte, streamChunkSize)
-		for {
-			n, readErr := stdoutR.Read(buf)
-			if n > 0 {
-				select {
-				case ch <- execChunk{stdout: append([]byte(nil), buf[:n]...)}:
-				case <-ctx.Done():
-					return
-				}
-			}
-			if readErr != nil {
-				return
-			}
-		}
-	}()
-
-	// Read stderr (only meaningful when TTY is false).
-	go func() {
-		defer readerWg.Done()
-		defer stderrR.Close()
-		buf := make([]byte, streamChunkSize)
-		for {
-			n, readErr := stderrR.Read(buf)
-			if n > 0 {
-				select {
-				case ch <- execChunk{stderr: append([]byte(nil), buf[:n]...)}:
-				case <-ctx.Done():
-					return
-				}
-			}
-			if readErr != nil {
-				return
-			}
-		}
-	}()
-
-	// Close the channel once both readers finish so that the
-	// select loop below can detect channel closure.
-	go func() {
-		readerWg.Wait()
-		close(ch)
-	}()
+	ch := mergeExecOutputs(ctx, stdoutR, stderrR)
 
 	// Stream chunks to the client until all output is consumed.
 	// The channel is closed by the readerWg goroutine once both
@@ -218,6 +163,63 @@ func (s *RuntimeService) ExecuteTTY(ctx context.Context, req *pb.ExecuteTTYReque
 type execChunk struct {
 	stdout []byte
 	stderr []byte
+}
+
+// execChunkBufSize is the channel buffer size for merged exec output.
+const execChunkBufSize = 8
+
+// mergeExecOutputs reads stdout and stderr concurrently and merges
+// them into a single channel. The returned channel is closed once
+// both readers finish.
+func mergeExecOutputs(ctx context.Context, stdoutR, stderrR io.ReadCloser) <-chan execChunk {
+	ch := make(chan execChunk, execChunkBufSize)
+	var readerWg sync.WaitGroup
+	readerWg.Add(2)
+
+	go func() {
+		defer readerWg.Done()
+		defer stdoutR.Close()
+		buf := make([]byte, streamChunkSize)
+		for {
+			n, readErr := stdoutR.Read(buf)
+			if n > 0 {
+				select {
+				case ch <- execChunk{stdout: append([]byte(nil), buf[:n]...)}:
+				case <-ctx.Done():
+					return
+				}
+			}
+			if readErr != nil {
+				return
+			}
+		}
+	}()
+
+	go func() {
+		defer readerWg.Done()
+		defer stderrR.Close()
+		buf := make([]byte, streamChunkSize)
+		for {
+			n, readErr := stderrR.Read(buf)
+			if n > 0 {
+				select {
+				case ch <- execChunk{stderr: append([]byte(nil), buf[:n]...)}:
+				case <-ctx.Done():
+					return
+				}
+			}
+			if readErr != nil {
+				return
+			}
+		}
+	}()
+
+	go func() {
+		readerWg.Wait()
+		close(ch)
+	}()
+
+	return ch
 }
 
 // WriteTTY sends stdin data to an active exec session.
@@ -305,7 +307,7 @@ func (s *RuntimeService) WritePortForward(ctx context.Context, req *pb.WritePort
 func (s *RuntimeService) Scale(ctx context.Context, req *pb.ScaleRequest) (*pb.ScaleResponse, error) {
 	replicas, err := s.runtime.Scale(
 		ctx,
-		core.ResourceIdentifier{
+		&core.ResourceIdentifier{
 			Cluster:   req.GetCluster(),
 			Group:     req.GetGroup(),
 			Version:   req.GetVersion(),
@@ -332,7 +334,7 @@ func (s *RuntimeService) Scale(ctx context.Context, req *pb.ScaleRequest) (*pb.S
 func (s *RuntimeService) Restart(ctx context.Context, req *pb.RestartRequest) (*emptypb.Empty, error) {
 	if err := s.runtime.Restart(
 		ctx,
-		core.ResourceIdentifier{
+		&core.ResourceIdentifier{
 			Cluster:   req.GetCluster(),
 			Group:     req.GetGroup(),
 			Version:   req.GetVersion(),

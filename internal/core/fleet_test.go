@@ -24,7 +24,7 @@ func (m *mockTunnelProvider) ListClusters() map[string]Cluster {
 	return m.clusters
 }
 
-func (m *mockTunnelProvider) RegisterCluster(_ context.Context, _, _, _ string, _ []byte) (string, []byte, error) {
+func (m *mockTunnelProvider) RegisterCluster(_ context.Context, _, _, _ string, _ []byte) (endpoint string, certPEM []byte, err error) {
 	return m.regEndpoint, m.regCertPEM, m.regErr
 }
 
@@ -38,7 +38,7 @@ type mockManifestRenderer struct {
 	err    error
 }
 
-func (m *mockManifestRenderer) RenderAgentManifest(_ ManifestParams) (string, error) {
+func (m *mockManifestRenderer) RenderAgentManifest(_ *ManifestParams) (string, error) {
 	return m.result, m.err
 }
 

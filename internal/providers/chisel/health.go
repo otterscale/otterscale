@@ -69,7 +69,7 @@ func (s *Service) runHealthCheck(ctx context.Context) {
 	ticker := time.NewTicker(healthCheckInterval)
 	defer ticker.Stop()
 
-	dialer := net.Dialer{Timeout: healthDialTimeout}
+	dialer := &net.Dialer{Timeout: healthDialTimeout}
 	failCounts := make(map[string]int)
 
 	for {
@@ -85,7 +85,7 @@ func (s *Service) runHealthCheck(ctx context.Context) {
 // checkClusters performs a single round of health checks across all
 // registered clusters. failCounts is mutated in place to track
 // consecutive failures per cluster.
-func (s *Service) checkClusters(ctx context.Context, dialer net.Dialer, failCounts map[string]int) {
+func (s *Service) checkClusters(ctx context.Context, dialer *net.Dialer, failCounts map[string]int) {
 	snapshot := s.clusterSnapshot()
 
 	// Clean up failCounts for clusters that are no longer registered.

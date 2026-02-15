@@ -53,7 +53,7 @@ func TestTerminalSizeQueue_Close(t *testing.T) {
 	q.Close()
 }
 
-func TestTerminalSizeQueue_SetAfterClose(t *testing.T) {
+func TestTerminalSizeQueue_SetAfterClose(_ *testing.T) {
 	q := NewTerminalSizeQueue()
 	q.Close()
 

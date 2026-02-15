@@ -22,7 +22,7 @@ type RuntimeRepo interface {
 	// PodLogs opens a streaming reader for container log output.
 	PodLogs(ctx context.Context, cluster, namespace, name string, opts PodLogOptions) (io.ReadCloser, error)
 	// Exec starts an exec session and blocks until it completes.
-	Exec(ctx context.Context, cluster, namespace, name string, opts ExecOptions) error
+	Exec(ctx context.Context, cluster, namespace, name string, opts *ExecOptions) error
 	// GetScale reads the current replica count via the /scale subresource.
 	GetScale(ctx context.Context, cluster string, gvr schema.GroupVersionResource, namespace, name string) (int32, error)
 	// UpdateScale sets the desired replica count via the /scale subresource
@@ -120,7 +120,7 @@ func (uc *RuntimeUseCase) StartPodLogs(ctx context.Context, cluster, namespace, 
 // StartExec creates an exec session, starts the exec in a background
 // goroutine, and returns the session together with stdout and stderr
 // readers that the caller can stream from.
-func (uc *RuntimeUseCase) StartExec(ctx context.Context, params StartExecParams) (*ExecSession, io.ReadCloser, io.ReadCloser, error) {
+func (uc *RuntimeUseCase) StartExec(ctx context.Context, params *StartExecParams) (session *ExecSession, stdoutReader, stderrReader io.ReadCloser, err error) {
 	if params.Name == "" {
 		return nil, nil, nil, &ErrInvalidInput{Field: "name", Message: "pod name is required"}
 	}
@@ -141,7 +141,7 @@ func (uc *RuntimeUseCase) StartExec(ctx context.Context, params StartExecParams)
 	ctx, cancel := context.WithCancel(ctx)
 	errCh := make(chan error, 1)
 
-	sess := &ExecSession{
+	session = &ExecSession{
 		ID:        uuid.New().String(),
 		Stdin:     stdinW,
 		SizeQueue: sizeQueue,
@@ -151,7 +151,7 @@ func (uc *RuntimeUseCase) StartExec(ctx context.Context, params StartExecParams)
 
 	// Register the session BEFORE launching the goroutine to avoid
 	// wasting resources if the session store is full.
-	if err := uc.sessions.PutExec(sess); err != nil {
+	if err := uc.sessions.PutExec(session); err != nil {
 		cancel()
 		stdinW.Close()
 		stdinR.Close()
@@ -172,7 +172,7 @@ func (uc *RuntimeUseCase) StartExec(ctx context.Context, params StartExecParams)
 			stderr = stderrW
 		}
 
-		errCh <- uc.runtime.Exec(ctx, params.Cluster, params.Namespace, params.Name, ExecOptions{
+		errCh <- uc.runtime.Exec(ctx, params.Cluster, params.Namespace, params.Name, &ExecOptions{
 			Container: params.Container,
 			Command:   params.Command,
 			TTY:       params.TTY,
@@ -183,7 +183,7 @@ func (uc *RuntimeUseCase) StartExec(ctx context.Context, params StartExecParams)
 		})
 	}()
 
-	return sess, stdoutR, stderrR, nil
+	return session, stdoutR, stderrR, nil
 }
 
 // WriteExec writes stdin data to an active exec session. The write is
@@ -336,7 +336,7 @@ func (uc *RuntimeUseCase) CleanupPortForward(_ context.Context, sessionID string
 
 // GetScale validates the inputs, looks up the GVR, and returns the
 // current replica count without modifying it.
-func (uc *RuntimeUseCase) GetScale(ctx context.Context, id ResourceIdentifier) (int32, error) {
+func (uc *RuntimeUseCase) GetScale(ctx context.Context, id *ResourceIdentifier) (int32, error) {
 	if id.Name == "" {
 		return 0, &ErrInvalidInput{Field: "name", Message: "resource name is required"}
 	}
@@ -349,7 +349,7 @@ func (uc *RuntimeUseCase) GetScale(ctx context.Context, id ResourceIdentifier) (
 
 // Scale validates the inputs, looks up the GVR, updates the desired
 // replica count, and returns the new value.
-func (uc *RuntimeUseCase) Scale(ctx context.Context, id ResourceIdentifier, replicas int32) (int32, error) {
+func (uc *RuntimeUseCase) Scale(ctx context.Context, id *ResourceIdentifier, replicas int32) (int32, error) {
 	if id.Name == "" {
 		return 0, &ErrInvalidInput{Field: "name", Message: "resource name is required"}
 	}
@@ -385,7 +385,7 @@ func (uc *RuntimeUseCase) StartSessionReaper(ctx context.Context, interval time.
 
 // Restart validates the inputs, looks up the GVR, and triggers a
 // rolling restart.
-func (uc *RuntimeUseCase) Restart(ctx context.Context, id ResourceIdentifier) error {
+func (uc *RuntimeUseCase) Restart(ctx context.Context, id *ResourceIdentifier) error {
 	if id.Name == "" {
 		return &ErrInvalidInput{Field: "name", Message: "resource name is required"}
 	}

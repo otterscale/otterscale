@@ -154,7 +154,7 @@ type ResourceIdentifier struct {
 }
 
 // lookupGVR validates the resource triple via the DiscoveryClient.
-func (id ResourceIdentifier) lookupGVR(ctx context.Context, dc DiscoveryClient) (schema.GroupVersionResource, error) {
+func (id *ResourceIdentifier) lookupGVR(ctx context.Context, dc DiscoveryClient) (schema.GroupVersionResource, error) {
 	return dc.LookupResource(ctx, id.Cluster, id.Group, id.Version, id.Resource)
 }
 
@@ -201,7 +201,7 @@ func (uc *ResourceUseCase) ResolveSchema(
 // ListResources validates the GVR and fetches a paged resource list.
 func (uc *ResourceUseCase) ListResources(
 	ctx context.Context,
-	id ResourceIdentifier,
+	id *ResourceIdentifier,
 	opts ListOptions,
 ) (*unstructured.UnstructuredList, error) {
 	gvr, err := id.lookupGVR(ctx, uc.discovery)
@@ -215,7 +215,7 @@ func (uc *ResourceUseCase) ListResources(
 // GetResource validates the GVR and fetches a single resource.
 func (uc *ResourceUseCase) GetResource(
 	ctx context.Context,
-	id ResourceIdentifier,
+	id *ResourceIdentifier,
 ) (*unstructured.Unstructured, error) {
 	gvr, err := id.lookupGVR(ctx, uc.discovery)
 	if err != nil {
@@ -231,7 +231,7 @@ func (uc *ResourceUseCase) GetResource(
 // `kubectl describe`.
 func (uc *ResourceUseCase) DescribeResource(
 	ctx context.Context,
-	id ResourceIdentifier,
+	id *ResourceIdentifier,
 ) (*unstructured.Unstructured, *unstructured.UnstructuredList, error) {
 	gvr, err := id.lookupGVR(ctx, uc.discovery)
 	if err != nil {
@@ -261,7 +261,7 @@ func (uc *ResourceUseCase) DescribeResource(
 // target cluster from the given YAML manifest.
 func (uc *ResourceUseCase) CreateResource(
 	ctx context.Context,
-	id ResourceIdentifier,
+	id *ResourceIdentifier,
 	manifest []byte,
 ) (*unstructured.Unstructured, error) {
 	gvr, err := id.lookupGVR(ctx, uc.discovery)
@@ -276,7 +276,7 @@ func (uc *ResourceUseCase) CreateResource(
 // the target cluster from the given YAML manifest.
 func (uc *ResourceUseCase) ApplyResource(
 	ctx context.Context,
-	id ResourceIdentifier,
+	id *ResourceIdentifier,
 	manifest []byte,
 	opts ApplyOptions,
 ) (*unstructured.Unstructured, error) {
@@ -291,7 +291,7 @@ func (uc *ResourceUseCase) ApplyResource(
 // DeleteResource validates the GVR and deletes the named resource.
 func (uc *ResourceUseCase) DeleteResource(
 	ctx context.Context,
-	id ResourceIdentifier,
+	id *ResourceIdentifier,
 	opts DeleteOptions,
 ) error {
 	gvr, err := id.lookupGVR(ctx, uc.discovery)
@@ -307,7 +307,7 @@ func (uc *ResourceUseCase) DeleteResource(
 // initial events are streamed before switching to change notifications.
 func (uc *ResourceUseCase) WatchResource(
 	ctx context.Context,
-	id ResourceIdentifier,
+	id *ResourceIdentifier,
 	opts WatchOptions,
 ) (Watcher, error) {
 	gvr, err := id.lookupGVR(ctx, uc.discovery)

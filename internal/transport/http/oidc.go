@@ -28,7 +28,8 @@ type oidcGroupClaims struct {
 // avoid unintended privilege escalation via name collisions. The
 // "system:authenticated" group is always included.
 func NewOIDC(issuer, clientID string) (*authn.Middleware, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	const oidcDiscoveryTimeout = 10 * time.Second
+	ctx, cancel := context.WithTimeout(context.Background(), oidcDiscoveryTimeout)
 	defer cancel()
 
 	provider, err := oidc.NewProvider(ctx, issuer)
