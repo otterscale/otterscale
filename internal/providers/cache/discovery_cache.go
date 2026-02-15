@@ -153,7 +153,7 @@ func (c *DiscoveryCache) schemaCacheKey(cluster, group, version, kind string) st
 // StartEvictionLoop launches a background goroutine that periodically
 // removes expired cache entries. This prevents memory leaks when
 // clusters go offline or schemas are no longer queried. It blocks
-// until ctx is cancelled.
+// until ctx is canceled.
 func (c *DiscoveryCache) StartEvictionLoop(ctx context.Context, interval time.Duration) {
 	log := slog.Default().With("component", "discovery-cache-evictor")
 	ticker := time.NewTicker(interval)

@@ -37,10 +37,13 @@ type TerminalSizeQueue struct {
 	closed bool
 }
 
+// terminalSizeQueueBuf is the buffer capacity for terminal resize events.
+const terminalSizeQueueBuf = 4
+
 // NewTerminalSizeQueue returns a TerminalSizeQueue with a small buffer
 // so resize events can be sent without blocking.
 func NewTerminalSizeQueue() *TerminalSizeQueue {
-	return &TerminalSizeQueue{ch: make(chan TerminalSize, 4)}
+	return &TerminalSizeQueue{ch: make(chan TerminalSize, terminalSizeQueueBuf)}
 }
 
 // Next returns the next terminal size event. It blocks until an event
@@ -136,7 +139,7 @@ type SessionStore struct {
 	pfSess   map[string]*PortForwardSession
 }
 
-// NewSessionStore returns an initialised SessionStore.
+// NewSessionStore returns an initialized SessionStore.
 func NewSessionStore() *SessionStore {
 	return &SessionStore{
 		execSess: make(map[string]*ExecSession),

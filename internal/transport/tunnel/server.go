@@ -81,7 +81,7 @@ func NewServer(opts ...ServerOption) (*Server, error) {
 	return s, nil
 }
 
-// Start begins accepting connections and blocks until ctx is cancelled.
+// Start begins accepting connections and blocks until ctx is canceled.
 func (s *Server) Start(ctx context.Context) error {
 	host, port, err := net.SplitHostPort(s.address)
 	if err != nil {

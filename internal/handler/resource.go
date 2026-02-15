@@ -62,7 +62,7 @@ func (s *ResourceService) Discovery(ctx context.Context, req *pb.DiscoveryReques
 	return resp, nil
 }
 
-// Schema returns the OpenAPI schema for the given GVK, serialised as
+// Schema returns the OpenAPI schema for the given GVK, serialized as
 // a protobuf Struct.
 func (s *ResourceService) Schema(ctx context.Context, req *pb.SchemaRequest) (*structpb.Struct, error) {
 	resolved, err := s.resource.ResolveSchema(
@@ -90,7 +90,7 @@ func (s *ResourceService) Schema(ctx context.Context, req *pb.SchemaRequest) (*s
 func (s *ResourceService) List(ctx context.Context, req *pb.ListRequest) (*pb.ListResponse, error) {
 	resources, err := s.resource.ListResources(
 		ctx,
-		core.ResourceIdentifier{
+		&core.ResourceIdentifier{
 			Cluster:   req.GetCluster(),
 			Group:     req.GetGroup(),
 			Version:   req.GetVersion(),
@@ -109,7 +109,7 @@ func (s *ResourceService) List(ctx context.Context, req *pb.ListRequest) (*pb.Li
 	}
 
 	// Strip noisy metadata (managedFields, last-applied-configuration)
-	// before serialising to protobuf. This is a presentation concern
+	// before serializing to protobuf. This is a presentation concern
 	// that belongs in the handler layer, not the domain use-case.
 	for i := range resources.Items {
 		cleanObject(resources.Items[i].Object)
@@ -132,7 +132,7 @@ func (s *ResourceService) List(ctx context.Context, req *pb.ListRequest) (*pb.Li
 func (s *ResourceService) Get(ctx context.Context, req *pb.GetRequest) (*pb.Resource, error) {
 	resource, err := s.resource.GetResource(
 		ctx,
-		core.ResourceIdentifier{
+		&core.ResourceIdentifier{
 			Cluster:   req.GetCluster(),
 			Group:     req.GetGroup(),
 			Version:   req.GetVersion(),
@@ -155,7 +155,7 @@ func (s *ResourceService) Get(ctx context.Context, req *pb.GetRequest) (*pb.Reso
 func (s *ResourceService) Create(ctx context.Context, req *pb.CreateRequest) (*pb.Resource, error) {
 	resource, err := s.resource.CreateResource(
 		ctx,
-		core.ResourceIdentifier{
+		&core.ResourceIdentifier{
 			Cluster:   req.GetCluster(),
 			Group:     req.GetGroup(),
 			Version:   req.GetVersion(),
@@ -178,7 +178,7 @@ func (s *ResourceService) Create(ctx context.Context, req *pb.CreateRequest) (*p
 func (s *ResourceService) Apply(ctx context.Context, req *pb.ApplyRequest) (*pb.Resource, error) {
 	resource, err := s.resource.ApplyResource(
 		ctx,
-		core.ResourceIdentifier{
+		&core.ResourceIdentifier{
 			Cluster:   req.GetCluster(),
 			Group:     req.GetGroup(),
 			Version:   req.GetVersion(),
@@ -213,7 +213,7 @@ func (s *ResourceService) Delete(ctx context.Context, req *pb.DeleteRequest) (*e
 
 	if err := s.resource.DeleteResource(
 		ctx,
-		core.ResourceIdentifier{
+		&core.ResourceIdentifier{
 			Cluster:   req.GetCluster(),
 			Group:     req.GetGroup(),
 			Version:   req.GetVersion(),
@@ -237,7 +237,7 @@ func (s *ResourceService) Delete(ctx context.Context, req *pb.DeleteRequest) (*e
 func (s *ResourceService) Describe(ctx context.Context, req *pb.DescribeRequest) (*pb.DescribeResponse, error) {
 	obj, events, err := s.resource.DescribeResource(
 		ctx,
-		core.ResourceIdentifier{
+		&core.ResourceIdentifier{
 			Cluster:   req.GetCluster(),
 			Group:     req.GetGroup(),
 			Version:   req.GetVersion(),
@@ -276,7 +276,7 @@ func (s *ResourceService) Describe(ctx context.Context, req *pb.DescribeRequest)
 func (s *ResourceService) Watch(ctx context.Context, req *pb.WatchRequest, stream *connect.ServerStream[pb.WatchEvent]) error {
 	watcher, err := s.resource.WatchResource(
 		ctx,
-		core.ResourceIdentifier{
+		&core.ResourceIdentifier{
 			Cluster:   req.GetCluster(),
 			Group:     req.GetGroup(),
 			Version:   req.GetVersion(),
@@ -409,7 +409,7 @@ func toProtoAPIResource(gv schema.GroupVersion, r *metav1.APIResource) *pb.APIRe
 	return ret
 }
 
-// toProtoStructFromJSONSchema serialises an OpenAPI spec.Schema to
+// toProtoStructFromJSONSchema serializes an OpenAPI spec.Schema to
 // JSON and re-parses it into a protobuf Struct so it can be returned
 // as a generic structured response.
 func toProtoStructFromJSONSchema(js *spec.Schema) (*structpb.Struct, error) {

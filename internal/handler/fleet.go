@@ -35,7 +35,7 @@ var _ pbconnect.FleetServiceHandler = (*FleetService)(nil)
 
 // ListClusters returns the names of all clusters that have a
 // registered agent.
-func (s *FleetService) ListClusters(ctx context.Context, req *pb.ListClustersRequest) (*pb.ListClustersResponse, error) {
+func (s *FleetService) ListClusters(ctx context.Context, _ *pb.ListClustersRequest) (*pb.ListClustersResponse, error) {
 	clusters := s.fleet.ListClusters(ctx)
 
 	resp := &pb.ListClustersResponse{}

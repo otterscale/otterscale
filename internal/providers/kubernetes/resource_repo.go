@@ -102,7 +102,7 @@ func (r *resourceRepo) Create(
 
 // Apply decodes a YAML manifest, converts it to JSON, and performs a
 // server-side apply (PATCH with ApplyPatchType). When force is true,
-// conflicts are resolved in favour of the caller's field manager.
+// conflicts are resolved in favor of the caller's field manager.
 func (r *resourceRepo) Apply(
 	ctx context.Context,
 	cluster string,

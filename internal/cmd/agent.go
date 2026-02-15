@@ -29,7 +29,7 @@ func NewAgentCommand(conf *config.Config, newAgent AgentInjector) (*cobra.Comman
 			}
 			defer cleanup()
 
-			cfg := agent.Config{
+			cfg := &agent.Config{
 				Cluster:         conf.AgentCluster(),
 				ServerURL:       conf.AgentServerURL(),
 				TunnelServerURL: conf.AgentTunnelServerURL(),

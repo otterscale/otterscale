@@ -5,7 +5,7 @@ package handler
 //   - the kubectl.kubernetes.io/last-applied-configuration annotation
 //
 // This is a presentation concern: the domain layer returns raw
-// Kubernetes objects and the handler sanitises them before serialising
+// Kubernetes objects and the handler sanitizes them before serializing
 // to protobuf. Operating on map[string]any keeps the handler layer
 // free of k8s.io/apimachinery imports.
 func cleanObject(obj map[string]any) {

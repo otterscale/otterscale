@@ -81,4 +81,3 @@ func TestDetectNamespace_ErrorOutsideCluster(t *testing.T) {
 		t.Error("expected error for detectNamespace outside cluster, got nil")
 	}
 }
-

@@ -29,7 +29,7 @@ func NewServerCommand(conf *config.Config, newServer ServerInjector) (*cobra.Com
 			}
 			defer cleanup()
 
-			cfg := server.Config{
+			cfg := &server.Config{
 				Address:          conf.ServerAddress(),
 				AllowedOrigins:   conf.ServerAllowedOrigins(),
 				TunnelAddress:    conf.ServerTunnelAddress(),

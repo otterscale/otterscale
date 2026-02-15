@@ -40,7 +40,7 @@ var _ core.DiscoveryClient = (*discoveryClient)(nil)
 
 // LookupResource verifies that the given group/version/resource triple
 // exists on the target cluster. It returns the validated GVR or a
-// BadRequest error if the resource is not recognised.
+// BadRequest error if the resource is not recognized.
 func (d *discoveryClient) LookupResource(ctx context.Context, cluster, group, version, resource string) (schema.GroupVersionResource, error) {
 	client, err := d.client(ctx, cluster)
 	if err != nil {

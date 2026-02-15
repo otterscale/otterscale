@@ -33,6 +33,5 @@ go.work.sum
 
 # Other files to ignore
 bin/
-otterscale
 *.pem
 manifests/bootstrap/*.yaml

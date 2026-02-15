@@ -6,7 +6,6 @@ import (
 	"context"
 	"fmt"
 	"log/slog"
-	"time"
 
 	"k8s.io/client-go/rest"
 
@@ -55,8 +54,8 @@ func NewAgent(cfg *rest.Config, handler *Handler, tunnel core.TunnelConsumer, ve
 // embedded infrastructure manifests (FluxCD, Module CRD) to the local
 // cluster. It then creates an in-memory pipe listener for the HTTP
 // server, a TCP bridge for chisel to forward to, and a tunnel client,
-// then blocks until ctx is cancelled.
-func (a *Agent) Run(ctx context.Context, cfg Config) error {
+// then blocks until ctx is canceled.
+func (a *Agent) Run(ctx context.Context, cfg *Config) error {
 	if cfg.Bootstrap {
 		if err := a.bootstrapper.Run(ctx); err != nil {
 			return fmt.Errorf("bootstrap: %w", err)
@@ -65,12 +64,13 @@ func (a *Agent) Run(ctx context.Context, cfg Config) error {
 
 	pl := pipe.NewListener()
 
-	bridge, err := tunnel.NewBridge(pl)
+	bridge, err := tunnel.NewBridge(ctx, pl)
 	if err != nil {
 		return fmt.Errorf("failed to create tunnel bridge: %w", err)
 	}
 
 	httpSrv, err := http.NewServer(
+		ctx,
 		http.WithListener(pl),
 		http.WithMount(a.handler.Mount),
 	)
@@ -83,9 +83,6 @@ func (a *Agent) Run(ctx context.Context, cfg Config) error {
 		tunnel.WithTunnelServerURL(cfg.TunnelServerURL),
 		tunnel.WithCluster(cfg.Cluster),
 		tunnel.WithLocalPort(bridge.Port()),
-		tunnel.WithKeepAlive(30*time.Second),
-		tunnel.WithMaxRetryCount(6),
-		tunnel.WithMaxRetryInterval(10*time.Second),
 		tunnel.WithRegister(a.register()),
 	)
 	if err != nil {
@@ -107,7 +104,7 @@ func (a *Agent) register() tunnel.RegisterFunc {
 		}
 
 		// Check version and trigger self-update if needed.
-		a.checkVersion(ctx, reg)
+		a.checkVersion(ctx, &reg)
 
 		// Derive the chisel auth string from the signed
 		// certificate. This must match the password the server
@@ -132,7 +129,7 @@ func (a *Agent) register() tunnel.RegisterFunc {
 // Deployment image to trigger a rolling update. Errors are logged but
 // do not prevent the tunnel from connecting — the agent continues to
 // serve with the current version.
-func (a *Agent) checkVersion(ctx context.Context, reg core.Registration) {
+func (a *Agent) checkVersion(ctx context.Context, reg *core.Registration) {
 	log := slog.Default().With("component", "version-check")
 
 	if reg.ServerVersion == "" {

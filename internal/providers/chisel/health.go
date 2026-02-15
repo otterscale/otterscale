@@ -35,14 +35,14 @@ func NewHealthCheckListener(service *Service) *HealthCheckListener {
 	return &HealthCheckListener{service: service}
 }
 
-// Start runs the health check loop, blocking until ctx is cancelled.
+// Start runs the health check loop, blocking until ctx is canceled.
 func (h *HealthCheckListener) Start(ctx context.Context) error {
 	h.service.runHealthCheck(ctx)
 	return nil
 }
 
 // Stop is a no-op; the health check loop exits when its context is
-// cancelled.
+// canceled.
 func (h *HealthCheckListener) Stop(_ context.Context) error {
 	return nil
 }
@@ -64,12 +64,12 @@ func (s *Service) clusterSnapshot() map[string]string {
 // tunnel endpoint via TCP dial. Clusters that fail healthFailThreshold
 // consecutive probes are automatically deregistered.
 //
-// The method blocks until ctx is cancelled.
+// The method blocks until ctx is canceled.
 func (s *Service) runHealthCheck(ctx context.Context) {
 	ticker := time.NewTicker(healthCheckInterval)
 	defer ticker.Stop()
 
-	dialer := net.Dialer{Timeout: healthDialTimeout}
+	dialer := &net.Dialer{Timeout: healthDialTimeout}
 	failCounts := make(map[string]int)
 
 	for {
@@ -85,7 +85,7 @@ func (s *Service) runHealthCheck(ctx context.Context) {
 // checkClusters performs a single round of health checks across all
 // registered clusters. failCounts is mutated in place to track
 // consecutive failures per cluster.
-func (s *Service) checkClusters(ctx context.Context, dialer net.Dialer, failCounts map[string]int) {
+func (s *Service) checkClusters(ctx context.Context, dialer *net.Dialer, failCounts map[string]int) {
 	snapshot := s.clusterSnapshot()
 
 	// Clean up failCounts for clusters that are no longer registered.

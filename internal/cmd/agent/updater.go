@@ -150,7 +150,7 @@ func (u *updater) Patch(ctx context.Context, version string) error {
 
 // getOrCreateClient returns the cached Kubernetes clientset, creating
 // it on first use. The clientset is reused across patch calls to avoid
-// redundant connection setup. Access is serialised by mu to prevent
+// redundant connection setup. Access is serialized by mu to prevent
 // data races if multiple registrations overlap.
 func (u *updater) getOrCreateClient() (kubernetes.Interface, error) {
 	u.mu.Lock()

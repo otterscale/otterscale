@@ -31,7 +31,6 @@ jobs:
         with:
           go-version: "1.25.x"
 
-      - run: make ceph-deps
       - run: make build
       - run: make test
 
@@ -54,10 +53,6 @@ jobs:
         with:
           go-version: "1.25.x"
 
-      - run: make ceph-deps
-
       - uses: golangci/golangci-lint-action@1e7e51e771db61008b38414a730f564565cf7c20 # v9.2.0
         with:
           version: latest
-
-      - run: make lint

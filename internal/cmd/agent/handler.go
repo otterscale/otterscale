@@ -24,7 +24,7 @@ func NewHandler(cfg *rest.Config) *Handler {
 // Mount registers a catch-all reverse proxy to the Kubernetes API
 // server on the given mux. The proxy uses the in-cluster service
 // account credentials (or falls back to KUBECONFIG) and rewrites
-// the Host header so that the upstream kube-apiserver recognises
+// the Host header so that the upstream kube-apiserver recognizes
 // the request.
 func (h *Handler) Mount(mux *http.ServeMux) error {
 	targetURL, err := url.Parse(h.cfg.Host)

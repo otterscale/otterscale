@@ -27,7 +27,7 @@ var domainCodeToConnectCode = map[core.ErrorCode]connect.Code{
 // domainErrorToConnectError converts a domain error into a ConnectRPC
 // error with a semantically equivalent code. Domain-specific error
 // types (ErrInvalidInput, ErrClusterNotFound, etc.) are checked first,
-// then DomainError codes are mapped. Unrecognised errors fall back to
+// then DomainError codes are mapped. Unrecognized errors fall back to
 // connect.CodeInternal.
 func domainErrorToConnectError(err error) error {
 	// Concrete domain error types.

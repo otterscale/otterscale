@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"log/slog"
+	"math"
 	"net/http"
 	"strconv"
 	"sync"
@@ -16,6 +17,7 @@ import (
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/types"
+	"k8s.io/apimachinery/pkg/util/httpstream"
 	"k8s.io/client-go/dynamic"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/kubernetes/scheme"
@@ -78,7 +80,7 @@ func (r *runtimeRepo) PodLogs(ctx context.Context, cluster, namespace, name stri
 // ---------------------------------------------------------------------------
 
 // Exec starts an interactive exec session and blocks until it completes.
-func (r *runtimeRepo) Exec(ctx context.Context, cluster, namespace, name string, opts core.ExecOptions) error {
+func (r *runtimeRepo) Exec(ctx context.Context, cluster, namespace, name string, opts *core.ExecOptions) error {
 	config, err := r.kubernetes.spdyConfig(ctx, cluster)
 	if err != nil {
 		return err
@@ -144,6 +146,9 @@ func (r *runtimeRepo) GetScale(ctx context.Context, cluster string, gvr schema.G
 		return 0, &core.DomainError{Code: core.ErrorCodeInternal, Message: "failed to read spec.replicas from scale subresource"}
 	}
 
+	if replicas < math.MinInt32 || replicas > math.MaxInt32 {
+		return 0, &core.DomainError{Code: core.ErrorCodeInternal, Message: "spec.replicas out of int32 range"}
+	}
 	return int32(replicas), nil
 }
 
@@ -177,6 +182,9 @@ func (r *runtimeRepo) UpdateScale(ctx context.Context, cluster string, gvr schem
 	}
 	if !found {
 		return 0, &core.DomainError{Code: core.ErrorCodeInternal, Message: "spec.replicas not found in updated scale subresource"}
+	}
+	if newReplicas < math.MinInt32 || newReplicas > math.MaxInt32 {
+		return 0, &core.DomainError{Code: core.ErrorCodeInternal, Message: "updated spec.replicas out of int32 range"}
 	}
 	return int32(newReplicas), nil
 }
@@ -254,6 +262,13 @@ func (r *runtimeRepo) PortForward(ctx context.Context, cluster, namespace, name 
 	}
 	defer streamConn.Close()
 
+	return r.runPortForwardStreams(ctx, streamConn, opts)
+}
+
+// runPortForwardStreams creates SPDY streams for the port-forward
+// session and copies data bidirectionally. It is extracted from
+// PortForward to reduce function length.
+func (r *runtimeRepo) runPortForwardStreams(ctx context.Context, streamConn httpstream.Connection, opts core.PortForwardOptions) error {
 	portStr := strconv.FormatInt(int64(opts.Port), 10)
 	requestID := "0"
 
@@ -267,7 +282,6 @@ func (r *runtimeRepo) PortForward(ctx context.Context, cluster, namespace, name 
 	if err != nil {
 		return &core.DomainError{Code: core.ErrorCodeInternal, Message: "create error stream", Cause: err}
 	}
-	// Close the write direction of the error stream; we only read from it.
 	defer errorStream.Close()
 
 	// Create data stream.
@@ -282,19 +296,16 @@ func (r *runtimeRepo) PortForward(ctx context.Context, cluster, namespace, name 
 	}
 	defer dataStream.Close()
 
-	// Track all goroutines with a WaitGroup so we guarantee every
-	// goroutine has exited before PortForward returns, preventing
-	// goroutine leaks.
 	var wg sync.WaitGroup
 
 	// Check for immediate errors from kubelet.
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		buf := make([]byte, 1024)
+		const errorBufSize = 1024
+		buf := make([]byte, errorBufSize)
 		n, _ := errorStream.Read(buf)
 		if n > 0 {
-			// Error from kubelet; close data stream to unblock copies.
 			if err := dataStream.Close(); err != nil {
 				slog.Warn("failed to close data stream after kubelet error", "error", err)
 			}
@@ -321,22 +332,17 @@ func (r *runtimeRepo) PortForward(ctx context.Context, cluster, namespace, name 
 	for i := 0; i < 2; i++ {
 		select {
 		case <-ctx.Done():
-			// Close the stream connection to unblock all goroutines,
-			// then wait for them to finish.
 			streamConn.Close()
 			wg.Wait()
 			return ctx.Err()
 		case err := <-errCh:
 			if err != nil && firstErr == nil {
 				firstErr = err
-				// Close the stream connection so the other direction
-				// terminates as well.
 				streamConn.Close()
 			}
 		}
 	}
 
-	// Wait for the error stream goroutine to exit before returning.
 	wg.Wait()
 	return firstErr
 }

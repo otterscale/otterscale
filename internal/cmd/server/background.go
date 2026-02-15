@@ -40,7 +40,7 @@ func (l *sessionReaperListener) Start(ctx context.Context) error {
 }
 
 func (l *sessionReaperListener) Stop(_ context.Context) error {
-	return nil // reaper stops when its context is cancelled
+	return nil // reaper stops when its context is canceled
 }
 
 // cacheEvictorListener adapts a CacheEvictor to the
@@ -56,5 +56,5 @@ func (l *cacheEvictorListener) Start(ctx context.Context) error {
 }
 
 func (l *cacheEvictorListener) Stop(_ context.Context) error {
-	return nil // evictor stops when its context is cancelled
+	return nil // evictor stops when its context is canceled
 }

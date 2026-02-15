@@ -38,7 +38,7 @@ func NewRenderer() *Renderer {
 // The manifest includes a Namespace, ServiceAccount,
 // ClusterRoleBinding (binding userName to cluster-admin), and a
 // Deployment that runs the agent with the correct server/tunnel URLs.
-func (r *Renderer) RenderAgentManifest(params core.ManifestParams) (string, error) {
+func (r *Renderer) RenderAgentManifest(params *core.ManifestParams) (string, error) {
 	data := agentManifestData{
 		Cluster:       params.Cluster,
 		UserName:      params.UserName,
@@ -79,8 +79,9 @@ func sanitizeK8sName(s string) string {
 	s = strings.ToLower(s)
 	s = reNonAlphaNum.ReplaceAllString(s, "-")
 	s = strings.Trim(s, "-")
-	if len(s) > 63 {
-		s = s[:63]
+	const maxK8sNameLen = 63 // Kubernetes name length limit
+	if len(s) > maxK8sNameLen {
+		s = s[:maxK8sNameLen]
 		s = strings.TrimRight(s, "-")
 	}
 	if s == "" {

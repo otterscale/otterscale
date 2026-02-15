@@ -153,7 +153,8 @@ func (ca *CA) DeriveHMACKey(label string) ([]byte, error) {
 	if err != nil {
 		return nil, fmt.Errorf("pki: marshal key for HKDF: %w", err)
 	}
-	return hkdf.Key(sha256.New, keyDER, nil, label, 32)
+	const hmacKeyLen = 32 // 256-bit HMAC key
+	return hkdf.Key(sha256.New, keyDER, nil, label, hmacKeyLen)
 }
 
 // SignCSR validates a PEM-encoded PKCS#10 certificate signing request
@@ -302,7 +303,8 @@ func DeriveAuth(agentID string, certPEM []byte) (string, error) {
 
 // randomSerial generates a cryptographically random serial number.
 func randomSerial() (*big.Int, error) {
-	serial, err := rand.Int(rand.Reader, new(big.Int).Lsh(big.NewInt(1), 128))
+	const serialBits = 128 // 128-bit random serial number
+	serial, err := rand.Int(rand.Reader, new(big.Int).Lsh(big.NewInt(1), serialBits))
 	if err != nil {
 		return nil, fmt.Errorf("pki: generate serial: %w", err)
 	}
