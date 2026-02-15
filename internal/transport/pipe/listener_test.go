@@ -144,6 +144,8 @@ func TestListener_MultipleCloseIsSafe(t *testing.T) {
 	ln.Close() // must not panic
 }
 
+const pipeNetwork = "pipe"
+
 func TestListener_Addr(t *testing.T) {
 	t.Parallel()
 
@@ -151,11 +153,11 @@ func TestListener_Addr(t *testing.T) {
 	defer ln.Close()
 
 	addr := ln.Addr()
-	if addr.Network() != "pipe" {
-		t.Fatalf("Network() = %q, want %q", addr.Network(), "pipe")
+	if addr.Network() != pipeNetwork {
+		t.Fatalf("Network() = %q, want %q", addr.Network(), pipeNetwork)
 	}
-	if addr.String() != "pipe" {
-		t.Fatalf("String() = %q, want %q", addr.String(), "pipe")
+	if addr.String() != pipeNetwork {
+		t.Fatalf("String() = %q, want %q", addr.String(), pipeNetwork)
 	}
 }
 

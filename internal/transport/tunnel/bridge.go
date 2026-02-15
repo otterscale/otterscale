@@ -30,8 +30,9 @@ type Bridge struct {
 // NewBridge creates a Bridge that feeds connections into pl.
 // It binds to an ephemeral localhost TCP port immediately so that
 // Port() is available before Start is called.
-func NewBridge(pl *pipe.Listener) (*Bridge, error) {
-	ln, err := net.Listen("tcp", "127.0.0.1:0")
+func NewBridge(ctx context.Context, pl *pipe.Listener) (*Bridge, error) {
+	var lc net.ListenConfig
+	ln, err := lc.Listen(ctx, "tcp", "127.0.0.1:0")
 	if err != nil {
 		return nil, fmt.Errorf("bridge listen: %w", err)
 	}

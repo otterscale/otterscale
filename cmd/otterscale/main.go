@@ -30,26 +30,25 @@ import (
 var version = "devel"
 
 func main() {
-	// Cancel on SIGINT (Ctrl+C) or SIGTERM (container runtime).
-	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
-	defer stop()
-
-	if err := run(ctx); err != nil {
+	if err := run(); err != nil {
 		// Cobra is configured with SilenceErrors: true, so we
 		// print the error here for consistent formatting.
 		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
-		stop()
 		os.Exit(1)
 	}
 }
 
 // run wires all dependencies and executes the root Cobra command.
-func run(ctx context.Context) error {
+func run() error {
 	rootCmd, cleanup, err := wireCmd()
 	if err != nil {
 		return fmt.Errorf("failed to initialize application: %w", err)
 	}
 	defer cleanup()
+
+	// Cancel on SIGINT (Ctrl+C) or SIGTERM (container runtime).
+	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+	defer stop()
 
 	return rootCmd.ExecuteContext(ctx)
 }
