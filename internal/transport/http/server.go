@@ -112,7 +112,7 @@ func WithHTTPLogger(log *slog.Logger) ServerOption {
 }
 
 // NewServer creates a new HTTP server with the given options.
-func NewServer(opts ...ServerOption) (*Server, error) {
+func NewServer(ctx context.Context, opts ...ServerOption) (*Server, error) {
 	s := &Server{
 		address: ":8299",
 	}
@@ -130,7 +130,8 @@ func NewServer(opts ...ServerOption) (*Server, error) {
 			"set --allowed-origins or OTTERSCALE_SERVER_ALLOWED_ORIGINS")
 	}
 	if s.listener == nil {
-		ln, err := net.Listen("tcp", s.address)
+		var lc net.ListenConfig
+		ln, err := lc.Listen(ctx, "tcp", s.address)
 		if err != nil {
 			return nil, fmt.Errorf("http listen %q: %w", s.address, err)
 		}
