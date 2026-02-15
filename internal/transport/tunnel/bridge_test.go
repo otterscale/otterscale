@@ -17,16 +17,16 @@ import (
 func TestBridge_RelaysData(t *testing.T) {
 	t.Parallel()
 
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
 	pl := pipe.NewListener()
 	defer pl.Close()
 
-	bridge, err := NewBridge(pl)
+	bridge, err := NewBridge(ctx, pl)
 	if err != nil {
 		t.Fatalf("NewBridge: %v", err)
 	}
-
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
 
 	go func() {
 		if err := bridge.Start(ctx); err != nil {
@@ -80,16 +80,16 @@ func TestBridge_RelaysData(t *testing.T) {
 func TestBridge_MultipleConnections(t *testing.T) {
 	t.Parallel()
 
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
 	pl := pipe.NewListener()
 	defer pl.Close()
 
-	bridge, err := NewBridge(pl)
+	bridge, err := NewBridge(ctx, pl)
 	if err != nil {
 		t.Fatalf("NewBridge: %v", err)
 	}
-
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
 
 	go func() {
 		if err := bridge.Start(ctx); err != nil {
@@ -176,10 +176,13 @@ func verifyRoundTrip(ctx context.Context, t *testing.T, addr string, i int) {
 func TestBridge_PortIsNonZero(t *testing.T) {
 	t.Parallel()
 
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
 	pl := pipe.NewListener()
 	defer pl.Close()
 
-	bridge, err := NewBridge(pl)
+	bridge, err := NewBridge(ctx, pl)
 	if err != nil {
 		t.Fatalf("NewBridge: %v", err)
 	}
@@ -197,13 +200,13 @@ func TestBridge_PortIsNonZero(t *testing.T) {
 func TestBridge_StopClosesListener(t *testing.T) {
 	t.Parallel()
 
+	ctx, cancel := context.WithCancel(context.Background())
 	pl := pipe.NewListener()
-	bridge, err := NewBridge(pl)
+	bridge, err := NewBridge(ctx, pl)
 	if err != nil {
 		t.Fatalf("NewBridge: %v", err)
 	}
 
-	ctx, cancel := context.WithCancel(context.Background())
 	done := make(chan error, 1)
 	go func() {
 		done <- bridge.Start(ctx)

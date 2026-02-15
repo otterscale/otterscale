@@ -65,6 +65,7 @@ func (s *Server) Run(ctx context.Context, cfg *Config) error {
 	}
 
 	httpSrv, err := http.NewServer(
+		ctx,
 		http.WithAddress(cfg.Address),
 		http.WithAllowedOrigins(cfg.AllowedOrigins),
 		http.WithAuthMiddleware(oidc),

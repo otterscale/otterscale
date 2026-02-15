@@ -64,12 +64,13 @@ func (a *Agent) Run(ctx context.Context, cfg *Config) error {
 
 	pl := pipe.NewListener()
 
-	bridge, err := tunnel.NewBridge(pl)
+	bridge, err := tunnel.NewBridge(ctx, pl)
 	if err != nil {
 		return fmt.Errorf("failed to create tunnel bridge: %w", err)
 	}
 
 	httpSrv, err := http.NewServer(
+		ctx,
 		http.WithListener(pl),
 		http.WithMount(a.handler.Mount),
 	)
