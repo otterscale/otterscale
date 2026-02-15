@@ -116,6 +116,12 @@ func (b *Bootstrapper) applyObject(
 	return err
 }
 
+// crdPollInterval is how often to check CRD establishment status.
+const crdPollInterval = 2 * time.Second
+
+// crdPollTimeout is the maximum time to wait for a CRD to become established.
+const crdPollTimeout = 60 * time.Second
+
 // waitForCRDs blocks until every CRD in the slice has the
 // Established condition set to True. It polls with a 2-second
 // interval and gives up after 60 seconds.
@@ -124,7 +130,7 @@ func (b *Bootstrapper) waitForCRDs(ctx context.Context, crds []*unstructured.Uns
 		name := crd.GetName()
 		b.log.Info("waiting for CRD to be established", "name", name)
 
-		err := wait.PollUntilContextTimeout(ctx, 2*time.Second, 60*time.Second, true,
+		err := wait.PollUntilContextTimeout(ctx, crdPollInterval, crdPollTimeout, true,
 			func(ctx context.Context) (bool, error) {
 				obj, err := b.dynamic.Resource(crdGVR).Get(ctx, name, metav1.GetOptions{})
 				if err != nil {
@@ -173,7 +179,8 @@ func (b *Bootstrapper) newMapper() meta.RESTMapper {
 func parseMultiDoc(data []byte) ([]*unstructured.Unstructured, error) {
 	var objects []*unstructured.Unstructured
 
-	decoder := utilyaml.NewYAMLOrJSONDecoder(bytes.NewReader(data), 4096)
+	const yamlDecoderBufSize = 4096
+	decoder := utilyaml.NewYAMLOrJSONDecoder(bytes.NewReader(data), yamlDecoderBufSize)
 	for {
 		obj := &unstructured.Unstructured{}
 		if err := decoder.Decode(obj); err != nil {

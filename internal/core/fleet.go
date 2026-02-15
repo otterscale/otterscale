@@ -135,7 +135,7 @@ type ManifestParams struct {
 // parameters. Implementations live in the providers layer and own the
 // template and formatting details.
 type ManifestRenderer interface {
-	RenderAgentManifest(params ManifestParams) (string, error)
+	RenderAgentManifest(params *ManifestParams) (string, error)
 }
 
 // FleetUseCase orchestrates cluster registration on the server side.
@@ -176,7 +176,7 @@ func NewFleetUseCase(tunnel TunnelProvider, version Version, manifestCfg AgentMa
 }
 
 // ListClusters returns the names of all currently registered clusters.
-func (uc *FleetUseCase) ListClusters(ctx context.Context) map[string]Cluster {
+func (uc *FleetUseCase) ListClusters(_ context.Context) map[string]Cluster {
 	return uc.tunnel.ListClusters()
 }
 
@@ -210,7 +210,7 @@ func (uc *FleetUseCase) RegisterCluster(ctx context.Context, cluster, agentID, a
 // cluster name and user identity, and returns a full URL that serves
 // the agent manifest as raw YAML. The token is valid for
 // manifestTokenTTL.
-func (uc *FleetUseCase) IssueManifestURL(ctx context.Context, cluster, userName string) (string, error) {
+func (uc *FleetUseCase) IssueManifestURL(_ context.Context, cluster, userName string) (string, error) {
 	token, err := uc.tokenIssuer.Issue(cluster, userName)
 	if err != nil {
 		return "", fmt.Errorf("issue manifest token: %w", err)
@@ -223,7 +223,7 @@ func (uc *FleetUseCase) IssueManifestURL(ctx context.Context, cluster, userName 
 // identity. All verification failures return a generic error to
 // avoid leaking which stage failed; detailed reasons are logged at
 // debug level.
-func (uc *FleetUseCase) VerifyManifestToken(ctx context.Context, token string) (cluster, userName string, err error) {
+func (uc *FleetUseCase) VerifyManifestToken(_ context.Context, token string) (cluster, userName string, err error) {
 	cluster, userName, err = uc.tokenIssuer.Verify(token)
 	if err != nil {
 		slog.Debug("manifest token verification failed", "error", err)
@@ -237,7 +237,7 @@ func (uc *FleetUseCase) VerifyManifestToken(ctx context.Context, token string) (
 // The manifest includes a Namespace, ServiceAccount,
 // ClusterRoleBinding (binding userName to cluster-admin), and a
 // Deployment that runs the agent with the correct server/tunnel URLs.
-func (uc *FleetUseCase) GenerateAgentManifest(ctx context.Context, cluster, userName string) (string, error) {
+func (uc *FleetUseCase) GenerateAgentManifest(_ context.Context, cluster, userName string) (string, error) {
 	if err := ValidateClusterName(cluster); err != nil {
 		return "", err
 	}
@@ -245,7 +245,7 @@ func (uc *FleetUseCase) GenerateAgentManifest(ctx context.Context, cluster, user
 		return "", &ErrInvalidInput{Field: "user_name", Message: "must not be empty"}
 	}
 
-	return uc.renderer.RenderAgentManifest(ManifestParams{
+	return uc.renderer.RenderAgentManifest(&ManifestParams{
 		Cluster:   cluster,
 		UserName:  userName,
 		Image:     fmt.Sprintf("ghcr.io/otterscale/otterscale:%s", uc.version),
