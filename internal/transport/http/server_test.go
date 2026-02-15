@@ -20,7 +20,8 @@ func TestNewServer_PublicPathsBypassAuth(t *testing.T) {
 		return struct{}{}, nil
 	})
 
-	ln, err := net.Listen("tcp", "127.0.0.1:0")
+	var lc net.ListenConfig
+	ln, err := lc.Listen(context.Background(), "tcp", "127.0.0.1:0")
 	if err != nil {
 		t.Fatalf("listen: %v", err)
 	}
