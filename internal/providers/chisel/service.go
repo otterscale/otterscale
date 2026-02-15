@@ -135,7 +135,7 @@ func (s *Service) RegisterCluster(ctx context.Context, cluster, agentID, agentVe
 		return "", nil, err
 	}
 
-	// Restrict the user to reverse-tunnelling only the allocated
+	// Restrict the user to reverse-tunneling only the allocated
 	// host:port combination. The regex anchors prevent the agent
 	// from binding arbitrary endpoints.
 	allowed := fmt.Sprintf("^R:%s:%d(:.*)?$", regexp.QuoteMeta(host), tunnelPort)

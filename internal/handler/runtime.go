@@ -137,7 +137,7 @@ func (s *RuntimeService) ExecuteTTY(ctx context.Context, req *pb.ExecuteTTYReque
 
 	// Read stdout. The send to ch is guarded by ctx.Done() so that
 	// the goroutine exits promptly when the stream's context is
-	// cancelled, even if the channel buffer is full and nobody is
+	// canceled, even if the channel buffer is full and nobody is
 	// draining it anymore.
 	go func() {
 		defer readerWg.Done()

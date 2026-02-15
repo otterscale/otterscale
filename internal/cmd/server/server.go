@@ -45,7 +45,7 @@ func NewServer(handler *Handler, tunnel transport.TunnelService, background Back
 }
 
 // Run starts both the HTTP and tunnel servers. It blocks until ctx
-// is cancelled or an unrecoverable error occurs. Health, reflection,
+// is canceled or an unrecoverable error occurs. Health, reflection,
 // and fleet-registration endpoints are marked as public (no auth).
 func (s *Server) Run(ctx context.Context, cfg Config) error {
 	if cfg.KeycloakRealmURL == "" {

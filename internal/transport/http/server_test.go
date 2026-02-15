@@ -46,7 +46,7 @@ func TestNewServer_PublicPathsBypassAuth(t *testing.T) {
 	}
 
 	t.Run("public path without token is allowed", func(t *testing.T) {
-		req := httptest.NewRequest(http.MethodGet, "/public", nil)
+		req := httptest.NewRequest(http.MethodGet, "/public", http.NoBody)
 		rec := httptest.NewRecorder()
 		srv.Handler().ServeHTTP(rec, req)
 
@@ -56,7 +56,7 @@ func TestNewServer_PublicPathsBypassAuth(t *testing.T) {
 	})
 
 	t.Run("private path without token is blocked", func(t *testing.T) {
-		req := httptest.NewRequest(http.MethodGet, "/private", nil)
+		req := httptest.NewRequest(http.MethodGet, "/private", http.NoBody)
 		rec := httptest.NewRecorder()
 		srv.Handler().ServeHTTP(rec, req)
 
@@ -66,7 +66,7 @@ func TestNewServer_PublicPathsBypassAuth(t *testing.T) {
 	})
 
 	t.Run("private path with token is allowed", func(t *testing.T) {
-		req := httptest.NewRequest(http.MethodGet, "/private", nil)
+		req := httptest.NewRequest(http.MethodGet, "/private", http.NoBody)
 		req.Header.Set("Authorization", "Bearer test-token")
 		rec := httptest.NewRecorder()
 		srv.Handler().ServeHTTP(rec, req)

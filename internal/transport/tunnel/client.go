@@ -47,9 +47,9 @@ type ClientOption func(*Client)
 // registration, reconnection, and exponential backoff. It uses mTLS
 // for tunnel authentication.
 type Client struct {
-	mu               sync.Mutex       // protects inner and certDir
-	inner            *chclient.Client // owned lifecycle, not exported
-	certDir          string           // temp directory for TLS cert files
+	mu      sync.Mutex       // protects inner and certDir
+	inner   *chclient.Client // owned lifecycle, not exported
+	certDir string           // temp directory for TLS cert files
 
 	cluster          string
 	serverURL        string
@@ -150,7 +150,7 @@ func NewClient(opts ...ClientOption) (*Client, error) {
 	return c, nil
 }
 
-// Start runs the tunnel client loop. It blocks until ctx is cancelled,
+// Start runs the tunnel client loop. It blocks until ctx is canceled,
 // automatically re-registering and reconnecting on failures with
 // exponential backoff.
 func (c *Client) Start(ctx context.Context) error {
@@ -246,13 +246,13 @@ func (c *Client) dial(ctx context.Context) (*chclient.Client, error) {
 	certFile := filepath.Join(dir, "cert.pem")
 	keyFile := filepath.Join(dir, "key.pem")
 
-	if err := os.WriteFile(caFile, result.CACertPEM, 0600); err != nil {
+	if err := os.WriteFile(caFile, result.CACertPEM, 0o600); err != nil {
 		return nil, fmt.Errorf("write CA cert: %w", err)
 	}
-	if err := os.WriteFile(certFile, result.CertPEM, 0600); err != nil {
+	if err := os.WriteFile(certFile, result.CertPEM, 0o600); err != nil {
 		return nil, fmt.Errorf("write client cert: %w", err)
 	}
-	if err := os.WriteFile(keyFile, result.KeyPEM, 0600); err != nil {
+	if err := os.WriteFile(keyFile, result.KeyPEM, 0o600); err != nil {
 		return nil, fmt.Errorf("write client key: %w", err)
 	}
 
@@ -289,4 +289,3 @@ func (c *Client) runSession(ctx context.Context, inner *chclient.Client) error {
 	}
 	return err
 }
-

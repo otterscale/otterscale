@@ -8,6 +8,7 @@ import (
 
 	"connectrpc.com/authn"
 	"github.com/coreos/go-oidc/v3/oidc"
+
 	"github.com/otterscale/otterscale/internal/core"
 )
 

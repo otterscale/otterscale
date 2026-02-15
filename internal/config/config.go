@@ -17,7 +17,7 @@ type Config struct {
 	v *viper.Viper
 }
 
-// New initialises a Config by loading values from the config file,
+// New initializes a Config by loading values from the config file,
 // environment variables, and compiled defaults (in that priority
 // order; CLI flags, bound later via BindFlags, take highest priority).
 func New() (*Config, error) {
@@ -40,7 +40,7 @@ func New() (*Config, error) {
 
 	if err := v.ReadInConfig(); err != nil {
 		var notFoundErr viper.ConfigFileNotFoundError
-		if !(errors.As(err, &notFoundErr) || errors.Is(err, os.ErrNotExist)) {
+		if !errors.As(err, &notFoundErr) && !errors.Is(err, os.ErrNotExist) {
 			return nil, fmt.Errorf("failed to read config file: %w", err)
 		}
 	}

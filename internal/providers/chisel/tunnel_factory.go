@@ -32,15 +32,15 @@ func (s *Service) BuildTunnelListener(address, host string) (transport.Listener,
 	certFile := filepath.Join(certDir, "cert.pem")
 	keyFile := filepath.Join(certDir, "key.pem")
 
-	if err := os.WriteFile(caFile, s.ca.CertPEM(), 0600); err != nil {
+	if err := os.WriteFile(caFile, s.ca.CertPEM(), 0o600); err != nil {
 		os.RemoveAll(certDir)
 		return nil, fmt.Errorf("write CA cert: %w", err)
 	}
-	if err := os.WriteFile(certFile, serverCert, 0600); err != nil {
+	if err := os.WriteFile(certFile, serverCert, 0o600); err != nil {
 		os.RemoveAll(certDir)
 		return nil, fmt.Errorf("write server cert: %w", err)
 	}
-	if err := os.WriteFile(keyFile, serverKey, 0600); err != nil {
+	if err := os.WriteFile(keyFile, serverKey, 0o600); err != nil {
 		os.RemoveAll(certDir)
 		return nil, fmt.Errorf("write server key: %w", err)
 	}

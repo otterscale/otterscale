@@ -11,12 +11,12 @@ import (
 )
 
 // shutdownTimeout is the maximum time allowed for graceful shutdown
-// of each listener after the context is cancelled.
+// of each listener after the context is canceled.
 const shutdownTimeout = 15 * time.Second
 
 // Listener defines a component that can be started and stopped as
 // part of the server lifecycle. Start should block until the
-// component finishes or ctx is cancelled. Stop performs graceful
+// component finishes or ctx is canceled. Stop performs graceful
 // shutdown within the provided context deadline.
 type Listener interface {
 	Start(context.Context) error
@@ -38,7 +38,7 @@ type TunnelService interface {
 }
 
 // Serve runs all listeners concurrently and coordinates graceful
-// shutdown. When ctx is cancelled or any listener returns an error,
+// shutdown. When ctx is canceled or any listener returns an error,
 // all listeners are started first, then a single goroutine waits for
 // the derived context to be done and calls Stop on every listener.
 // This avoids calling Stop before Start has had a chance to run.
@@ -52,7 +52,7 @@ func Serve(ctx context.Context, lis ...Listener) error {
 	}
 
 	// A single goroutine waits for the derived context to be
-	// cancelled (either parent ctx or a listener failure), then
+	// canceled (either parent ctx or a listener failure), then
 	// stops all listeners sequentially. Each listener gets its own
 	// timeout so that a slow listener cannot starve subsequent ones.
 	eg.Go(func() error {

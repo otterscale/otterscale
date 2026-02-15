@@ -31,7 +31,7 @@ type RuntimeRepo interface {
 	// Restart triggers a rolling restart by patching the pod template annotation.
 	Restart(ctx context.Context, cluster string, gvr schema.GroupVersionResource, namespace, name string) error
 	// PortForward opens a port-forward session and copies data
-	// bidirectionally until the context is cancelled or the
+	// bidirectionally until the context is canceled or the
 	// connection closes.
 	PortForward(ctx context.Context, cluster, namespace, name string, opts PortForwardOptions) error
 }
@@ -365,7 +365,7 @@ func (uc *RuntimeUseCase) Scale(ctx context.Context, id ResourceIdentifier, repl
 
 // StartSessionReaper launches a background goroutine that
 // periodically scans for stale sessions (finished but not cleaned up)
-// and removes them. It blocks until ctx is cancelled.
+// and removes them. It blocks until ctx is canceled.
 func (uc *RuntimeUseCase) StartSessionReaper(ctx context.Context, interval time.Duration) {
 	log := slog.Default().With("component", "session-reaper")
 	ticker := time.NewTicker(interval)

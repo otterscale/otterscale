@@ -168,7 +168,6 @@ func (s *Server) Handler() http.Handler {
 // Start begins accepting connections and blocks until the server is
 // shut down or an unrecoverable error occurs.
 func (s *Server) Start(ctx context.Context) error {
-
 	s.inner.BaseContext = func(net.Listener) context.Context {
 		return ctx
 	}

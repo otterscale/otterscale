@@ -30,7 +30,7 @@ func ProvideCA(dir string) (*CA, error) {
 		return nil, fmt.Errorf("generate CA: %w", err)
 	}
 
-	if err := os.MkdirAll(dir, 0700); err != nil {
+	if err := os.MkdirAll(dir, 0o700); err != nil {
 		return nil, fmt.Errorf("create CA dir: %w", err)
 	}
 
@@ -42,10 +42,10 @@ func ProvideCA(dir string) (*CA, error) {
 	// Write cert and key atomically (write to temp + rename) so
 	// that a crash between the two writes does not leave a
 	// half-written CA state on disk.
-	if err := atomicWriteFile(certPath, ca.CertPEM(), 0600); err != nil {
+	if err := atomicWriteFile(certPath, ca.CertPEM(), 0o600); err != nil {
 		return nil, fmt.Errorf("write CA cert: %w", err)
 	}
-	if err := atomicWriteFile(keyPath, keyPEM, 0600); err != nil {
+	if err := atomicWriteFile(keyPath, keyPEM, 0o600); err != nil {
 		return nil, fmt.Errorf("write CA key: %w", err)
 	}
 

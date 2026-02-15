@@ -62,7 +62,7 @@ func (s *ResourceService) Discovery(ctx context.Context, req *pb.DiscoveryReques
 	return resp, nil
 }
 
-// Schema returns the OpenAPI schema for the given GVK, serialised as
+// Schema returns the OpenAPI schema for the given GVK, serialized as
 // a protobuf Struct.
 func (s *ResourceService) Schema(ctx context.Context, req *pb.SchemaRequest) (*structpb.Struct, error) {
 	resolved, err := s.resource.ResolveSchema(
@@ -109,7 +109,7 @@ func (s *ResourceService) List(ctx context.Context, req *pb.ListRequest) (*pb.Li
 	}
 
 	// Strip noisy metadata (managedFields, last-applied-configuration)
-	// before serialising to protobuf. This is a presentation concern
+	// before serializing to protobuf. This is a presentation concern
 	// that belongs in the handler layer, not the domain use-case.
 	for i := range resources.Items {
 		cleanObject(resources.Items[i].Object)
@@ -409,7 +409,7 @@ func toProtoAPIResource(gv schema.GroupVersion, r *metav1.APIResource) *pb.APIRe
 	return ret
 }
 
-// toProtoStructFromJSONSchema serialises an OpenAPI spec.Schema to
+// toProtoStructFromJSONSchema serializes an OpenAPI spec.Schema to
 // JSON and re-parses it into a protobuf Struct so it can be returned
 // as a generic structured response.
 func toProtoStructFromJSONSchema(js *spec.Schema) (*structpb.Struct, error) {

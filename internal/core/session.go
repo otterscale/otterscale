@@ -136,7 +136,7 @@ type SessionStore struct {
 	pfSess   map[string]*PortForwardSession
 }
 
-// NewSessionStore returns an initialised SessionStore.
+// NewSessionStore returns an initialized SessionStore.
 func NewSessionStore() *SessionStore {
 	return &SessionStore{
 		execSess: make(map[string]*ExecSession),

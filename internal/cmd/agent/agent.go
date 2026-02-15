@@ -55,7 +55,7 @@ func NewAgent(cfg *rest.Config, handler *Handler, tunnel core.TunnelConsumer, ve
 // embedded infrastructure manifests (FluxCD, Module CRD) to the local
 // cluster. It then creates an in-memory pipe listener for the HTTP
 // server, a TCP bridge for chisel to forward to, and a tunnel client,
-// then blocks until ctx is cancelled.
+// then blocks until ctx is canceled.
 func (a *Agent) Run(ctx context.Context, cfg Config) error {
 	if cfg.Bootstrap {
 		if err := a.bootstrapper.Run(ctx); err != nil {

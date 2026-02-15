@@ -49,7 +49,7 @@ func (b *Bridge) Port() int {
 }
 
 // Start accepts TCP connections and bridges them into the pipe
-// listener. It blocks until ctx is cancelled or an unrecoverable
+// listener. It blocks until ctx is canceled or an unrecoverable
 // error occurs.
 func (b *Bridge) Start(ctx context.Context) error {
 	b.log.Info("starting", "address", b.tcpListener.Addr().String())

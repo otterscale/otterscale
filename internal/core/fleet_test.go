@@ -23,9 +23,11 @@ func (m *mockTunnelProvider) ListClusters() map[string]Cluster {
 	}
 	return m.clusters
 }
+
 func (m *mockTunnelProvider) RegisterCluster(_ context.Context, _, _, _ string, _ []byte) (string, []byte, error) {
 	return m.regEndpoint, m.regCertPEM, m.regErr
 }
+
 func (m *mockTunnelProvider) ResolveAddress(_ context.Context, _ string) (string, error) {
 	return "", nil
 }

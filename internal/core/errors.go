@@ -12,17 +12,17 @@ import (
 type ErrorCode int
 
 const (
-	ErrorCodeInternal          ErrorCode = iota // catch-all
-	ErrorCodeInvalidArgument                    // bad input
-	ErrorCodeNotFound                           // resource missing
-	ErrorCodeAlreadyExists                      // duplicate
-	ErrorCodeUnauthenticated                    // no/invalid creds
-	ErrorCodePermissionDenied                   // forbidden
-	ErrorCodeFailedPrecondition                 // conflict / precondition
-	ErrorCodeDeadlineExceeded                   // timeout
-	ErrorCodeResourceExhausted                  // rate-limit / quota
-	ErrorCodeUnimplemented                      // method not allowed
-	ErrorCodeUnavailable                        // service unavailable
+	ErrorCodeInternal           ErrorCode = iota // catch-all
+	ErrorCodeInvalidArgument                     // bad input
+	ErrorCodeNotFound                            // resource missing
+	ErrorCodeAlreadyExists                       // duplicate
+	ErrorCodeUnauthenticated                     // no/invalid creds
+	ErrorCodePermissionDenied                    // forbidden
+	ErrorCodeFailedPrecondition                  // conflict / precondition
+	ErrorCodeDeadlineExceeded                    // timeout
+	ErrorCodeResourceExhausted                   // rate-limit / quota
+	ErrorCodeUnimplemented                       // method not allowed
+	ErrorCodeUnavailable                         // service unavailable
 )
 
 // DomainError is a generic domain error carrying an ErrorCode and an
