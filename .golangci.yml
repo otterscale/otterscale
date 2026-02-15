@@ -96,7 +96,7 @@ linters:
       require-specific: true
       allow-unused: false
     whitespace:
-      multi-func: true
+      multi-func: false
   exclusions:
     generated: lax
     presets:
@@ -104,6 +104,10 @@ linters:
       - common-false-positives
       - legacy
       - std-error-handling
+    rules:
+      - linters: [revive]
+        text: "var-naming: avoid package names"
+        path: internal/transport/http/
     paths:
       - third_party$
       - builtin$
