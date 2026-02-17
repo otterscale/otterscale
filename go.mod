@@ -48,12 +48,12 @@ require (
 	gopkg.in/ini.v1 v1.67.1
 	gopkg.in/yaml.v2 v2.4.0
 	helm.sh/helm/v3 v3.20.0
-	k8s.io/api v0.35.0
+	k8s.io/api v0.35.1
 	k8s.io/apiextensions-apiserver v0.35.0
-	k8s.io/apimachinery v0.35.0
+	k8s.io/apimachinery v0.35.1
 	k8s.io/apiserver v0.35.0
-	k8s.io/cli-runtime v0.35.0
-	k8s.io/client-go v0.35.0
+	k8s.io/cli-runtime v0.35.1
+	k8s.io/client-go v0.35.1
 	k8s.io/kube-openapi v0.0.0-20260127142750-a19766b6e2d4
 	k8s.io/kubectl v0.35.0
 	kubevirt.io/api v1.6.3
