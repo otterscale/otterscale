@@ -10,7 +10,7 @@
 	import { createFocusOnFirstError } from '@sjsf/form/focus-on-first-error';
 	import type { Ref } from '@sjsf/form/lib/svelte.svelte';
 
-	import * as defaults from '$lib/form-defaults';
+	import * as defaults from '$lib/components/dynamic-form/defaults';
 
 	import MultipleStepField, { setStepperContext } from './multiple-step-field.svelte';
 

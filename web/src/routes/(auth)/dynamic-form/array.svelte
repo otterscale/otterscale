@@ -10,7 +10,7 @@
 	import { overrideByRecord } from '@sjsf/form/lib/resolver';
 
 	import { arrayItemField } from '$lib/components/dynamic-form/fields/index.js';
-	import * as defaults from '$lib/form-defaults';
+	import * as defaults from '$lib/components/dynamic-form/defaults';
 
 	const schema: Schema = {
 		definitions: {

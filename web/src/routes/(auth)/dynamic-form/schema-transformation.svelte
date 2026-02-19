@@ -17,7 +17,7 @@
 	import { resolver } from '@sjsf/form/resolvers/compat';
 
 	// https://github.com/sveltejs/svelte/issues/17220
-	import * as _defaults from '$lib/form-defaults';
+	import * as _defaults from '$lib/components/dynamic-form/defaults';
 
 	const defaults = { ..._defaults };
 
