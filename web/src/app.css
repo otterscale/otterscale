@@ -1,4 +1,5 @@
 @import '@sjsf/shadcn4-theme/styles.css';
+@import "@sjsf/basic-theme/css/basic.css";
 @import 'tailwindcss';
 @import 'tw-animate-css';
 @import '@fontsource/geist';
