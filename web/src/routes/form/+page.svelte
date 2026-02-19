@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { mode as themeMode } from 'mode-watcher';
 	import * as Alert from '$lib/components/ui/alert/index.js';
 	import * as Item from '$lib/components/ui/item';
 	import { ScrollArea } from '$lib/components/ui/scroll-area/index.js';
@@ -6,7 +7,9 @@
 	import {
 		Content,
 		createForm,
+		type FailureValidationResult,
 		Form,
+		type FormState,
 		type FormValue,
 		type FormValueValidator,
 		getValueSnapshot,
@@ -36,9 +39,12 @@
 		openAPISchemaToJSONSchema,
 		toVersionedJSONSchema
 	} from '$lib/components/dynamic-form/utils.svelte';
+	import Button from '$lib/components/ui/button/button.svelte';
 	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
-	import { CircleAlertIcon, FileCodeCornerIcon, FormIcon } from '@lucide/svelte';
+	import { CircleAlertIcon, FileCodeCornerIcon, FormIcon, SaveIcon } from '@lucide/svelte';
 	import type { SchemaObjectValue, SchemaValue } from '@sjsf/form/core';
+	import { createFocusOnFirstError } from '@sjsf/form/focus-on-first-error';
+	import { toast } from 'svelte-sonner';
 	import { parse, stringify } from 'yaml';
 
 	JSONSchemaFaker.option({
@@ -314,6 +320,15 @@
 				const value = mode === 'yaml' ? parse(yamlValue) : formValue;
 				const transferredValue = transfer(value);
 				validationResult = validator.validateFormValue(schema, transferredValue);
+				if (validationResult && validationResult.errors && validationResult.errors.length > 0) {
+					validationResult.errors.forEach((error) => {
+						toast.error(error.message, {
+							description: `[${error.path.join('.')}]`,
+							duration: Number.POSITIVE_INFINITY,
+							closeButton: true
+						});
+					});
+				}
 				return validationResult;
 			}
 		} satisfies FormValueValidator<FormValue>;
@@ -323,6 +338,14 @@
 		console.log(getValueSnapshot(form));
 	}
 
+	function onSubmitError(
+		result: FailureValidationResult,
+		event: SubmitEvent,
+		form: FormState<FormValue>
+	) {
+		if (result.errors.length > 0) createFocusOnFirstError()(result, event, form);
+	}
+
 	const form = createForm<FormValue>({
 		...defaults,
 		theme,
@@ -330,7 +353,8 @@
 		uiSchema,
 		initialValue,
 		validator,
-		onSubmit
+		onSubmit,
+		onSubmitError
 	});
 
 	function scrollTo(identifier: string, options?: ScrollIntoViewOptions) {
@@ -346,11 +370,34 @@
 
 	function synchronizeToYAML() {
 		yamlValue = stringify(getValueSnapshot(form));
-		setValue(form, parse(yamlValue));
 	}
 	function synchronizeToForm() {
 		setValue(form, parse(yamlValue));
-		yamlValue = stringify(getValueSnapshot(form));
+	}
+
+	let isYAMLEditing = $state(false);
+	function onReady(event: CustomEvent) {
+		const yamlEditor = event.detail;
+		yamlEditor.onDidChangeModelContent(() => {
+			if (mode === 'yaml') {
+				if (!isYAMLEditing) isYAMLEditing = true;
+			}
+		});
+	}
+	function handleYAMLSave() {
+		if (mode === 'yaml') {
+			try {
+				synchronizeToForm();
+				isYAMLEditing = false;
+			} catch (error: any) {
+				console.error(error);
+				toast.error('Invalid YAML syntax.', {
+					description: error.message.toString(),
+					duration: Number.POSITIVE_INFINITY,
+					closeButton: true
+				});
+			}
+		}
 	}
 
 	setFormContext(form);
@@ -378,9 +425,12 @@
 				</Item.Description>
 			</Item.Content>
 			<Item.Actions>
+				<Button size="icon" class={isYAMLEditing ? undefined : 'hidden'} onclick={handleYAMLSave}>
+					<SaveIcon />
+				</Button>
 				<Tabs.List>
 					<!-- Mode Switcher -->
-					<Tabs.Trigger value="form">
+					<Tabs.Trigger value="form" disabled={isYAMLEditing}>
 						<Tooltip.Provider>
 							<Tooltip.Root>
 								<Tooltip.Trigger>
@@ -418,18 +468,19 @@
 				<Tabs.Content value="yaml" class="flex h-screen gap-4">
 					<!-- Code -->
 					<Monaco
+						bind:value={yamlValue}
 						options={{
 							automaticLayout: true,
 							language: 'yaml',
-							lineNumbers: 'off',
 							extraEditorClassName: 'h-full',
 							folding: true,
-							renderLineHighlight: 'all'
+							renderLineHighlight: 'all',
+							theme: themeMode.current === 'dark' ? 'vs-dark' : 'vs-light'
 						}}
-						bind:value={yamlValue}
+						on:ready={onReady}
 					/>
 					<!-- Errors -->
-					{#if validationResult && validationResult.errors && validationResult.errors.length > 0}
+					<!-- {#if validationResult && validationResult.errors && validationResult.errors.length > 0}
 						{@const errors = validationResult.errors}
 						<div class="fixed right-0 bottom-12 left-0 z-50 bg-card/90 p-4">
 							<Alert.Root
@@ -445,7 +496,7 @@
 								</Alert.Description>
 							</Alert.Root>
 						</div>
-					{/if}
+					{/if} -->
 				</Tabs.Content>
 			</ScrollArea>
 			<!-- Submit -->
