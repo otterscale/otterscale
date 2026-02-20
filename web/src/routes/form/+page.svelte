@@ -7,12 +7,16 @@
 	import {
 		Content,
 		createForm,
+		encodePseudoElement,
 		type FailureValidationResult,
 		Form,
 		type FormState,
 		type FormValue,
 		type FormValueValidator,
 		getIdByPath,
+		getPseudoId,
+		getPseudoIdByPath,
+		getPseudoPath,
 		getValueSnapshot,
 		type Schema,
 		setFormContext,
@@ -385,23 +389,23 @@
 	const sections: SectionType[] = [
 		{
 			title: 'Namespace',
-			id: `${getIdByPath(form, ['spec', 'namespace'])}__title`
+			id: `${getPseudoIdByPath(form, ['spec', 'namespace'], 'title')}`
 		},
 		{
 			title: 'Resource Quota',
-			id: `${getIdByPath(form, ['spec', 'resourceQuota'])}__title`
+			id: `${getPseudoIdByPath(form, ['spec', 'resourceQuota'], 'title')}`
 		},
 		{
 			title: 'Limit Range',
-			id: `${getIdByPath(form, ['spec', 'limitRange'])}__title`
+			id: `${getPseudoIdByPath(form, ['spec', 'limitRange'], 'title')}`
 		},
 		{
 			title: 'Users',
-			id: `${getIdByPath(form, ['spec', 'users'])}__title`
+			id: `${getPseudoIdByPath(form, ['spec', 'users'], 'title')}`
 		},
 		{
 			title: 'Network Isolation',
-			id: `${getIdByPath(form, ['spec', 'networkIsolation'])}__title`
+			id: `${getPseudoIdByPath(form, ['spec', 'networkIsolation'], 'title')}`
 		}
 	];
 	let activeSectionIndex = $state(0);
