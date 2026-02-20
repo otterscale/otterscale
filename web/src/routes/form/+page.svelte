@@ -7,16 +7,12 @@
 	import {
 		Content,
 		createForm,
-		encodePseudoElement,
 		type FailureValidationResult,
 		Form,
 		type FormState,
 		type FormValue,
 		type FormValueValidator,
-		getIdByPath,
-		getPseudoId,
 		getPseudoIdByPath,
-		getPseudoPath,
 		getValueSnapshot,
 		type Schema,
 		setFormContext,
@@ -305,16 +301,28 @@
 		fromFactories({})
 	);
 
-	const theme = overrideByRecord(defaults.theme, {
-		// Fields
-		objectPropertyField: ObjectPropertyField,
-		// Templates
-		arrayItemTemplate: ArrayItemTemplate,
-		arrayTemplate: ArrayTemplate,
-		multiFieldTemplate: MultiFieldTemplate,
-		objectPropertyTemplate: ObjectPropertyTemplate,
-		objectTemplate: ObjectTemplate
-	});
+	const sections = [
+		{
+			title: 'Namespace',
+			path: ['spec', 'namespace']
+		},
+		{
+			title: 'Resource Quota',
+			path: ['spec', 'resourceQuota']
+		},
+		{
+			title: 'Limit Range',
+			path: ['spec', 'limitRange']
+		},
+		{
+			title: 'Users',
+			path: ['spec', 'users']
+		},
+		{
+			title: 'Network Isolation',
+			path: ['spec', 'networkIsolation']
+		}
+	];
 
 	function transfer(value: FormValue): FormValue {
 		const temporaryValue = value as SchemaObjectValue;
@@ -329,6 +337,17 @@
 		setValue(form, temporaryValue);
 		return getValueSnapshot(form);
 	}
+
+	const theme = overrideByRecord(defaults.theme, {
+		// Fields
+		objectPropertyField: ObjectPropertyField,
+		// Templates
+		arrayItemTemplate: ArrayItemTemplate,
+		arrayTemplate: ArrayTemplate,
+		multiFieldTemplate: MultiFieldTemplate,
+		objectPropertyTemplate: ObjectPropertyTemplate,
+		objectTemplate: ObjectTemplate
+	});
 
 	let validationResult: ValidationResult<FormValue> | null = $state(null);
 	function validator(options: ValidatorFactoryOptions) {
@@ -385,29 +404,6 @@
 		onSubmitError
 	});
 
-	type SectionType = { title: string; id: string };
-	const sections: SectionType[] = [
-		{
-			title: 'Namespace',
-			id: `${getPseudoIdByPath(form, ['spec', 'namespace'], 'title')}`
-		},
-		{
-			title: 'Resource Quota',
-			id: `${getPseudoIdByPath(form, ['spec', 'resourceQuota'], 'title')}`
-		},
-		{
-			title: 'Limit Range',
-			id: `${getPseudoIdByPath(form, ['spec', 'limitRange'], 'title')}`
-		},
-		{
-			title: 'Users',
-			id: `${getPseudoIdByPath(form, ['spec', 'users'], 'title')}`
-		},
-		{
-			title: 'Network Isolation',
-			id: `${getPseudoIdByPath(form, ['spec', 'networkIsolation'], 'title')}`
-		}
-	];
 	let activeSectionIndex = $state(0);
 	function scrollTo(identifier: string, options?: ScrollIntoViewOptions) {
 		const element = document.getElementById(identifier);
@@ -419,16 +415,16 @@
 		const section = sections[index];
 		if (section) {
 			activeSectionIndex = index;
-			scrollTo(section.id);
+			scrollTo(getPseudoIdByPath(form, section.path, 'title'));
 		}
 	}
 	function handleNextSection() {
 		activeSectionIndex = Math.min(sections.length - 1, activeSectionIndex + 1);
-		scrollTo(sections[activeSectionIndex].id);
+		scrollTo(getPseudoIdByPath(form, sections[activeSectionIndex].path, 'title'));
 	}
 	function handlePreviousSection() {
 		activeSectionIndex = Math.max(0, activeSectionIndex - 1);
-		scrollTo(sections[activeSectionIndex].id);
+		scrollTo(getPseudoIdByPath(form, sections[activeSectionIndex].path, 'title'));
 	}
 
 	// YAML
