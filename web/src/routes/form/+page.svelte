@@ -1,4 +1,5 @@
 <script lang="ts">
+	import * as ContextMenu from '$lib/components/ui/context-menu/index.js';
 	import * as Item from '$lib/components/ui/item';
 	import * as Tabs from '$lib/components/ui/tabs/index.js';
 	import {
@@ -39,7 +40,7 @@
 	} from '$lib/components/dynamic-form/utils.svelte';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
-	import { FileCodeCornerIcon, FormIcon, SaveIcon } from '@lucide/svelte';
+	import { FileCodeCornerIcon, FormIcon, LocateFixedIcon, SaveIcon } from '@lucide/svelte';
 	import type { SchemaObjectValue, SchemaValue } from '@sjsf/form/core';
 	import { createFocusOnFirstError } from '@sjsf/form/focus-on-first-error';
 	import { toast } from 'svelte-sonner';
@@ -149,6 +150,11 @@
 
 	const uiSchema = {
 		spec: {
+			namespace: {
+				'ui:options': {
+					useLabel: false
+				}
+			},
 			resourceQuota: {
 				hard: {
 					additionalProperties: {
@@ -423,7 +429,7 @@
 	setFormContext(form);
 </script>
 
-<Tabs.Root bind:value={mode} class="p-4" onValueChange={handleModeChange}>
+<Tabs.Root bind:value={mode} class="mx-auto max-w-3xl p-4" onValueChange={handleModeChange}>
 	<Item.Root class="h-20 w-full p-0">
 		<Item.Content class="text-left">
 			<!-- Header -->
@@ -462,11 +468,52 @@
 		</Item.Actions>
 	</Item.Root>
 	<Tabs.Content value="form">
-		<!-- Form -->
-		<Form attributes={{ novalidate: true }}>
-			<Content />
-			<SubmitButton />
-		</Form>
+		<ContextMenu.Root>
+			<ContextMenu.Trigger>
+				<!-- Form -->
+				<Form attributes={{ novalidate: true }}>
+					<Content />
+					<SubmitButton />
+				</Form>
+			</ContextMenu.Trigger>
+			<ContextMenu.Content>
+				<ContextMenu.Item
+					onclick={() => {
+						scrollTo('root_spec_namespace__title');
+					}}
+				>
+					<LocateFixedIcon />Namespace
+				</ContextMenu.Item>
+				<ContextMenu.Item
+					onclick={() => {
+						scrollTo('root_spec_resourceQuota__title');
+					}}
+				>
+					<LocateFixedIcon />Resource Quota
+				</ContextMenu.Item>
+				<ContextMenu.Item
+					onclick={() => {
+						scrollTo('root_spec_limitRange__title');
+					}}
+				>
+					<LocateFixedIcon />Limit Range
+				</ContextMenu.Item>
+				<ContextMenu.Item
+					onclick={() => {
+						scrollTo('root_spec_users__title');
+					}}
+				>
+					<LocateFixedIcon />Users
+				</ContextMenu.Item>
+				<ContextMenu.Item
+					onclick={() => {
+						scrollTo('root_spec_networkIsolation__title');
+					}}
+				>
+					<LocateFixedIcon />Network Isolation
+				</ContextMenu.Item>
+			</ContextMenu.Content>
+		</ContextMenu.Root>
 	</Tabs.Content>
 	<Tabs.Content value="yaml" class="h-[calc(100vh-7.5rem)]">
 		<!-- YAML -->
