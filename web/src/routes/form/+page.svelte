@@ -12,6 +12,7 @@
 		type FormState,
 		type FormValue,
 		type FormValueValidator,
+		getIdByPath,
 		getValueSnapshot,
 		type Schema,
 		setFormContext,
@@ -21,7 +22,7 @@
 		type ValidationResult,
 		type ValidatorFactoryOptions
 	} from '@sjsf/form';
-	import { overrideByRecord } from '@sjsf/form/lib/resolver';
+	import { chain, fromFactories, fromRecord, overrideByRecord } from '@sjsf/form/lib/resolver';
 	import lodash from 'lodash';
 	import { mode as themeMode } from 'mode-watcher';
 	import { tick } from 'svelte';
@@ -46,8 +47,6 @@
 	import { createFocusOnFirstError } from '@sjsf/form/focus-on-first-error';
 	import { toast } from 'svelte-sonner';
 	import { parse, stringify } from 'yaml';
-	import { Shortcut } from '$lib/components/ui/dropdown-menu';
-	import { Label } from 'bits-ui';
 
 	// Clean schema from unnecessary keywords and convert OpenAPI schema to JSON Schema Draft-07, which is compatible with AJV and most JSON Schema validators. This step is crucial to ensure that the form can be generated correctly without running into issues caused by unsupported keywords or schema versions.
 	const apiResourceSchema = toVersionedJSONSchema(openAPISchemaToJSONSchema(data), 'draft-07');
@@ -141,11 +140,6 @@
 
 	const uiSchema = {
 		spec: {
-			namespace: {
-				'ui:options': {
-					useLabel: false
-				}
-			},
 			resourceQuota: {
 				hard: {
 					additionalProperties: {
@@ -300,6 +294,13 @@
 		}
 	};
 
+	const extraUiOptions = chain(
+		fromRecord({
+			useLabel: false
+		}),
+		fromFactories({})
+	);
+
 	const theme = overrideByRecord(defaults.theme, {
 		// Fields
 		objectPropertyField: ObjectPropertyField,
@@ -373,6 +374,7 @@
 		theme,
 		schema,
 		uiSchema,
+		extraUiOptions,
 		initialValue,
 		validator,
 		onSubmit,
@@ -383,23 +385,23 @@
 	const sections: SectionType[] = [
 		{
 			title: 'Namespace',
-			id: 'root_spec_namespace__title'
+			id: `${getIdByPath(form, ['spec', 'namespace'])}__title`
 		},
 		{
 			title: 'Resource Quota',
-			id: 'root_spec_resourceQuota__title'
+			id: `${getIdByPath(form, ['spec', 'resourceQuota'])}__title`
 		},
 		{
 			title: 'Limit Range',
-			id: 'root_spec_limitRange__title'
+			id: `${getIdByPath(form, ['spec', 'limitRange'])}__title`
 		},
 		{
 			title: 'Users',
-			id: 'root_spec_users__title'
+			id: `${getIdByPath(form, ['spec', 'users'])}__title`
 		},
 		{
 			title: 'Network Isolation',
-			id: 'root_spec_networkIsolation__title'
+			id: `${getIdByPath(form, ['spec', 'networkIsolation'])}__title`
 		}
 	];
 	let activeSectionIndex = $state(0);
@@ -491,6 +493,7 @@
 		callback: handleNextSection
 	}}
 />
+
 <Tabs.Root
 	bind:value={mode}
 	class="mx-auto max-w-3xl p-4"
