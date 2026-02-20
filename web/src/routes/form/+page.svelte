@@ -554,31 +554,33 @@
 				</Form>
 			</ContextMenu.Trigger>
 			<ContextMenu.Content>
-				<ContextMenu.Label class="text-muted-foreground">Navigation</ContextMenu.Label>
-				<ContextMenu.Separator />
-				{#each sections as section, index}
-					<ContextMenu.Item
-						onclick={() => {
-							handleSectionNavigation(index);
-						}}
-					>
-						<LocateFixedIcon />{section.title}
-						<ContextMenu.Shortcut>
-							{#if activeSectionIndex - 1 === index}
-								<Kbd.Group>
-									<Kbd.Root>ctrl</Kbd.Root>
-									<Kbd.Root>p</Kbd.Root>
-								</Kbd.Group>
-							{/if}
-							{#if activeSectionIndex + 1 === index}
-								<Kbd.Group>
-									<Kbd.Root>ctrl</Kbd.Root>
-									<Kbd.Root>n</Kbd.Root>
-								</Kbd.Group>
-							{/if}
-						</ContextMenu.Shortcut>
-					</ContextMenu.Item>
-				{/each}
+				<ContextMenu.Group>
+					<ContextMenu.GroupHeading>Navigation</ContextMenu.GroupHeading>
+					<ContextMenu.Separator />
+					{#each sections as section, index}
+						<ContextMenu.Item
+							onclick={() => {
+								handleSectionNavigation(index);
+							}}
+						>
+							<LocateFixedIcon />{section.title}
+							<ContextMenu.Shortcut>
+								{#if activeSectionIndex - 1 === index}
+									<Kbd.Group>
+										<Kbd.Root>ctrl</Kbd.Root>
+										<Kbd.Root>P</Kbd.Root>
+									</Kbd.Group>
+								{/if}
+								{#if activeSectionIndex + 1 === index}
+									<Kbd.Group>
+										<Kbd.Root>ctrl</Kbd.Root>
+										<Kbd.Root>N</Kbd.Root>
+									</Kbd.Group>
+								{/if}
+							</ContextMenu.Shortcut>
+						</ContextMenu.Item>
+					{/each}
+				</ContextMenu.Group>
 			</ContextMenu.Content>
 		</ContextMenu.Root>
 	</Tabs.Content>
