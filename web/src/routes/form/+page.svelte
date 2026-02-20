@@ -1,8 +1,5 @@
 <script lang="ts">
-	import { mode as themeMode } from 'mode-watcher';
-	import * as Alert from '$lib/components/ui/alert/index.js';
 	import * as Item from '$lib/components/ui/item';
-	import { ScrollArea } from '$lib/components/ui/scroll-area/index.js';
 	import * as Tabs from '$lib/components/ui/tabs/index.js';
 	import {
 		Content,
@@ -24,6 +21,7 @@
 	import { overrideByRecord } from '@sjsf/form/lib/resolver';
 	import { JSONSchemaFaker } from 'json-schema-faker';
 	import lodash from 'lodash';
+	import { mode as themeMode } from 'mode-watcher';
 	import Monaco from 'svelte-monaco';
 	import { schema as data } from './schema';
 
@@ -41,12 +39,13 @@
 	} from '$lib/components/dynamic-form/utils.svelte';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
-	import { CircleAlertIcon, FileCodeCornerIcon, FormIcon, SaveIcon } from '@lucide/svelte';
+	import { FileCodeCornerIcon, FormIcon, SaveIcon } from '@lucide/svelte';
 	import type { SchemaObjectValue, SchemaValue } from '@sjsf/form/core';
 	import { createFocusOnFirstError } from '@sjsf/form/focus-on-first-error';
 	import { toast } from 'svelte-sonner';
 	import { parse, stringify } from 'yaml';
 
+	// Create Pseudo Random Data
 	JSONSchemaFaker.option({
 		alwaysFakeOptionals: false,
 		fillProperties: false,
@@ -58,8 +57,10 @@
 		useDefaultValue: true
 	});
 
+	// Clean schema from unnecessary keywords and convert OpenAPI schema to JSON Schema Draft-07, which is compatible with AJV and most JSON Schema validators. This step is crucial to ensure that the form can be generated correctly without running into issues caused by unsupported keywords or schema versions.
 	const apiResourceSchema = toVersionedJSONSchema(openAPISchemaToJSONSchema(data), 'draft-07');
 
+	// Form
 	const schema: Schema = {
 		...(lodash.omit(apiResourceSchema, ['$schema', 'properties', 'description']) as any),
 		// title: 'Workspace',
@@ -364,26 +365,27 @@
 		}
 	}
 
+	// YAML
+	// Reorder attributes in YAML editor to match the form schema, making it more intuitive for users to find and edit values.
+	// This is achieved by creating a new object based on the form schema and populating it with values from the current form state, ensuring that the order of attributes in the YAML editor reflects the structure defined in the form schema.
+	setValue(form, parse(stringify(getValueSnapshot(form))));
 	let yamlValue = $state(stringify(getValueSnapshot(form)));
-
-	let mode = $state('form');
-
-	function synchronizeToYAML() {
-		yamlValue = stringify(getValueSnapshot(form));
-	}
-	function synchronizeToForm() {
-		setValue(form, parse(yamlValue));
-	}
 
 	let isYAMLEditing = $state(false);
 	function onReady(event: CustomEvent) {
-		const yamlEditor = event.detail;
-		yamlEditor.onDidChangeModelContent(() => {
+		const editor = event.detail;
+		editor.onDidChangeModelContent(() => {
 			if (mode === 'yaml') {
 				if (!isYAMLEditing) isYAMLEditing = true;
 			}
 		});
+		editor.onDidThemeChange(() => {
+			editor.updateOptions({
+				theme: themeMode.current === 'dark' ? 'vs-dark' : 'vs-light'
+			});
+		});
 	}
+
 	function handleYAMLSave() {
 		if (mode === 'yaml') {
 			try {
@@ -400,107 +402,85 @@
 		}
 	}
 
+	// Tab
+	let mode = $state('form');
+
+	function synchronizeToYAML() {
+		yamlValue = stringify(getValueSnapshot(form));
+	}
+	function synchronizeToForm() {
+		setValue(form, parse(yamlValue));
+	}
+
+	function handleModeChange() {
+		if (mode === 'yaml') {
+			synchronizeToYAML();
+		} else if (mode === 'form') {
+			synchronizeToForm();
+		}
+	}
+
 	setFormContext(form);
 </script>
 
-<!-- Avoid unnecessary nesting of elements to prevent layout issues and ensure better readability. -->
-<main class="max-h-screen overflow-hidden">
-	<Tabs.Root
-		bind:value={mode}
-		class="space-y-2 p-4"
-		onValueChange={() => {
-			if (mode === 'yaml') {
-				synchronizeToYAML();
-			} else if (mode === 'form') {
-				synchronizeToForm();
-			}
-		}}
-	>
-		<Item.Root class="h-20 w-full p-0">
-			<Item.Content class="text-left">
-				<!-- Header -->
-				<Item.Title class="text-lg font-bold">Workspace</Item.Title>
-				<Item.Description class="text-sm">
-					{apiResourceSchema.description}
-				</Item.Description>
-			</Item.Content>
-			<Item.Actions>
-				<Button size="icon" class={isYAMLEditing ? undefined : 'hidden'} onclick={handleYAMLSave}>
-					<SaveIcon />
-				</Button>
-				<Tabs.List>
-					<!-- Mode Switcher -->
-					<Tabs.Trigger value="form" disabled={isYAMLEditing}>
-						<Tooltip.Provider>
-							<Tooltip.Root>
-								<Tooltip.Trigger>
-									<FormIcon />
-								</Tooltip.Trigger>
-								<Tooltip.Content>Form</Tooltip.Content>
-							</Tooltip.Root>
-						</Tooltip.Provider>
-					</Tabs.Trigger>
-					<Tabs.Trigger value="yaml">
-						<Tooltip.Provider>
-							<Tooltip.Root>
-								<Tooltip.Trigger>
-									<FileCodeCornerIcon />
-								</Tooltip.Trigger>
-								<Tooltip.Content>YAML</Tooltip.Content>
-							</Tooltip.Root>
-						</Tooltip.Provider>
-					</Tabs.Trigger>
-				</Tabs.List>
-			</Item.Actions>
-		</Item.Root>
+<Tabs.Root bind:value={mode} class="p-4" onValueChange={handleModeChange}>
+	<Item.Root class="h-20 w-full p-0">
+		<Item.Content class="text-left">
+			<!-- Header -->
+			<Item.Title class="text-lg font-bold">Workspace</Item.Title>
+			<Item.Description class="text-sm">
+				{apiResourceSchema.description}
+			</Item.Description>
+		</Item.Content>
+		<Item.Actions>
+			<Button size="icon" class={isYAMLEditing ? undefined : 'hidden'} onclick={handleYAMLSave}>
+				<SaveIcon />
+			</Button>
+			<Tabs.List>
+				<!-- Mode Switcher -->
+				<Tabs.Trigger value="form" disabled={isYAMLEditing}>
+					<Tooltip.Provider>
+						<Tooltip.Root>
+							<Tooltip.Trigger>
+								<FormIcon />
+							</Tooltip.Trigger>
+							<Tooltip.Content>Form</Tooltip.Content>
+						</Tooltip.Root>
+					</Tooltip.Provider>
+				</Tabs.Trigger>
+				<Tabs.Trigger value="yaml">
+					<Tooltip.Provider>
+						<Tooltip.Root>
+							<Tooltip.Trigger>
+								<FileCodeCornerIcon />
+							</Tooltip.Trigger>
+							<Tooltip.Content>YAML</Tooltip.Content>
+						</Tooltip.Root>
+					</Tooltip.Provider>
+				</Tabs.Trigger>
+			</Tabs.List>
+		</Item.Actions>
+	</Item.Root>
+	<Tabs.Content value="form">
+		<!-- Form -->
 		<Form attributes={{ novalidate: true }}>
-			<ScrollArea
-				class="h-[calc(100vh-11rem)]"
-				orientation={mode === 'yaml' ? 'horizontal' : 'both'}
-			>
-				<Tabs.Content value="form" class="h-screen">
-					<!-- Form -->
-					<!-- Force refresh: anyOfField may retain previous schema and clear value when schema changes -->
-					<!-- {#key mode === 'form'} -->
-					<Content />
-					<!-- {/key} -->
-				</Tabs.Content>
-				<Tabs.Content value="yaml" class="flex h-screen gap-4">
-					<!-- Code -->
-					<Monaco
-						bind:value={yamlValue}
-						options={{
-							automaticLayout: true,
-							language: 'yaml',
-							extraEditorClassName: 'h-full',
-							folding: true,
-							renderLineHighlight: 'all',
-							theme: themeMode.current === 'dark' ? 'vs-dark' : 'vs-light'
-						}}
-						on:ready={onReady}
-					/>
-					<!-- Errors -->
-					<!-- {#if validationResult && validationResult.errors && validationResult.errors.length > 0}
-						{@const errors = validationResult.errors}
-						<div class="fixed right-0 bottom-12 left-0 z-50 bg-card/90 p-4">
-							<Alert.Root
-								variant="destructive"
-								class="max-h-[33vh] overflow-auto border-destructive bg-destructive/10"
-							>
-								<CircleAlertIcon />
-								<Alert.Title>{errors?.length ?? 0} errors</Alert.Title>
-								<Alert.Description>
-									{#each errors as error}
-										<p class="text-sm">[{error.path.join('.')}]: {error.message}</p>
-									{/each}
-								</Alert.Description>
-							</Alert.Root>
-						</div>
-					{/if} -->
-				</Tabs.Content>
-			</ScrollArea>
-			<!-- Submit -->
+			<Content />
 			<SubmitButton />
 		</Form>
-	</Tabs.Root>
-</main>
+	</Tabs.Content>
+	<Tabs.Content value="yaml" class="h-[calc(100vh-7.5rem)]">
+		<!-- YAML -->
+		<Monaco
+			bind:value={yamlValue}
+			options={{
+				automaticLayout: true,
+				language: 'yaml',
+				extraEditorClassName: 'h-full',
+				folding: true,
+				renderLineHighlight: 'all',
+				theme: themeMode.current === 'dark' ? 'vs-dark' : 'vs-light'
+			}}
+			on:ready={onReady}
+		/>
+	</Tabs.Content>
+</Tabs.Root>
