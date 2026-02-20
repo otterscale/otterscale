@@ -1,6 +1,8 @@
 <script lang="ts">
+	import { shortcut } from '$lib/actions/shortcut.svelte';
 	import * as ContextMenu from '$lib/components/ui/context-menu/index.js';
 	import * as Item from '$lib/components/ui/item';
+	import * as Kbd from '$lib/components/ui/kbd/index.js';
 	import * as Tabs from '$lib/components/ui/tabs/index.js';
 	import {
 		Content,
@@ -20,9 +22,9 @@
 		type ValidatorFactoryOptions
 	} from '@sjsf/form';
 	import { overrideByRecord } from '@sjsf/form/lib/resolver';
-	import { JSONSchemaFaker } from 'json-schema-faker';
 	import lodash from 'lodash';
 	import { mode as themeMode } from 'mode-watcher';
+	import { tick } from 'svelte';
 	import Monaco from 'svelte-monaco';
 	import { schema as data } from './schema';
 
@@ -38,25 +40,14 @@
 		openAPISchemaToJSONSchema,
 		toVersionedJSONSchema
 	} from '$lib/components/dynamic-form/utils.svelte';
-	import Button from '$lib/components/ui/button/button.svelte';
 	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
-	import { FileCodeCornerIcon, FormIcon, LocateFixedIcon, SaveIcon } from '@lucide/svelte';
+	import { FileCodeCornerIcon, FormIcon, LocateFixedIcon } from '@lucide/svelte';
 	import type { SchemaObjectValue, SchemaValue } from '@sjsf/form/core';
 	import { createFocusOnFirstError } from '@sjsf/form/focus-on-first-error';
 	import { toast } from 'svelte-sonner';
 	import { parse, stringify } from 'yaml';
-
-	// Create Pseudo Random Data
-	JSONSchemaFaker.option({
-		alwaysFakeOptionals: false,
-		fillProperties: false,
-		maxItems: 1,
-		renderTitle: true,
-		renderDescription: true,
-		renderComment: true,
-		requiredOnly: true,
-		useDefaultValue: true
-	});
+	import { Shortcut } from '$lib/components/ui/dropdown-menu';
+	import { Label } from 'bits-ui';
 
 	// Clean schema from unnecessary keywords and convert OpenAPI schema to JSON Schema Draft-07, which is compatible with AJV and most JSON Schema validators. This step is crucial to ensure that the form can be generated correctly without running into issues caused by unsupported keywords or schema versions.
 	const apiResourceSchema = toVersionedJSONSchema(openAPISchemaToJSONSchema(data), 'draft-07');
@@ -170,7 +161,7 @@
 			limitRange: {
 				limits: {
 					'ui:options': {
-						itemTitle: () => 'Limit'
+						itemTitle: () => 'limit'
 					},
 					items: {
 						default: {
@@ -257,39 +248,55 @@
 
 	const initialValue = {
 		spec: {
+			namespace: '',
 			resourceQuota: {
 				hard: {
-					cpu: ''
+					cpu: '',
+					memory: '',
+					vgpu: ''
 				}
 			},
 			limitRange: {
 				limits: [
 					{
 						default: {
-							cpu: ''
+							cpu: '',
+							memory: '',
+							vgpu: ''
 						},
 						defaultRequest: {
-							cpu: ''
+							cpu: '',
+							memory: '',
+							vgpu: ''
 						},
 						max: {
-							cpu: ''
+							cpu: '',
+							memory: '',
+							vgpu: ''
 						},
 						maxLimitRequestRatio: {
-							cpu: ''
+							cpu: '',
+							memory: '',
+							vgpu: ''
 						},
 						min: {
-							cpu: ''
+							cpu: '',
+							memory: '',
+							vgpu: ''
 						},
-						type: 'Container'
+						type: ''
 					}
 				]
 			},
 			users: [
 				{
 					name: '',
-					role: 'admin'
+					role: ''
 				}
-			]
+			],
+			networkIsolation: {
+				allowedNamespaces: ['']
+			}
 		}
 	};
 
@@ -304,7 +311,7 @@
 		objectTemplate: ObjectTemplate
 	});
 
-	function transfer(value: SchemaObjectValue): FormValue {
+	function transfer(value: FormValue): FormValue {
 		const temporaryValue = value as SchemaObjectValue;
 
 		let users: SchemaObjectValue[] = lodash.get(value, 'spec.users', []) as SchemaObjectValue[];
@@ -324,7 +331,15 @@
 		return {
 			...validator,
 			validateFormValue(schema: Schema, formValue: FormValue) {
-				const value = mode === 'yaml' ? parse(yamlValue) : formValue;
+				let value = {} as FormValue;
+				switch (mode) {
+					case 'yaml':
+						value = parse(yamlValue);
+						break;
+					case 'form':
+						value = formValue;
+						break;
+				}
 				const transferredValue = transfer(value);
 				validationResult = validator.validateFormValue(schema, transferredValue);
 				if (validationResult && validationResult.errors && validationResult.errors.length > 0) {
@@ -364,11 +379,50 @@
 		onSubmitError
 	});
 
+	type SectionType = { title: string; id: string };
+	const sections: SectionType[] = [
+		{
+			title: 'Namespace',
+			id: 'root_spec_namespace__title'
+		},
+		{
+			title: 'Resource Quota',
+			id: 'root_spec_resourceQuota__title'
+		},
+		{
+			title: 'Limit Range',
+			id: 'root_spec_limitRange__title'
+		},
+		{
+			title: 'Users',
+			id: 'root_spec_users__title'
+		},
+		{
+			title: 'Network Isolation',
+			id: 'root_spec_networkIsolation__title'
+		}
+	];
+	let activeSectionIndex = $state(0);
 	function scrollTo(identifier: string, options?: ScrollIntoViewOptions) {
 		const element = document.getElementById(identifier);
 		if (element) {
 			element.scrollIntoView({ behavior: 'smooth', block: 'start', ...options });
 		}
+	}
+	function handleSectionNavigation(index: number) {
+		const section = sections[index];
+		if (section) {
+			activeSectionIndex = index;
+			scrollTo(section.id);
+		}
+	}
+	function handleNextSection() {
+		activeSectionIndex = Math.min(sections.length - 1, activeSectionIndex + 1);
+		scrollTo(sections[activeSectionIndex].id);
+	}
+	function handlePreviousSection() {
+		activeSectionIndex = Math.max(0, activeSectionIndex - 1);
+		scrollTo(sections[activeSectionIndex].id);
 	}
 
 	// YAML
@@ -377,59 +431,73 @@
 	setValue(form, parse(stringify(getValueSnapshot(form))));
 	let yamlValue = $state(stringify(getValueSnapshot(form)));
 
-	let isYAMLEditing = $state(false);
 	function onReady(event: CustomEvent) {
 		const editor = event.detail;
-		editor.onDidChangeModelContent(() => {
-			if (mode === 'yaml') {
-				if (!isYAMLEditing) isYAMLEditing = true;
-			}
-		});
-		editor.onDidThemeChange(() => {
-			editor.updateOptions({
-				theme: themeMode.current === 'dark' ? 'vs-dark' : 'vs-light'
-			});
-		});
-	}
-
-	function handleYAMLSave() {
-		if (mode === 'yaml') {
-			try {
-				synchronizeToForm();
-				isYAMLEditing = false;
-			} catch (error: any) {
-				console.error(error);
-				toast.error('Invalid YAML syntax.', {
-					description: error.message.toString(),
-					duration: Number.POSITIVE_INFINITY,
-					closeButton: true
-				});
-			}
-		}
 	}
 
 	// Tab
 	let mode = $state('form');
 
-	function synchronizeToYAML() {
+	async function synchronizeToYAML() {
 		yamlValue = stringify(getValueSnapshot(form));
 	}
-	function synchronizeToForm() {
+	async function synchronizeToForm() {
+		setValue(form, parse(yamlValue));
+		await tick();
 		setValue(form, parse(yamlValue));
 	}
 
-	function handleModeChange() {
-		if (mode === 'yaml') {
-			synchronizeToYAML();
-		} else if (mode === 'form') {
-			synchronizeToForm();
+	async function handleModeChange() {
+		switch (mode) {
+			case 'yaml':
+				await synchronizeToYAML();
+				break;
+			case 'form':
+				await synchronizeToForm();
+				break;
 		}
+	}
+	function handleFormModeShortcut() {
+		mode = 'form';
+		handleModeChange();
+	}
+	function handleYAMLModeShortcut() {
+		mode = 'yaml';
+		handleModeChange();
 	}
 
 	setFormContext(form);
 </script>
 
-<Tabs.Root bind:value={mode} class="mx-auto max-w-3xl p-4" onValueChange={handleModeChange}>
+<svelte:window
+	use:shortcut={{
+		key: 'f',
+		ctrl: true,
+		callback: handleFormModeShortcut
+	}}
+	use:shortcut={{
+		key: 'y',
+		ctrl: true,
+		callback: handleYAMLModeShortcut
+	}}
+	use:shortcut={{
+		key: 'p',
+		ctrl: true,
+		callback: handlePreviousSection
+	}}
+	use:shortcut={{
+		key: 'n',
+		ctrl: true,
+		callback: handleNextSection
+	}}
+/>
+<Tabs.Root
+	bind:value={mode}
+	class="mx-auto max-w-3xl p-4"
+	onValueChange={async () => {
+		await handleModeChange();
+	}}
+>
 	<Item.Root class="h-20 w-full p-0">
 		<Item.Content class="text-left">
 			<!-- Header -->
@@ -439,18 +507,21 @@
 			</Item.Description>
 		</Item.Content>
 		<Item.Actions>
-			<Button size="icon" class={isYAMLEditing ? undefined : 'hidden'} onclick={handleYAMLSave}>
-				<SaveIcon />
-			</Button>
 			<Tabs.List>
 				<!-- Mode Switcher -->
-				<Tabs.Trigger value="form" disabled={isYAMLEditing}>
+				<Tabs.Trigger value="form">
 					<Tooltip.Provider>
 						<Tooltip.Root>
 							<Tooltip.Trigger>
 								<FormIcon />
 							</Tooltip.Trigger>
-							<Tooltip.Content>Form</Tooltip.Content>
+							<Tooltip.Content class="flex items-center gap-1">
+								Form
+								<Kbd.Group>
+									<Kbd.Root>ctrl</Kbd.Root>
+									<Kbd.Root>F</Kbd.Root>
+								</Kbd.Group>
+							</Tooltip.Content>
 						</Tooltip.Root>
 					</Tooltip.Provider>
 				</Tabs.Trigger>
@@ -460,7 +531,13 @@
 							<Tooltip.Trigger>
 								<FileCodeCornerIcon />
 							</Tooltip.Trigger>
-							<Tooltip.Content>YAML</Tooltip.Content>
+							<Tooltip.Content class="flex items-center gap-1">
+								YAML
+								<Kbd.Group>
+									<Kbd.Root>ctrl</Kbd.Root>
+									<Kbd.Root>Y</Kbd.Root>
+								</Kbd.Group>
+							</Tooltip.Content>
 						</Tooltip.Root>
 					</Tooltip.Provider>
 				</Tabs.Trigger>
@@ -477,41 +554,31 @@
 				</Form>
 			</ContextMenu.Trigger>
 			<ContextMenu.Content>
-				<ContextMenu.Item
-					onclick={() => {
-						scrollTo('root_spec_namespace__title');
-					}}
-				>
-					<LocateFixedIcon />Namespace
-				</ContextMenu.Item>
-				<ContextMenu.Item
-					onclick={() => {
-						scrollTo('root_spec_resourceQuota__title');
-					}}
-				>
-					<LocateFixedIcon />Resource Quota
-				</ContextMenu.Item>
-				<ContextMenu.Item
-					onclick={() => {
-						scrollTo('root_spec_limitRange__title');
-					}}
-				>
-					<LocateFixedIcon />Limit Range
-				</ContextMenu.Item>
-				<ContextMenu.Item
-					onclick={() => {
-						scrollTo('root_spec_users__title');
-					}}
-				>
-					<LocateFixedIcon />Users
-				</ContextMenu.Item>
-				<ContextMenu.Item
-					onclick={() => {
-						scrollTo('root_spec_networkIsolation__title');
-					}}
-				>
-					<LocateFixedIcon />Network Isolation
-				</ContextMenu.Item>
+				<ContextMenu.Label class="text-muted-foreground">Navigation</ContextMenu.Label>
+				<ContextMenu.Separator />
+				{#each sections as section, index}
+					<ContextMenu.Item
+						onclick={() => {
+							handleSectionNavigation(index);
+						}}
+					>
+						<LocateFixedIcon />{section.title}
+						<ContextMenu.Shortcut>
+							{#if activeSectionIndex - 1 === index}
+								<Kbd.Group>
+									<Kbd.Root>ctrl</Kbd.Root>
+									<Kbd.Root>p</Kbd.Root>
+								</Kbd.Group>
+							{/if}
+							{#if activeSectionIndex + 1 === index}
+								<Kbd.Group>
+									<Kbd.Root>ctrl</Kbd.Root>
+									<Kbd.Root>n</Kbd.Root>
+								</Kbd.Group>
+							{/if}
+						</ContextMenu.Shortcut>
+					</ContextMenu.Item>
+				{/each}
 			</ContextMenu.Content>
 		</ContextMenu.Root>
 	</Tabs.Content>

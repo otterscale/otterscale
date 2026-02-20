@@ -1,6 +1,6 @@
-import traverse from 'json-schema-traverse';
-import  { JSONSchemaFaker } from 'json-schema-faker'
 import { openapiSchemaToJsonSchema as openAPISchemaToJSONSchema } from '@openapi-contrib/openapi-schema-to-json-schema';
+import { JSONSchemaFaker } from 'json-schema-faker';
+import traverse from 'json-schema-traverse';
 
 type Version = 'draft-04' | 'draft-07';
 const keywords: Record<Version, Set<string>> = {
@@ -115,8 +115,18 @@ function filterRequiredSchema(schema: any): any {
     return result
 }
 
+JSONSchemaFaker.option({
+    alwaysFakeOptionals: true,
+    fillProperties: true,
+    maxItems: 1,
+    renderTitle: true,
+    renderDescription: true,
+    renderComment: true,
+    useDefaultValue: true
+});
+
 function getMockData(schema: any) {
     return JSONSchemaFaker.generate(schema);
 }
 
-export { openAPISchemaToJSONSchema, toVersionedJSONSchema, filterRequiredSchema, getMockData };
+export { filterRequiredSchema, getMockData, openAPISchemaToJSONSchema, toVersionedJSONSchema };
