@@ -53,11 +53,22 @@
 
 	// Form
 	const schema: Schema = {
-		...(lodash.omit(apiResourceSchema, ['$schema', 'properties', 'description']) as any),
-		// title: 'Workspace',
+		// ...(lodash.omit(apiResourceSchema, ['$schema', 'properties', 'description']) as any),
 		properties: {
+			metadata: {
+				...(lodash.omit(lodash.get(apiResourceSchema, 'properties.metadata') as any, [
+					'properties'
+				]) as any),
+				title: 'Metadata',
+				properties: {
+					name: {
+						...(lodash.get(apiResourceSchema, 'properties.metadata.properties.name') as any),
+						title: 'Name'
+					}
+				}
+			},
 			spec: {
-				...(lodash.omit(lodash.get(apiResourceSchema, 'properties.spec'), [
+				...(lodash.omit(lodash.get(apiResourceSchema, 'properties.spec') as any, [
 					'description',
 					'properties'
 				]) as any),
@@ -241,6 +252,11 @@
 	} satisfies UiSchemaRoot;
 
 	const initialValue = {
+		apiVersion: 'tenant.otterscale.io/v1alpha1',
+		kind: 'Workspace',
+		metadata: {
+			name: ''
+		},
 		spec: {
 			namespace: '',
 			resourceQuota: {
@@ -294,14 +310,11 @@
 		}
 	};
 
-	const extraUiOptions = chain(
-		fromRecord({
-			useLabel: false
-		}),
-		fromFactories({})
-	);
-
 	const sections = [
+		{
+			title: 'Name',
+			path: ['metadata', 'name']
+		},
 		{
 			title: 'Namespace',
 			path: ['spec', 'namespace']
@@ -337,6 +350,13 @@
 		setValue(form, temporaryValue);
 		return getValueSnapshot(form);
 	}
+
+	const extraUiOptions = chain(
+		fromRecord({
+			useLabel: false
+		}),
+		fromFactories({})
+	);
 
 	const theme = overrideByRecord(defaults.theme, {
 		// Fields
@@ -493,114 +513,118 @@
 		callback: handleNextSection
 	}}
 />
+<div class="flex gap-4">
+	<!-- <pre><code>{JSON.stringify(schema, null, 2)}</code></pre> -->
+	<pre><code>{JSON.stringify(getValueSnapshot(form), null, 2)}</code></pre>
 
-<Tabs.Root
-	bind:value={mode}
-	class="mx-auto max-w-3xl p-4"
-	onValueChange={async () => {
-		await handleModeChange();
-	}}
->
-	<Item.Root class="h-20 w-full p-0">
-		<Item.Content class="text-left">
-			<!-- Header -->
-			<Item.Title class="text-lg font-bold">Workspace</Item.Title>
-			<Item.Description class="text-sm">
-				{apiResourceSchema.description}
-			</Item.Description>
-		</Item.Content>
-		<Item.Actions>
-			<Tabs.List>
-				<!-- Mode Switcher -->
-				<Tabs.Trigger value="form">
-					<Tooltip.Provider>
-						<Tooltip.Root>
-							<Tooltip.Trigger>
-								<FormIcon />
-							</Tooltip.Trigger>
-							<Tooltip.Content class="flex items-center gap-1">
-								Form
-								<Kbd.Group>
-									<Kbd.Root>ctrl</Kbd.Root>
-									<Kbd.Root>F</Kbd.Root>
-								</Kbd.Group>
-							</Tooltip.Content>
-						</Tooltip.Root>
-					</Tooltip.Provider>
-				</Tabs.Trigger>
-				<Tabs.Trigger value="yaml">
-					<Tooltip.Provider>
-						<Tooltip.Root>
-							<Tooltip.Trigger>
-								<FileCodeCornerIcon />
-							</Tooltip.Trigger>
-							<Tooltip.Content class="flex items-center gap-1">
-								YAML
-								<Kbd.Group>
-									<Kbd.Root>ctrl</Kbd.Root>
-									<Kbd.Root>Y</Kbd.Root>
-								</Kbd.Group>
-							</Tooltip.Content>
-						</Tooltip.Root>
-					</Tooltip.Provider>
-				</Tabs.Trigger>
-			</Tabs.List>
-		</Item.Actions>
-	</Item.Root>
-	<Tabs.Content value="form">
-		<ContextMenu.Root>
-			<ContextMenu.Trigger>
-				<!-- Form -->
-				<Form attributes={{ novalidate: true }}>
-					<Content />
-					<SubmitButton />
-				</Form>
-			</ContextMenu.Trigger>
-			<ContextMenu.Content>
-				<ContextMenu.Group>
-					<ContextMenu.GroupHeading>Navigation</ContextMenu.GroupHeading>
-					<ContextMenu.Separator />
-					{#each sections as section, index}
-						<ContextMenu.Item
-							onclick={() => {
-								handleSectionNavigation(index);
-							}}
-						>
-							<LocateFixedIcon />{section.title}
-							<ContextMenu.Shortcut>
-								{#if activeSectionIndex - 1 === index}
+	<Tabs.Root
+		bind:value={mode}
+		class="mx-auto max-w-3xl p-4"
+		onValueChange={async () => {
+			await handleModeChange();
+		}}
+	>
+		<Item.Root class="h-20 w-full p-0">
+			<Item.Content class="text-left">
+				<!-- Header -->
+				<Item.Title class="text-lg font-bold">Workspace</Item.Title>
+				<Item.Description class="text-sm">
+					{apiResourceSchema.description}
+				</Item.Description>
+			</Item.Content>
+			<Item.Actions>
+				<Tabs.List>
+					<!-- Mode Switcher -->
+					<Tabs.Trigger value="form">
+						<Tooltip.Provider>
+							<Tooltip.Root>
+								<Tooltip.Trigger>
+									<FormIcon />
+								</Tooltip.Trigger>
+								<Tooltip.Content class="flex items-center gap-1">
+									Form
 									<Kbd.Group>
 										<Kbd.Root>ctrl</Kbd.Root>
-										<Kbd.Root>P</Kbd.Root>
+										<Kbd.Root>F</Kbd.Root>
 									</Kbd.Group>
-								{/if}
-								{#if activeSectionIndex + 1 === index}
+								</Tooltip.Content>
+							</Tooltip.Root>
+						</Tooltip.Provider>
+					</Tabs.Trigger>
+					<Tabs.Trigger value="yaml">
+						<Tooltip.Provider>
+							<Tooltip.Root>
+								<Tooltip.Trigger>
+									<FileCodeCornerIcon />
+								</Tooltip.Trigger>
+								<Tooltip.Content class="flex items-center gap-1">
+									YAML
 									<Kbd.Group>
 										<Kbd.Root>ctrl</Kbd.Root>
-										<Kbd.Root>N</Kbd.Root>
+										<Kbd.Root>Y</Kbd.Root>
 									</Kbd.Group>
-								{/if}
-							</ContextMenu.Shortcut>
-						</ContextMenu.Item>
-					{/each}
-				</ContextMenu.Group>
-			</ContextMenu.Content>
-		</ContextMenu.Root>
-	</Tabs.Content>
-	<Tabs.Content value="yaml" class="h-[calc(100vh-7.5rem)]">
-		<!-- YAML -->
-		<Monaco
-			bind:value={yamlValue}
-			options={{
-				automaticLayout: true,
-				language: 'yaml',
-				extraEditorClassName: 'h-full',
-				folding: true,
-				padding: { top: 24 },
-				renderLineHighlight: 'all',
-				theme: themeMode.current === 'dark' ? 'vs-dark' : 'vs-light'
-			}}
-			on:ready={onReady}
-		/>
-	</Tabs.Content>
-</Tabs.Root>
+								</Tooltip.Content>
+							</Tooltip.Root>
+						</Tooltip.Provider>
+					</Tabs.Trigger>
+				</Tabs.List>
+			</Item.Actions>
+		</Item.Root>
+		<Tabs.Content value="form">
+			<ContextMenu.Root>
+				<ContextMenu.Trigger>
+					<!-- Form -->
+					<Form attributes={{ novalidate: true }}>
+						<Content />
+						<SubmitButton />
+					</Form>
+				</ContextMenu.Trigger>
+				<ContextMenu.Content>
+					<ContextMenu.Group>
+						<ContextMenu.GroupHeading>Navigation</ContextMenu.GroupHeading>
+						<ContextMenu.Separator />
+						{#each sections as section, index}
+							<ContextMenu.Item
+								onclick={() => {
+									handleSectionNavigation(index);
+								}}
+							>
+								<LocateFixedIcon />{section.title}
+								<ContextMenu.Shortcut>
+									{#if activeSectionIndex - 1 === index}
+										<Kbd.Group>
+											<Kbd.Root>ctrl</Kbd.Root>
+											<Kbd.Root>P</Kbd.Root>
+										</Kbd.Group>
+									{/if}
+									{#if activeSectionIndex + 1 === index}
+										<Kbd.Group>
+											<Kbd.Root>ctrl</Kbd.Root>
+											<Kbd.Root>N</Kbd.Root>
+										</Kbd.Group>
+									{/if}
+								</ContextMenu.Shortcut>
+							</ContextMenu.Item>
+						{/each}
+					</ContextMenu.Group>
+				</ContextMenu.Content>
+			</ContextMenu.Root>
+		</Tabs.Content>
+		<Tabs.Content value="yaml" class="h-[calc(100vh-7.5rem)]">
+			<!-- YAML -->
+			<Monaco
+				bind:value={yamlValue}
+				options={{
+					automaticLayout: true,
+					language: 'yaml',
+					extraEditorClassName: 'h-full',
+					folding: true,
+					padding: { top: 24 },
+					renderLineHighlight: 'all',
+					theme: themeMode.current === 'dark' ? 'vs-dark' : 'vs-light'
+				}}
+				on:ready={onReady}
+			/>
+		</Tabs.Content>
+	</Tabs.Root>
+</div>
