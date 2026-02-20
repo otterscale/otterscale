@@ -29,10 +29,11 @@ server:
 	onMount(async () => {
 		const monaco = await import('monaco-editor');
 		const editor = monaco.editor.create(container, {
-			value,
+			automaticLayout: true,
 			language: 'yaml',
+			padding: { top: 24 },
 			theme: 'vs-dark',
-			automaticLayout: true
+			value
 		});
 
 		const performValidation = () => {
@@ -127,4 +128,4 @@ server:
 	});
 </script>
 
-<div bind:this={container} class="h-screen w-full"></div>
+<div bind:this={container} class="mx-auto h-screen w-screen max-w-3xl p-4"></div>

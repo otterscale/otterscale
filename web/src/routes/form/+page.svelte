@@ -524,6 +524,7 @@
 				language: 'yaml',
 				extraEditorClassName: 'h-full',
 				folding: true,
+				padding: { top: 24 },
 				renderLineHighlight: 'all',
 				theme: themeMode.current === 'dark' ? 'vs-dark' : 'vs-light'
 			}}
