@@ -1,7 +1,6 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-
 	import { shortcut } from '$lib/actions/shortcut.svelte';
+	import * as ButtonGroup from '$lib/components/ui/button-group/index.js';
 	import * as ContextMenu from '$lib/components/ui/context-menu/index.js';
 	import * as Item from '$lib/components/ui/item';
 	import * as Kbd from '$lib/components/ui/kbd/index.js';
@@ -27,7 +26,7 @@
 	import { chain, fromFactories, fromRecord, overrideByRecord } from '@sjsf/form/lib/resolver';
 	import lodash from 'lodash';
 	import { mode as themeMode } from 'mode-watcher';
-	import { tick } from 'svelte';
+	import { onMount, tick } from 'svelte';
 	import Monaco from 'svelte-monaco';
 	import { schema as data } from './schema';
 
@@ -43,6 +42,7 @@
 		openAPISchemaToJSONSchema,
 		toVersionedJSONSchema
 	} from '$lib/components/dynamic-form/utils.svelte';
+	import Button from '$lib/components/ui/button/button.svelte';
 	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
 	import { FileCodeCornerIcon, FormIcon, LocateFixedIcon } from '@lucide/svelte';
 	import type { SchemaObjectValue, SchemaValue } from '@sjsf/form/core';
@@ -490,8 +490,6 @@
 	}
 
 	// Tab
-	let mode = $state('form');
-
 	async function synchronizeToYAML() {
 		yamlValue = stringify(getValueSnapshot(form));
 	}
@@ -501,23 +499,29 @@
 		setValue(form, parse(yamlValue));
 	}
 
-	async function handleModeChange() {
-		switch (mode) {
-			case 'yaml':
-				await synchronizeToYAML();
-				break;
-			case 'form':
-				await synchronizeToForm();
-				break;
+	let mode = $state('form');
+	async function changeMode(targetMode: string) {
+		try {
+			switch (targetMode) {
+				case 'yaml':
+					await synchronizeToYAML();
+					break;
+				case 'form':
+					await synchronizeToForm();
+					break;
+			}
+			mode = targetMode;
+			toast.success(`Switched to ${mode.toUpperCase()} mode`);
+		} catch (error) {
+			toast.error(
+				`Failed to switch to ${targetMode.toUpperCase()} mode: ${(error as Error).message}`,
+				{
+					duration: 5000,
+					closeButton: true
+				}
+			);
+			return;
 		}
-	}
-	function handleFormModeShortcut() {
-		mode = 'form';
-		handleModeChange();
-	}
-	function handleYAMLModeShortcut() {
-		mode = 'yaml';
-		handleModeChange();
 	}
 
 	setFormContext(form);
@@ -527,12 +531,16 @@
 	use:shortcut={{
 		key: 'f',
 		ctrl: true,
-		callback: handleFormModeShortcut
+		callback: async () => {
+			await changeMode('form');
+		}
 	}}
 	use:shortcut={{
 		key: 'y',
 		ctrl: true,
-		callback: handleYAMLModeShortcut
+		callback: async () => {
+			await changeMode('yaml');
+		}
 	}}
 	use:shortcut={{
 		key: 'p',
@@ -545,13 +553,7 @@
 		callback: handleNextSection
 	}}
 />
-<Tabs.Root
-	bind:value={mode}
-	class="mx-auto max-w-3xl p-4"
-	onValueChange={async () => {
-		await handleModeChange();
-	}}
->
+<Tabs.Root bind:value={mode} class="mx-auto max-w-3xl p-4">
 	<Item.Root class="h-20 w-full p-0">
 		<Item.Content class="text-left">
 			<!-- Header -->
@@ -561,10 +563,15 @@
 			</Item.Description>
 		</Item.Content>
 		<Item.Actions>
-			<Tabs.List>
-				<!-- Mode Switcher -->
-				<Tabs.Trigger value="form">
-					<Tooltip.Provider>
+			<!-- Mode Switcher -->
+			<Tooltip.Provider>
+				<ButtonGroup.Root>
+					<Button
+						size="icon-sm"
+						onclick={async () => {
+							await changeMode('form');
+						}}
+					>
 						<Tooltip.Root>
 							<Tooltip.Trigger>
 								<FormIcon />
@@ -577,10 +584,13 @@
 								</Kbd.Group>
 							</Tooltip.Content>
 						</Tooltip.Root>
-					</Tooltip.Provider>
-				</Tabs.Trigger>
-				<Tabs.Trigger value="yaml">
-					<Tooltip.Provider>
+					</Button>
+					<Button
+						size="icon-sm"
+						onclick={async () => {
+							await changeMode('yaml');
+						}}
+					>
 						<Tooltip.Root>
 							<Tooltip.Trigger>
 								<FileCodeCornerIcon />
@@ -593,9 +603,9 @@
 								</Kbd.Group>
 							</Tooltip.Content>
 						</Tooltip.Root>
-					</Tooltip.Provider>
-				</Tabs.Trigger>
-			</Tabs.List>
+					</Button>
+				</ButtonGroup.Root>
+			</Tooltip.Provider>
 		</Item.Actions>
 	</Item.Root>
 	<Tabs.Content value="form">
