@@ -6,4 +6,4 @@ import (
 
 // ProviderSet is the Wire provider set for ConnectRPC service handlers
 // and the raw HTTP manifest handler.
-var ProviderSet = wire.NewSet(NewFleetService, NewResourceService, NewRuntimeService, NewManifestHandler)
+var ProviderSet = wire.NewSet(NewLinkService, NewResourceService, NewRuntimeService, NewManifestHandler)

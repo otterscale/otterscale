@@ -51,20 +51,20 @@ type TunnelProvider interface {
 	// agents can verify the tunnel server and the server can
 	// configure mTLS.
 	CACertPEM() []byte
-	// ListClusters returns the names of all registered clusters.
-	ListClusters() map[string]Cluster
-	// RegisterCluster validates and signs the agent's CSR, creates
+	// ListLinks returns the names of all registered clusters.
+	ListLinks() map[string]Link
+	// RegisterLink validates and signs the agent's CSR, creates
 	// a tunnel user, and returns the allocated endpoint together
 	// with the PEM-encoded signed certificate.
-	RegisterCluster(ctx context.Context, cluster, agentID, agentVersion string, csrPEM []byte) (endpoint string, certPEM []byte, err error)
+	RegisterLink(ctx context.Context, cluster, agentID, agentVersion string, csrPEM []byte) (endpoint string, certPEM []byte, err error)
 	// ResolveAddress returns the HTTP base URL for the given cluster.
 	ResolveAddress(ctx context.Context, cluster string) (string, error)
 }
 
 // TunnelConsumer is the agent-side abstraction for registering with
-// the fleet server and obtaining tunnel credentials via CSR/mTLS.
+// the link server and obtaining tunnel credentials via CSR/mTLS.
 type TunnelConsumer interface {
-	// Register calls the fleet API with a CSR and returns the
+	// Register calls the link API with a CSR and returns the
 	// signed certificate, CA certificate, tunnel endpoint, and the
 	// private key that corresponds to the CSR. Returning the key
 	// alongside the certificate eliminates the TOCTOU race that
@@ -73,7 +73,7 @@ type TunnelConsumer interface {
 }
 
 // Registration holds the credentials and connection details returned
-// by the fleet server after a successful CSR-based registration.
+// by the link server after a successful CSR-based registration.
 type Registration struct {
 	// Endpoint is the tunnel endpoint the agent should connect to.
 	Endpoint string
@@ -100,7 +100,7 @@ type Registration struct {
 
 // Cluster holds the per-cluster tunnel state: the allocated
 // loopback host and the chisel user name.
-type Cluster struct {
+type Link struct {
 	Host         string // unique 127.x.x.x loopback address
 	User         string // chisel user name
 	AgentVersion string // agent binary version
@@ -138,10 +138,10 @@ type ManifestRenderer interface {
 	RenderAgentManifest(params *ManifestParams) (string, error)
 }
 
-// FleetUseCase orchestrates cluster registration on the server side.
+// LinkUseCase orchestrates cluster registration on the server side.
 // It delegates CSR signing and tunnel setup to the TunnelProvider,
 // and token management to the ManifestTokenIssuer.
-type FleetUseCase struct {
+type LinkUseCase struct {
 	tunnel      TunnelProvider
 	version     Version
 	manifestCfg AgentManifestConfig
@@ -149,13 +149,13 @@ type FleetUseCase struct {
 	tokenIssuer *ManifestTokenIssuer
 }
 
-// NewFleetUseCase returns a FleetUseCase backed by the given
+// NewLinkUseCase returns a LinkUseCase backed by the given
 // TunnelProvider. version is the server binary version, included in
 // registration responses so agents can detect mismatches.
 // manifestCfg provides the external URLs embedded in generated agent
 // installation manifests. It returns an error if any required
 // manifest configuration field is missing.
-func NewFleetUseCase(tunnel TunnelProvider, version Version, manifestCfg AgentManifestConfig, renderer ManifestRenderer) (*FleetUseCase, error) {
+func NewLinkUseCase(tunnel TunnelProvider, version Version, manifestCfg AgentManifestConfig, renderer ManifestRenderer) (*LinkUseCase, error) {
 	if manifestCfg.ServerURL == "" {
 		return nil, fmt.Errorf("manifest config: server URL is required")
 	}
@@ -166,7 +166,7 @@ func NewFleetUseCase(tunnel TunnelProvider, version Version, manifestCfg AgentMa
 	if err != nil {
 		return nil, err
 	}
-	return &FleetUseCase{
+	return &LinkUseCase{
 		tunnel:      tunnel,
 		version:     version,
 		manifestCfg: manifestCfg,
@@ -175,15 +175,15 @@ func NewFleetUseCase(tunnel TunnelProvider, version Version, manifestCfg AgentMa
 	}, nil
 }
 
-// ListClusters returns the names of all currently registered clusters.
-func (uc *FleetUseCase) ListClusters(_ context.Context) map[string]Cluster {
-	return uc.tunnel.ListClusters()
+// ListLinks returns the names of all currently registered clusters.
+func (uc *LinkUseCase) ListLinks(_ context.Context) map[string]Link {
+	return uc.tunnel.ListLinks()
 }
 
 // RegisterCluster validates the inputs, forwards the agent's CSR to
 // the tunnel provider for signing, and returns the signed certificate,
 // CA certificate, tunnel endpoint, and the server's version.
-func (uc *FleetUseCase) RegisterCluster(ctx context.Context, cluster, agentID, agentVersion string, csrPEM []byte) (Registration, error) {
+func (uc *LinkUseCase) RegisterCluster(ctx context.Context, cluster, agentID, agentVersion string, csrPEM []byte) (Registration, error) {
 	if err := ValidateClusterName(cluster); err != nil {
 		return Registration{}, err
 	}
@@ -194,7 +194,7 @@ func (uc *FleetUseCase) RegisterCluster(ctx context.Context, cluster, agentID, a
 		return Registration{}, &ErrInvalidInput{Field: "csr", Message: "must not be empty"}
 	}
 
-	endpoint, certPEM, err := uc.tunnel.RegisterCluster(ctx, cluster, agentID, agentVersion, csrPEM)
+	endpoint, certPEM, err := uc.tunnel.RegisterLink(ctx, cluster, agentID, agentVersion, csrPEM)
 	if err != nil {
 		return Registration{}, err
 	}
@@ -210,12 +210,12 @@ func (uc *FleetUseCase) RegisterCluster(ctx context.Context, cluster, agentID, a
 // cluster name and user identity, and returns a full URL that serves
 // the agent manifest as raw YAML. The token is valid for
 // manifestTokenTTL.
-func (uc *FleetUseCase) IssueManifestURL(_ context.Context, cluster, userName string) (string, error) {
+func (uc *LinkUseCase) IssueManifestURL(_ context.Context, cluster, userName string) (string, error) {
 	token, err := uc.tokenIssuer.Issue(cluster, userName)
 	if err != nil {
 		return "", fmt.Errorf("issue manifest token: %w", err)
 	}
-	return strings.TrimRight(uc.manifestCfg.ServerURL, "/") + "/fleet/manifest/" + token, nil
+	return strings.TrimRight(uc.manifestCfg.ServerURL, "/") + "/link/manifest/" + token, nil
 }
 
 // VerifyManifestToken validates the HMAC signature and expiry of a
@@ -223,7 +223,7 @@ func (uc *FleetUseCase) IssueManifestURL(_ context.Context, cluster, userName st
 // identity. All verification failures return a generic error to
 // avoid leaking which stage failed; detailed reasons are logged at
 // debug level.
-func (uc *FleetUseCase) VerifyManifestToken(_ context.Context, token string) (cluster, userName string, err error) {
+func (uc *LinkUseCase) VerifyManifestToken(_ context.Context, token string) (cluster, userName string, err error) {
 	cluster, userName, err = uc.tokenIssuer.Verify(token)
 	if err != nil {
 		slog.Debug("manifest token verification failed", "error", err)
@@ -237,7 +237,7 @@ func (uc *FleetUseCase) VerifyManifestToken(_ context.Context, token string) (cl
 // The manifest includes a Namespace, ServiceAccount,
 // ClusterRoleBinding (binding userName to cluster-admin), and a
 // Deployment that runs the agent with the correct server/tunnel URLs.
-func (uc *FleetUseCase) GenerateAgentManifest(_ context.Context, cluster, userName string) (string, error) {
+func (uc *LinkUseCase) GenerateAgentManifest(_ context.Context, cluster, userName string) (string, error) {
 	if err := ValidateClusterName(cluster); err != nil {
 		return "", err
 	}

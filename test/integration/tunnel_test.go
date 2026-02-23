@@ -14,12 +14,12 @@ import (
 	tunneltransport "github.com/otterscale/otterscale/internal/transport/tunnel"
 )
 
-func TestFleetRegisterClusterUsesSingleSharedTunnelPort(t *testing.T) {
+func TestLinkRegisterClusterUsesSingleSharedTunnelPort(t *testing.T) {
 	tunnel := newTestTunnel(t)
 	initTunnelServer(t, tunnel)
-	fleet, err := core.NewFleetUseCase(tunnel, "test", testManifestConfig(), manifest.NewRenderer())
+	link, err := core.NewLinkUseCase(tunnel, "test", testManifestConfig(), manifest.NewRenderer())
 	if err != nil {
-		t.Fatalf("create fleet use case: %v", err)
+		t.Fatalf("create link use case: %v", err)
 	}
 
 	csrA := generateCSR(t, "agent-a")
@@ -27,11 +27,11 @@ func TestFleetRegisterClusterUsesSingleSharedTunnelPort(t *testing.T) {
 
 	ctx := context.Background()
 
-	regA, err := fleet.RegisterCluster(ctx, "cluster-a", "agent-a", "test", csrA)
+	regA, err := link.RegisterCluster(ctx, "cluster-a", "agent-a", "test", csrA)
 	if err != nil {
 		t.Fatalf("register cluster-a: %v", err)
 	}
-	regB, err := fleet.RegisterCluster(ctx, "cluster-b", "agent-b", "test", csrB)
+	regB, err := link.RegisterCluster(ctx, "cluster-b", "agent-b", "test", csrB)
 	if err != nil {
 		t.Fatalf("register cluster-b: %v", err)
 	}
@@ -64,12 +64,12 @@ func TestFleetRegisterClusterUsesSingleSharedTunnelPort(t *testing.T) {
 	}
 }
 
-func TestFleetRegisterClusterLatestAgentWinsForSameCluster(t *testing.T) {
+func TestLinkRegisterClusterLatestAgentWinsForSameCluster(t *testing.T) {
 	tunnel := newTestTunnel(t)
 	initTunnelServer(t, tunnel)
-	fleet, err := core.NewFleetUseCase(tunnel, "test", testManifestConfig(), manifest.NewRenderer())
+	link, err := core.NewLinkUseCase(tunnel, "test", testManifestConfig(), manifest.NewRenderer())
 	if err != nil {
-		t.Fatalf("create fleet use case: %v", err)
+		t.Fatalf("create link use case: %v", err)
 	}
 
 	csr1 := generateCSR(t, "agent-r-1")
@@ -77,11 +77,11 @@ func TestFleetRegisterClusterLatestAgentWinsForSameCluster(t *testing.T) {
 
 	ctx := context.Background()
 
-	_, err = fleet.RegisterCluster(ctx, "cluster-r", "agent-r-1", "test", csr1)
+	_, err = link.RegisterCluster(ctx, "cluster-r", "agent-r-1", "test", csr1)
 	if err != nil {
 		t.Fatalf("register agent-r-1: %v", err)
 	}
-	reg2, err := fleet.RegisterCluster(ctx, "cluster-r", "agent-r-2", "test", csr2)
+	reg2, err := link.RegisterCluster(ctx, "cluster-r", "agent-r-2", "test", csr2)
 	if err != nil {
 		t.Fatalf("register agent-r-2: %v", err)
 	}
@@ -97,18 +97,18 @@ func TestFleetRegisterClusterLatestAgentWinsForSameCluster(t *testing.T) {
 	}
 
 	// Only one cluster should be registered.
-	clusters := tunnel.ListClusters()
-	if len(clusters) != 1 || slices.Collect(maps.Keys(clusters))[0] != "cluster-r" {
-		t.Fatalf("expected exactly one cluster 'cluster-r', got %v", clusters)
+	links := tunnel.ListLinks()
+	if len(links) != 1 || slices.Collect(maps.Keys(links))[0] != "cluster-r" {
+		t.Fatalf("expected exactly one cluster 'cluster-r', got %v", links)
 	}
 }
 
-func TestFleetRegisterClusterReregisterAndReplaceAcrossAgents(t *testing.T) {
+func TestLinkRegisterClusterReregisterAndReplaceAcrossAgents(t *testing.T) {
 	tunnel := newTestTunnel(t)
 	initTunnelServer(t, tunnel)
-	fleet, err := core.NewFleetUseCase(tunnel, "test", testManifestConfig(), manifest.NewRenderer())
+	link, err := core.NewLinkUseCase(tunnel, "test", testManifestConfig(), manifest.NewRenderer())
 	if err != nil {
-		t.Fatalf("create fleet use case: %v", err)
+		t.Fatalf("create link use case: %v", err)
 	}
 
 	csrA := generateCSR(t, "agent-a")
@@ -116,12 +116,12 @@ func TestFleetRegisterClusterReregisterAndReplaceAcrossAgents(t *testing.T) {
 
 	ctx := context.Background()
 
-	regA1, err := fleet.RegisterCluster(ctx, "cluster-z", "agent-a", "test", csrA)
+	regA1, err := link.RegisterCluster(ctx, "cluster-z", "agent-a", "test", csrA)
 	if err != nil {
 		t.Fatalf("register agent-a #1: %v", err)
 	}
 
-	regB, err := fleet.RegisterCluster(ctx, "cluster-z", "agent-b", "test", csrB)
+	regB, err := link.RegisterCluster(ctx, "cluster-z", "agent-b", "test", csrB)
 	if err != nil {
 		t.Fatalf("register agent-b: %v", err)
 	}
@@ -136,7 +136,7 @@ func TestFleetRegisterClusterReregisterAndReplaceAcrossAgents(t *testing.T) {
 		t.Fatalf("expected resolve to point to agent-b endpoint %q, got %q", regB.Endpoint, addrB)
 	}
 
-	regA2, err := fleet.RegisterCluster(ctx, "cluster-z", "agent-a", "test", csrA)
+	regA2, err := link.RegisterCluster(ctx, "cluster-z", "agent-a", "test", csrA)
 	if err != nil {
 		t.Fatalf("register agent-a #2: %v", err)
 	}

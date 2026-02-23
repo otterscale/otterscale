@@ -68,20 +68,20 @@ func atomicWriteFile(path string, data []byte, perm os.FileMode) error {
 
 	if _, err := tmp.Write(data); err != nil {
 		tmp.Close()
-		os.Remove(tmpPath)
+		os.Remove(tmpPath) //nolint:gosec // G703: tmpPath is from os.CreateTemp, not user input.
 		return fmt.Errorf("write temp file: %w", err)
 	}
 	if err := tmp.Chmod(perm); err != nil {
 		tmp.Close()
-		os.Remove(tmpPath)
+		os.Remove(tmpPath) //nolint:gosec // G703: tmpPath is from os.CreateTemp, not user input.
 		return fmt.Errorf("chmod temp file: %w", err)
 	}
 	if err := tmp.Close(); err != nil {
-		os.Remove(tmpPath)
+		os.Remove(tmpPath) //nolint:gosec // G703: tmpPath is from os.CreateTemp, not user input.
 		return fmt.Errorf("close temp file: %w", err)
 	}
-	if err := os.Rename(tmpPath, path); err != nil {
-		os.Remove(tmpPath)
+	if err := os.Rename(tmpPath, path); err != nil { //nolint:gosec // G703: both paths are derived from config, not user input.
+		os.Remove(tmpPath) //nolint:gosec // G703: tmpPath is from os.CreateTemp, not user input.
 		return fmt.Errorf("rename temp file: %w", err)
 	}
 	return nil

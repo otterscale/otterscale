@@ -7,7 +7,8 @@ import (
 	"fmt"
 	"net"
 
-	fleetv1 "github.com/otterscale/otterscale/api/fleet/v1/pbconnect"
+	linkv1 "github.com/otterscale/api/link/v1"
+
 	"github.com/otterscale/otterscale/internal/transport"
 	"github.com/otterscale/otterscale/internal/transport/http"
 )
@@ -46,7 +47,7 @@ func NewServer(handler *Handler, tunnel transport.TunnelService, background Back
 
 // Run starts both the HTTP and tunnel servers. It blocks until ctx
 // is canceled or an unrecoverable error occurs. Health, reflection,
-// and fleet-registration endpoints are marked as public (no auth).
+// and link-registration endpoints are marked as public (no auth).
 func (s *Server) Run(ctx context.Context, cfg *Config) error {
 	if cfg.KeycloakRealmURL == "" {
 		return fmt.Errorf("keycloak realm URL is required but not configured")
@@ -73,10 +74,10 @@ func (s *Server) Run(ctx context.Context, cfg *Config) error {
 			"/grpc.health.v1.Health/Check",
 			"/grpc.health.v1.Health/Watch",
 			"/grpc.reflection.v1.ServerReflection/ServerReflectionInfo",
-			fleetv1.FleetServiceRegisterProcedure,
+			linkv1.LinkServiceRegisterProcedure,
 		}),
 		http.WithPublicPathPrefixes([]string{
-			"/fleet/manifest/",
+			"/link/manifest/",
 		}),
 		http.WithMount(s.handler.Mount),
 	)

@@ -9,7 +9,7 @@ import (
 
 // mockTunnelProvider implements TunnelProvider for testing.
 type mockTunnelProvider struct {
-	clusters    map[string]Cluster
+	links       map[string]Link
 	caCertPEM   []byte
 	regEndpoint string
 	regCertPEM  []byte
@@ -17,14 +17,14 @@ type mockTunnelProvider struct {
 }
 
 func (m *mockTunnelProvider) CACertPEM() []byte { return m.caCertPEM }
-func (m *mockTunnelProvider) ListClusters() map[string]Cluster {
-	if m.clusters == nil {
-		return map[string]Cluster{}
+func (m *mockTunnelProvider) ListLinks() map[string]Link {
+	if m.links == nil {
+		return map[string]Link{}
 	}
-	return m.clusters
+	return m.links
 }
 
-func (m *mockTunnelProvider) RegisterCluster(_ context.Context, _, _, _ string, _ []byte) (endpoint string, certPEM []byte, err error) {
+func (m *mockTunnelProvider) RegisterLink(_ context.Context, _, _, _ string, _ []byte) (endpoint string, certPEM []byte, err error) {
 	return m.regEndpoint, m.regCertPEM, m.regErr
 }
 
@@ -42,7 +42,7 @@ func (m *mockManifestRenderer) RenderAgentManifest(_ *ManifestParams) (string, e
 	return m.result, m.err
 }
 
-func testFleetConfig() AgentManifestConfig {
+func testLinkConfig() AgentManifestConfig {
 	return AgentManifestConfig{
 		ServerURL: "https://server.example.com",
 		TunnelURL: "https://tunnel.example.com:8300",
@@ -50,16 +50,16 @@ func testFleetConfig() AgentManifestConfig {
 	}
 }
 
-func newTestFleetUseCase(t *testing.T, tp TunnelProvider, renderer ManifestRenderer) *FleetUseCase {
+func newTestLinkUseCase(t *testing.T, tp TunnelProvider, renderer ManifestRenderer) *LinkUseCase {
 	t.Helper()
-	uc, err := NewFleetUseCase(tp, "v1.0.0", testFleetConfig(), renderer)
+	uc, err := NewLinkUseCase(tp, "v1.0.0", testLinkConfig(), renderer)
 	if err != nil {
-		t.Fatalf("NewFleetUseCase: %v", err)
+		t.Fatalf("NewLinkUseCase: %v", err)
 	}
 	return uc
 }
 
-func TestNewFleetUseCase_ValidationErrors(t *testing.T) {
+func TestNewLinkUseCase_ValidationErrors(t *testing.T) {
 	tp := &mockTunnelProvider{}
 	renderer := &mockManifestRenderer{}
 
@@ -87,7 +87,7 @@ func TestNewFleetUseCase_ValidationErrors(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, err := NewFleetUseCase(tp, "v1.0.0", tt.cfg, renderer)
+			_, err := NewLinkUseCase(tp, "v1.0.0", tt.cfg, renderer)
 			if err == nil {
 				t.Fatal("expected error, got nil")
 			}
@@ -98,23 +98,23 @@ func TestNewFleetUseCase_ValidationErrors(t *testing.T) {
 	}
 }
 
-func TestFleetUseCase_ListClusters(t *testing.T) {
-	clusters := map[string]Cluster{
+func TestLinkUseCase_ListLinks(t *testing.T) {
+	links := map[string]Link{
 		"prod": {Host: "127.0.0.1", AgentVersion: "v1"},
 		"dev":  {Host: "127.0.0.2", AgentVersion: "v2"},
 	}
-	tp := &mockTunnelProvider{clusters: clusters}
-	uc := newTestFleetUseCase(t, tp, &mockManifestRenderer{})
+	tp := &mockTunnelProvider{links: links}
+	uc := newTestLinkUseCase(t, tp, &mockManifestRenderer{})
 
-	got := uc.ListClusters(context.Background())
+	got := uc.ListLinks(context.Background())
 	if len(got) != 2 {
 		t.Fatalf("expected 2 clusters, got %d", len(got))
 	}
 }
 
-func TestFleetUseCase_RegisterCluster_Validation(t *testing.T) {
+func TestLinkUseCase_RegisterCluster_Validation(t *testing.T) {
 	tp := &mockTunnelProvider{regEndpoint: "127.0.0.1:8080", regCertPEM: []byte("cert")}
-	uc := newTestFleetUseCase(t, tp, &mockManifestRenderer{})
+	uc := newTestLinkUseCase(t, tp, &mockManifestRenderer{})
 	ctx := context.Background()
 
 	tests := []struct {
@@ -148,13 +148,13 @@ func TestFleetUseCase_RegisterCluster_Validation(t *testing.T) {
 	}
 }
 
-func TestFleetUseCase_RegisterCluster_Success(t *testing.T) {
+func TestLinkUseCase_RegisterCluster_Success(t *testing.T) {
 	tp := &mockTunnelProvider{
 		regEndpoint: "127.0.0.1:8080",
 		regCertPEM:  []byte("signed-cert"),
 		caCertPEM:   []byte("ca-cert"),
 	}
-	uc := newTestFleetUseCase(t, tp, &mockManifestRenderer{})
+	uc := newTestLinkUseCase(t, tp, &mockManifestRenderer{})
 
 	reg, err := uc.RegisterCluster(context.Background(), "my-cluster", "agent-1", "v1", []byte("csr-data"))
 	if err != nil {
@@ -174,9 +174,9 @@ func TestFleetUseCase_RegisterCluster_Success(t *testing.T) {
 	}
 }
 
-func TestFleetUseCase_ManifestToken_IssueAndVerify(t *testing.T) {
+func TestLinkUseCase_ManifestToken_IssueAndVerify(t *testing.T) {
 	tp := &mockTunnelProvider{}
-	uc := newTestFleetUseCase(t, tp, &mockManifestRenderer{})
+	uc := newTestLinkUseCase(t, tp, &mockManifestRenderer{})
 	ctx := context.Background()
 
 	url, err := uc.IssueManifestURL(ctx, "test-cluster", "user@example.com")
@@ -185,7 +185,7 @@ func TestFleetUseCase_ManifestToken_IssueAndVerify(t *testing.T) {
 	}
 
 	// Extract token from URL.
-	parts := strings.SplitN(url, "/fleet/manifest/", 2)
+	parts := strings.SplitN(url, "/link/manifest/", 2)
 	if len(parts) != 2 || parts[1] == "" {
 		t.Fatalf("unexpected URL format: %q", url)
 	}
@@ -203,9 +203,9 @@ func TestFleetUseCase_ManifestToken_IssueAndVerify(t *testing.T) {
 	}
 }
 
-func TestFleetUseCase_VerifyManifestToken_MalformedToken(t *testing.T) {
+func TestLinkUseCase_VerifyManifestToken_MalformedToken(t *testing.T) {
 	tp := &mockTunnelProvider{}
-	uc := newTestFleetUseCase(t, tp, &mockManifestRenderer{})
+	uc := newTestLinkUseCase(t, tp, &mockManifestRenderer{})
 	ctx := context.Background()
 
 	tests := []struct {
@@ -228,9 +228,9 @@ func TestFleetUseCase_VerifyManifestToken_MalformedToken(t *testing.T) {
 	}
 }
 
-func TestFleetUseCase_VerifyManifestToken_TamperedSignature(t *testing.T) {
+func TestLinkUseCase_VerifyManifestToken_TamperedSignature(t *testing.T) {
 	tp := &mockTunnelProvider{}
-	uc := newTestFleetUseCase(t, tp, &mockManifestRenderer{})
+	uc := newTestLinkUseCase(t, tp, &mockManifestRenderer{})
 	ctx := context.Background()
 
 	url, err := uc.IssueManifestURL(ctx, "test-cluster", "user@example.com")
@@ -238,7 +238,7 @@ func TestFleetUseCase_VerifyManifestToken_TamperedSignature(t *testing.T) {
 		t.Fatalf("IssueManifestURL: %v", err)
 	}
 
-	parts := strings.SplitN(url, "/fleet/manifest/", 2)
+	parts := strings.SplitN(url, "/link/manifest/", 2)
 	token := parts[1]
 
 	// Tamper with the signature.
@@ -254,10 +254,10 @@ func TestFleetUseCase_VerifyManifestToken_TamperedSignature(t *testing.T) {
 	}
 }
 
-func TestFleetUseCase_GenerateAgentManifest_Validation(t *testing.T) {
+func TestLinkUseCase_GenerateAgentManifest_Validation(t *testing.T) {
 	tp := &mockTunnelProvider{}
 	renderer := &mockManifestRenderer{result: "manifest-yaml"}
-	uc := newTestFleetUseCase(t, tp, renderer)
+	uc := newTestLinkUseCase(t, tp, renderer)
 	ctx := context.Background()
 
 	tests := []struct {
@@ -281,10 +281,10 @@ func TestFleetUseCase_GenerateAgentManifest_Validation(t *testing.T) {
 	}
 }
 
-func TestFleetUseCase_GenerateAgentManifest_Success(t *testing.T) {
+func TestLinkUseCase_GenerateAgentManifest_Success(t *testing.T) {
 	tp := &mockTunnelProvider{}
 	renderer := &mockManifestRenderer{result: "---\napiVersion: v1\nkind: Namespace"}
-	uc := newTestFleetUseCase(t, tp, renderer)
+	uc := newTestLinkUseCase(t, tp, renderer)
 
 	manifest, err := uc.GenerateAgentManifest(context.Background(), "my-cluster", "admin@example.com")
 	if err != nil {

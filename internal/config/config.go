@@ -143,7 +143,7 @@ func (c *Config) AgentCluster() string {
 	return c.v.GetString(keyAgentCluster)
 }
 
-// AgentServerURL returns the fleet server URL the agent registers
+// AgentServerURL returns the link server URL the agent registers
 // against.
 func (c *Config) AgentServerURL() string {
 	return c.v.GetString(keyAgentServerURL)

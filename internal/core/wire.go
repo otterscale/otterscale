@@ -6,7 +6,7 @@ import (
 
 // ProviderSet is the Wire provider set for all domain use-cases.
 var ProviderSet = wire.NewSet(
-	NewFleetUseCase,
+	NewLinkUseCase,
 	NewResourceUseCase,
 	NewRuntimeUseCase,
 	NewSessionStore,

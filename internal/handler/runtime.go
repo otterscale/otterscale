@@ -11,8 +11,8 @@ import (
 	"connectrpc.com/connect"
 	"google.golang.org/protobuf/types/known/emptypb"
 
-	pb "github.com/otterscale/otterscale/api/runtime/v1"
-	"github.com/otterscale/otterscale/api/runtime/v1/pbconnect"
+	pb "github.com/otterscale/api/runtime/v1"
+
 	"github.com/otterscale/otterscale/internal/core"
 )
 
@@ -23,7 +23,7 @@ const streamChunkSize = 32 * 1024
 // Kubernetes runtime operations (logs, exec, port-forward, scale,
 // restart) through the tunnel.
 type RuntimeService struct {
-	pbconnect.UnimplementedRuntimeServiceHandler
+	pb.UnimplementedRuntimeServiceHandler
 
 	runtime *core.RuntimeUseCase
 }
@@ -34,7 +34,7 @@ func NewRuntimeService(runtime *core.RuntimeUseCase) *RuntimeService {
 	return &RuntimeService{runtime: runtime}
 }
 
-var _ pbconnect.RuntimeServiceHandler = (*RuntimeService)(nil)
+var _ pb.RuntimeServiceHandler = (*RuntimeService)(nil)
 
 // ---------------------------------------------------------------------------
 // PodLog

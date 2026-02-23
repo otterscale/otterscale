@@ -15,9 +15,10 @@ import (
 
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 
-	fleetv1 "github.com/otterscale/otterscale/api/fleet/v1/pbconnect"
-	resourcev1 "github.com/otterscale/otterscale/api/resource/v1/pbconnect"
-	runtimev1 "github.com/otterscale/otterscale/api/runtime/v1/pbconnect"
+	linkv1 "github.com/otterscale/api/link/v1"
+	resourcev1 "github.com/otterscale/api/resource/v1"
+	runtimev1 "github.com/otterscale/api/runtime/v1"
+
 	"github.com/otterscale/otterscale/internal/handler"
 )
 
@@ -25,7 +26,7 @@ import (
 // interceptors, and operational endpoints (health, reflection,
 // metrics) onto an HTTP mux.
 type Handler struct {
-	fleet    *handler.FleetService
+	link     *handler.LinkService
 	resource *handler.ResourceService
 	runtime  *handler.RuntimeService
 	manifest *handler.ManifestHandler
@@ -33,9 +34,9 @@ type Handler struct {
 
 // NewHandler returns a Handler for the given gRPC services and the
 // raw HTTP manifest handler.
-func NewHandler(fleet *handler.FleetService, resource *handler.ResourceService, runtime *handler.RuntimeService, manifest *handler.ManifestHandler) *Handler {
+func NewHandler(link *handler.LinkService, resource *handler.ResourceService, runtime *handler.RuntimeService, manifest *handler.ManifestHandler) *Handler {
 	return &Handler{
-		fleet:    fleet,
+		link:     link,
 		resource: resource,
 		runtime:  runtime,
 		manifest: manifest,
@@ -57,7 +58,7 @@ func (h *Handler) Mount(mux *http.ServeMux) error {
 
 	// Operational endpoints: gRPC reflection, health checks, Prometheus.
 	services := []string{
-		fleetv1.FleetServiceName,
+		linkv1.LinkServiceName,
 		resourcev1.ResourceServiceName,
 		runtimev1.RuntimeServiceName,
 	}
@@ -70,14 +71,14 @@ func (h *Handler) Mount(mux *http.ServeMux) error {
 	// RPCs with idempotency_level = NO_SIDE_EFFECTS (e.g. GetAgentManifest)
 	// automatically accept HTTP GET requests via the generated
 	// connect.WithIdempotency(connect.IdempotencyNoSideEffects) option.
-	mux.Handle(fleetv1.NewFleetServiceHandler(h.fleet, interceptors))
+	mux.Handle(linkv1.NewLinkServiceHandler(h.link, interceptors))
 	mux.Handle(resourcev1.NewResourceServiceHandler(h.resource, interceptors))
 	mux.Handle(runtimev1.NewRuntimeServiceHandler(h.runtime, interceptors))
 
 	// Raw YAML endpoint for kubectl apply -f. Authentication is
 	// handled by the HMAC token embedded in the URL path, so this
 	// route is registered as a public path prefix in server.go.
-	mux.HandleFunc("GET /fleet/manifest/{token}", h.handleRawManifest)
+	mux.HandleFunc("GET /link/manifest/{token}", h.handleRawManifest)
 
 	return nil
 }
@@ -97,13 +98,13 @@ func (h *Handler) handleRawManifest(w http.ResponseWriter, r *http.Request) {
 
 	manifest, err := h.manifest.RenderManifest(r.Context(), cluster, userName)
 	if err != nil {
-		slog.Debug("manifest render failed", "cluster", cluster, "user", userName, "error", err)
+		slog.Debug("manifest render failed", "cluster", cluster, "user", userName, "error", err) //nolint:gosec // G706: cluster and userName are extracted from an HMAC-verified token, not raw user input.
 		http.Error(w, "failed to render manifest", http.StatusInternalServerError)
 		return
 	}
 
 	w.Header().Set("Content-Type", "text/yaml; charset=utf-8")
-	if _, err := w.Write([]byte(manifest)); err != nil {
+	if _, err := w.Write([]byte(manifest)); err != nil { //nolint:gosec // G705: manifest is server-rendered YAML served as text/yaml, not user-controlled HTML.
 		slog.Warn("failed to write manifest response", "error", err)
 	}
 }
