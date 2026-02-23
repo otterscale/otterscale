@@ -1,6 +1,4 @@
 VERSION=$(shell git describe --tags --always)
-PROTO_FILES=$(shell find api -name *.proto -not -path api/api.proto)
-TEST_FILES=$(shell go list ./... | grep -v /api/)
 
 FLUX2_VERSION := v2.4.0
 OTTERSCALE_OPERATOR_VERSION := v0.2.6
@@ -20,31 +18,12 @@ vet:
 .PHONY: test
 # test code
 test:
-	go test -v -coverprofile=coverage.txt $(TEST_FILES)
+	go test -v -coverprofile=coverage.txt ./...
 
 .PHONY: lint
 # lint code
 lint:
 	golangci-lint run
-
-.PHONY: proto
-# generate *.pb.go
-proto:
-	protoc -I=. -I=third_party -I=third_party/gnostic \
-		--go_out=paths=source_relative:. \
-		--go_opt=default_api_level=API_OPAQUE \
-		--connect-go_out=paths=source_relative:. \
-		--connect-go_opt=simple \
-		$(PROTO_FILES)
-
-.PHONY: openapi
-# generate openapi.yaml
-openapi:
-	protoc -I=. -I=third_party -I=third_party/gnostic \
-		--connect-openapi_out=api \
-		--connect-openapi_opt=path=openapi.yaml,short-operation-ids,short-service-tags \
-		api/api.proto \
-		$(PROTO_FILES)
 
 .PHONY: bootstrap-manifests
 # download bootstrap manifests (FluxCD + otterscale-operator)
