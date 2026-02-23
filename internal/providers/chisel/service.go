@@ -39,8 +39,8 @@ type Service struct {
 	log    *slog.Logger
 	addrs  *addressAllocator
 
-	mu       sync.RWMutex
-	clusters map[string]core.Cluster // cluster name -> tunnel state
+	mu    sync.RWMutex
+	links map[string]core.Link // cluster name -> tunnel state
 }
 
 // NewService returns a new Service backed by chisel. The CA is
@@ -50,10 +50,10 @@ type Service struct {
 // transport layer; see tunnel.NewServer.
 func NewService(ca *pki.CA) *Service {
 	return &Service{
-		ca:       ca,
-		log:      slog.Default().With("component", "tunnel-provider"),
-		addrs:    newAddressAllocator(),
-		clusters: make(map[string]core.Cluster),
+		ca:    ca,
+		log:   slog.Default().With("component", "tunnel-provider"),
+		addrs: newAddressAllocator(),
+		links: make(map[string]core.Link),
 	}
 }
 
@@ -80,15 +80,15 @@ func (s *Service) CACertPEM() []byte {
 	return s.ca.CertPEM()
 }
 
-// ListClusters returns the names of all currently registered clusters.
-func (s *Service) ListClusters() map[string]core.Cluster {
+// ListLinks returns the names of all currently registered links.
+func (s *Service) ListLinks() map[string]core.Link {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
 
-	return maps.Clone(s.clusters)
+	return maps.Clone(s.links)
 }
 
-// RegisterCluster validates and signs the agent's CSR, associates a
+// RegisterLink validates and signs the agent's CSR, associates a
 // cluster with a unique loopback host, creates a chisel user with a
 // password derived from the signed certificate, and returns the
 // tunnel endpoint and the PEM-encoded signed certificate.
@@ -96,7 +96,7 @@ func (s *Service) ListClusters() map[string]core.Cluster {
 // If the cluster was previously registered, the old host allocation
 // is released first so that re-registration always moves the cluster
 // to a fresh address.
-func (s *Service) RegisterCluster(_ context.Context, cluster, agentID, agentVersion string, csrPEM []byte) (endpoint string, certPEM []byte, err error) {
+func (s *Service) RegisterLink(_ context.Context, cluster, agentID, agentVersion string, csrPEM []byte) (endpoint string, certPEM []byte, err error) {
 	// Sign the agent's CSR with the internal CA.
 	certPEM, err = s.ca.SignCSR(csrPEM)
 	if err != nil {
@@ -124,10 +124,10 @@ func (s *Service) RegisterCluster(_ context.Context, cluster, agentID, agentVers
 
 	// Release the previous host and user for this cluster, if any,
 	// so that stale credentials do not accumulate in chisel.
-	if prev, ok := s.clusters[cluster]; ok {
+	if prev, ok := s.links[cluster]; ok {
 		srv.DeleteUser(prev.User)
 		s.addrs.release(prev.Host)
-		delete(s.clusters, cluster)
+		delete(s.links, cluster)
 	}
 
 	host, err := s.addrs.allocate(cluster)
@@ -144,7 +144,7 @@ func (s *Service) RegisterCluster(_ context.Context, cluster, agentID, agentVers
 		return "", nil, err
 	}
 
-	s.clusters[cluster] = core.Cluster{
+	s.links[cluster] = core.Link{
 		Host:         host,
 		User:         agentID,
 		AgentVersion: agentVersion,
@@ -165,13 +165,13 @@ func (s *Service) DeregisterCluster(cluster string) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	entry, ok := s.clusters[cluster]
+	entry, ok := s.links[cluster]
 	if !ok {
 		return
 	}
 	srv.DeleteUser(entry.User)
 	s.addrs.release(entry.Host)
-	delete(s.clusters, cluster)
+	delete(s.links, cluster)
 }
 
 // ResolveAddress returns the HTTP base URL for the given cluster's
@@ -180,7 +180,7 @@ func (s *Service) ResolveAddress(_ context.Context, cluster string) (string, err
 	s.mu.RLock()
 	defer s.mu.RUnlock()
 
-	entry, ok := s.clusters[cluster]
+	entry, ok := s.links[cluster]
 	if !ok {
 		return "", &core.ErrClusterNotFound{Cluster: cluster}
 	}

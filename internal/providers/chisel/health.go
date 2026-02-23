@@ -53,8 +53,8 @@ func (s *Service) clusterSnapshot() map[string]string {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
 
-	snapshot := make(map[string]string, len(s.clusters))
-	for name, entry := range s.clusters {
+	snapshot := make(map[string]string, len(s.links))
+	for name, entry := range s.links {
 		snapshot[name] = entry.Host
 	}
 	return snapshot
@@ -127,7 +127,7 @@ func (s *Service) checkClusters(ctx context.Context, dialer *net.Dialer, failCou
 			// taken. A concurrent re-registration would assign a new
 			// host; deregistering in that case would be incorrect.
 			s.mu.RLock()
-			current, exists := s.clusters[cluster]
+			current, exists := s.links[cluster]
 			s.mu.RUnlock()
 			if exists && current.Host == host {
 				s.log.Info("deregistering disconnected cluster",

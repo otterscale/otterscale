@@ -16,8 +16,7 @@ import (
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/kube-openapi/pkg/validation/spec"
 
-	pb "github.com/otterscale/otterscale/api/resource/v1"
-	"github.com/otterscale/otterscale/api/resource/v1/pbconnect"
+	pb "github.com/otterscale/api/resource/v1"
 	"github.com/otterscale/otterscale/internal/core"
 )
 
@@ -25,7 +24,7 @@ import (
 // Kubernetes CRUD and watch operations through the tunnel, translating
 // between protobuf and unstructured Kubernetes objects.
 type ResourceService struct {
-	pbconnect.UnimplementedResourceServiceHandler
+	pb.UnimplementedResourceServiceHandler
 
 	resource *core.ResourceUseCase
 }
@@ -38,7 +37,7 @@ func NewResourceService(resource *core.ResourceUseCase) *ResourceService {
 	}
 }
 
-var _ pbconnect.ResourceServiceHandler = (*ResourceService)(nil)
+var _ pb.ResourceServiceHandler = (*ResourceService)(nil)
 
 // ---------------------------------------------------------------------------
 // Discovery / Schema

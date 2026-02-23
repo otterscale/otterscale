@@ -1,6 +1,6 @@
 module github.com/otterscale/otterscale
 
-go 1.25.6
+go 1.26.0
 
 tool github.com/google/wire/cmd/wire
 
@@ -16,6 +16,7 @@ require (
 	github.com/google/uuid v1.6.0
 	github.com/google/wire v0.7.0
 	github.com/jpillora/chisel v1.11.3
+	github.com/otterscale/api v0.1.0
 	github.com/prometheus/client_golang v1.23.2
 	github.com/rs/cors v1.11.1
 	github.com/spf13/cobra v1.10.2

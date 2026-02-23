@@ -39,7 +39,7 @@ func wireCmd() (*cobra.Command, func(), error) {
 
 // wireServer assembles a fully wired Server with all gRPC services,
 // use-cases, and infrastructure providers. The version parameter is
-// provided by the caller and flows through Wire to FleetUseCase.
+// provided by the caller and flows through Wire to LinkUseCase.
 // The config parameter provides the CA directory for persistent CA
 // material via provideCA.
 func wireServer(v core.Version, conf *config.Config) (*server.Server, func(), error) {
@@ -53,11 +53,11 @@ func wireServer(v core.Version, conf *config.Config) (*server.Server, func(), er
 		return nil, nil, err
 	}
 	renderer := manifest.NewRenderer()
-	fleetUseCase, err := core.NewFleetUseCase(service, v, agentManifestConfig, renderer)
+	linkUseCase, err := core.NewLinkUseCase(service, v, agentManifestConfig, renderer)
 	if err != nil {
 		return nil, nil, err
 	}
-	fleetService := handler.NewFleetService(fleetUseCase)
+	linkService := handler.NewLinkService(linkUseCase)
 	kubernetesKubernetes := kubernetes.New(service)
 	discoveryClient := kubernetes.NewDiscoveryClient(kubernetesKubernetes)
 	resourceRepo := kubernetes.NewResourceRepo(kubernetesKubernetes)
@@ -68,24 +68,24 @@ func wireServer(v core.Version, conf *config.Config) (*server.Server, func(), er
 	sessionStore := core.NewSessionStore()
 	runtimeUseCase := core.NewRuntimeUseCase(discoveryClient, runtimeRepo, sessionStore)
 	runtimeService := handler.NewRuntimeService(runtimeUseCase)
-	manifestHandler := handler.NewManifestHandler(fleetUseCase)
-	serverHandler := server.NewHandler(fleetService, resourceService, runtimeService, manifestHandler)
+	manifestHandler := handler.NewManifestHandler(linkUseCase)
+	serverHandler := server.NewHandler(linkService, resourceService, runtimeService, manifestHandler)
 	backgroundListeners := server.ProvideBackgroundListeners(runtimeUseCase, discoveryCache)
 	serverServer := server.NewServer(serverHandler, service, backgroundListeners)
 	return serverServer, func() {
 	}, nil
 }
 
-// wireAgent assembles a fully wired Agent with its handler, fleet
+// wireAgent assembles a fully wired Agent with its handler, link
 // registrar, and bootstrapper. The version parameter is provided by
-// the caller and flows through Wire to both FleetRegistrar and Agent.
+// the caller and flows through Wire to both LinkRegistrar and Agent.
 func wireAgent(v core.Version) (*agent.Agent, func(), error) {
 	restConfig, err := kubernetes.ProvideInClusterConfig()
 	if err != nil {
 		return nil, nil, err
 	}
 	agentHandler := agent.NewHandler(restConfig)
-	tunnelConsumer, err := otterscale.NewFleetRegistrar(v)
+	tunnelConsumer, err := otterscale.NewLinkRegistrar(v)
 	if err != nil {
 		return nil, nil, err
 	}

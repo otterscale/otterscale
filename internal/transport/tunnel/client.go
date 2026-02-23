@@ -69,7 +69,7 @@ func WithCluster(cluster string) ClientOption {
 	return func(c *Client) { c.cluster = cluster }
 }
 
-// WithServerURL configures the fleet server URL for registration.
+// WithServerURL configures the link server URL for registration.
 func WithServerURL(serverURL string) ClientOption {
 	return func(c *Client) { c.serverURL = serverURL }
 }
@@ -109,7 +109,7 @@ func WithMaxRetryDelay(maxRetryDelay time.Duration) ClientOption {
 	return func(c *Client) { c.maxRetryDelay = maxRetryDelay }
 }
 
-// WithRegister configures the function used to register with the fleet server.
+// WithRegister configures the function used to register with the link server.
 func WithRegister(register RegisterFunc) ClientOption {
 	return func(c *Client) { c.register = register }
 }
@@ -213,7 +213,7 @@ func (c *Client) Stop(_ context.Context) error {
 	return c.inner.Close()
 }
 
-// dial registers with the fleet server, writes mTLS credentials to
+// dial registers with the link server, writes mTLS credentials to
 // temp files, and creates a new chisel client configured for mTLS.
 func (c *Client) dial(ctx context.Context) (*chclient.Client, error) {
 	result, err := c.register(ctx, c.serverURL, c.cluster)

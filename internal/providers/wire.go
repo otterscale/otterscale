@@ -32,7 +32,7 @@ var ProviderSet = wire.NewSet(
 	kubernetes.NewDiscoveryClient,
 	kubernetes.NewResourceRepo,
 	kubernetes.NewRuntimeRepo,
-	otterscale.NewFleetRegistrar,
+	otterscale.NewLinkRegistrar,
 	ProvideDiscoveryCache,
 	wire.Bind(new(core.SchemaResolver), new(*cache.DiscoveryCache)),
 	wire.Bind(new(core.CacheEvictor), new(*cache.DiscoveryCache)),

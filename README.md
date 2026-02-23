@@ -26,7 +26,7 @@
     participant K8s as kube-apiserver
 
     Note over Agent, Tunnel: Agent startup
-    Agent->>Server: CSR registration (Fleet.Register)
+    Agent->>Server: CSR registration (Link.Register)
     Server-->>Agent: mTLS certificate
     Agent->>Tunnel: Establish reverse tunnel (mTLS)
     Tunnel-->>Agent: Assigned 127.x.x.x loopback
@@ -99,23 +99,11 @@ Env prefix: `OTTERSCALE_`, dots → underscores. Config file: `config.yaml` in `
 
 ## Features
 
-- **Fleet** — Agent registration with auto-provisioned mTLS certs (CSR flow)
+- **Link** — Agent registration with auto-provisioned mTLS certs (CSR flow)
 - **Resources** — Generic K8s CRUD, watch, server-side apply across clusters
 - **Runtime** — Exec/TTY, log streaming, port-forward, scale, rolling restart
 - **Discovery** — API resource discovery + OpenAPI schema resolution with TTL cache
 - **Security** — FIPS 140-3, OIDC (Keycloak), per-tunnel mTLS, user impersonation for RBAC
-
-## API
-
-ConnectRPC services (gRPC, gRPC-Web, Connect protocols):
-
-| Service                       | Key RPCs                                                      |
-| ----------------------------- | ------------------------------------------------------------- |
-| `fleet.v1.FleetService`       | `ListClusters`, `Register`, `GetAgentManifest`                |
-| `resource.v1.ResourceService` | `List`, `Get`, `Create`, `Apply`, `Delete`, `Watch`, `Schema` |
-| `runtime.v1.RuntimeService`   | `PodLog`, `ExecuteTTY`, `PortForward`, `Scale`, `Restart`     |
-
-Health: `grpc.health.v1.Health` · Reflection: `grpc.reflection.v1` · Metrics: `GET /metrics`
 
 ## License
 

@@ -31,9 +31,9 @@ type manifestTokenClaims struct {
 }
 
 // ManifestTokenIssuer signs and verifies HMAC-based manifest tokens.
-// It is extracted from FleetUseCase to isolate token management as a
+// It is extracted from LinkUseCase to isolate token management as a
 // single responsibility, making it easier to swap token formats (e.g.
-// JWT, opaque) in the future without modifying the fleet orchestration
+// JWT, opaque) in the future without modifying the link orchestration
 // logic.
 //
 // The now function is injected to decouple from wall-clock time,
