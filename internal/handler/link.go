@@ -12,6 +12,7 @@ import (
 	"connectrpc.com/connect"
 
 	pb "github.com/otterscale/api/link/v1"
+
 	"github.com/otterscale/otterscale/internal/core"
 )
 

@@ -10,7 +10,8 @@ import (
 	"os"
 	"time"
 
-	pb "github.com/otterscale/api/link/v1"
+	linkv1 "github.com/otterscale/api/link/v1"
+
 	"github.com/otterscale/otterscale/internal/core"
 	"github.com/otterscale/otterscale/internal/pki"
 )
@@ -64,8 +65,8 @@ func (f *linkRegistrar) Register(ctx context.Context, serverURL, cluster string)
 		return core.Registration{}, fmt.Errorf("generate CSR: %w", err)
 	}
 
-	client := pb.NewLinkServiceClient(f.client, serverURL)
-	req := &pb.RegisterRequest{}
+	client := linkv1.NewLinkServiceClient(f.client, serverURL)
+	req := &linkv1.RegisterRequest{}
 	req.SetCluster(cluster)
 	req.SetAgentId(f.agentID)
 	req.SetCsr(csrPEM)
