@@ -256,7 +256,10 @@
 			'array-of-object': 'center',
 			object: 'center',
 			link: 'start',
-			ratio: 'end'
+			ratio: 'end',
+			'number-with-prefix': 'end',
+			'array-of-enumeration': 'center',
+			'object-of-key-value': 'center'
 		};
 		return uiSchema ? map[uiSchema] : 'start';
 	}

@@ -76,6 +76,70 @@ function quantityToScalar(quantity: string): number | bigint {
 	}
 }
 
+function formatWithDecimalPrefix(value: bigint): { value: number; unit: string } {
+	const units = [
+		{ value: BigInt(1e18), symbol: 'E' },
+		{ value: BigInt(1e15), symbol: 'P' },
+		{ value: BigInt(1e12), symbol: 'T' },
+		{ value: BigInt(1e9), symbol: 'G' },
+		{ value: BigInt(1e6), symbol: 'M' },
+		{ value: BigInt(1e3), symbol: 'k' },
+		{ value: BigInt(1), symbol: '' }
+	];
+	for (const unit of units) {
+		if (value >= unit.value) {
+			const number = Number(value) / Number(unit.value);
+			return {
+				value: number,
+				unit: unit.symbol
+			};
+		}
+	}
+	return {
+		value: Number(value),
+		unit: ''
+	};
+}
+
+function formatWithBinaryPrefix(value: bigint): { value: number; unit: string } {
+	const units = [
+		{ value: BigInt(2) ** BigInt(60), symbol: 'Ei' },
+		{ value: BigInt(2) ** BigInt(50), symbol: 'Pi' },
+		{ value: BigInt(2) ** BigInt(40), symbol: 'Ti' },
+		{ value: BigInt(2) ** BigInt(30), symbol: 'Gi' },
+		{ value: BigInt(2) ** BigInt(20), symbol: 'Mi' },
+		{ value: BigInt(2) ** BigInt(10), symbol: 'Ki' },
+		{ value: BigInt(1), symbol: '' }
+	];
+	for (const unit of units) {
+		if (value >= unit.value) {
+			const number = Number(value) / Number(unit.value);
+			return {
+				value: number,
+				unit: unit.symbol
+			};
+		}
+	}
+	return {
+		value: Number(value),
+		unit: ''
+	};
+}
+
+function getQuantityScalar(quantity: string | number | null): number | bigint | null {
+	if (quantity === null) return null;
+
+	return quantityToScalar(String(quantity));
+}
+
+function getRatio(
+	numerator: number | bigint | null,
+	denominator: number | bigint | null
+): JsonValue {
+	if (numerator === null || denominator === null) return null;
+	return Number(numerator) / Number(denominator);
+}
+
 function format(value: string) {
 	try {
 		return JSON.stringify(JSON.parse(value), null, 4);
@@ -112,9 +176,11 @@ function getRelativeTime(now: number, timestamp: number) {
 type UISchemaType =
 	| 'boolean'
 	| 'number'
+	| 'number-with-prefix'
 	| 'time'
 	| 'text'
 	| 'array'
+	| 'array-of-enumeration'
 	| 'array-of-object'
 	| 'object'
 	| 'object-of-key-value'
@@ -166,5 +232,15 @@ function getDefaultDataSchema(type: JsonValue | undefined, format?: JsonValue): 
 	return undefined;
 }
 
+export {
+	format,
+	formatWithBinaryPrefix,
+	formatWithDecimalPrefix,
+	getDefaultDataSchema,
+	getDefaultUISchema,
+	getQuantityScalar,
+	getRatio,
+	getRelativeTime,
+	quantityToScalar
+};
 export type { DataSchemaType, UISchemaType };
-export { format, getDefaultDataSchema, getDefaultUISchema, getRelativeTime, quantityToScalar };

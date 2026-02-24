@@ -8,7 +8,6 @@
 
 <script lang="ts">
 	import { type Column, type Row } from '@tanstack/table-core';
-	import { onMount } from 'svelte';
 
 	let {
 		row,
@@ -20,13 +19,11 @@
 		metadata: LinkMetadata;
 	} = $props();
 
-	const data: JsonValue = $derived(row.original[column.id]);
+	if (!metadata) {
+		throw Error(`Expected metadata of ${column.id} for LinkCell, but got metadata:`, metadata);
+	}
 
-	onMount(() => {
-		if (metadata === undefined) {
-			console.warn(`Expected metadata of ${column.id} for LinkCell, but got metadata:`, metadata);
-		}
-	});
+	const data: JsonValue = $derived(row.original[column.id]);
 </script>
 
 <!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->

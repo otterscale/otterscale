@@ -8,7 +8,7 @@
 </script>
 
 <AlertDialog.Root bind:open={createModalOpen}>
-	<AlertDialog.Trigger disabled class={buttonVariants({ variant: 'outline' })}>
-		<Plus class="opacity-60" size={16} />
+	<AlertDialog.Trigger disabled class={buttonVariants({ variant: 'outline', size: 'icon' })}>
+		<Plus />
 	</AlertDialog.Trigger>
 </AlertDialog.Root>

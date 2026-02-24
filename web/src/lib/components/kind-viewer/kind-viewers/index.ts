@@ -42,6 +42,19 @@ function getDataSchemas(kind: string): Record<string, DataSchemaType> {
 	}
 }
 
+function getData(kind: string, apiResource: APIResource, object: any): Record<string, JsonValue> {
+	switch (kind) {
+		case 'CronJob':
+			return getCronJobData(object);
+		case 'ResourceQuota':
+			return getResourceQuotaData(object);
+		case 'Workspace':
+			return getWorkspaceData(object);
+		default:
+			return getDefaultData(apiResource, object);
+	}
+}
+
 function getUISchemas(kind: string): Record<string, UISchemaType> {
 	switch (kind) {
 		case 'CronJob':
@@ -52,19 +65,6 @@ function getUISchemas(kind: string): Record<string, UISchemaType> {
 			return getWorkspaceUISchemas();
 		default:
 			return getDefaultUISchemas();
-	}
-}
-
-function getDataSet(kind: string, object: any): Record<string, JsonValue> {
-	switch (kind) {
-		case 'CronJob':
-			return getCronJobData(object);
-		case 'ResourceQuota':
-			return getResourceQuotaData(object);
-		case 'Workspace':
-			return getWorkspaceData(object);
-		default:
-			return getDefaultData(object);
 	}
 }
 
@@ -86,4 +86,4 @@ function getColumnDefinitions(
 	}
 }
 
-export { getColumnDefinitions, getDataSchemas, getDataSet, getUISchemas };
+export { getColumnDefinitions, getData, getDataSchemas, getUISchemas };

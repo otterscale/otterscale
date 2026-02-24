@@ -1,4 +1,4 @@
-import { type JsonValue } from '@bufbuild/protobuf';
+import { type JsonObject, type JsonValue } from '@bufbuild/protobuf';
 import type { BatchV1CronJob } from '@otterscale/types';
 import type { Column, ColumnDef } from '@tanstack/table-core';
 import { type Row } from '@tanstack/table-core';
@@ -8,7 +8,11 @@ import { page } from '$app/state';
 import type { APIResource } from '$lib/api/resource/v1/resource_pb';
 import { DynamicTableHeader } from '$lib/components/dynamic-table';
 import DynamicTableCell from '$lib/components/dynamic-table/dynamic-table-cell.svelte';
-import { type ArrayOfObjectMetadata } from '$lib/components/dynamic-table/dynamic-table-cells/array-of-object-cell.svelte';
+import {
+	type ArrayOfObjectItemsType,
+	type ArrayOfObjectItemType,
+	type ArrayOfObjectMetadata
+} from '$lib/components/dynamic-table/dynamic-table-cells/array-of-object-cell.svelte';
 import type { LinkMetadata } from '$lib/components/dynamic-table/dynamic-table-cells/link-cell.svelte';
 import { type DataSchemaType, type UISchemaType } from '$lib/components/dynamic-table/utils';
 import { renderComponent } from '$lib/components/ui/data-table';
@@ -17,48 +21,65 @@ type CronJobAttribute =
 	| 'Name'
 	| 'Namespace'
 	| 'Schedule'
+	| 'Time Zone'
 	| 'Suspend'
 	| 'Active'
 	| 'Last Schedule'
 	| 'Creation Timestamp'
+	| 'Containers'
+	| 'Images'
 	| 'raw';
-
-function getCronJobUISchemas(): Record<CronJobAttribute, UISchemaType> {
-	return {
-		Name: 'link' as UISchemaType,
-		Namespace: 'text' as UISchemaType,
-		Schedule: 'text' as UISchemaType,
-		Suspend: 'boolean' as UISchemaType,
-		Active: 'array-of-object' as UISchemaType,
-		'Last Schedule': 'time' as UISchemaType,
-		'Creation Timestamp': 'time' as UISchemaType,
-		raw: 'object' as UISchemaType
-	};
-}
 
 function getCronJobDataSchemas(): Record<CronJobAttribute, DataSchemaType> {
 	return {
-		Name: 'text' as DataSchemaType,
-		Namespace: 'text' as DataSchemaType,
-		Schedule: 'text' as DataSchemaType,
-		Suspend: 'boolean' as DataSchemaType,
-		Active: 'number' as DataSchemaType,
-		'Last Schedule': 'time' as DataSchemaType,
-		'Creation Timestamp': 'time' as DataSchemaType,
-		raw: 'object' as DataSchemaType
+		Name: 'text',
+		Namespace: 'text',
+		Schedule: 'text',
+		'Time Zone': 'text',
+		Suspend: 'boolean',
+		Active: 'number',
+		'Last Schedule': 'time',
+		'Creation Timestamp': 'time',
+		Containers: 'number',
+		Images: 'number',
+		raw: 'object'
 	};
 }
 
 function getCronJobData(object: BatchV1CronJob): Record<CronJobAttribute, JsonValue> {
 	return {
-		Name: object?.metadata?.name as JsonValue,
-		Namespace: object?.metadata?.namespace as JsonValue,
-		Schedule: object?.spec?.schedule as JsonValue,
-		Suspend: object?.spec?.suspend as JsonValue,
-		Active: object?.status?.active?.length as JsonValue,
-		'Last Schedule': object?.status?.lastScheduleTime as JsonValue,
-		'Creation Timestamp': object?.metadata?.creationTimestamp as JsonValue,
-		raw: object as JsonValue
+		Name: object?.metadata?.name ?? null,
+		Namespace: object?.metadata?.namespace ?? null,
+		Schedule: object?.spec?.schedule ?? null,
+		'Time Zone': object?.spec?.timeZone ?? null,
+		Suspend: object?.spec?.suspend ?? null,
+		Active: object?.status?.active?.length ?? null,
+		'Last Schedule': object?.status?.lastScheduleTime ?? null,
+		'Creation Timestamp': object?.metadata?.creationTimestamp ?? null,
+		Containers: object?.spec?.jobTemplate?.spec?.template?.spec?.containers?.length ?? null,
+		Images:
+			new Set(
+				object?.spec?.jobTemplate?.spec?.template?.spec?.containers?.map(
+					(container) => container.image
+				)
+			).size ?? null,
+		raw: (object as JsonObject) ?? null
+	};
+}
+
+function getCronJobUISchemas(): Record<CronJobAttribute, UISchemaType> {
+	return {
+		Name: 'link',
+		Namespace: 'text',
+		Schedule: 'text',
+		'Time Zone': 'text',
+		Suspend: 'boolean',
+		Active: 'array-of-object',
+		'Last Schedule': 'time',
+		'Creation Timestamp': 'time',
+		Containers: 'array-of-object',
+		Images: 'array-of-object',
+		raw: 'object'
 	};
 }
 
@@ -90,7 +111,7 @@ function getCronJobColumnDefinitions(
 						hyperlink: resolve(
 							`/(auth)/${page.params.cluster!}/${apiResource.kind}/${apiResource.resource}?group=${apiResource.group}&version=${apiResource.version}&name=${row.original[column.id as CronJobAttribute]}&namespace=${page.url.searchParams.get('namespace')!}`
 						)
-					} as LinkMetadata
+					} satisfies LinkMetadata
 				}),
 			accessorKey: 'Name'
 		},
@@ -137,6 +158,27 @@ function getCronJobColumnDefinitions(
 			accessorKey: 'Schedule'
 		},
 		{
+			id: 'Time Zone',
+			header: ({ column }: { column: Column<Record<CronJobAttribute, JsonValue>> }) =>
+				renderComponent(DynamicTableHeader, {
+					column: column,
+					dataSchemas: dataSchemas
+				}),
+			cell: ({
+				column,
+				row
+			}: {
+				column: Column<Record<CronJobAttribute, JsonValue>>;
+				row: Row<Record<CronJobAttribute, JsonValue>>;
+			}) =>
+				renderComponent(DynamicTableCell, {
+					row: row,
+					column: column,
+					uiSchemas: uiSchemas
+				}),
+			accessorKey: 'Time Zone'
+		},
+		{
 			id: 'Suspend',
 			header: ({ column }: { column: Column<Record<CronJobAttribute, JsonValue>> }) =>
 				renderComponent(DynamicTableHeader, {
@@ -174,14 +216,18 @@ function getCronJobColumnDefinitions(
 				renderComponent(DynamicTableCell, {
 					row: row,
 					column: column,
+					uiSchemas: uiSchemas,
 					metadata: {
-						items: (row.original.raw as BatchV1CronJob).status?.active?.map((job) => ({
-							title: job?.name,
-							description: job?.uid,
-							actions: job?.resourceVersion
-						}))
-					} as ArrayOfObjectMetadata,
-					uiSchemas: uiSchemas
+						items:
+							(row.original.raw as BatchV1CronJob).status?.active?.map(
+								(job) =>
+									({
+										title: job?.name,
+										description: job?.uid,
+										actions: job?.resourceVersion
+									}) as ArrayOfObjectItemType
+							) ?? []
+					} satisfies ArrayOfObjectMetadata
 				}),
 			accessorKey: 'Active'
 		},
@@ -226,30 +272,78 @@ function getCronJobColumnDefinitions(
 					uiSchemas: uiSchemas
 				}),
 			accessorKey: 'Creation Timestamp'
+		},
+		{
+			id: 'Containers',
+			header: ({ column }: { column: Column<Record<CronJobAttribute, JsonValue>> }) =>
+				renderComponent(DynamicTableHeader, {
+					column: column,
+					dataSchemas: dataSchemas
+				}),
+			cell: ({
+				column,
+				row
+			}: {
+				column: Column<Record<CronJobAttribute, JsonValue>>;
+				row: Row<Record<CronJobAttribute, JsonValue>>;
+			}) =>
+				renderComponent(DynamicTableCell, {
+					row: row,
+					column: column,
+					uiSchemas: uiSchemas,
+					metadata: {
+						items: (
+							row.original.raw as BatchV1CronJob
+						).spec?.jobTemplate.spec?.template.spec?.containers.map((container) => ({
+							title: container.name,
+							description: container.command?.join(' '),
+							actions: container.image,
+							raw: container
+						})) as ArrayOfObjectItemsType
+					} satisfies ArrayOfObjectMetadata
+				}),
+			accessorKey: 'Containers',
+			meta: {
+				class: 'hidden xl:table-cell'
+			}
+		},
+		{
+			id: 'Images',
+			header: ({ column }: { column: Column<Record<CronJobAttribute, JsonValue>> }) =>
+				renderComponent(DynamicTableHeader, {
+					column: column,
+					dataSchemas: dataSchemas
+				}),
+			cell: ({
+				column,
+				row
+			}: {
+				column: Column<Record<CronJobAttribute, JsonValue>>;
+				row: Row<Record<CronJobAttribute, JsonValue>>;
+			}) =>
+				renderComponent(DynamicTableCell, {
+					row: row,
+					column: column,
+					uiSchemas: uiSchemas,
+					metadata: {
+						items: (
+							row.original.raw as BatchV1CronJob
+						).spec?.jobTemplate.spec?.template.spec?.containers.map((container) => ({
+							title: container.image,
+							description: container.name,
+							raw: {
+								image: container.image,
+								imagePullPolicy: container.imagePullPolicy,
+								container: container.name
+							}
+						})) as ArrayOfObjectItemsType
+					} satisfies ArrayOfObjectMetadata
+				}),
+			accessorKey: 'Images',
+			meta: {
+				class: 'hidden xl:table-cell'
+			}
 		}
-		// {
-		// 	id: 'Images',
-		// 	header: ({ column }: { column: Column<Record<CronJobAttribute, JsonValue>> }) =>
-		// 		renderComponent(DynamicTableHeader, {
-		// 			column: column,
-		// 			uiSchemas: uiSchemas
-		// 		}),
-		// 	cell: ({
-		// 		column,
-		// 		row
-		// 	}: {
-		// 		column: Column<Record<CronJobAttribute, JsonValue>>;
-		// 		row: Row<Record<CronJobAttribute, JsonValue>>;
-		// 	}) =>
-		// 		renderComponent(DefaultObjectCell, {
-		// 			row: row,
-		// 			column: column
-		// 		}),
-		// 	accessorKey: 'Images',
-		// 	meta: {
-		// 		class: 'hidden xl:table-cell'
-		// 	}
-		// },
 	];
 }
 

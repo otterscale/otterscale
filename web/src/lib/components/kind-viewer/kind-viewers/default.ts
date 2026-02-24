@@ -8,7 +8,7 @@ import type { APIResource } from '$lib/api/resource/v1/resource_pb';
 import { DynamicTableHeader } from '$lib/components/dynamic-table';
 import DynamicTableCell from '$lib/components/dynamic-table/dynamic-table-cell.svelte';
 import type { LinkMetadata } from '$lib/components/dynamic-table/dynamic-table-cells/link-cell.svelte';
-import type { ObjectOfKeyValueMetadata } from '$lib/components/dynamic-table/dynamic-table-cells/object-of-key-value.svelte';
+import type { ObjectOfKeyValueMetadata } from '$lib/components/dynamic-table/dynamic-table-cells/object-of-key-value-cell.svelte';
 import { type DataSchemaType, type UISchemaType } from '$lib/components/dynamic-table/utils';
 import { renderComponent } from '$lib/components/ui/data-table';
 
@@ -20,38 +20,41 @@ type DefaultAttribute =
 	| 'Creation Timestamp'
 	| 'raw';
 
-// Determine metadata type
-function getDefaultUISchemas(): Record<DefaultAttribute, UISchemaType> {
-	return {
-		Name: 'link' as UISchemaType,
-		Namespace: 'text' as UISchemaType,
-		Labels: 'object-of-key-value' as UISchemaType,
-		Annotations: 'object-of-key-value' as UISchemaType,
-		'Creation Timestamp': 'time' as UISchemaType,
-		raw: 'object' as UISchemaType
-	};
-}
-
 // Determine data type
 function getDefaultDataSchemas(): Record<DefaultAttribute, DataSchemaType> {
 	return {
-		Name: 'text' as DataSchemaType,
-		Namespace: 'text' as DataSchemaType,
-		Labels: 'number' as DataSchemaType,
-		Annotations: 'number' as DataSchemaType,
-		'Creation Timestamp': 'time' as DataSchemaType,
-		raw: 'object' as DataSchemaType
+		Name: 'text',
+		Namespace: 'text',
+		Labels: 'number',
+		Annotations: 'number',
+		'Creation Timestamp': 'time',
+		raw: 'object'
 	};
 }
 
-function getDefaultData(object: any): Record<DefaultAttribute, JsonValue> {
+function getDefaultData(
+	apiResource: APIResource,
+	object: any
+): Record<DefaultAttribute, JsonValue> {
 	return {
-		Name: object?.metadata?.name as JsonValue,
-		Namespace: object?.metadata?.namespace as JsonValue,
-		Labels: Object.keys(object?.metadata?.labels).length as JsonValue,
-		Annotations: Object.keys(object?.metadata?.annotations).length as JsonValue,
-		'Creation Timestamp': object?.metadata?.creationTimestamp as JsonValue,
-		raw: object as JsonValue
+		Name: object?.metadata?.name ?? null,
+		Namespace: apiResource!.namespaced ? (object?.metadata?.namespace ?? null) : null,
+		Labels: Object.keys(object?.metadata?.labels ?? {}).length,
+		Annotations: Object.keys(object?.metadata?.annotations ?? {}).length,
+		'Creation Timestamp': object?.metadata?.creationTimestamp ?? null,
+		raw: object ?? null
+	};
+}
+
+// Determine metadata type
+function getDefaultUISchemas(): Record<DefaultAttribute, UISchemaType> {
+	return {
+		Name: 'link',
+		Namespace: 'link',
+		Labels: 'object-of-key-value',
+		Annotations: 'object-of-key-value',
+		'Creation Timestamp': 'time',
+		raw: 'object'
 	};
 }
 
@@ -83,7 +86,7 @@ function getDefaultColumnDefinitions(
 						hyperlink: resolve(
 							`/(auth)/${page.params.cluster!}/${apiResource.kind}/${apiResource.resource}?group=${apiResource.group}&version=${apiResource.version}&name=${row.original[column.id as DefaultAttribute]}&namespace=${page.url.searchParams.get('namespace') ?? ''}`
 						)
-					} as LinkMetadata
+					} satisfies LinkMetadata
 				}),
 			accessorKey: 'Name'
 		},
@@ -105,7 +108,12 @@ function getDefaultColumnDefinitions(
 					renderComponent(DynamicTableCell, {
 						row: row,
 						column: column,
-						uiSchemas: uiSchemas
+						uiSchemas: uiSchemas,
+						metadata: {
+							hyperlink: resolve(
+								`/(auth)/${page.params.cluster!}/Namespace/namespaces?group=&version=v1&name=${row.original['Namespace']}`
+							)
+						} satisfies LinkMetadata
 					}),
 				accessorKey: 'Namespace'
 			}
@@ -128,7 +136,8 @@ function getDefaultColumnDefinitions(
 					row: row,
 					column: column,
 					uiSchemas: uiSchemas,
-					metadata: (row.original.raw as any).metadata.annotations as ObjectOfKeyValueMetadata
+					metadata: ((row.original.raw as any).metadata.annotations ??
+						{}) satisfies ObjectOfKeyValueMetadata
 				}),
 			accessorFn: (row: Record<DefaultAttribute, JsonValue>) =>
 				row['Annotations'] ? Object.keys(row['Annotations'] as object).length : null
@@ -151,7 +160,8 @@ function getDefaultColumnDefinitions(
 					row: row,
 					column: column,
 					uiSchemas: uiSchemas,
-					metadata: (row.original.raw as any).metadata.labels as ObjectOfKeyValueMetadata
+					metadata: ((row.original.raw as any).metadata.labels ??
+						{}) satisfies ObjectOfKeyValueMetadata
 				}),
 			accessorFn: (row: Record<DefaultAttribute, JsonValue>) =>
 				row['Labels'] ? Object.keys(row['Labels'] as object).length : null

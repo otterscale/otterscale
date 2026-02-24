@@ -1,10 +1,11 @@
 <script lang="ts" module>
-	import type { JsonValue } from '@bufbuild/protobuf';
+	import type { JsonObject, JsonValue } from '@bufbuild/protobuf';
 
 	export type ArrayOfObjectItemType = {
 		title: JsonValue;
-		description: JsonValue;
-		actions: JsonValue;
+		description?: JsonValue;
+		actions?: JsonValue;
+		raw: JsonObject;
 	};
 
 	export type ArrayOfObjectItemsType = ArrayOfObjectItemType[];
@@ -28,6 +29,7 @@
 		type PaginationState,
 		type Row
 	} from '@tanstack/table-core';
+	import { stringify } from 'yaml';
 
 	import * as CodeBlock from '$lib/components/custom/code/index.js';
 	import { Button } from '$lib/components/ui/button';
@@ -38,7 +40,6 @@
 	import { Label } from '$lib/components/ui/label/index.js';
 	import { Select, SelectContent, SelectItem, SelectTrigger } from '$lib/components/ui/select';
 	import * as Sheet from '$lib/components/ui/sheet/index.js';
-	import { onMount } from 'svelte';
 
 	let {
 		row,
@@ -49,6 +50,13 @@
 		column: Column<Record<string, JsonValue>>;
 		metadata: ArrayOfObjectMetadata;
 	} = $props();
+
+	if (!metadata) {
+		throw Error(
+			`Expected metadata of ${column.id} for ArrayOfObjectCell, but got metadata:`,
+			metadata
+		);
+	}
 
 	const data = $derived(row.original[column.id] as number);
 
@@ -83,15 +91,6 @@
 			}
 		}
 	});
-
-	onMount(() => {
-		if (metadata === undefined) {
-			console.warn(
-				`Expected metadata of ${column.id} for ArrayOfObjectCell, but got metadata:`,
-				metadata
-			);
-		}
-	});
 </script>
 
 <Sheet.Root>
@@ -110,7 +109,7 @@
 			</Sheet.Header>
 
 			{#if table.getRowModel().rows.length > 0}
-				<div class="flex-1 space-y-0 overflow-y-auto">
+				<div class="flex-1 space-y-0 overflow-y-auto p-4">
 					{#each table.getRowModel().rows as row (row.id)}
 						{@const item = row.original}
 						<Collapsible.Root class="rounded-lg transition-colors duration-200 hover:bg-muted/50">
@@ -132,14 +131,18 @@
 									</Item.Actions>
 								</Item.Root>
 							</Collapsible.Trigger>
-							<Collapsible.Content class="overflow-hidden transition-all duration-300 ease-in-out">
-								<CodeBlock.Root
-									lang="json"
-									hideLines
-									code={JSON.stringify(item, null, 4)}
-									class="border-none bg-transparent px-8"
-								/>
-							</Collapsible.Content>
+							{#if item.raw}
+								<Collapsible.Content
+									class="overflow-hidden transition-all duration-300 ease-in-out"
+								>
+									<CodeBlock.Root
+										lang="yaml"
+										hideLines
+										code={stringify(item.raw, null, 4)}
+										class="border-none bg-transparent px-8"
+									/>
+								</Collapsible.Content>
+							{/if}
 						</Collapsible.Root>
 					{/each}
 				</div>

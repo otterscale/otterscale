@@ -158,7 +158,7 @@
 </script>
 
 <Dialog.Root bind:open {onOpenChangeComplete}>
-	<Dialog.Trigger class="w-full">
+	<Dialog.Trigger class="w-full disabled:opacity-50">
 		<Item.Root class="p-0 text-xs" size="sm">
 			<Item.Media>
 				<Pencil />

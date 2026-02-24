@@ -7,6 +7,8 @@ import DefaultCreate from './default/create.svelte';
 import WorkspaceActions from './workspace/actions.svelte';
 import WorkspaceCreate from './workspace/create.svelte';
 
+type RoleType = 'admin' | 'edit' | 'view';
+
 type CreateType = Component<{ schema?: any }> | null;
 type ActionsType = Component<{
 	row?: any;
@@ -39,4 +41,4 @@ function getActions(kind: string): ActionsType {
 }
 
 export { getActions, getCreate };
-export type { ActionsType, CreateType };
+export type { ActionsType, CreateType, RoleType };

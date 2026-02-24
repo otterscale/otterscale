@@ -21,12 +21,7 @@
 	import type { DataSchemaType, UISchemaType } from '../dynamic-table/utils';
 	import type { ActionsType, CreateType } from './kind-viewer-actions';
 	import { getActions, getCreate } from './kind-viewer-actions';
-	import {
-		getColumnDefinitions,
-		getDataSchemas,
-		getDataSet as getData,
-		getUISchemas
-	} from './kind-viewers';
+	import { getColumnDefinitions, getData, getDataSchemas, getUISchemas } from './kind-viewers';
 
 	let {
 		clustered,
@@ -106,7 +101,7 @@
 				resourceVersion = response.resourceVersion;
 				continueToken = response.continue;
 
-				const newData = response.items.map((item) => getData(kind, item.object));
+				const newData = response.items.map((item) => getData(kind, apiResource, item.object));
 				dataset = [...dataset, ...newData];
 
 				if (listAbortController.signal.aborted) {
@@ -160,7 +155,7 @@
 				resourceVersion = response.resource?.object?.metadata?.resourceVersion;
 
 				if (response.type === WatchEvent_Type.ADDED) {
-					const addedData = getData(kind, response.resource?.object);
+					const addedData = getData(kind, apiResource, response.resource?.object);
 
 					const index = dataset.findIndex((object) => {
 						if (apiResource.namespaced) {
@@ -174,7 +169,7 @@
 						dataset = [...dataset, addedData];
 					}
 				} else if (response.type === WatchEvent_Type.MODIFIED) {
-					const modifiedData = getData(kind, response.resource?.object);
+					const modifiedData = getData(kind, apiResource, response.resource?.object);
 
 					dataset = dataset.map((object) => {
 						if (
@@ -190,7 +185,7 @@
 						return object;
 					});
 				} else if (response.type === WatchEvent_Type.DELETED) {
-					const deletedData = getData(kind, response.resource?.object);
+					const deletedData = getData(kind, apiResource, response.resource?.object);
 					dataset = dataset.filter((object) => {
 						if (apiResource.namespaced) {
 							return object.Namespace === deletedData.Namespace && object.Name !== deletedData.Name;

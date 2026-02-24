@@ -1,7 +1,6 @@
 <script lang="ts">
 	import type { JsonValue } from '@bufbuild/protobuf';
-	import Circle from '@lucide/svelte/icons/circle';
-	import CircleX from '@lucide/svelte/icons/circle-x';
+	import { CircleIcon, XIcon } from '@lucide/svelte';
 	import { type Column, type Row } from '@tanstack/table-core';
 
 	let {
@@ -16,7 +15,7 @@
 </script>
 
 {#if data === true}
-	<Circle class="inline-block size-4 text-primary" />
+	<CircleIcon class="inline-block size-4 text-primary" />
 {:else if data === false}
-	<CircleX class="inline-block size-6 text-destructive" />
+	<XIcon class="inline-block size-4 text-destructive" />
 {/if}

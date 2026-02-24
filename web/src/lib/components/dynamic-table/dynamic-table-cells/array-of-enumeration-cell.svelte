@@ -13,17 +13,14 @@
 	} = $props();
 
 	const data = $derived(row.original[column.id] as JsonValue[]);
-	const hasObjectItem = $derived(data && data.some((value) => value && typeof value === 'object'));
 </script>
 
 {#if data && data.length > 0}
-	{#if hasObjectItem}
-		{data.length}
-	{:else}
-		<div class="flex items-center gap-1">
-			{#each data as datum, index (index)}
-				<Badge variant="outline">{datum}</Badge>
-			{/each}
-		</div>
-	{/if}
+	<div class="flex items-center gap-1">
+		{#each data as datum, index (index)}
+			<Badge variant="outline">{datum}</Badge>
+		{/each}
+	</div>
+{:else}
+	<Badge variant="secondary">No Data</Badge>
 {/if}

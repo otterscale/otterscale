@@ -8,7 +8,6 @@
 	import {
 		FileCheckIcon,
 		FileClockIcon,
-		FileCodeIcon,
 		FileDigit,
 		FileIcon,
 		FileTextIcon,
@@ -26,7 +25,6 @@
 	import * as Tabs from '$lib/components/ui/tabs/index.js';
 
 	import { format } from '../utils';
-	import { onMount } from 'svelte';
 
 	let {
 		row,
@@ -38,33 +36,23 @@
 		metadata: ObjectOfKeyValueMetadata;
 	} = $props();
 
-	const data = $derived(row.original[column.id] as number);
+	if (!metadata) {
+		throw Error(
+			`Expected metadata of ${column.id} for ObjectOfKeyValue, but got metadata:`,
+			metadata
+		);
+	}
 
-	onMount(() => {
-		if (metadata === undefined) {
-			console.warn(
-				`Expected metadata of ${column.id} for ObjectOfKeyValue, but got metadata:`,
-				metadata
-			);
-		}
-	});
+	const data = $derived(row.original[column.id] as number);
 </script>
 
-{#if !data}
-	<Sheet.Root>
-		<Sheet.Trigger>
-			<Button variant="ghost" disabled>
-				<FileCodeIcon />
-			</Button>
-		</Sheet.Trigger>
-	</Sheet.Root>
-{:else}
-	<Sheet.Root>
-		<Sheet.Trigger>
-			<Button variant="ghost" class="hover:underline">
-				{data}
-			</Button>
-		</Sheet.Trigger>
+<Sheet.Root>
+	<Sheet.Trigger>
+		<Button variant="ghost" disabled={!data} class="hover:underline">
+			{data}
+		</Button>
+	</Sheet.Trigger>
+	{#if data}
 		<Sheet.Content
 			side="right"
 			class="flex h-full max-w-[62vw] min-w-[50vw] flex-col gap-0 overflow-y-auto p-4"
@@ -161,5 +149,5 @@
 				</Tabs.Content>
 			</Tabs.Root>
 		</Sheet.Content>
-	</Sheet.Root>
-{/if}
+	{/if}
+</Sheet.Root>

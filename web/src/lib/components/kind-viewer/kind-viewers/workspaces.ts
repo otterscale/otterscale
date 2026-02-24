@@ -1,4 +1,4 @@
-import { type JsonValue } from '@bufbuild/protobuf';
+import { type JsonObject, type JsonValue } from '@bufbuild/protobuf';
 import type { TenantOtterscaleIoV1Alpha1Workspace } from '@otterscale/types';
 import type { Column, ColumnDef } from '@tanstack/table-core';
 import { type Row } from '@tanstack/table-core';
@@ -8,42 +8,79 @@ import { page } from '$app/state';
 import type { APIResource } from '$lib/api/resource/v1/resource_pb';
 import { DynamicTableHeader } from '$lib/components/dynamic-table';
 import DynamicTableCell from '$lib/components/dynamic-table/dynamic-table-cell.svelte';
-import type { ArrayOfObjectMetadata } from '$lib/components/dynamic-table/dynamic-table-cells/array-of-object-cell.svelte';
+import type {
+	ArrayOfObjectItemType,
+	ArrayOfObjectMetadata
+} from '$lib/components/dynamic-table/dynamic-table-cells/array-of-object-cell.svelte';
 import type { LinkMetadata } from '$lib/components/dynamic-table/dynamic-table-cells/link-cell.svelte';
-import { type DataSchemaType, type UISchemaType } from '$lib/components/dynamic-table/utils';
+import type { NumberWithPrefixMetadata } from '$lib/components/dynamic-table/dynamic-table-cells/number-with-prefix-cell.svelte';
+import {
+	type DataSchemaType,
+	getQuantityScalar,
+	type UISchemaType
+} from '$lib/components/dynamic-table/utils';
 import { renderComponent } from '$lib/components/ui/data-table';
 
-type WorkspaceAttribute = 'Name' | 'Namespace' | 'Users' | 'Creation Timestamp' | 'raw';
-
-function getWorkspaceUISchemas(): Record<WorkspaceAttribute, UISchemaType> {
-	return {
-		Name: 'link' as UISchemaType,
-		Namespace: 'text' as UISchemaType,
-		Users: 'array-of-object' as UISchemaType,
-		'Creation Timestamp': 'time' as UISchemaType,
-		raw: 'object' as UISchemaType
-	};
-}
+type WorkspaceAttribute =
+	| 'Name'
+	| 'Namespace'
+	| 'Users'
+	| 'CPU Limit'
+	| 'CPU Requests'
+	| 'Memory Limit'
+	| 'Memory Requests'
+	| 'GPU Requests'
+	| 'Creation Timestamp'
+	| 'raw';
 
 function getWorkspaceDataSchemas(): Record<WorkspaceAttribute, DataSchemaType> {
 	return {
-		Name: 'text' as DataSchemaType,
-		Namespace: 'text' as DataSchemaType,
-		Users: 'number' as DataSchemaType,
-		'Creation Timestamp': 'time' as DataSchemaType,
-		raw: 'object' as DataSchemaType
+		Name: 'text',
+		Namespace: 'text',
+		Users: 'number',
+		'CPU Limit': 'number',
+		'CPU Requests': 'number',
+		'Memory Limit': 'number',
+		'Memory Requests': 'number',
+		'GPU Requests': 'number',
+		'Creation Timestamp': 'time',
+		raw: 'object'
 	};
 }
 
 function getWorkspaceData(
 	object: TenantOtterscaleIoV1Alpha1Workspace
-): Record<WorkspaceAttribute, JsonValue> {
+): Record<WorkspaceAttribute, JsonValue | bigint> {
 	return {
-		Name: object?.metadata?.name as JsonValue,
-		Namespace: object?.spec?.namespace as JsonValue,
-		Users: object?.spec?.users?.length as JsonValue,
+		Name: object?.metadata?.name ?? null,
+		Namespace: object?.spec?.namespace ?? null,
+		Users: (object?.spec?.users ?? []).length,
+		'CPU Limit': getQuantityScalar(object?.spec?.resourceQuota?.hard?.['limits.cpu'] ?? null),
+		'CPU Requests': getQuantityScalar(object?.spec?.resourceQuota?.hard?.['requests.cpu'] ?? null),
+		'Memory Limit': getQuantityScalar(object?.spec?.resourceQuota?.hard?.['limits.memory'] ?? null),
+		'Memory Requests': getQuantityScalar(
+			object?.spec?.resourceQuota?.hard?.['requests.memory'] ?? null
+		),
+		'GPU Requests': getQuantityScalar(
+			object?.spec?.resourceQuota?.hard?.['requests.otterscale.com/vgpu'] ?? null
+		),
 		'Creation Timestamp': object?.metadata?.creationTimestamp as JsonValue,
-		raw: object as JsonValue
+		raw: object as JsonObject
+	};
+}
+
+function getWorkspaceUISchemas(): Record<WorkspaceAttribute, UISchemaType> {
+	return {
+		Name: 'link',
+		Namespace: 'link',
+		Users: 'array-of-object',
+		'CPU Limit': 'number-with-prefix',
+		'CPU Requests': 'number-with-prefix',
+		'Memory Limit': 'number-with-prefix',
+		'Memory Requests': 'number-with-prefix',
+		'GPU Requests': 'number-with-prefix',
+		'Creation Timestamp': 'time',
+		raw: 'object'
 	};
 }
 
@@ -96,7 +133,12 @@ function getWorkspaceColumnDefinitions(
 				renderComponent(DynamicTableCell, {
 					row: row,
 					column: column,
-					uiSchemas: uiSchemas
+					uiSchemas: uiSchemas,
+					metadata: {
+						hyperlink: resolve(
+							`/(auth)/${page.params.cluster!}/Namespace/namespaces?group=&version=v1&name=${row.original['Namespace']}`
+						)
+					} satisfies LinkMetadata
 				}),
 			accessorKey: 'Namespace'
 		},
@@ -120,15 +162,136 @@ function getWorkspaceColumnDefinitions(
 					uiSchemas: uiSchemas,
 					metadata: {
 						items: (row.original.raw as TenantOtterscaleIoV1Alpha1Workspace).spec?.users?.map(
-							(user) => ({
-								title: user?.name,
-								description: user?.subject,
-								actions: user?.role
-							})
+							(user) =>
+								({
+									title: user?.name,
+									description: user?.subject,
+									actions: user?.role
+								}) as ArrayOfObjectItemType
 						)
-					} as ArrayOfObjectMetadata
+					} satisfies ArrayOfObjectMetadata
 				}),
 			accessorKey: 'Users'
+		},
+		{
+			id: 'CPU Limit',
+			header: ({ column }: { column: Column<Record<WorkspaceAttribute, JsonValue>> }) =>
+				renderComponent(DynamicTableHeader, {
+					column: column,
+					dataSchemas: dataSchemas
+				}),
+			cell: ({
+				column,
+				row
+			}: {
+				column: Column<Record<WorkspaceAttribute, JsonValue>>;
+				row: Row<Record<WorkspaceAttribute, JsonValue>>;
+			}) =>
+				renderComponent(DynamicTableCell, {
+					row: row,
+					column: column,
+					uiSchemas: uiSchemas,
+					metadata: {
+						prefix: 'binary'
+					} satisfies NumberWithPrefixMetadata
+				}),
+			accessorKey: 'CPU Limit'
+		},
+		{
+			id: 'CPU Requests',
+			header: ({ column }: { column: Column<Record<WorkspaceAttribute, JsonValue>> }) =>
+				renderComponent(DynamicTableHeader, {
+					column: column,
+					dataSchemas: dataSchemas
+				}),
+			cell: ({
+				column,
+				row
+			}: {
+				column: Column<Record<WorkspaceAttribute, JsonValue>>;
+				row: Row<Record<WorkspaceAttribute, JsonValue>>;
+			}) =>
+				renderComponent(DynamicTableCell, {
+					row: row,
+					column: column,
+					uiSchemas: uiSchemas,
+					metadata: {
+						prefix: 'binary'
+					} satisfies NumberWithPrefixMetadata
+				}),
+			accessorKey: 'CPU Requests'
+		},
+		{
+			id: 'Memory Limit',
+			header: ({ column }: { column: Column<Record<WorkspaceAttribute, JsonValue>> }) =>
+				renderComponent(DynamicTableHeader, {
+					column: column,
+					dataSchemas: dataSchemas
+				}),
+			cell: ({
+				column,
+				row
+			}: {
+				column: Column<Record<WorkspaceAttribute, JsonValue>>;
+				row: Row<Record<WorkspaceAttribute, JsonValue>>;
+			}) =>
+				renderComponent(DynamicTableCell, {
+					row: row,
+					column: column,
+					uiSchemas: uiSchemas,
+					metadata: {
+						prefix: 'binary'
+					} satisfies NumberWithPrefixMetadata
+				}),
+			accessorKey: 'Memory Limit'
+		},
+		{
+			id: 'Memory Requests',
+			header: ({ column }: { column: Column<Record<WorkspaceAttribute, JsonValue>> }) =>
+				renderComponent(DynamicTableHeader, {
+					column: column,
+					dataSchemas: dataSchemas
+				}),
+			cell: ({
+				column,
+				row
+			}: {
+				column: Column<Record<WorkspaceAttribute, JsonValue>>;
+				row: Row<Record<WorkspaceAttribute, JsonValue>>;
+			}) =>
+				renderComponent(DynamicTableCell, {
+					row: row,
+					column: column,
+					uiSchemas: uiSchemas,
+					metadata: {
+						prefix: 'binary'
+					} satisfies NumberWithPrefixMetadata
+				}),
+			accessorKey: 'Memory Requests'
+		},
+		{
+			id: 'GPU Requests',
+			header: ({ column }: { column: Column<Record<WorkspaceAttribute, JsonValue>> }) =>
+				renderComponent(DynamicTableHeader, {
+					column: column,
+					dataSchemas: dataSchemas
+				}),
+			cell: ({
+				column,
+				row
+			}: {
+				column: Column<Record<WorkspaceAttribute, JsonValue>>;
+				row: Row<Record<WorkspaceAttribute, JsonValue>>;
+			}) =>
+				renderComponent(DynamicTableCell, {
+					row: row,
+					column: column,
+					uiSchemas: uiSchemas,
+					metadata: {
+						prefix: 'binary'
+					} satisfies NumberWithPrefixMetadata
+				}),
+			accessorKey: 'GPU Requests'
 		},
 		{
 			id: 'Creation Timestamp',

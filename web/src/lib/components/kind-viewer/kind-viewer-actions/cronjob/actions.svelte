@@ -3,10 +3,12 @@
 	import Ellipsis from '@lucide/svelte/icons/ellipsis';
 	import type { Row } from '@tanstack/table-core';
 
-	import Deletor from '$lib/components/dynamic-form/cronjob/delete-dialog.svelte';
-	import Editor from '$lib/components/dynamic-form/cronjob/edit-sheet.svelte';
+	import Delete from '$lib/components/dynamic-form/cronjob/delete-dialog.svelte';
+	import Edit from '$lib/components/dynamic-form/cronjob/edit-sheet.svelte';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
+
+	import View from './view.svelte';
 
 	let { row, schema, object }: { row: Row<Record<string, JsonValue>>; schema: any; object: any } =
 		$props();
@@ -31,7 +33,14 @@
 					e.preventDefault();
 				}}
 			>
-				<Editor
+				<View {schema} {object} />
+			</DropdownMenu.Item>
+			<DropdownMenu.Item
+				onSelect={(e) => {
+					e.preventDefault();
+				}}
+			>
+				<Edit
 					name={String(row.original['Name'])}
 					{schema}
 					{object}
@@ -47,7 +56,7 @@
 					e.preventDefault();
 				}}
 			>
-				<Deletor
+				<Delete
 					name={String(row.original['Name'])}
 					onOpenChangeComplete={() => {
 						if (actionsOpen) {

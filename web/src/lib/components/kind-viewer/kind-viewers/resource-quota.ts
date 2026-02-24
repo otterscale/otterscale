@@ -1,4 +1,4 @@
-import { type JsonValue } from '@bufbuild/protobuf';
+import { type JsonObject, type JsonValue } from '@bufbuild/protobuf';
 import type { CoreV1ResourceQuota } from '@otterscale/types';
 import type { Column, ColumnDef } from '@tanstack/table-core';
 import { type Row } from '@tanstack/table-core';
@@ -12,7 +12,8 @@ import type { LinkMetadata } from '$lib/components/dynamic-table/dynamic-table-c
 import { type RatioMetadata } from '$lib/components/dynamic-table/dynamic-table-cells/ratio-cell.svelte';
 import {
 	type DataSchemaType,
-	quantityToScalar,
+	getQuantityScalar,
+	getRatio,
 	type UISchemaType
 } from '$lib/components/dynamic-table/utils';
 import { renderComponent } from '$lib/components/ui/data-table';
@@ -27,70 +28,59 @@ type ResourceQuotaAttribute =
 	| 'Memory Request'
 	| 'raw';
 
-function getResourceQuotaUISchemas(): Record<ResourceQuotaAttribute, UISchemaType> {
-	return {
-		Name: 'link' as UISchemaType,
-		Namespace: 'text' as UISchemaType,
-		'CPU Limit': 'ratio' as UISchemaType,
-		'Memory Limit': 'ratio' as UISchemaType,
-		'CPU Request': 'ratio' as UISchemaType,
-		'GPU Request': 'ratio' as UISchemaType,
-		'Memory Request': 'ratio' as UISchemaType,
-		raw: 'object' as UISchemaType
-	};
-}
-
 function getResourceQuotaDataSchemas(): Record<ResourceQuotaAttribute, DataSchemaType> {
 	return {
-		Name: 'text' as DataSchemaType,
-		Namespace: 'text' as DataSchemaType,
-		'CPU Limit': 'number' as DataSchemaType,
-		'Memory Limit': 'number' as DataSchemaType,
-		'CPU Request': 'number' as DataSchemaType,
-		'GPU Request': 'number' as DataSchemaType,
-		'Memory Request': 'number' as DataSchemaType,
-		raw: 'object' as DataSchemaType
+		Name: 'text',
+		Namespace: 'text',
+		'CPU Limit': 'number',
+		'Memory Limit': 'number',
+		'CPU Request': 'number',
+		'GPU Request': 'number',
+		'Memory Request': 'number',
+		raw: 'object'
 	};
 }
 
-function getRatio(
-	numerator: string | number | undefined,
-	denominator: string | number | undefined
-): JsonValue {
-	if (numerator === undefined || denominator === undefined) return null;
-	return (
-		Number(quantityToScalar(String(numerator))) / Number(quantityToScalar(String(denominator)))
-	);
-}
-
-// Ratio might lose some accuracy when resource is over 10Pi
 function getResourceQuotaData(
 	object: CoreV1ResourceQuota
 ): Record<ResourceQuotaAttribute, JsonValue> {
 	return {
-		Name: object?.metadata?.name as JsonValue,
-		Namespace: object?.metadata?.namespace as JsonValue,
+		Name: object?.metadata?.name ?? null,
+		Namespace: object?.metadata?.namespace ?? null,
 		'CPU Limit': getRatio(
-			object?.status?.used?.['limits.cpu'],
-			object?.status?.hard?.['limits.cpu']
-		) as JsonValue,
+			getQuantityScalar(object?.status?.used?.['limits.cpu'] ?? null),
+			getQuantityScalar(object?.status?.hard?.['limits.cpu'] ?? null)
+		),
 		'Memory Limit': getRatio(
-			object?.status?.used?.['limits.memory'],
-			object?.status?.hard?.['limits.memory']
-		) as JsonValue,
+			getQuantityScalar(object?.status?.used?.['limits.memory'] ?? null),
+			getQuantityScalar(object?.status?.hard?.['limits.memory'] ?? null)
+		),
 		'CPU Request': getRatio(
-			object?.status?.used?.['requests.cpu'],
-			object?.status?.hard?.['requests.cpu']
-		) as JsonValue,
+			getQuantityScalar(object?.status?.used?.['requests.cpu'] ?? null),
+			getQuantityScalar(object?.status?.hard?.['requests.cpu'] ?? null)
+		),
 		'GPU Request': getRatio(
-			object?.status?.used?.['requests.gpu'],
-			object?.status?.hard?.['requests.gpu']
-		) as JsonValue,
+			getQuantityScalar(object?.status?.used?.['requests.gpu'] ?? null),
+			getQuantityScalar(object?.status?.hard?.['requests.gpu'] ?? null)
+		),
 		'Memory Request': getRatio(
-			object?.status?.used?.['requests.memory'],
-			object?.status?.hard?.['requests.memory']
-		) as JsonValue,
-		raw: object as JsonValue
+			getQuantityScalar(object?.status?.used?.['requests.memory'] ?? null),
+			getQuantityScalar(object?.status?.hard?.['requests.memory'] ?? null)
+		),
+		raw: object as JsonObject
+	};
+}
+
+function getResourceQuotaUISchemas(): Record<ResourceQuotaAttribute, UISchemaType> {
+	return {
+		Name: 'link',
+		Namespace: 'text',
+		'CPU Limit': 'ratio',
+		'Memory Limit': 'ratio',
+		'CPU Request': 'ratio',
+		'GPU Request': 'ratio',
+		'Memory Request': 'ratio',
+		raw: 'object'
 	};
 }
 
@@ -122,7 +112,7 @@ function getResourceQuotaColumnDefinitions(
 						hyperlink: resolve(
 							`/(auth)/${page.params.cluster!}/${apiResource.kind}/${apiResource.resource}?group=${apiResource.group}&version=${apiResource.version}&name=${row.original[column.id as ResourceQuotaAttribute]}&namespace=${page.url.searchParams.get('namespace') ?? ''}`
 						)
-					} as LinkMetadata
+					} satisfies LinkMetadata
 				}),
 			accessorKey: 'Name'
 		},
@@ -166,9 +156,11 @@ function getResourceQuotaColumnDefinitions(
 					column: column,
 					uiSchemas: uiSchemas,
 					metadata: {
-						numerator: (row.original['raw'] as CoreV1ResourceQuota).status?.used?.['limits.cpu'],
-						denominator: (row.original['raw'] as CoreV1ResourceQuota).status?.hard?.['limits.cpu']
-					} as RatioMetadata
+						numerator:
+							(row.original['raw'] as CoreV1ResourceQuota).status?.used?.['limits.cpu'] ?? null,
+						denominator:
+							(row.original['raw'] as CoreV1ResourceQuota).status?.hard?.['limits.cpu'] ?? null
+					} satisfies RatioMetadata
 				}),
 			accessorKey: 'CPU Limit',
 			size: 100
@@ -192,9 +184,11 @@ function getResourceQuotaColumnDefinitions(
 					column: column,
 					uiSchemas: uiSchemas,
 					metadata: {
-						numerator: (row.original['raw'] as CoreV1ResourceQuota).status?.used?.['requests.cpu'],
-						denominator: (row.original['raw'] as CoreV1ResourceQuota).status?.hard?.['requests.cpu']
-					} as RatioMetadata
+						numerator:
+							(row.original['raw'] as CoreV1ResourceQuota).status?.used?.['requests.cpu'] ?? null,
+						denominator:
+							(row.original['raw'] as CoreV1ResourceQuota).status?.hard?.['requests.cpu'] ?? null
+					} satisfies RatioMetadata
 				}),
 			accessorKey: 'CPU Request',
 			size: 100
@@ -218,11 +212,11 @@ function getResourceQuotaColumnDefinitions(
 					column: column,
 					uiSchemas: uiSchemas,
 					metadata: {
-						numerator: (row.original['raw'] as CoreV1ResourceQuota).status?.used?.['limits.memory'],
-						denominator: (row.original['raw'] as CoreV1ResourceQuota).status?.hard?.[
-							'limits.memory'
-						]
-					} as RatioMetadata
+						numerator:
+							(row.original['raw'] as CoreV1ResourceQuota).status?.used?.['limits.memory'] ?? null,
+						denominator:
+							(row.original['raw'] as CoreV1ResourceQuota).status?.hard?.['limits.memory'] ?? null
+					} satisfies RatioMetadata
 				}),
 			accessorKey: 'Memory Limit',
 			size: 100
@@ -246,13 +240,12 @@ function getResourceQuotaColumnDefinitions(
 					column: column,
 					uiSchemas: uiSchemas,
 					metadata: {
-						numerator: (row.original['raw'] as CoreV1ResourceQuota).status?.used?.[
-							'requests.memory'
-						],
-						denominator: (row.original['raw'] as CoreV1ResourceQuota).status?.hard?.[
-							'requests.memory'
-						]
-					} as RatioMetadata
+						numerator:
+							(row.original['raw'] as CoreV1ResourceQuota).status?.used?.['requests.memory'] ??
+							null,
+						denominator:
+							(row.original['raw'] as CoreV1ResourceQuota).status?.hard?.['requests.memory'] ?? null
+					} satisfies RatioMetadata
 				}),
 			accessorKey: 'Memory Request',
 			size: 100
@@ -276,40 +269,18 @@ function getResourceQuotaColumnDefinitions(
 					column: column,
 					uiSchemas: uiSchemas,
 					metadata: {
-						numerator: (row.original['raw'] as CoreV1ResourceQuota).status?.used?.[
-							'requests.otterscale.com/vgpu'
-						],
-						denominator: (row.original['raw'] as CoreV1ResourceQuota).status?.hard?.[
-							'requests.otterscale.com/vgpu'
-						]
-					} as RatioMetadata
+						numerator:
+							(row.original['raw'] as CoreV1ResourceQuota).status?.used?.[
+								'requests.otterscale.com/vgpu'
+							] ?? null,
+						denominator:
+							(row.original['raw'] as CoreV1ResourceQuota).status?.hard?.[
+								'requests.otterscale.com/vgpu'
+							] ?? null
+					} satisfies RatioMetadata
 				}),
 			accessorKey: 'GPU Request',
 			size: 100
-		},
-		{
-			id: 'raw',
-			header: ({ column }: { column: Column<Record<ResourceQuotaAttribute, JsonValue>> }) =>
-				renderComponent(DynamicTableHeader, {
-					column: column,
-					dataSchemas: dataSchemas
-				}),
-			cell: ({
-				column,
-				row
-			}: {
-				column: Column<Record<ResourceQuotaAttribute, JsonValue>>;
-				row: Row<Record<ResourceQuotaAttribute, JsonValue>>;
-			}) =>
-				renderComponent(DynamicTableCell, {
-					row: row,
-					column: column,
-					uiSchemas: uiSchemas
-				}),
-			accessorKey: 'raw',
-			meta: {
-				class: 'hidden xl:table-cell'
-			}
 		}
 	];
 }

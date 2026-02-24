@@ -198,7 +198,7 @@
 </script>
 
 <Dialog.Root bind:open>
-	<Dialog.Trigger>
+	<Dialog.Trigger class="disabled:opacity-50">
 		<Button variant="outline" size="icon">
 			<Plus />
 		</Button>

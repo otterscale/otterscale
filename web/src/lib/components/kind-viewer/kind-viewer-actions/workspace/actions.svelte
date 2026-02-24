@@ -33,7 +33,6 @@
 			>
 				<View {schema} {object} />
 			</DropdownMenu.Item>
-			<DropdownMenu.Separator />
 			<DropdownMenu.Item
 				onSelect={(e) => {
 					e.preventDefault();
