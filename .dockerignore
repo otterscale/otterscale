@@ -27,11 +27,6 @@ Makefile
 .env
 .env.*
 
-# Proto source files (generated Go files are kept)
-third_party/
-api/*.proto
-api/**/*.proto
-
 # Docker files (avoid recursive builds)
 Dockerfile
 .dockerignore
