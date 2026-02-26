@@ -1,4 +1,4 @@
-name: Service GHCR
+name: Publish
 
 on:
   release:
@@ -6,7 +6,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}/service
+  IMAGE_NAME: ${{ github.repository }}
 
 permissions:
   contents: read
@@ -19,6 +19,7 @@ jobs:
       packages: write
       attestations: write
       id-token: write
+      artifact-metadata: write
     steps:
       - name: Harden the runner (Audit all outbound calls)
         uses: step-security/harden-runner@e3f713f2d8f53843e71c69a996d56f51aa9adfb9 # v2.14.1
