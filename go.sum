@@ -114,10 +114,8 @@ github.com/onsi/ginkgo/v2 v2.27.2 h1:LzwLj0b89qtIy6SSASkzlNvX6WktqurSHwkk2ipF/Ns
 github.com/onsi/ginkgo/v2 v2.27.2/go.mod h1:ArE1D/XhNXBXCBkKOLkbsb2c81dQHCRcF5zwn/ykDRo=
 github.com/onsi/gomega v1.38.2 h1:eZCjf2xjZAqe+LeWvKb5weQ+NcPwX84kqJ0cZNxok2A=
 github.com/onsi/gomega v1.38.2/go.mod h1:W2MJcYxRGV63b418Ai34Ud0hEdTVXq9NW9+Sx6uXf3k=
-github.com/otterscale/api v0.8.1 h1:1rGza66/evphrWJmuFD37ZVkUcaCl36IpEdFpx/82es=
-github.com/otterscale/api v0.8.1/go.mod h1:W1eJXksjk0ueweHLkcrva5CxJ8gO8V7XghohePWTUq0=
-github.com/otterscale/api v0.8.2 h1:ot3hnoae8ORt4eRp4BA/mAV4E+J+c2DRruKeZ3t446s=
-github.com/otterscale/api v0.8.2/go.mod h1:W1eJXksjk0ueweHLkcrva5CxJ8gO8V7XghohePWTUq0=
+github.com/otterscale/api v0.8.12 h1:KLoBmdX1DSIRnR2FXJVOF8bxmy/O78aAm9MvIQ9bsBw=
+github.com/otterscale/api v0.8.12/go.mod h1:W1eJXksjk0ueweHLkcrva5CxJ8gO8V7XghohePWTUq0=
 github.com/pelletier/go-toml/v2 v2.2.4 h1:mye9XuhQ6gvn5h28+VilKrrPoQVanw5PMw/TB0t5Ec4=
 github.com/pelletier/go-toml/v2 v2.2.4/go.mod h1:2gIqNv+qfxSVS7cM2xJQKtLSTLUE9V8t9Stt+h56mCY=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
