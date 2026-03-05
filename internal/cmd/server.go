@@ -30,11 +30,12 @@ func NewServerCommand(conf *config.Config, newServer ServerInjector) (*cobra.Com
 			defer cleanup()
 
 			cfg := &server.Config{
-				Address:          conf.ServerAddress(),
-				AllowedOrigins:   conf.ServerAllowedOrigins(),
-				TunnelAddress:    conf.ServerTunnelAddress(),
-				KeycloakRealmURL: conf.ServerKeycloakRealmURL(),
-				KeycloakClientID: conf.ServerKeycloakClientID(),
+				Address:           conf.ServerAddress(),
+				AllowedOrigins:    conf.ServerAllowedOrigins(),
+				TunnelAddress:     conf.ServerTunnelAddress(),
+				ExternalTunnelURL: conf.ServerExternalTunnelURL(),
+				KeycloakRealmURL:  conf.ServerKeycloakRealmURL(),
+				KeycloakClientID:  conf.ServerKeycloakClientID(),
 			}
 
 			return srv.Run(cmd.Context(), cfg)
