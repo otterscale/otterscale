@@ -137,7 +137,7 @@ rules:
     verbs: ["impersonate"]
   # Bootstrap: core resources required by FluxCD and Module CRD.
   - apiGroups: [""]
-    resources: ["namespaces", "serviceaccounts", "services", "configmaps", "secrets"]
+    resources: ["namespaces", "serviceaccounts", "services", "configmaps", "secrets", "resourcequotas"]
     verbs: ["get", "create", "patch"]
   # Bootstrap: workloads (FluxCD controllers).
   - apiGroups: ["apps"]
