@@ -16,12 +16,12 @@ import (
 
 // Config holds the runtime parameters for a Server.
 type Config struct {
-	Address            string
-	AllowedOrigins     []string
-	TunnelAddress      string
-	ExternalTunnelURL  string
-	KeycloakRealmURL   string
-	KeycloakClientID   string
+	Address           string
+	AllowedOrigins    []string
+	TunnelAddress     string
+	ExternalTunnelURL string
+	KeycloakRealmURL  string
+	KeycloakClientID  string
 }
 
 // BackgroundListeners is a slice of transport.Listener that

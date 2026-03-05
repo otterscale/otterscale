@@ -31,7 +31,7 @@ func NewHandler(cfg *rest.Config) *Handler {
 func (h *Handler) Mount(mux *http.ServeMux) error {
 	host := h.cfg.Host
 	if !strings.HasSuffix(host, "/") {
-		host = host + "/"
+		host += "/"
 	}
 	targetURL, err := url.Parse(host)
 	if err != nil {
