@@ -35,7 +35,7 @@ type SchemaCompositionRule struct {
 var compositionRules = []SchemaCompositionRule{
 	{
 		Source: SchemaFieldRef{
-			Group:     "addons.otterscale.io",
+			Group:     "module.otterscale.io",
 			Version:   "v1alpha1",
 			Kind:      "ModuleTemplate",
 			FieldPath: "spec.helmRelease",
@@ -49,7 +49,7 @@ var compositionRules = []SchemaCompositionRule{
 	},
 	{
 		Source: SchemaFieldRef{
-			Group:     "addons.otterscale.io",
+			Group:     "module.otterscale.io",
 			Version:   "v1alpha1",
 			Kind:      "ModuleTemplate",
 			FieldPath: "spec.kustomization",
@@ -58,76 +58,6 @@ var compositionRules = []SchemaCompositionRule{
 			Group:     "kustomize.toolkit.fluxcd.io",
 			Version:   "v1",
 			Kind:      "Kustomization",
-			FieldPath: "spec",
-		},
-	},
-	{
-		Source: SchemaFieldRef{
-			Group:     "apps.otterscale.io",
-			Version:   "v1alpha1",
-			Kind:      "SimpleApp",
-			FieldPath: "spec.deployment",
-		},
-		Target: SchemaFieldRef{
-			Group:     "apps",
-			Version:   "v1",
-			Kind:      "Deployment",
-			FieldPath: "spec",
-		},
-	},
-	{
-		Source: SchemaFieldRef{
-			Group:     "apps.otterscale.io",
-			Version:   "v1alpha1",
-			Kind:      "SimpleApp",
-			FieldPath: "spec.service",
-		},
-		Target: SchemaFieldRef{
-			Group:     "",
-			Version:   "v1",
-			Kind:      "Service",
-			FieldPath: "spec",
-		},
-	},
-	{
-		Source: SchemaFieldRef{
-			Group:     "apps.otterscale.io",
-			Version:   "v1alpha1",
-			Kind:      "SimpleApp",
-			FieldPath: "spec.persistentVolumeClaim",
-		},
-		Target: SchemaFieldRef{
-			Group:     "",
-			Version:   "v1",
-			Kind:      "PersistentVolumeClaim",
-			FieldPath: "spec",
-		},
-	},
-	{
-		Source: SchemaFieldRef{
-			Group:     "tenant.otterscale.io",
-			Version:   "v1alpha1",
-			Kind:      "Workspace",
-			FieldPath: "spec.resourceQuota",
-		},
-		Target: SchemaFieldRef{
-			Group:     "",
-			Version:   "v1",
-			Kind:      "ResourceQuota",
-			FieldPath: "spec",
-		},
-	},
-	{
-		Source: SchemaFieldRef{
-			Group:     "tenant.otterscale.io",
-			Version:   "v1alpha1",
-			Kind:      "Workspace",
-			FieldPath: "spec.limitRange",
-		},
-		Target: SchemaFieldRef{
-			Group:     "",
-			Version:   "v1",
-			Kind:      "LimitRange",
 			FieldPath: "spec",
 		},
 	},
