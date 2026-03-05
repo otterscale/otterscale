@@ -87,9 +87,9 @@ func newCmd(conf *config.Config) (*cobra.Command, error) {
 	return c, nil
 }
 
-// provideCA is a thin Wire provider that extracts the CA directory
-// from the config and delegates to pki.ProvideCA for the actual
-// CA loading/generation logic.
-func provideCA(conf *config.Config) (*pki.CA, error) {
-	return pki.ProvideCA(conf.ServerTunnelCADir())
+// provideCA is a Wire provider that generates a fresh ephemeral CA on
+// every server start. The CA is not persisted; agents re-register
+// automatically via the public Register API when the server restarts.
+func provideCA() (*pki.CA, error) {
+	return pki.NewCA()
 }

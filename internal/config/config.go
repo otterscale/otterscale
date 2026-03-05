@@ -102,14 +102,6 @@ func (c *Config) ServerTunnelAddress() string {
 	return c.v.GetString(keyServerTunnelAddress)
 }
 
-// ServerTunnelCADir returns the directory path where the CA
-// certificate and private key are persisted. On first startup the
-// server generates a new CA and writes the material to this
-// directory; subsequent restarts load the existing CA.
-func (c *Config) ServerTunnelCADir() string {
-	return c.v.GetString(keyServerTunnelCADir)
-}
-
 // ServerKeycloakRealmURL returns the Keycloak realm issuer URL used
 // for OIDC token verification.
 func (c *Config) ServerKeycloakRealmURL() string {

@@ -40,7 +40,7 @@ func NewLinkRegistrar(version core.Version) (core.TunnelConsumer, error) {
 		agentID:      agentID,
 		agentVersion: string(version),
 		client: &http.Client{
-			Timeout: 30 * time.Second,
+			Timeout: 10 * time.Second,
 		},
 	}, nil
 }

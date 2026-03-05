@@ -6,6 +6,7 @@ import (
 	"context"
 	"fmt"
 	"net"
+	"net/url"
 
 	linkv1 "github.com/otterscale/api/link/v1"
 
@@ -15,11 +16,12 @@ import (
 
 // Config holds the runtime parameters for a Server.
 type Config struct {
-	Address          string
-	AllowedOrigins   []string
-	TunnelAddress    string
-	KeycloakRealmURL string
-	KeycloakClientID string
+	Address           string
+	AllowedOrigins    []string
+	TunnelAddress     string
+	ExternalTunnelURL string
+	KeycloakRealmURL  string
+	KeycloakClientID  string
 }
 
 // BackgroundListeners is a slice of transport.Listener that
@@ -53,11 +55,22 @@ func (s *Server) Run(ctx context.Context, cfg *Config) error {
 		return fmt.Errorf("keycloak realm URL is required but not configured")
 	}
 
-	// Parse the tunnel address to extract the host for the TLS
-	// certificate SAN.
-	tunnelHost, _, err := net.SplitHostPort(cfg.TunnelAddress)
-	if err != nil {
-		return fmt.Errorf("parse tunnel address %q: %w", cfg.TunnelAddress, err)
+	// Determine the host for the TLS certificate SAN. Prefer the
+	// external tunnel URL (the address agents actually connect to)
+	// over the local listen address which may be 0.0.0.0.
+	var tunnelHost string
+	if cfg.ExternalTunnelURL != "" {
+		u, err := url.Parse(cfg.ExternalTunnelURL)
+		if err != nil {
+			return fmt.Errorf("parse external tunnel URL %q: %w", cfg.ExternalTunnelURL, err)
+		}
+		tunnelHost = u.Hostname()
+	} else {
+		var err error
+		tunnelHost, _, err = net.SplitHostPort(cfg.TunnelAddress)
+		if err != nil {
+			return fmt.Errorf("parse tunnel address %q: %w", cfg.TunnelAddress, err)
+		}
 	}
 
 	oidc, err := http.NewOIDC(cfg.KeycloakRealmURL, cfg.KeycloakClientID)
