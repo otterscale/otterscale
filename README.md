@@ -2,7 +2,7 @@
 
 [![Release](https://img.shields.io/github/v/release/otterscale/otterscale?logo=github)](https://github.com/otterscale/otterscale/releases)
 [![License](https://img.shields.io/github/license/otterscale/otterscale?logo=github&color=blue)](https://opensource.org/license/apache-2-0)
-[![Workflow](https://img.shields.io/github/actions/workflow/status/otterscale/otterscale/ci-go.yml?logo=github&label=workflow)](https://github.com/otterscale/otterscale/actions/workflows/ci-go.yml)
+[![Workflow](https://img.shields.io/github/actions/workflow/status/otterscale/otterscale/ci.yml?logo=github&label=workflow)](https://github.com/otterscale/otterscale/actions/workflows/ci.yml)
 [![Codecov](https://codecov.io/gh/otterscale/otterscale/graph/badge.svg?token=I7R0YEMXER)](https://codecov.io/gh/otterscale/otterscale)
 [![Go Report Card](https://goreportcard.com/badge/github.com/otterscale/otterscale)](https://goreportcard.com/report/github.com/otterscale/otterscale)
 [![FIPS 140-3](https://img.shields.io/badge/FIPS%20140--3-enabled-green)](https://go.dev/doc/security/fips140)
