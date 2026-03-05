@@ -16,7 +16,7 @@ COPY . .
 # Build the application with FIPS 140-3 support.
 # GOFIPS140=latest selects the Go Cryptographic Module and enables
 # FIPS mode by default. The module is pure Go (no cgo required).
-RUN GOFIPS140=latest make build
+RUN make build
 
 # Use distroless as minimal base image to package the manager binary
 # Refer to https://github.com/GoogleContainerTools/distroless for more details

@@ -7,9 +7,9 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/otterscale/otterscale)](https://goreportcard.com/report/github.com/otterscale/otterscale)
 [![FIPS 140-3](https://img.shields.io/badge/FIPS%20140--3-enabled-green)](https://go.dev/doc/security/fips140)
 
-> The original OtterScale repository has been moved to [otterscale-legacy](https://github.com/otterscale/otterscale-legacy).
+> The original OtterScale repository has been moved to [legacy](https://github.com/otterscale/legacy).
 >
-> This repository now houses the core application, while the user interface has been split into a separate project [otterscale-console](https://github.com/otterscale/otterscale-console).
+> This repository now houses the core application, while the user interface has been split into a separate project [dashboard](https://github.com/otterscale/dashboard).
 
 **Multi-cluster Kubernetes API gateway — unified ConnectRPC endpoint over Chisel reverse tunnels with OIDC + mTLS.**
 

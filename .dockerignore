@@ -21,7 +21,6 @@ README.md
 
 # CI/CD and tooling
 .golangci.yml
-Makefile
 
 # Environment files
 .env
