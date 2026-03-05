@@ -77,16 +77,15 @@ Env prefix: `OTTERSCALE_`, dots → underscores. Config file: `config.yaml` in `
 
 ### Server
 
-| ENV_VAR                                 | Default                  | Description                                 |
-| --------------------------------------- | ------------------------ | ------------------------------------------- |
-| `OTTERSCALE_SERVER_ADDRESS`             | `:8299`                  | HTTP listen address                         |
-| `OTTERSCALE_SERVER_ALLOWED_ORIGINS`     | —                        | CORS origins **(required)**                 |
-| `OTTERSCALE_SERVER_TUNNEL_ADDRESS`      | `127.0.0.1:8300`         | Chisel tunnel listen address                |
-| `OTTERSCALE_SERVER_TUNNEL_CA_DIR`       | `/var/lib/otterscale/ca` | Persistent CA cert/key directory            |
-| `OTTERSCALE_SERVER_KEYCLOAK_REALM_URL`  | —                        | OIDC issuer URL **(required)**              |
-| `OTTERSCALE_SERVER_KEYCLOAK_CLIENT_ID`  | `otterscale-server`      | Expected OIDC `aud` claim                   |
-| `OTTERSCALE_SERVER_EXTERNAL_URL`        | —                        | Public server URL for agents **(required)** |
-| `OTTERSCALE_SERVER_EXTERNAL_TUNNEL_URL` | —                        | Public tunnel URL for agents **(required)** |
+| ENV_VAR                                 | Default             | Description                                 |
+| --------------------------------------- | ------------------- | ------------------------------------------- |
+| `OTTERSCALE_SERVER_ADDRESS`             | `:8299`             | HTTP listen address                         |
+| `OTTERSCALE_SERVER_ALLOWED_ORIGINS`     | —                   | CORS origins **(required)**                 |
+| `OTTERSCALE_SERVER_TUNNEL_ADDRESS`      | `127.0.0.1:8300`    | Chisel tunnel listen address                |
+| `OTTERSCALE_SERVER_KEYCLOAK_REALM_URL`  | —                   | OIDC issuer URL **(required)**              |
+| `OTTERSCALE_SERVER_KEYCLOAK_CLIENT_ID`  | `otterscale-server` | Expected OIDC `aud` claim                   |
+| `OTTERSCALE_SERVER_EXTERNAL_URL`        | —                   | Public server URL for agents **(required)** |
+| `OTTERSCALE_SERVER_EXTERNAL_TUNNEL_URL` | —                   | Public tunnel URL for agents **(required)** |
 
 ### Agent
 
