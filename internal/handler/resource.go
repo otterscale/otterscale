@@ -64,7 +64,7 @@ func (s *ResourceService) Discovery(ctx context.Context, req *pb.DiscoveryReques
 
 // Schema returns the OpenAPI schema for the given GVK, serialized as
 // a protobuf Struct.
-func (s *ResourceService) Schema(ctx context.Context, req *pb.SchemaRequest) (*structpb.Struct, error) {
+func (s *ResourceService) Schema(ctx context.Context, req *pb.SchemaRequest) (*pb.SchemaResponse, error) {
 	resolved, err := s.resource.ResolveSchema(
 		ctx,
 		req.GetCluster(),
@@ -79,7 +79,9 @@ func (s *ResourceService) Schema(ctx context.Context, req *pb.SchemaRequest) (*s
 	if err != nil {
 		return nil, connect.NewError(connect.CodeInternal, err)
 	}
-	return result, nil
+	resp := &pb.SchemaResponse{}
+	resp.SetSchema(result)
+	return resp, nil
 }
 
 // ---------------------------------------------------------------------------
