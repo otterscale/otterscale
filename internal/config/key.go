@@ -13,7 +13,6 @@ const (
 	keyServerAddress           = "server.address"
 	keyServerAllowedOrigins    = "server.allowed_origins"
 	keyServerTunnelAddress     = "server.tunnel.address"
-	keyServerTunnelCADir       = "server.tunnel.ca_dir"
 	keyServerKeycloakRealmURL  = "server.keycloak.realm_url"
 	keyServerKeycloakClientID  = "server.keycloak.client_id"
 	keyServerExternalURL       = "server.external_url"

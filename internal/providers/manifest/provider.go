@@ -11,8 +11,9 @@ import (
 // ProvideAgentManifestConfig is a Wire provider that extracts the
 // external URLs from the server configuration and derives an HMAC key
 // for signing stateless manifest tokens. The HMAC key is derived from
-// the CA's private key via HKDF, so it is deterministic for the same
-// CA and survives restarts without separate persistence.
+// the CA's private key via HKDF. Since the CA is ephemeral (regenerated
+// on each server start), tokens issued before a restart become invalid
+// and agents will automatically request new ones.
 func ProvideAgentManifestConfig(conf *config.Config, ca *pki.CA) (core.AgentManifestConfig, error) {
 	hmacKey, err := ca.DeriveHMACKey("manifest-token")
 	if err != nil {
