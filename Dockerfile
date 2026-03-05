@@ -16,7 +16,8 @@ COPY . .
 # Build the application with FIPS 140-3 support.
 # GOFIPS140=latest selects the Go Cryptographic Module and enables
 # FIPS mode by default. The module is pure Go (no cgo required).
-RUN CGO_ENABLED=0 make build
+ARG VERSION=devel
+RUN CGO_ENABLED=0 VERSION=${VERSION} make build
 RUN mkdir -p /ca-dir
 
 # Use distroless as minimal base image to package the manager binary

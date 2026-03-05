@@ -1,4 +1,4 @@
-VERSION=$(shell git describe --tags --always)
+VERSION ?= $(shell git describe --tags --always 2>/dev/null || echo devel)
 
 FLUX2_VERSION := v2.8.1
 MODULE_OPERATOR_VERSION := v0.8.2

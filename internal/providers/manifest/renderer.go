@@ -227,7 +227,7 @@ spec:
       serviceAccountName: otterscale-agent
       containers:
         - name: otterscale
-          image: {{ .Image }}
+          image: {{ yamlQuote .Image }}
           args:
             - agent
           env:
