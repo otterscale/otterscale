@@ -128,8 +128,8 @@ func NewClient(opts ...ClientOption) (*Client, error) {
 		serverURL:        "http://127.0.0.1:8299",
 		tunnelServerURL:  "https://127.0.0.1:8300",
 		keepAlive:        30 * time.Second,
-		maxRetryCount:    6,
-		maxRetryInterval: 10 * time.Second,
+		maxRetryCount:    3,
+		maxRetryInterval: 5 * time.Second,
 		baseRetryDelay:   1 * time.Second,
 		maxRetryDelay:    30 * time.Second,
 	}
