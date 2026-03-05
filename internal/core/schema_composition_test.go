@@ -99,7 +99,7 @@ func TestComposingSchemaResolver_MatchingGVK(t *testing.T) {
 
 	upstream := &stubSchemaResolver{
 		schemas: map[string]*spec.Schema{
-			"addons.otterscale.io/ModuleTemplate": baseSchema,
+			"module.otterscale.io/ModuleTemplate": baseSchema,
 			"helm.toolkit.fluxcd.io/HelmRelease":  helmReleaseSchema,
 		},
 	}
@@ -107,7 +107,7 @@ func TestComposingSchemaResolver_MatchingGVK(t *testing.T) {
 	resolver := NewComposingSchemaResolver(upstream)
 	schema, err := resolver.ResolveSchema(
 		context.Background(), "cluster1",
-		"addons.otterscale.io", "v1alpha1", "ModuleTemplate",
+		"module.otterscale.io", "v1alpha1", "ModuleTemplate",
 	)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -145,14 +145,14 @@ func TestComposingSchemaResolver_TargetFetchError(t *testing.T) {
 
 	upstream := &stubSchemaResolver{
 		schemas: map[string]*spec.Schema{
-			"addons.otterscale.io/ModuleTemplate": baseSchema,
+			"module.otterscale.io/ModuleTemplate": baseSchema,
 		},
 	}
 
 	resolver := NewComposingSchemaResolver(upstream)
 	schema, err := resolver.ResolveSchema(
 		context.Background(), "cluster1",
-		"addons.otterscale.io", "v1alpha1", "ModuleTemplate",
+		"module.otterscale.io", "v1alpha1", "ModuleTemplate",
 	)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -193,7 +193,7 @@ func TestComposingSchemaResolver_CacheNotCorrupted(t *testing.T) {
 
 	upstream := &stubSchemaResolver{
 		schemas: map[string]*spec.Schema{
-			"addons.otterscale.io/ModuleTemplate": original,
+			"module.otterscale.io/ModuleTemplate": original,
 			"helm.toolkit.fluxcd.io/HelmRelease":  helmReleaseSchema,
 		},
 	}
@@ -201,7 +201,7 @@ func TestComposingSchemaResolver_CacheNotCorrupted(t *testing.T) {
 	resolver := NewComposingSchemaResolver(upstream)
 	_, err := resolver.ResolveSchema(
 		context.Background(), "cluster1",
-		"addons.otterscale.io", "v1alpha1", "ModuleTemplate",
+		"module.otterscale.io", "v1alpha1", "ModuleTemplate",
 	)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -224,7 +224,7 @@ func TestComposingSchemaResolver_SourceVersionMismatch(t *testing.T) {
 	compositionRules = []SchemaCompositionRule{
 		{
 			Source: SchemaFieldRef{
-				Group:     "addons.otterscale.io",
+				Group:     "module.otterscale.io",
 				Version:   "v1beta1",
 				Kind:      "ModuleTemplate",
 				FieldPath: "spec.helmRelease",
@@ -252,7 +252,7 @@ func TestComposingSchemaResolver_SourceVersionMismatch(t *testing.T) {
 
 	upstream := &stubSchemaResolver{
 		schemas: map[string]*spec.Schema{
-			"addons.otterscale.io/ModuleTemplate": baseSchema,
+			"module.otterscale.io/ModuleTemplate": baseSchema,
 		},
 	}
 
@@ -261,7 +261,7 @@ func TestComposingSchemaResolver_SourceVersionMismatch(t *testing.T) {
 	// Request with v1alpha1 should NOT match the v1beta1-pinned rule.
 	schema, err := resolver.ResolveSchema(
 		context.Background(), "cluster1",
-		"addons.otterscale.io", "v1alpha1", "ModuleTemplate",
+		"module.otterscale.io", "v1alpha1", "ModuleTemplate",
 	)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
