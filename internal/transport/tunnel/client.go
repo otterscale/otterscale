@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"log/slog"
+	"net"
 	"os"
 	"path/filepath"
 	"sync"
@@ -127,7 +128,7 @@ func NewClient(opts ...ClientOption) (*Client, error) {
 		cluster:          "default",
 		serverURL:        "http://127.0.0.1:8299",
 		tunnelServerURL:  "https://127.0.0.1:8300",
-		keepAlive:        30 * time.Second,
+		keepAlive:        15 * time.Second,
 		maxRetryCount:    3,
 		maxRetryInterval: 5 * time.Second,
 		baseRetryDelay:   1 * time.Second,
@@ -269,7 +270,25 @@ func (c *Client) dial(ctx context.Context) (*chclient.Client, error) {
 		KeepAlive:        c.keepAlive,
 		MaxRetryCount:    c.maxRetryCount,
 		MaxRetryInterval: c.maxRetryInterval,
+		DialContext:      tcpKeepAliveDialer,
 	})
+}
+
+// tcpKeepAliveDialer is a DialContext function that enables aggressive
+// TCP keepalive on outgoing connections. Without this, a half-open TCP
+// connection (e.g. server killed without sending FIN) can go undetected
+// for 13–30 minutes (Linux default tcp_retries2=15). With these
+// settings the OS detects a dead peer in roughly 30–45 seconds.
+func tcpKeepAliveDialer(ctx context.Context, network, addr string) (net.Conn, error) {
+	d := net.Dialer{
+		KeepAliveConfig: net.KeepAliveConfig{
+			Enable:   true,
+			Idle:     15 * time.Second,
+			Interval: 5 * time.Second,
+			Count:    3,
+		},
+	}
+	return d.DialContext(ctx, network, addr)
 }
 
 // runSession starts the inner chisel client and waits for it to finish.
