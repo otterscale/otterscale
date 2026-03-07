@@ -20,10 +20,11 @@ import (
 
 // Config holds the runtime parameters for an Agent.
 type Config struct {
-	Cluster         string
-	ServerURL       string
-	TunnelServerURL string
-	Bootstrap       bool
+	Cluster            string
+	ServerURL          string
+	TunnelServerURL    string
+	Bootstrap          bool
+	ProxyPrometheusURL string
 }
 
 // SelfUpdater abstracts the self-update mechanism so it can be

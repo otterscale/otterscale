@@ -34,6 +34,11 @@ type RuntimeRepo interface {
 	// bidirectionally until the context is canceled or the
 	// connection closes.
 	PortForward(ctx context.Context, cluster, namespace, name string, opts PortForwardOptions) error
+	// SubResourceAction invokes a PUT or POST action on a named
+	// subresource (e.g. KubeVirt VM start/stop/restart). Returns
+	// the response body, if any.
+	SubResourceAction(ctx context.Context, cluster string, gvr schema.GroupVersionResource,
+		namespace, name, subresource, method string, body []byte) (map[string]any, error)
 }
 
 // ---------------------------------------------------------------------------
@@ -394,4 +399,30 @@ func (uc *RuntimeUseCase) Restart(ctx context.Context, id *ResourceIdentifier) e
 		return err
 	}
 	return uc.runtime.Restart(ctx, id.Cluster, gvr, id.Namespace, id.Name)
+}
+
+// allowedSubResourceMethods are the HTTP methods permitted for
+// SubResourceAction. DELETE and PATCH have dedicated RPCs.
+var allowedSubResourceMethods = map[string]bool{"PUT": true, "POST": true}
+
+// SubResourceAction validates the inputs and forwards a PUT/POST
+// subresource action to the Kubernetes API via impersonation. This
+// covers use-cases such as KubeVirt VM start/stop/restart/migrate.
+func (uc *RuntimeUseCase) SubResourceAction(ctx context.Context, id *ResourceIdentifier, subresource, method string, body []byte) (map[string]any, error) {
+	if id.Name == "" {
+		return nil, &ErrInvalidInput{Field: "name", Message: "resource name is required"}
+	}
+	if subresource == "" {
+		return nil, &ErrInvalidInput{Field: "subresource", Message: "subresource is required"}
+	}
+	if !allowedSubResourceMethods[method] {
+		return nil, &ErrInvalidInput{Field: "method", Message: "must be PUT or POST"}
+	}
+
+	gvr, err := id.lookupGVR(ctx, uc.discovery)
+	if err != nil {
+		return nil, err
+	}
+
+	return uc.runtime.SubResourceAction(ctx, id.Cluster, gvr, id.Namespace, id.Name, subresource, method, body)
 }

@@ -10,6 +10,7 @@ import (
 
 	"connectrpc.com/connect"
 	"google.golang.org/protobuf/types/known/emptypb"
+	"google.golang.org/protobuf/types/known/structpb"
 
 	pb "github.com/otterscale/api/runtime/v1"
 
@@ -346,4 +347,41 @@ func (s *RuntimeService) Restart(ctx context.Context, req *pb.RestartRequest) (*
 		return nil, domainErrorToConnectError(err)
 	}
 	return &emptypb.Empty{}, nil
+}
+
+// ---------------------------------------------------------------------------
+// SubResourceAction
+// ---------------------------------------------------------------------------
+
+// SubResourceAction performs a generic subresource action (e.g.
+// KubeVirt VM start/stop/restart). The request is forwarded to
+// kube-apiserver via impersonation, so Kubernetes RBAC is enforced.
+func (s *RuntimeService) SubResourceAction(ctx context.Context, req *pb.SubResourceActionRequest) (*pb.SubResourceActionResponse, error) {
+	result, err := s.runtime.SubResourceAction(
+		ctx,
+		&core.ResourceIdentifier{
+			Cluster:   req.GetCluster(),
+			Group:     req.GetGroup(),
+			Version:   req.GetVersion(),
+			Resource:  req.GetResource(),
+			Namespace: req.GetNamespace(),
+			Name:      req.GetName(),
+		},
+		req.GetSubresource(),
+		req.GetMethod(),
+		req.GetBody(),
+	)
+	if err != nil {
+		return nil, domainErrorToConnectError(err)
+	}
+
+	resp := &pb.SubResourceActionResponse{}
+	if result != nil {
+		pbStruct, err := structpb.NewStruct(result)
+		if err != nil {
+			return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("marshal subresource result: %w", err))
+		}
+		resp.SetResult(pbStruct)
+	}
+	return resp, nil
 }

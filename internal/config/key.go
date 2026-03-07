@@ -21,8 +21,9 @@ const (
 
 // Viper keys for agent-mode configuration.
 const (
-	keyAgentCluster         = "agent.cluster"
-	keyAgentServerURL       = "agent.server_url"
-	keyAgentTunnelServerURL = "agent.tunnel.server_url"
-	keyAgentBootstrap       = "agent.bootstrap"
+	keyAgentCluster            = "agent.cluster"
+	keyAgentServerURL          = "agent.server_url"
+	keyAgentTunnelServerURL    = "agent.tunnel.server_url"
+	keyAgentBootstrap          = "agent.bootstrap"
+	keyAgentProxyPrometheusURL = "agent.proxy.prometheus_url"
 )

@@ -2,6 +2,7 @@ package kubernetes
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 
 	"github.com/Masterminds/semver/v3"
@@ -123,6 +124,71 @@ func (d *discoveryClient) SupportsWatchList(ctx context.Context, cluster string)
 	}
 
 	return kubeVersion.GreaterThanEqual(minWatchListVersion), nil
+}
+
+// tableAcceptHeader is the Accept header value that instructs the
+// Kubernetes API server to return resources in Table format,
+// including column definitions. This is the same mechanism used by
+// `kubectl get`.
+const tableAcceptHeader = "application/json;as=Table;v=v1;g=meta.k8s.io"
+
+// Columns issues a Table API request with limit=1 to retrieve the
+// printer column definitions for a resource type. The actual row data
+// is discarded; only columnDefinitions are extracted.
+func (d *discoveryClient) Columns(ctx context.Context, cluster string, gvr schema.GroupVersionResource, namespace string) ([]core.ColumnDefinition, error) {
+	config, err := d.kubernetes.impersonationConfig(ctx, cluster)
+	if err != nil {
+		return nil, err
+	}
+
+	config = rest.CopyConfig(config)
+	config.ContentConfig = rest.ContentConfig{
+		AcceptContentTypes: tableAcceptHeader,
+		ContentType:        "application/json",
+	}
+
+	restClient, err := rest.RESTClientFor(config)
+	if err != nil {
+		return nil, wrapK8sError(err)
+	}
+
+	var apiPath string
+	if gvr.Group == "" {
+		apiPath = "/api/" + gvr.Version
+	} else {
+		apiPath = "/apis/" + gvr.Group + "/" + gvr.Version
+	}
+
+	req := restClient.Get().
+		AbsPath(apiPath).
+		Resource(gvr.Resource).
+		Param("limit", "1")
+
+	if namespace != "" {
+		req = req.Namespace(namespace)
+	}
+
+	raw, err := req.DoRaw(ctx)
+	if err != nil {
+		return nil, wrapK8sError(err)
+	}
+
+	var table metav1.Table
+	if err := json.Unmarshal(raw, &table); err != nil {
+		return nil, &core.DomainError{Code: core.ErrorCodeInternal, Message: "unmarshal Table response", Cause: err}
+	}
+
+	columns := make([]core.ColumnDefinition, len(table.ColumnDefinitions))
+	for i, col := range table.ColumnDefinitions {
+		columns[i] = core.ColumnDefinition{
+			Name:        col.Name,
+			Type:        col.Type,
+			Format:      col.Format,
+			Description: col.Description,
+			Priority:    col.Priority,
+		}
+	}
+	return columns, nil
 }
 
 // client returns a fresh discovery client for the given cluster with

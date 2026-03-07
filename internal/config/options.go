@@ -33,6 +33,7 @@ var AgentOptions = []Option{
 	{Key: keyAgentServerURL, Flag: toFlag(keyAgentServerURL), Default: "http://127.0.0.1:8299", Description: "Agent control-plane server url"},
 	{Key: keyAgentTunnelServerURL, Flag: toFlag(keyAgentTunnelServerURL), Default: "https://127.0.0.1:8300", Description: "Agent tunnel server url"},
 	{Key: keyAgentBootstrap, Flag: toFlag(keyAgentBootstrap), Default: true, Description: "Run Layer 0 bootstrap on startup (install FluxCD + Module CRD)"},
+	{Key: keyAgentProxyPrometheusURL, Flag: toFlag(keyAgentProxyPrometheusURL), Default: "http://prom-kube-prometheus-stack-prometheus.monitoring.svc:9090", Description: "In-cluster Prometheus URL for the metrics proxy"},
 }
 
 // toFlag converts a viper key like "server.tunnel.key_seed" into a
