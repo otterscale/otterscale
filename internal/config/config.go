@@ -152,3 +152,9 @@ func (c *Config) AgentTunnelServerURL() string {
 func (c *Config) AgentBootstrap() bool {
 	return c.v.GetBool(keyAgentBootstrap)
 }
+
+// AgentProxyPrometheusURL returns the in-cluster Prometheus URL used by the
+// agent-side metrics proxy. An empty string disables the proxy.
+func (c *Config) AgentProxyPrometheusURL() string {
+	return c.v.GetString(keyAgentProxyPrometheusURL)
+}

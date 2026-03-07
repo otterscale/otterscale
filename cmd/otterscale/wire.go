@@ -32,6 +32,6 @@ func wireServer(v core.Version, conf *config.Config) (*server.Server, func(), er
 // wireAgent assembles a fully wired Agent with its handler, link
 // registrar, and bootstrapper. The version parameter is provided by
 // the caller and flows through Wire to both LinkRegistrar and Agent.
-func wireAgent(v core.Version) (*agent.Agent, func(), error) {
+func wireAgent(v core.Version, conf *config.Config) (*agent.Agent, func(), error) {
 	panic(wire.Build(cmd.ProviderSet, providers.ProviderSet, bootstrap.ProviderSet, kubernetes.ProvideInClusterConfig))
 }

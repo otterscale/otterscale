@@ -352,6 +352,52 @@ func (r *runtimeRepo) runPortForwardStreams(ctx context.Context, streamConn http
 const portForwardProtocolV1 = "portforward.k8s.io"
 
 // ---------------------------------------------------------------------------
+// SubResourceAction
+// ---------------------------------------------------------------------------
+
+// SubResourceAction invokes a PUT or POST action on a named
+// subresource. This covers use-cases like KubeVirt VM
+// start/stop/restart/migrate where the API server exposes
+// state-transition endpoints as subresources.
+func (r *runtimeRepo) SubResourceAction(ctx context.Context, cluster string, gvr schema.GroupVersionResource,
+	namespace, name, subresource, method string, body []byte,
+) (map[string]any, error) {
+	client, err := r.dynamicClient(ctx, cluster)
+	if err != nil {
+		return nil, err
+	}
+
+	obj := &unstructured.Unstructured{}
+	if len(body) > 0 {
+		if err := json.Unmarshal(body, &obj.Object); err != nil {
+			return nil, &core.DomainError{Code: core.ErrorCodeInvalidArgument, Message: "invalid JSON body", Cause: err}
+		}
+	}
+	if obj.Object == nil {
+		obj.Object = map[string]any{}
+	}
+	obj.SetName(name)
+	obj.SetNamespace(namespace)
+
+	var result *unstructured.Unstructured
+	switch method {
+	case "PUT":
+		result, err = client.Resource(gvr).Namespace(namespace).Update(ctx, obj, metav1.UpdateOptions{}, subresource)
+	case "POST":
+		result, err = client.Resource(gvr).Namespace(namespace).Create(ctx, obj, metav1.CreateOptions{}, subresource)
+	default:
+		return nil, &core.DomainError{Code: core.ErrorCodeInvalidArgument, Message: fmt.Sprintf("unsupported method %q for subresource action", method)}
+	}
+	if err != nil {
+		return nil, wrapK8sError(err)
+	}
+	if result == nil {
+		return nil, nil
+	}
+	return result.Object, nil
+}
+
+// ---------------------------------------------------------------------------
 // Terminal size adapter
 // ---------------------------------------------------------------------------
 

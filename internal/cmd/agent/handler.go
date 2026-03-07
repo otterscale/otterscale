@@ -4,31 +4,73 @@ import (
 	"fmt"
 	"log/slog"
 	"net/http"
+	"net/http/httputil"
 	"net/url"
 	"strings"
 
 	utilproxy "k8s.io/apimachinery/pkg/util/proxy"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/transport"
+
+	"github.com/otterscale/otterscale/internal/config"
 )
 
-// Handler is a reverse proxy that forwards all incoming HTTP requests
-// to the local kube-apiserver. It is the spoke-side component in the
-// hub-and-spoke architecture: the hub tunnels user requests into the
-// spoke cluster, and Handler proxies them to the real API server.
+// proxyPathPrefix is the URL prefix reserved for service proxies
+// managed by the agent (e.g. Prometheus). Requests under this prefix
+// are routed to a dedicated reverse proxy instead of kube-apiserver.
+const proxyPathPrefix = "/__otterscale/proxy/"
+
+// Handler is a reverse proxy that forwards incoming HTTP requests to
+// the local kube-apiserver and, optionally, to configured in-cluster
+// services (e.g. Prometheus). It is the spoke-side component in the
+// hub-and-spoke architecture.
 type Handler struct {
-	cfg *rest.Config
+	cfg                *rest.Config
+	proxyPrometheusURL string
 }
 
-// NewHandler creates a Handler backed by the given Kubernetes client config.
-func NewHandler(cfg *rest.Config) *Handler {
-	return &Handler{cfg: cfg}
+// NewHandler creates a Handler backed by the given Kubernetes client
+// config. proxyPrometheusURL, when non-empty, enables the Prometheus
+// metrics proxy under the /__otterscale/proxy/ path prefix.
+func NewHandler(cfg *rest.Config, conf *config.Config) *Handler {
+	return &Handler{cfg: cfg, proxyPrometheusURL: conf.AgentProxyPrometheusURL()}
 }
 
-// Mount registers a catch-all reverse proxy on mux that supports both
-// regular HTTP requests and WebSocket/SPDY upgrades (required by
-// kubectl exec, attach, and port-forward).
+// Mount registers HTTP handlers on mux. A catch-all reverse proxy to
+// kube-apiserver is always registered. When a Prometheus URL is
+// configured, a dedicated reverse proxy is registered under
+// /__otterscale/proxy/ so that the hub can relay metrics queries
+// without going through kube-apiserver.
 func (h *Handler) Mount(mux *http.ServeMux) error {
+	if h.proxyPrometheusURL != "" {
+		if err := h.mountPrometheusProxy(mux); err != nil {
+			return err
+		}
+	}
+
+	return h.mountKubeProxy(mux)
+}
+
+// mountPrometheusProxy registers a reverse proxy that forwards
+// requests under /__otterscale/proxy/ to the configured Prometheus
+// service URL.
+func (h *Handler) mountPrometheusProxy(mux *http.ServeMux) error {
+	target, err := url.Parse(h.proxyPrometheusURL)
+	if err != nil {
+		return fmt.Errorf("failed to parse proxy prometheus URL %q: %w", h.proxyPrometheusURL, err)
+	}
+
+	proxy := httputil.NewSingleHostReverseProxy(target)
+	proxy.ErrorLog = slog.NewLogLogger(slog.Default().Handler(), slog.LevelWarn)
+
+	mux.Handle(proxyPathPrefix, http.StripPrefix("/__otterscale/proxy", proxy))
+	slog.Info("prometheus proxy enabled", "target", h.proxyPrometheusURL)
+	return nil
+}
+
+// mountKubeProxy registers the catch-all reverse proxy to
+// kube-apiserver with WebSocket/SPDY upgrade support.
+func (h *Handler) mountKubeProxy(mux *http.ServeMux) error {
 	host := h.cfg.Host
 	if !strings.HasSuffix(host, "/") {
 		host += "/"

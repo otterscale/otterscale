@@ -76,7 +76,7 @@ func newCmd(conf *config.Config) (*cobra.Command, error) {
 	}
 
 	agentCmd, err := cmd.NewAgentCommand(conf, func() (*agent.Agent, func(), error) {
-		return wireAgent(v)
+		return wireAgent(v, conf)
 	})
 	if err != nil {
 		return nil, err

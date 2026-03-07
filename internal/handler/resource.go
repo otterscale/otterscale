@@ -272,6 +272,40 @@ func (s *ResourceService) Describe(ctx context.Context, req *pb.DescribeRequest)
 // Watch
 // ---------------------------------------------------------------------------
 
+// Columns returns the printer column definitions for a resource type,
+// equivalent to the columns shown by `kubectl get` and `kubectl get -o wide`.
+func (s *ResourceService) Columns(ctx context.Context, req *pb.ColumnsRequest) (*pb.ColumnsResponse, error) {
+	columns, err := s.resource.Columns(
+		ctx,
+		&core.ResourceIdentifier{
+			Cluster:   req.GetCluster(),
+			Group:     req.GetGroup(),
+			Version:   req.GetVersion(),
+			Resource:  req.GetResource(),
+			Namespace: req.GetNamespace(),
+		},
+	)
+	if err != nil {
+		return nil, domainErrorToConnectError(err)
+	}
+
+	pbCols := make([]*pb.ColumnDefinition, len(columns))
+	for i, col := range columns {
+		pbCol := &pb.ColumnDefinition{}
+		pbCol.SetName(col.Name)
+		pbCol.SetType(col.Type)
+		pbCol.SetFormat(col.Format)
+		pbCol.SetDescription(col.Description)
+		pbCol.SetPriority(col.Priority)
+		pbCol.SetJsonPath(col.JSONPath)
+		pbCols[i] = pbCol
+	}
+
+	resp := &pb.ColumnsResponse{}
+	resp.SetColumns(pbCols)
+	return resp, nil
+}
+
 // Watch opens a server-streaming RPC that forwards Kubernetes watch
 // events to the client. The stream ends when the client cancels the
 // context or the upstream watcher closes.

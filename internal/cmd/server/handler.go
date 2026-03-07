@@ -30,16 +30,18 @@ type Handler struct {
 	resource *handler.ResourceService
 	runtime  *handler.RuntimeService
 	manifest *handler.ManifestHandler
+	proxy    *handler.ProxyHandler
 }
 
-// NewHandler returns a Handler for the given gRPC services and the
-// raw HTTP manifest handler.
-func NewHandler(link *handler.LinkService, resource *handler.ResourceService, runtime *handler.RuntimeService, manifest *handler.ManifestHandler) *Handler {
+// NewHandler returns a Handler for the given gRPC services, the raw
+// HTTP manifest handler, and the Prometheus reverse proxy handler.
+func NewHandler(link *handler.LinkService, resource *handler.ResourceService, runtime *handler.RuntimeService, manifest *handler.ManifestHandler, proxy *handler.ProxyHandler) *Handler {
 	return &Handler{
 		link:     link,
 		resource: resource,
 		runtime:  runtime,
 		manifest: manifest,
+		proxy:    proxy,
 	}
 }
 
@@ -80,6 +82,13 @@ func (h *Handler) Mount(mux *http.ServeMux) error {
 	// route is registered as a public path prefix in server.go.
 	mux.HandleFunc("GET /link/manifest/{token}", h.handleRawManifest)
 
+	// Prometheus reverse proxy. Requests arrive as
+	// /proxy/{cluster}/prometheus/api/v1/query?... and are
+	// forwarded through the tunnel to the agent's
+	// /__otterscale/proxy/ endpoint. OIDC middleware protects this
+	// path (it is not in the public paths list).
+	mux.Handle("/proxy/{cluster}/prometheus/{path...}", h.proxy)
+
 	return nil
 }
 
@@ -98,13 +107,13 @@ func (h *Handler) handleRawManifest(w http.ResponseWriter, r *http.Request) {
 
 	manifest, err := h.manifest.RenderManifest(r.Context(), cluster, userName)
 	if err != nil {
-		slog.Debug("manifest render failed", "cluster", cluster, "user", userName, "error", err) //nolint:gosec // G706: cluster and userName are extracted from an HMAC-verified token, not raw user input.
+		slog.Debug("manifest render failed", "cluster", cluster, "user", userName, "error", err)
 		http.Error(w, "failed to render manifest", http.StatusInternalServerError)
 		return
 	}
 
 	w.Header().Set("Content-Type", "text/yaml; charset=utf-8")
-	if _, err := w.Write([]byte(manifest)); err != nil { //nolint:gosec // G705: manifest is server-rendered YAML served as text/yaml, not user-controlled HTML.
+	if _, err := w.Write([]byte(manifest)); err != nil {
 		slog.Warn("failed to write manifest response", "error", err)
 	}
 }

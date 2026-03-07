@@ -45,5 +45,6 @@ var ProviderSet = wire.NewSet(
 	ProvideDiscoveryCache,
 	ProvideComposingSchemaResolver,
 	wire.Bind(new(core.SchemaResolver), new(*core.ComposingSchemaResolver)),
+	wire.Bind(new(core.ColumnsProvider), new(*cache.DiscoveryCache)),
 	wire.Bind(new(core.CacheEvictor), new(*cache.DiscoveryCache)),
 )
