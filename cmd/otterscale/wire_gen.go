@@ -61,7 +61,7 @@ func wireServer(v core.Version, conf *config.Config) (*server.Server, func(), er
 	resourceRepo := kubernetes.NewResourceRepo(kubernetesKubernetes)
 	discoveryCache := providers.ProvideDiscoveryCache(discoveryClient)
 	composingSchemaResolver := providers.ProvideComposingSchemaResolver(discoveryCache)
-	resourceUseCase := core.NewResourceUseCase(discoveryClient, resourceRepo, composingSchemaResolver, discoveryCache)
+	resourceUseCase := core.NewResourceUseCase(discoveryClient, resourceRepo, composingSchemaResolver)
 	resourceService := handler.NewResourceService(resourceUseCase)
 	runtimeRepo := kubernetes.NewRuntimeRepo(kubernetesKubernetes)
 	sessionStore := core.NewSessionStore()

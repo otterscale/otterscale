@@ -12,7 +12,6 @@ import (
 	"time"
 
 	"golang.org/x/sync/singleflight"
-	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/kube-openapi/pkg/validation/spec"
 
 	"github.com/otterscale/otterscale/internal/core"
@@ -29,10 +28,10 @@ const DefaultTTL = 10 * time.Minute
 const defaultMaxSchemaEntries = 10000
 
 // DiscoveryCache provides TTL-based caching with singleflight
-// deduplication for OpenAPI schemas and column definitions. It
-// implements core.SchemaResolver and core.CacheEvictor, and reduces
-// redundant discovery API calls when multiple concurrent requests
-// target the same cluster.
+// deduplication for OpenAPI schemas. It implements
+// core.SchemaResolver and core.CacheEvictor, and reduces redundant
+// discovery API calls when multiple concurrent requests target the
+// same cluster.
 type DiscoveryCache struct {
 	discovery        core.DiscoveryClient
 	ttl              time.Duration
@@ -41,21 +40,12 @@ type DiscoveryCache struct {
 
 	mu            sync.RWMutex
 	schemaCache   map[string]*schemaCacheEntry
-	columnsCache  map[string]*columnsCacheEntry
 	schemaFlights singleflight.Group
-	columnFlights singleflight.Group
 }
 
 // schemaCacheEntry pairs a cached schema with its expiration time.
 type schemaCacheEntry struct {
 	schema    *spec.Schema
-	expiresAt time.Time
-}
-
-// columnsCacheEntry pairs cached column definitions with their
-// expiration time.
-type columnsCacheEntry struct {
-	columns   []core.ColumnDefinition
 	expiresAt time.Time
 }
 
@@ -94,7 +84,6 @@ func NewDiscoveryCache(discovery core.DiscoveryClient, ttl time.Duration, opts .
 		now:              time.Now,
 		maxSchemaEntries: defaultMaxSchemaEntries,
 		schemaCache:      make(map[string]*schemaCacheEntry),
-		columnsCache:     make(map[string]*columnsCacheEntry),
 	}
 	for _, o := range opts {
 		o(c)
@@ -161,60 +150,6 @@ func (c *DiscoveryCache) schemaCacheKey(cluster, group, version, kind string) st
 	return strings.Join([]string{cluster, group, version, kind}, "/")
 }
 
-// Columns returns the printer column definitions for a resource type.
-// Results are cached for the configured TTL and concurrent requests
-// for the same key are deduplicated via singleflight.
-func (c *DiscoveryCache) Columns(
-	ctx context.Context,
-	cluster string,
-	gvr schema.GroupVersionResource,
-	namespace string,
-) ([]core.ColumnDefinition, error) {
-	key := c.columnsCacheKey(cluster, gvr)
-
-	c.mu.RLock()
-	entry, ok := c.columnsCache[key]
-	c.mu.RUnlock()
-
-	if ok && c.now().Before(entry.expiresAt) {
-		return entry.columns, nil
-	}
-
-	v, err, _ := c.columnFlights.Do(key, func() (any, error) {
-		fetchCtx, cancel := context.WithTimeout(context.WithoutCancel(ctx), singleflightFetchTimeout)
-		defer cancel()
-
-		columns, err := c.discovery.Columns(fetchCtx, cluster, gvr, namespace)
-		if err != nil {
-			return nil, err
-		}
-
-		c.mu.Lock()
-		if len(c.columnsCache) >= c.maxSchemaEntries {
-			c.evictExpiredColumns()
-		}
-		if len(c.columnsCache) < c.maxSchemaEntries {
-			c.columnsCache[key] = &columnsCacheEntry{
-				columns:   columns,
-				expiresAt: c.now().Add(c.ttl),
-			}
-		}
-		c.mu.Unlock()
-
-		return columns, nil
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	return v.([]core.ColumnDefinition), nil
-}
-
-// columnsCacheKey builds a cache key from the cluster and GVR.
-func (c *DiscoveryCache) columnsCacheKey(cluster string, gvr schema.GroupVersionResource) string {
-	return strings.Join([]string{"columns", cluster, gvr.Group, gvr.Version, gvr.Resource}, "/")
-}
-
 // StartEvictionLoop launches a background goroutine that periodically
 // removes expired cache entries. This prevents memory leaks when
 // clusters go offline or schemas are no longer queried. It blocks
@@ -230,17 +165,12 @@ func (c *DiscoveryCache) StartEvictionLoop(ctx context.Context, interval time.Du
 			return
 		case <-ticker.C:
 			c.mu.Lock()
-			beforeSchema := len(c.schemaCache)
+			before := len(c.schemaCache)
 			c.evictExpiredSchemas()
-			afterSchema := len(c.schemaCache)
-
-			beforeCols := len(c.columnsCache)
-			c.evictExpiredColumns()
-			afterCols := len(c.columnsCache)
+			after := len(c.schemaCache)
 			c.mu.Unlock()
 
-			evicted := (beforeSchema - afterSchema) + (beforeCols - afterCols)
-			if evicted > 0 {
+			if evicted := before - after; evicted > 0 {
 				log.Info("evicted expired cache entries", "count", evicted)
 			}
 		}
@@ -254,17 +184,6 @@ func (c *DiscoveryCache) evictExpiredSchemas() {
 	for key, entry := range c.schemaCache {
 		if now.After(entry.expiresAt) {
 			delete(c.schemaCache, key)
-		}
-	}
-}
-
-// evictExpiredColumns removes expired entries from the columns cache.
-// Must be called with mu held for writing.
-func (c *DiscoveryCache) evictExpiredColumns() {
-	now := c.now()
-	for key, entry := range c.columnsCache {
-		if now.After(entry.expiresAt) {
-			delete(c.columnsCache, key)
 		}
 	}
 }

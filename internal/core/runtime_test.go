@@ -76,10 +76,6 @@ func (m *mockDiscoveryForRuntime) SupportsWatchList(context.Context, string) (bo
 	return false, nil
 }
 
-func (m *mockDiscoveryForRuntime) Columns(context.Context, string, schema.GroupVersionResource, string) ([]ColumnDefinition, error) {
-	return nil, nil
-}
-
 func newTestRuntimeUseCase(discovery DiscoveryClient, runtime RuntimeRepo) *RuntimeUseCase {
 	return NewRuntimeUseCase(discovery, runtime, NewSessionStore())
 }
