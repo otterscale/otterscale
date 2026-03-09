@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"log/slog"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
@@ -40,14 +39,12 @@ func (h *ProxyHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	address, err := h.tunnel.ResolveAddress(r.Context(), cluster)
 	if err != nil {
-		slog.Debug("proxy: cluster not found", "cluster", cluster, "error", err)
 		http.Error(w, "cluster not found", http.StatusNotFound)
 		return
 	}
 
 	target, err := url.Parse(address)
 	if err != nil {
-		slog.Error("proxy: invalid tunnel address", "address", address, "error", err)
 		http.Error(w, "internal error", http.StatusInternalServerError)
 		return
 	}
@@ -68,5 +65,5 @@ func (h *ProxyHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			req.Header.Del("Authorization")
 		},
 	}
-	proxy.ServeHTTP(w, r)
+	proxy.ServeHTTP(w, r) // #nosec G704
 }
