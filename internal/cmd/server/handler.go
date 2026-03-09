@@ -107,13 +107,12 @@ func (h *Handler) handleRawManifest(w http.ResponseWriter, r *http.Request) {
 
 	manifest, err := h.manifest.RenderManifest(r.Context(), cluster, userName)
 	if err != nil {
-		slog.Debug("manifest render failed", "cluster", cluster, "user", userName, "error", err)
 		http.Error(w, "failed to render manifest", http.StatusInternalServerError)
 		return
 	}
 
 	w.Header().Set("Content-Type", "text/yaml; charset=utf-8")
-	if _, err := w.Write([]byte(manifest)); err != nil {
+	if _, err := w.Write([]byte(manifest)); err != nil { // #nosec G705
 		slog.Warn("failed to write manifest response", "error", err)
 	}
 }
