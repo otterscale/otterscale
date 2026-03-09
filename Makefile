@@ -1,7 +1,7 @@
 VERSION ?= $(shell git describe --tags --always 2>/dev/null || echo devel)
 
 API_VERSION ?= $(call gomodver,github.com/otterscale/api)
-MODULE_OPERATOR_VERSION := v0.8.2
+MODULE_OPERATOR_VERSION := v0.8.3
 FLUX2_VERSION := v2.8.1
 
 BOOTSTRAP_DIR := manifests/bootstrap
