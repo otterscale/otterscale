@@ -49,21 +49,6 @@ type DiscoveryClient interface {
 	// SupportsWatchList reports whether the target cluster supports
 	// the WatchList streaming feature (Kubernetes >= 1.34).
 	SupportsWatchList(ctx context.Context, cluster string) (bool, error)
-	// Columns returns the printer column definitions for a resource
-	// type by issuing a Table API request with limit=1.
-	Columns(ctx context.Context, cluster string, gvr schema.GroupVersionResource, namespace string) ([]ColumnDefinition, error)
-}
-
-// ColumnDefinition represents a single printer column as returned by
-// the Kubernetes Table API. It mirrors the structure of
-// metav1.TableColumnDefinition with the addition of JSONPath for CRDs.
-type ColumnDefinition struct {
-	Name        string
-	Type        string
-	Format      string
-	Description string
-	Priority    int32
-	JSONPath    string
 }
 
 // ResourceRepo abstracts Kubernetes resource CRUD and watch operations
@@ -151,12 +136,6 @@ type SchemaResolver interface {
 	ResolveSchema(ctx context.Context, cluster, group, version, kind string) (*spec.Schema, error)
 }
 
-// ColumnsProvider resolves printer column definitions for Kubernetes
-// resource types. Implementations may cache results.
-type ColumnsProvider interface {
-	Columns(ctx context.Context, cluster string, gvr schema.GroupVersionResource, namespace string) ([]ColumnDefinition, error)
-}
-
 // ---------------------------------------------------------------------------
 // Identifiers
 // ---------------------------------------------------------------------------
@@ -188,22 +167,20 @@ func (id *ResourceIdentifier) lookupGVR(ctx context.Context, dc DiscoveryClient)
 // via the DiscoveryClient and resolves OpenAPI schemas through the
 // injected SchemaResolver.
 type ResourceUseCase struct {
-	discovery       DiscoveryClient
-	resource        ResourceRepo
-	schemaResolver  SchemaResolver
-	columnsProvider ColumnsProvider
+	discovery      DiscoveryClient
+	resource       ResourceRepo
+	schemaResolver SchemaResolver
 }
 
 // NewResourceUseCase returns a ResourceUseCase wired to the given
-// discovery, resource, schema resolver, and columns provider backends.
-// The SchemaResolver and ColumnsProvider are injected to decouple
-// caching infrastructure from the domain use-case.
-func NewResourceUseCase(discovery DiscoveryClient, resource ResourceRepo, schemaResolver SchemaResolver, columnsProvider ColumnsProvider) *ResourceUseCase {
+// discovery, resource, and schema resolver backends. The
+// SchemaResolver is injected to decouple caching infrastructure
+// from the domain use-case.
+func NewResourceUseCase(discovery DiscoveryClient, resource ResourceRepo, schemaResolver SchemaResolver) *ResourceUseCase {
 	return &ResourceUseCase{
-		discovery:       discovery,
-		resource:        resource,
-		schemaResolver:  schemaResolver,
-		columnsProvider: columnsProvider,
+		discovery:      discovery,
+		resource:       resource,
+		schemaResolver: schemaResolver,
 	}
 }
 
@@ -323,19 +300,6 @@ func (uc *ResourceUseCase) DeleteResource(
 	}
 
 	return uc.resource.Delete(ctx, id.Cluster, gvr, id.Namespace, id.Name, opts)
-}
-
-// Columns validates the GVR and returns the printer column definitions
-// for the resource type. Results are cached at the ColumnsProvider layer.
-func (uc *ResourceUseCase) Columns(
-	ctx context.Context,
-	id *ResourceIdentifier,
-) ([]ColumnDefinition, error) {
-	gvr, err := id.lookupGVR(ctx, uc.discovery)
-	if err != nil {
-		return nil, err
-	}
-	return uc.columnsProvider.Columns(ctx, id.Cluster, gvr, id.Namespace)
 }
 
 // WatchResource validates the GVR and opens a long-lived watch stream.
