@@ -1,7 +1,6 @@
 package agent
 
 import (
-	"context"
 	"strings"
 	"testing"
 
@@ -26,7 +25,7 @@ func TestPatch_InvalidVersion(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			err := u.Patch(context.Background(), tt.version)
+			err := u.Patch(t.Context(), tt.version)
 			if err == nil {
 				t.Errorf("expected error for version %q, got nil", tt.version)
 			}
@@ -51,7 +50,7 @@ func TestPatch_ValidVersion(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			err := u.Patch(context.Background(), tt.version)
+			err := u.Patch(t.Context(), tt.version)
 			if err == nil {
 				// If it succeeds we're probably in-cluster, which is fine.
 				return

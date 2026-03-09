@@ -13,9 +13,6 @@ import (
 func TestNewServer_PublicPathsBypassAuth(t *testing.T) {
 	t.Parallel()
 
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-
 	authMiddleware := authn.NewMiddleware(func(_ context.Context, r *http.Request) (any, error) {
 		if r.Header.Get("Authorization") == "" {
 			return nil, authn.Errorf("missing bearer token")
@@ -24,14 +21,14 @@ func TestNewServer_PublicPathsBypassAuth(t *testing.T) {
 	})
 
 	var lc net.ListenConfig
-	ln, err := lc.Listen(ctx, "tcp", "127.0.0.1:0")
+	ln, err := lc.Listen(t.Context(), "tcp", "127.0.0.1:0")
 	if err != nil {
 		t.Fatalf("listen: %v", err)
 	}
 	defer ln.Close()
 
 	srv, err := NewServer(
-		ctx,
+		t.Context(),
 		WithListener(ln),
 		WithAuthMiddleware(authMiddleware),
 		WithAllowedOrigins([]string{"https://example.com"}),
@@ -51,7 +48,7 @@ func TestNewServer_PublicPathsBypassAuth(t *testing.T) {
 	}
 
 	t.Run("public path without token is allowed", func(t *testing.T) {
-		req := httptest.NewRequest(http.MethodGet, "/public", http.NoBody)
+		req := httptest.NewRequestWithContext(t.Context(), http.MethodGet, "/public", http.NoBody)
 		rec := httptest.NewRecorder()
 		srv.Handler().ServeHTTP(rec, req)
 
@@ -61,7 +58,7 @@ func TestNewServer_PublicPathsBypassAuth(t *testing.T) {
 	})
 
 	t.Run("private path without token is blocked", func(t *testing.T) {
-		req := httptest.NewRequest(http.MethodGet, "/private", http.NoBody)
+		req := httptest.NewRequestWithContext(t.Context(), http.MethodGet, "/private", http.NoBody)
 		rec := httptest.NewRecorder()
 		srv.Handler().ServeHTTP(rec, req)
 
@@ -71,7 +68,7 @@ func TestNewServer_PublicPathsBypassAuth(t *testing.T) {
 	})
 
 	t.Run("private path with token is allowed", func(t *testing.T) {
-		req := httptest.NewRequest(http.MethodGet, "/private", http.NoBody)
+		req := httptest.NewRequestWithContext(t.Context(), http.MethodGet, "/private", http.NoBody)
 		req.Header.Set("Authorization", "Bearer test-token")
 		rec := httptest.NewRecorder()
 		srv.Handler().ServeHTTP(rec, req)

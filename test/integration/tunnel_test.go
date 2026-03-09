@@ -1,7 +1,6 @@
 package integration
 
 import (
-	"context"
 	"maps"
 	"slices"
 	"strings"
@@ -25,13 +24,11 @@ func TestLinkRegisterClusterUsesSingleSharedTunnelPort(t *testing.T) {
 	csrA := generateCSR(t, "agent-a")
 	csrB := generateCSR(t, "agent-b")
 
-	ctx := context.Background()
-
-	regA, err := link.RegisterCluster(ctx, "cluster-a", "agent-a", "test", csrA)
+	regA, err := link.RegisterCluster(t.Context(), "cluster-a", "agent-a", "test", csrA)
 	if err != nil {
 		t.Fatalf("register cluster-a: %v", err)
 	}
-	regB, err := link.RegisterCluster(ctx, "cluster-b", "agent-b", "test", csrB)
+	regB, err := link.RegisterCluster(t.Context(), "cluster-b", "agent-b", "test", csrB)
 	if err != nil {
 		t.Fatalf("register cluster-b: %v", err)
 	}
@@ -50,11 +47,11 @@ func TestLinkRegisterClusterUsesSingleSharedTunnelPort(t *testing.T) {
 		t.Fatalf("expected distinct endpoints for different clusters, got %q", regA.Endpoint)
 	}
 
-	addrA, err := tunnel.ResolveAddress(ctx, "cluster-a")
+	addrA, err := tunnel.ResolveAddress(t.Context(), "cluster-a")
 	if err != nil {
 		t.Fatalf("resolve cluster-a: %v", err)
 	}
-	addrB, err := tunnel.ResolveAddress(ctx, "cluster-b")
+	addrB, err := tunnel.ResolveAddress(t.Context(), "cluster-b")
 	if err != nil {
 		t.Fatalf("resolve cluster-b: %v", err)
 	}
@@ -75,20 +72,18 @@ func TestLinkRegisterClusterLatestAgentWinsForSameCluster(t *testing.T) {
 	csr1 := generateCSR(t, "agent-r-1")
 	csr2 := generateCSR(t, "agent-r-2")
 
-	ctx := context.Background()
-
-	_, err = link.RegisterCluster(ctx, "cluster-r", "agent-r-1", "test", csr1)
+	_, err = link.RegisterCluster(t.Context(), "cluster-r", "agent-r-1", "test", csr1)
 	if err != nil {
 		t.Fatalf("register agent-r-1: %v", err)
 	}
-	reg2, err := link.RegisterCluster(ctx, "cluster-r", "agent-r-2", "test", csr2)
+	reg2, err := link.RegisterCluster(t.Context(), "cluster-r", "agent-r-2", "test", csr2)
 	if err != nil {
 		t.Fatalf("register agent-r-2: %v", err)
 	}
 
 	// After re-registration the route must resolve to the latest
 	// agent's endpoint regardless of whether the host was reused.
-	addr, err := tunnel.ResolveAddress(ctx, "cluster-r")
+	addr, err := tunnel.ResolveAddress(t.Context(), "cluster-r")
 	if err != nil {
 		t.Fatalf("resolve: %v", err)
 	}
@@ -114,21 +109,19 @@ func TestLinkRegisterClusterReregisterAndReplaceAcrossAgents(t *testing.T) {
 	csrA := generateCSR(t, "agent-a")
 	csrB := generateCSR(t, "agent-b")
 
-	ctx := context.Background()
-
-	regA1, err := link.RegisterCluster(ctx, "cluster-z", "agent-a", "test", csrA)
+	regA1, err := link.RegisterCluster(t.Context(), "cluster-z", "agent-a", "test", csrA)
 	if err != nil {
 		t.Fatalf("register agent-a #1: %v", err)
 	}
 
-	regB, err := link.RegisterCluster(ctx, "cluster-z", "agent-b", "test", csrB)
+	regB, err := link.RegisterCluster(t.Context(), "cluster-z", "agent-b", "test", csrB)
 	if err != nil {
 		t.Fatalf("register agent-b: %v", err)
 	}
 
 	// After re-registration for the same cluster, the route must
 	// resolve to the latest agent's endpoint.
-	addrB, err := tunnel.ResolveAddress(ctx, "cluster-z")
+	addrB, err := tunnel.ResolveAddress(t.Context(), "cluster-z")
 	if err != nil {
 		t.Fatalf("resolve after agent-b register: %v", err)
 	}
@@ -136,7 +129,7 @@ func TestLinkRegisterClusterReregisterAndReplaceAcrossAgents(t *testing.T) {
 		t.Fatalf("expected resolve to point to agent-b endpoint %q, got %q", regB.Endpoint, addrB)
 	}
 
-	regA2, err := link.RegisterCluster(ctx, "cluster-z", "agent-a", "test", csrA)
+	regA2, err := link.RegisterCluster(t.Context(), "cluster-z", "agent-a", "test", csrA)
 	if err != nil {
 		t.Fatalf("register agent-a #2: %v", err)
 	}
@@ -156,7 +149,7 @@ func TestLinkRegisterClusterReregisterAndReplaceAcrossAgents(t *testing.T) {
 	}
 
 	for i := 0; i < 3; i++ {
-		addr, err := tunnel.ResolveAddress(ctx, "cluster-z")
+		addr, err := tunnel.ResolveAddress(t.Context(), "cluster-z")
 		if err != nil {
 			t.Fatalf("resolve #%d: %v", i+1, err)
 		}
@@ -187,7 +180,7 @@ func initTunnelServer(t *testing.T, tunnel *chisel.Service) {
 		t.Fatalf("init tunnel server: %v", err)
 	}
 	t.Cleanup(func() {
-		_ = srv.Stop(context.Background())
+		_ = srv.Stop(t.Context())
 	})
 }
 

@@ -52,7 +52,7 @@ func TestComposingSchemaResolver_NonMatchingGVK(t *testing.T) {
 	}
 
 	resolver := NewComposingSchemaResolver(upstream)
-	schema, err := resolver.ResolveSchema(context.Background(), "cluster1", "apps", "v1", "Deployment")
+	schema, err := resolver.ResolveSchema(t.Context(), "cluster1", "apps", "v1", "Deployment")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -106,7 +106,7 @@ func TestComposingSchemaResolver_MatchingGVK(t *testing.T) {
 
 	resolver := NewComposingSchemaResolver(upstream)
 	schema, err := resolver.ResolveSchema(
-		context.Background(), "cluster1",
+		t.Context(), "cluster1",
 		"module.otterscale.io", "v1alpha1", "ModuleTemplate",
 	)
 	if err != nil {
@@ -151,7 +151,7 @@ func TestComposingSchemaResolver_TargetFetchError(t *testing.T) {
 
 	resolver := NewComposingSchemaResolver(upstream)
 	schema, err := resolver.ResolveSchema(
-		context.Background(), "cluster1",
+		t.Context(), "cluster1",
 		"module.otterscale.io", "v1alpha1", "ModuleTemplate",
 	)
 	if err != nil {
@@ -200,7 +200,7 @@ func TestComposingSchemaResolver_CacheNotCorrupted(t *testing.T) {
 
 	resolver := NewComposingSchemaResolver(upstream)
 	_, err := resolver.ResolveSchema(
-		context.Background(), "cluster1",
+		t.Context(), "cluster1",
 		"module.otterscale.io", "v1alpha1", "ModuleTemplate",
 	)
 	if err != nil {
@@ -260,7 +260,7 @@ func TestComposingSchemaResolver_SourceVersionMismatch(t *testing.T) {
 
 	// Request with v1alpha1 should NOT match the v1beta1-pinned rule.
 	schema, err := resolver.ResolveSchema(
-		context.Background(), "cluster1",
+		t.Context(), "cluster1",
 		"module.otterscale.io", "v1alpha1", "ModuleTemplate",
 	)
 	if err != nil {
