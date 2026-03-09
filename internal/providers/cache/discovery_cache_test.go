@@ -56,11 +56,10 @@ func TestDiscoveryCache_Columns_CachesResult(t *testing.T) {
 
 	now := time.Now()
 	cache := NewDiscoveryCache(stub, 10*time.Minute, WithClock(func() time.Time { return now }))
-	ctx := context.Background()
 	gvr := schema.GroupVersionResource{Group: "apps", Version: "v1", Resource: "deployments"}
 
 	// First call: hits upstream.
-	result, err := cache.Columns(ctx, "prod", gvr, "default")
+	result, err := cache.Columns(t.Context(), "prod", gvr, "default")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -72,7 +71,7 @@ func TestDiscoveryCache_Columns_CachesResult(t *testing.T) {
 	}
 
 	// Second call: served from cache.
-	result, err = cache.Columns(ctx, "prod", gvr, "default")
+	result, err = cache.Columns(t.Context(), "prod", gvr, "default")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -92,11 +91,10 @@ func TestDiscoveryCache_Columns_ExpiredEntry(t *testing.T) {
 
 	now := time.Now()
 	cache := NewDiscoveryCache(stub, 1*time.Minute, WithClock(func() time.Time { return now }))
-	ctx := context.Background()
 	gvr := schema.GroupVersionResource{Group: "", Version: "v1", Resource: "pods"}
 
 	// Populate cache.
-	_, _ = cache.Columns(ctx, "prod", gvr, "")
+	_, _ = cache.Columns(t.Context(), "prod", gvr, "")
 	if stub.callCount.Load() != 1 {
 		t.Fatalf("expected 1 call, got %d", stub.callCount.Load())
 	}
@@ -104,7 +102,7 @@ func TestDiscoveryCache_Columns_ExpiredEntry(t *testing.T) {
 	// Advance time past TTL.
 	now = now.Add(2 * time.Minute)
 
-	_, _ = cache.Columns(ctx, "prod", gvr, "")
+	_, _ = cache.Columns(t.Context(), "prod", gvr, "")
 	if stub.callCount.Load() != 2 {
 		t.Fatalf("expected 2 calls after TTL expiry, got %d", stub.callCount.Load())
 	}
@@ -115,13 +113,12 @@ func TestDiscoveryCache_Columns_DifferentKeys(t *testing.T) {
 	stub := &stubDiscovery{columns: cols}
 
 	cache := NewDiscoveryCache(stub, 10*time.Minute)
-	ctx := context.Background()
 
 	gvr1 := schema.GroupVersionResource{Group: "apps", Version: "v1", Resource: "deployments"}
 	gvr2 := schema.GroupVersionResource{Group: "", Version: "v1", Resource: "pods"}
 
-	_, _ = cache.Columns(ctx, "prod", gvr1, "")
-	_, _ = cache.Columns(ctx, "prod", gvr2, "")
+	_, _ = cache.Columns(t.Context(), "prod", gvr1, "")
+	_, _ = cache.Columns(t.Context(), "prod", gvr2, "")
 
 	if stub.callCount.Load() != 2 {
 		t.Fatalf("expected 2 calls for different GVRs, got %d", stub.callCount.Load())
@@ -134,10 +131,9 @@ func TestDiscoveryCache_EvictExpiredColumns(t *testing.T) {
 
 	now := time.Now()
 	cache := NewDiscoveryCache(stub, 1*time.Minute, WithClock(func() time.Time { return now }))
-	ctx := context.Background()
 	gvr := schema.GroupVersionResource{Group: "", Version: "v1", Resource: "pods"}
 
-	_, _ = cache.Columns(ctx, "prod", gvr, "")
+	_, _ = cache.Columns(t.Context(), "prod", gvr, "")
 
 	cache.mu.RLock()
 	if len(cache.columnsCache) != 1 {

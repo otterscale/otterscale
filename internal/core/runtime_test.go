@@ -88,7 +88,6 @@ func TestRuntimeUseCase_SubResourceAction_Validation(t *testing.T) {
 	disco := &mockDiscoveryForRuntime{}
 	repo := &mockRuntimeRepo{}
 	uc := newTestRuntimeUseCase(disco, repo)
-	ctx := context.Background()
 
 	tests := []struct {
 		name        string
@@ -136,7 +135,7 @@ func TestRuntimeUseCase_SubResourceAction_Validation(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, err := uc.SubResourceAction(ctx, tt.id, tt.subresource, tt.method, nil)
+			_, err := uc.SubResourceAction(t.Context(), tt.id, tt.subresource, tt.method, nil)
 			if err == nil {
 				t.Fatal("expected error, got nil")
 			}
@@ -159,7 +158,7 @@ func TestRuntimeUseCase_SubResourceAction_Success(t *testing.T) {
 	uc := newTestRuntimeUseCase(disco, repo)
 
 	result, err := uc.SubResourceAction(
-		context.Background(),
+		t.Context(),
 		&ResourceIdentifier{
 			Cluster:   "prod",
 			Group:     "kubevirt.io",
@@ -188,7 +187,7 @@ func TestRuntimeUseCase_SubResourceAction_POST(t *testing.T) {
 	uc := newTestRuntimeUseCase(disco, repo)
 
 	result, err := uc.SubResourceAction(
-		context.Background(),
+		t.Context(),
 		&ResourceIdentifier{
 			Cluster:   "prod",
 			Group:     "kubevirt.io",
@@ -215,7 +214,7 @@ func TestRuntimeUseCase_SubResourceAction_LookupError(t *testing.T) {
 	uc := newTestRuntimeUseCase(disco, repo)
 
 	_, err := uc.SubResourceAction(
-		context.Background(),
+		t.Context(),
 		&ResourceIdentifier{
 			Cluster:   "prod",
 			Group:     "kubevirt.io",

@@ -98,7 +98,7 @@ func TestResourceUseCase_Columns_Success(t *testing.T) {
 	cp := &mockColumnsProvider{columns: cols}
 	uc := NewResourceUseCase(disco, &mockResourceRepo{}, nil, cp)
 
-	result, err := uc.Columns(context.Background(), &ResourceIdentifier{
+	result, err := uc.Columns(t.Context(), &ResourceIdentifier{
 		Cluster:  "prod",
 		Group:    "apps",
 		Version:  "v1",
@@ -123,7 +123,7 @@ func TestResourceUseCase_Columns_LookupError(t *testing.T) {
 	cp := &mockColumnsProvider{}
 	uc := NewResourceUseCase(disco, &mockResourceRepo{}, nil, cp)
 
-	_, err := uc.Columns(context.Background(), &ResourceIdentifier{
+	_, err := uc.Columns(t.Context(), &ResourceIdentifier{
 		Cluster:  "prod",
 		Group:    "apps",
 		Version:  "v1",
@@ -139,7 +139,7 @@ func TestResourceUseCase_Columns_ProviderError(t *testing.T) {
 	cp := &mockColumnsProvider{err: errors.New("table API error")}
 	uc := NewResourceUseCase(disco, &mockResourceRepo{}, nil, cp)
 
-	_, err := uc.Columns(context.Background(), &ResourceIdentifier{
+	_, err := uc.Columns(t.Context(), &ResourceIdentifier{
 		Cluster:  "prod",
 		Group:    "",
 		Version:  "v1",
@@ -155,7 +155,7 @@ func TestResourceUseCase_Columns_Empty(t *testing.T) {
 	cp := &mockColumnsProvider{columns: []ColumnDefinition{}}
 	uc := NewResourceUseCase(disco, &mockResourceRepo{}, nil, cp)
 
-	result, err := uc.Columns(context.Background(), &ResourceIdentifier{
+	result, err := uc.Columns(t.Context(), &ResourceIdentifier{
 		Cluster:  "prod",
 		Group:    "",
 		Version:  "v1",

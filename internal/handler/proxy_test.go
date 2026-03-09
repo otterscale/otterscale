@@ -48,7 +48,7 @@ func TestProxyHandler_ForbiddenPath(t *testing.T) {
 			mux := http.NewServeMux()
 			mux.Handle("/proxy/{cluster}/prometheus/{path...}", handler)
 
-			req := httptest.NewRequest("GET", "/proxy/prod/prometheus"+tt.path, http.NoBody)
+			req := httptest.NewRequestWithContext(t.Context(), "GET", "/proxy/prod/prometheus"+tt.path, http.NoBody)
 			rec := httptest.NewRecorder()
 			mux.ServeHTTP(rec, req)
 
@@ -67,7 +67,7 @@ func TestProxyHandler_ClusterNotFound(t *testing.T) {
 	mux := http.NewServeMux()
 	mux.Handle("/proxy/{cluster}/prometheus/{path...}", handler)
 
-	req := httptest.NewRequest("GET", "/proxy/missing/prometheus/api/v1/query?query=up", http.NoBody)
+	req := httptest.NewRequestWithContext(t.Context(), "GET", "/proxy/missing/prometheus/api/v1/query?query=up", http.NoBody)
 	rec := httptest.NewRecorder()
 	mux.ServeHTTP(rec, req)
 
@@ -98,7 +98,7 @@ func TestProxyHandler_AllowedPath_ForwardsToBackend(t *testing.T) {
 	mux := http.NewServeMux()
 	mux.Handle("/proxy/{cluster}/prometheus/{path...}", handler)
 
-	req := httptest.NewRequest("GET", "/proxy/prod/prometheus/api/v1/query?query=up", http.NoBody)
+	req := httptest.NewRequestWithContext(t.Context(), "GET", "/proxy/prod/prometheus/api/v1/query?query=up", http.NoBody)
 	req.Header.Set("Authorization", "Bearer some-oidc-token")
 	rec := httptest.NewRecorder()
 	mux.ServeHTTP(rec, req)

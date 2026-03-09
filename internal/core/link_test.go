@@ -106,7 +106,7 @@ func TestLinkUseCase_ListLinks(t *testing.T) {
 	tp := &mockTunnelProvider{links: links}
 	uc := newTestLinkUseCase(t, tp, &mockManifestRenderer{})
 
-	got := uc.ListLinks(context.Background())
+	got := uc.ListLinks(t.Context())
 	if len(got) != 2 {
 		t.Fatalf("expected 2 clusters, got %d", len(got))
 	}
@@ -115,7 +115,6 @@ func TestLinkUseCase_ListLinks(t *testing.T) {
 func TestLinkUseCase_RegisterCluster_Validation(t *testing.T) {
 	tp := &mockTunnelProvider{regEndpoint: "127.0.0.1:8080", regCertPEM: []byte("cert")}
 	uc := newTestLinkUseCase(t, tp, &mockManifestRenderer{})
-	ctx := context.Background()
 
 	tests := []struct {
 		name    string
@@ -133,7 +132,7 @@ func TestLinkUseCase_RegisterCluster_Validation(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, err := uc.RegisterCluster(ctx, tt.cluster, tt.agentID, "v1", tt.csr)
+			_, err := uc.RegisterCluster(t.Context(), tt.cluster, tt.agentID, "v1", tt.csr)
 			if err == nil {
 				t.Fatal("expected error, got nil")
 			}
@@ -156,7 +155,7 @@ func TestLinkUseCase_RegisterCluster_Success(t *testing.T) {
 	}
 	uc := newTestLinkUseCase(t, tp, &mockManifestRenderer{})
 
-	reg, err := uc.RegisterCluster(context.Background(), "my-cluster", "agent-1", "v1", []byte("csr-data"))
+	reg, err := uc.RegisterCluster(t.Context(), "my-cluster", "agent-1", "v1", []byte("csr-data"))
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -177,9 +176,8 @@ func TestLinkUseCase_RegisterCluster_Success(t *testing.T) {
 func TestLinkUseCase_ManifestToken_IssueAndVerify(t *testing.T) {
 	tp := &mockTunnelProvider{}
 	uc := newTestLinkUseCase(t, tp, &mockManifestRenderer{})
-	ctx := context.Background()
 
-	url, err := uc.IssueManifestURL(ctx, "test-cluster", "user@example.com")
+	url, err := uc.IssueManifestURL(t.Context(), "test-cluster", "user@example.com")
 	if err != nil {
 		t.Fatalf("IssueManifestURL: %v", err)
 	}
@@ -191,7 +189,7 @@ func TestLinkUseCase_ManifestToken_IssueAndVerify(t *testing.T) {
 	}
 	token := parts[1]
 
-	cluster, userName, err := uc.VerifyManifestToken(ctx, token)
+	cluster, userName, err := uc.VerifyManifestToken(t.Context(), token)
 	if err != nil {
 		t.Fatalf("VerifyManifestToken: %v", err)
 	}
@@ -206,7 +204,6 @@ func TestLinkUseCase_ManifestToken_IssueAndVerify(t *testing.T) {
 func TestLinkUseCase_VerifyManifestToken_MalformedToken(t *testing.T) {
 	tp := &mockTunnelProvider{}
 	uc := newTestLinkUseCase(t, tp, &mockManifestRenderer{})
-	ctx := context.Background()
 
 	tests := []struct {
 		name  string
@@ -220,7 +217,7 @@ func TestLinkUseCase_VerifyManifestToken_MalformedToken(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, _, err := uc.VerifyManifestToken(ctx, tt.token)
+			_, _, err := uc.VerifyManifestToken(t.Context(), tt.token)
 			if err == nil {
 				t.Fatal("expected error, got nil")
 			}
@@ -231,9 +228,8 @@ func TestLinkUseCase_VerifyManifestToken_MalformedToken(t *testing.T) {
 func TestLinkUseCase_VerifyManifestToken_TamperedSignature(t *testing.T) {
 	tp := &mockTunnelProvider{}
 	uc := newTestLinkUseCase(t, tp, &mockManifestRenderer{})
-	ctx := context.Background()
 
-	url, err := uc.IssueManifestURL(ctx, "test-cluster", "user@example.com")
+	url, err := uc.IssueManifestURL(t.Context(), "test-cluster", "user@example.com")
 	if err != nil {
 		t.Fatalf("IssueManifestURL: %v", err)
 	}
@@ -245,7 +241,7 @@ func TestLinkUseCase_VerifyManifestToken_TamperedSignature(t *testing.T) {
 	tokenParts := strings.SplitN(token, ".", 2)
 	tampered := tokenParts[0] + ".dGFtcGVyZWQ"
 
-	_, _, err = uc.VerifyManifestToken(ctx, tampered)
+	_, _, err = uc.VerifyManifestToken(t.Context(), tampered)
 	if err == nil {
 		t.Fatal("expected error for tampered token")
 	}
@@ -258,7 +254,7 @@ func TestLinkUseCase_GenerateAgentManifest_Validation(t *testing.T) {
 	tp := &mockTunnelProvider{}
 	renderer := &mockManifestRenderer{result: "manifest-yaml"}
 	uc := newTestLinkUseCase(t, tp, renderer)
-	ctx := context.Background()
+	ctx := t.Context()
 
 	tests := []struct {
 		name     string
@@ -286,7 +282,7 @@ func TestLinkUseCase_GenerateAgentManifest_Success(t *testing.T) {
 	renderer := &mockManifestRenderer{result: "---\napiVersion: v1\nkind: Namespace"}
 	uc := newTestLinkUseCase(t, tp, renderer)
 
-	manifest, err := uc.GenerateAgentManifest(context.Background(), "my-cluster", "admin@example.com")
+	manifest, err := uc.GenerateAgentManifest(t.Context(), "my-cluster", "admin@example.com")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
