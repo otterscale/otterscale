@@ -155,6 +155,14 @@ rules:
   - apiGroups: ["networking.k8s.io"]
     resources: ["networkpolicies"]
     verbs: ["get", "create", "patch"]
+  # Bootstrap: Admission webhooks (cert-manager + tenant-operator).
+  - apiGroups: ["admissionregistration.k8s.io"]
+    resources: ["mutatingwebhookconfigurations", "validatingwebhookconfigurations"]
+    verbs: ["get", "create", "patch"]
+  # Bootstrap: cert-manager resources (tenant-operator webhook TLS).
+  - apiGroups: ["cert-manager.io"]
+    resources: ["certificates", "issuers"]
+    verbs: ["get", "create", "patch"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
