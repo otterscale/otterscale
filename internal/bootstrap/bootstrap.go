@@ -1,8 +1,5 @@
 // Package bootstrap provides the Layer 0 bootstrap process for the
-// otterscale agent. It applies embedded Kubernetes manifests (FluxCD
-// core components, Module CRD, etc.) to the local cluster using
-// Server-Side Apply, ensuring the required infrastructure is in place
-// before the agent starts serving tunnel traffic.
+// otterscale agent.
 //
 // All operations are idempotent: re-running bootstrap on a cluster
 // that already has the resources installed is a safe no-op (or a
@@ -11,7 +8,9 @@ package bootstrap
 
 import (
 	"context"
+	"embed"
 	"fmt"
+	"io/fs"
 	"log/slog"
 	"sort"
 
@@ -26,6 +25,14 @@ import (
 // bootstrap-applied resources. This allows kubectl and other tools to
 // see which fields are owned by the agent's bootstrap process.
 const fieldManager = "otterscale-agent"
+
+// certManagerWebhookNamespace is the namespace where cert-manager
+// installs its webhook Deployment.
+const certManagerWebhookNamespace = "cert-manager"
+
+// certManagerWebhookName is the Deployment name we wait for before
+// proceeding to stage 2.
+const certManagerWebhookName = "cert-manager-webhook"
 
 // Bootstrapper applies embedded infrastructure manifests to the local
 // Kubernetes cluster. It is injected into the Agent via Wire and
@@ -58,16 +65,38 @@ func New(cfg *rest.Config) (*Bootstrapper, error) {
 	}, nil
 }
 
-// Run reads every embedded YAML manifest and applies it to the
-// cluster. Files are processed in lexicographic order so that
-// ordering can be controlled via file-name prefixes if needed.
 // The method is idempotent and safe to call on every agent restart.
 func (b *Bootstrapper) Run(ctx context.Context) error {
 	b.log.Info("starting Layer 0 bootstrap")
 
-	entries, err := manifests.Bootstrap.ReadDir("bootstrap")
+	// Stage 1: cert-manager + CRDs
+	if err := b.applyStage(ctx, manifests.Stage1, "bootstrap/stage1"); err != nil {
+		return fmt.Errorf("stage 1: %w", err)
+	}
+
+	// Wait for cert-manager-webhook Deployment to be Available.
+	if err := b.waitForDeployment(ctx, certManagerWebhookNamespace, certManagerWebhookName); err != nil {
+		return fmt.Errorf("wait for cert-manager webhook: %w", err)
+	}
+	b.log.Info("cert-manager webhook is available")
+
+	// Stage 2: FluxCD + module-operator + tenant-operator
+	if err := b.applyStage(ctx, manifests.Stage2, "bootstrap/stage2"); err != nil {
+		return fmt.Errorf("stage 2: %w", err)
+	}
+
+	b.log.Info("layer 0 bootstrap completed successfully")
+	return nil
+}
+
+// applyStage reads every embedded YAML manifest from the given
+// embed.FS directory and applies it to the cluster. Files are
+// processed in lexicographic order so that ordering can be controlled
+// via file-name prefixes if needed.
+func (b *Bootstrapper) applyStage(ctx context.Context, fsys embed.FS, dir string) error {
+	entries, err := fsys.ReadDir(dir)
 	if err != nil {
-		return fmt.Errorf("read embedded manifests directory: %w", err)
+		return fmt.Errorf("read embedded manifests directory %s: %w", dir, err)
 	}
 
 	// Sort entries explicitly (embed.FS returns sorted results per
@@ -82,7 +111,7 @@ func (b *Bootstrapper) Run(ctx context.Context) error {
 		}
 
 		name := entry.Name()
-		data, err := manifests.Bootstrap.ReadFile("bootstrap/" + name)
+		data, err := fs.ReadFile(fsys, dir+"/"+name)
 		if err != nil {
 			return fmt.Errorf("read manifest %s: %w", name, err)
 		}
@@ -93,6 +122,5 @@ func (b *Bootstrapper) Run(ctx context.Context) error {
 		}
 	}
 
-	b.log.Info("Layer 0 bootstrap completed successfully")
 	return nil
 }

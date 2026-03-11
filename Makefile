@@ -1,10 +1,14 @@
 VERSION ?= $(shell git describe --tags --always 2>/dev/null || echo devel)
 
 API_VERSION ?= $(call gomodver,github.com/otterscale/api)
+CERT_MANAGER_VERSION  := v1.19.4
 MODULE_OPERATOR_VERSION := v0.8.3
+TENANT_OPERATOR_VERSION := v0.8.5
 FLUX2_VERSION := v2.8.1
 
 BOOTSTRAP_DIR := manifests/bootstrap
+STAGE1_DIR    := $(BOOTSTRAP_DIR)/stage1
+STAGE2_DIR    := $(BOOTSTRAP_DIR)/stage2
 
 .PHONY: build
 # build cli
@@ -27,28 +31,41 @@ lint:
 	golangci-lint run
 
 .PHONY: bootstrap-manifests
-# download bootstrap manifests (FluxCD + module-operator)
-bootstrap-manifests: $(BOOTSTRAP_DIR)/crds.yaml $(BOOTSTRAP_DIR)/module-operator.yaml $(BOOTSTRAP_DIR)/flux2.yaml
+# download bootstrap manifests
+bootstrap-manifests: \
+	$(STAGE1_DIR)/cert-manager.yaml \
+	$(STAGE1_DIR)/crds.yaml \
+	$(STAGE2_DIR)/flux2.yaml \
+	$(STAGE2_DIR)/module-operator.yaml \
+	$(STAGE2_DIR)/tenant-operator.yaml
 
-$(BOOTSTRAP_DIR)/crds.yaml:
-	@mkdir -p $(BOOTSTRAP_DIR)
+$(STAGE1_DIR)/cert-manager.yaml: | $(STAGE1_DIR)
+	curl -sSL -o $@ \
+	  https://github.com/cert-manager/cert-manager/releases/download/$(CERT_MANAGER_VERSION)/cert-manager.yaml
+
+$(STAGE1_DIR)/crds.yaml: | $(STAGE1_DIR)
 	curl -sSL -o $@ \
 	  https://github.com/otterscale/api/releases/download/$(API_VERSION)/crds.yaml
 
-$(BOOTSTRAP_DIR)/module-operator.yaml:
-	@mkdir -p $(BOOTSTRAP_DIR)
+$(STAGE2_DIR)/flux2.yaml: | $(STAGE2_DIR)
+	curl -sSL -o $@ \
+	  https://github.com/fluxcd/flux2/releases/download/$(FLUX2_VERSION)/install.yaml
+
+$(STAGE2_DIR)/module-operator.yaml: | $(STAGE2_DIR)
 	curl -sSL -o $@ \
 	  https://github.com/otterscale/module-operator/releases/download/$(MODULE_OPERATOR_VERSION)/install.yaml
 
-$(BOOTSTRAP_DIR)/flux2.yaml:
-	@mkdir -p $(BOOTSTRAP_DIR)
+$(STAGE2_DIR)/tenant-operator.yaml: | $(STAGE2_DIR)
 	curl -sSL -o $@ \
-	  https://github.com/fluxcd/flux2/releases/download/$(FLUX2_VERSION)/install.yaml
+	  https://github.com/otterscale/tenant-operator/releases/download/$(TENANT_OPERATOR_VERSION)/install.yaml
+
+$(STAGE1_DIR) $(STAGE2_DIR):
+	@mkdir -p $@
 
 .PHONY: update-bootstrap
 # force re-download all bootstrap manifests
 update-bootstrap:
-	@rm -f $(BOOTSTRAP_DIR)/flux2.yaml $(BOOTSTRAP_DIR)/module-operator.yaml $(BOOTSTRAP_DIR)/crds.yaml
+	@rm -rf $(BOOTSTRAP_DIR)/stage1 $(BOOTSTRAP_DIR)/stage2
 	$(MAKE) bootstrap-manifests
 
 .PHONY: help
