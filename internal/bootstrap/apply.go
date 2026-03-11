@@ -142,7 +142,7 @@ func (b *Bootstrapper) waitForCRDs(ctx context.Context, crds []*unstructured.Uns
 		if err != nil {
 			return fmt.Errorf("CRD %s did not become established: %w", name, err)
 		}
-		b.log.Info("CRD established", "name", name)
+		b.log.Info("crd established", "name", name)
 	}
 	return nil
 }
@@ -205,4 +205,65 @@ var crdGVR = schema.GroupVersionResource{
 	Group:    "apiextensions.k8s.io",
 	Version:  "v1",
 	Resource: "customresourcedefinitions",
+}
+
+// deploymentGVR is the GroupVersionResource for apps/v1 Deployments,
+// used to poll Deployment availability status.
+var deploymentGVR = schema.GroupVersionResource{
+	Group:    "apps",
+	Version:  "v1",
+	Resource: "deployments",
+}
+
+// deploymentPollInterval is how often to check Deployment availability.
+const deploymentPollInterval = 3 * time.Second
+
+// deploymentPollTimeout is the maximum time to wait for a Deployment
+// to become available. cert-manager may pull images and create
+// resources, so we allow up to 5 minutes.
+const deploymentPollTimeout = 300 * time.Second
+
+// waitForDeployment blocks until the specified Deployment has the
+// Available condition set to True. It polls with a 3-second interval
+// and gives up after 5 minutes.
+func (b *Bootstrapper) waitForDeployment(ctx context.Context, namespace, name string) error {
+	b.log.Info("waiting for Deployment to be available",
+		"namespace", namespace, "name", name)
+
+	err := wait.PollUntilContextTimeout(ctx, deploymentPollInterval, deploymentPollTimeout, true,
+		func(ctx context.Context) (bool, error) {
+			obj, err := b.dynamic.Resource(deploymentGVR).
+				Namespace(namespace).
+				Get(ctx, name, metav1.GetOptions{})
+			if err != nil {
+				return false, nil // retry on transient errors
+			}
+			return isDeploymentAvailable(obj), nil
+		},
+	)
+	if err != nil {
+		return fmt.Errorf("deployment %s/%s did not become available: %w", namespace, name, err)
+	}
+
+	b.log.Info("deployment is available", "namespace", namespace, "name", name)
+	return nil
+}
+
+// isDeploymentAvailable inspects the Deployment status conditions for
+// type=Available, status=True.
+func isDeploymentAvailable(obj *unstructured.Unstructured) bool {
+	conditions, found, err := unstructured.NestedSlice(obj.Object, "status", "conditions")
+	if err != nil || !found {
+		return false
+	}
+	for _, c := range conditions {
+		m, ok := c.(map[string]interface{})
+		if !ok {
+			continue
+		}
+		if m["type"] == "Available" && m["status"] == "True" {
+			return true
+		}
+	}
+	return false
 }
