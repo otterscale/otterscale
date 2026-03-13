@@ -12,12 +12,14 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"os"
 	"strings"
 	"sync"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
+	"k8s.io/client-go/tools/clientcmd"
 
 	"github.com/otterscale/otterscale/internal/core"
 )
@@ -99,7 +101,7 @@ func (c *Client) adminPassword(ctx context.Context) (string, error) {
 		return c.password, nil
 	}
 
-	cfg, err := rest.InClusterConfig()
+	cfg, err := kubeConfg()
 	if err != nil {
 		return "", fmt.Errorf("harbor: in-cluster config: %w", err)
 	}
@@ -305,4 +307,12 @@ func isConflict(err error, target **errConflict) bool {
 		target = &e
 	}
 	return errors.As(err, target)
+}
+
+// kubeConfig returns a Kubernetes REST config, using in-cluster config in production and falling back to local kubeconfig for debugging.
+func kubeConfg() (*rest.Config, error) {
+	if os.Getenv("OTTERSCALE_DEBUG") != "" {
+		return clientcmd.BuildConfigFromFlags("", clientcmd.RecommendedHomeFile)
+	}
+	return rest.InClusterConfig()
 }

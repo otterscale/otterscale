@@ -68,7 +68,7 @@ func (k *Kubernetes) impersonationConfig(ctx context.Context, cluster string) (*
 		}
 	}
 
-	// fallback to local kubeconfig for debugging
+	// use local kubeconfig for debugging if OTTERSCALE_DEBUG is set.
 	if os.Getenv("OTTERSCALE_DEBUG") != "" {
 		return clientcmd.BuildConfigFromFlags("", clientcmd.RecommendedHomeFile)
 	}
