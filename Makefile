@@ -23,7 +23,7 @@ vet:
 .PHONY: test
 # test code
 test:
-	go test -v -coverprofile=coverage.txt ./...
+	go test -coverprofile=coverage.txt ./...
 
 .PHONY: lint
 # lint code

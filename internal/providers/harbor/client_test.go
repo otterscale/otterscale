@@ -193,7 +193,7 @@ func TestRobotPermissions(t *testing.T) {
 	if systemPerm.Kind != "system" || systemPerm.Namespace != "/" {
 		t.Errorf("system permission: kind=%q namespace=%q", systemPerm.Kind, systemPerm.Namespace)
 	}
-	wantSystemActions := map[string]bool{"create": true, "list": true, "read": true}
+	wantSystemActions := map[string]bool{"create": true, "list": true}
 	for _, a := range systemPerm.Access {
 		if a.Resource != "project" {
 			t.Errorf("system access resource = %q, want %q", a.Resource, "project")
@@ -211,7 +211,7 @@ func TestRobotPermissions(t *testing.T) {
 
 	wantProjectAccess := map[string][]string{
 		"member": {"create", "update", "list", "read", "delete"},
-		"robot":  {"create", "list", "read"},
+		"robot":  {"create", "list", "read", "delete"},
 	}
 	gotAccess := map[string]map[string]bool{}
 	for _, a := range projectPerm.Access {

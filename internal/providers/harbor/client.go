@@ -75,7 +75,7 @@ func (c *Client) EnsureRobotAccount(ctx context.Context, clusterName string) (*c
 
 	// If the robot already exists, delete it and retry.
 	var conflictErr *errConflict
-	if !isConflict(err, &conflictErr) {
+	if !errors.As(err, &conflictErr) {
 		return nil, err
 	}
 
@@ -101,9 +101,9 @@ func (c *Client) adminPassword(ctx context.Context) (string, error) {
 		return c.password, nil
 	}
 
-	cfg, err := kubeConfg()
+	cfg, err := kubeConfig()
 	if err != nil {
-		return "", fmt.Errorf("harbor: in-cluster config: %w", err)
+		return "", fmt.Errorf("harbor: load kubernetes config: %w", err)
 	}
 
 	clientset, err := kubernetes.NewForConfig(cfg)
@@ -300,17 +300,8 @@ func (e *errConflict) Error() string {
 	return fmt.Sprintf("harbor: robot for cluster %q already exists", e.cluster)
 }
 
-// isConflict checks whether err is an *errConflict.
-func isConflict(err error, target **errConflict) bool {
-	if target == nil {
-		var e *errConflict
-		target = &e
-	}
-	return errors.As(err, target)
-}
-
 // kubeConfig returns a Kubernetes REST config, using in-cluster config in production and falling back to local kubeconfig for debugging.
-func kubeConfg() (*rest.Config, error) {
+func kubeConfig() (*rest.Config, error) {
 	if os.Getenv("OTTERSCALE_DEBUG") != "" {
 		return clientcmd.BuildConfigFromFlags("", clientcmd.RecommendedHomeFile)
 	}
