@@ -3,8 +3,8 @@ VERSION ?= $(shell git describe --tags --always 2>/dev/null || echo devel)
 API_VERSION ?= $(call gomodver,github.com/otterscale/api)
 CERT_MANAGER_VERSION  := v1.19.4
 MODULE_OPERATOR_VERSION := v0.8.3
-TENANT_OPERATOR_VERSION := v0.8.5
-FLUX2_VERSION := v2.8.1
+TENANT_OPERATOR_VERSION := v0.8.8
+FLUX2_VERSION := v2.8.2
 
 BOOTSTRAP_DIR := manifests/bootstrap
 STAGE1_DIR    := $(BOOTSTRAP_DIR)/stage1
@@ -23,7 +23,7 @@ vet:
 .PHONY: test
 # test code
 test:
-	go test -v -coverprofile=coverage.txt ./...
+	go test -coverprofile=coverage.txt ./...
 
 .PHONY: lint
 # lint code

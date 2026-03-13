@@ -23,5 +23,6 @@ func ProvideAgentManifestConfig(conf *config.Config, ca *pki.CA) (core.AgentMani
 		ServerURL: conf.ServerExternalURL(),
 		TunnelURL: conf.ServerExternalTunnelURL(),
 		HMACKey:   hmacKey,
+		HarborURL: conf.ServerHarborURL(),
 	}, nil
 }

@@ -24,6 +24,7 @@ var ServerOptions = []Option{
 	{Key: keyServerKeycloakClientID, Flag: toFlag(keyServerKeycloakClientID), Default: "otterscale-server", Description: "Server keycloak client id"},
 	{Key: keyServerExternalURL, Flag: toFlag(keyServerExternalURL), Default: "", Description: "Externally reachable server URL for agent connections (required for manifest generation)"},
 	{Key: keyServerExternalTunnelURL, Flag: toFlag(keyServerExternalTunnelURL), Default: "", Description: "Externally reachable tunnel URL for agent tunnel connections (required for manifest generation)"},
+	{Key: keyServerHarborURL, Flag: toFlag(keyServerHarborURL), Default: "", Description: "Harbor registry URL for robot account creation (optional)"},
 }
 
 // AgentOptions defines the configuration entries available in agent

@@ -47,6 +47,11 @@ func (r *Renderer) RenderAgentManifest(params *core.ManifestParams) (string, err
 		ServerURL:     params.ServerURL,
 		TunnelURL:     params.TunnelURL,
 	}
+	if params.HarborCreds != nil {
+		data.HarborURL = params.HarborURL
+		data.HarborRobotName = params.HarborCreds.Name
+		data.HarborRobotSecret = params.HarborCreds.Secret
+	}
 
 	var buf bytes.Buffer
 	if err := agentManifestTmpl.Execute(&buf, data); err != nil {
@@ -58,12 +63,15 @@ func (r *Renderer) RenderAgentManifest(params *core.ManifestParams) (string, err
 // agentManifestData holds the template parameters for agent manifest
 // generation.
 type agentManifestData struct {
-	Cluster       string
-	UserName      string
-	SanitizedUser string
-	Image         string
-	ServerURL     string
-	TunnelURL     string
+	Cluster           string
+	UserName          string
+	SanitizedUser     string
+	Image             string
+	ServerURL         string
+	TunnelURL         string
+	HarborURL         string
+	HarborRobotName   string
+	HarborRobotSecret string
 }
 
 // sanitizeK8sName converts an arbitrary string (e.g. an OIDC subject
@@ -245,4 +253,17 @@ spec:
               value: {{ yamlQuote .TunnelURL }}
             - name: OTTERSCALE_AGENT_CLUSTER
               value: {{ yamlQuote .Cluster }}
+{{- if .HarborRobotName }}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: otterscale-harbor-robot
+  namespace: otterscale-system
+type: Opaque
+stringData:
+  HARBOR_URL: {{ yamlQuote .HarborURL }}
+  HARBOR_ROBOT_NAME: {{ yamlQuote .HarborRobotName }}
+  HARBOR_ROBOT_SECRET: {{ yamlQuote .HarborRobotSecret }}
+{{- end }}
 `

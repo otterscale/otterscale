@@ -52,7 +52,7 @@ func testLinkConfig() AgentManifestConfig {
 
 func newTestLinkUseCase(t *testing.T, tp TunnelProvider, renderer ManifestRenderer) *LinkUseCase {
 	t.Helper()
-	uc, err := NewLinkUseCase(tp, "v1.0.0", testLinkConfig(), renderer)
+	uc, err := NewLinkUseCase(tp, "v1.0.0", testLinkConfig(), renderer, nil)
 	if err != nil {
 		t.Fatalf("NewLinkUseCase: %v", err)
 	}
@@ -87,7 +87,7 @@ func TestNewLinkUseCase_ValidationErrors(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, err := NewLinkUseCase(tp, "v1.0.0", tt.cfg, renderer)
+			_, err := NewLinkUseCase(tp, "v1.0.0", tt.cfg, renderer, nil)
 			if err == nil {
 				t.Fatal("expected error, got nil")
 			}

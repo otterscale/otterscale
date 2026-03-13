@@ -106,6 +106,25 @@ type Link struct {
 	AgentVersion string // agent binary version
 }
 
+// HarborRobotCredentials holds the name and secret for a Harbor
+// robot account created via the Harbor v2.0 API.
+type HarborRobotCredentials struct {
+	// Name is the full robot account name (e.g. "robot$my-cluster").
+	Name string
+	// Secret is the robot account token/password.
+	Secret string
+}
+
+// HarborClient creates per-cluster robot accounts in Harbor.
+// Implementations live in the providers layer.
+type HarborClient interface {
+	// EnsureRobotAccount creates (or re-creates) a system-level
+	// robot account for the given cluster name and returns its
+	// credentials. On conflict, the existing robot is deleted and
+	// re-created to obtain a fresh secret.
+	EnsureRobotAccount(ctx context.Context, clusterName string) (*HarborRobotCredentials, error)
+}
+
 // AgentManifestConfig holds the external URLs and HMAC key needed to
 // generate agent installation manifests and sign manifest tokens.
 type AgentManifestConfig struct {
@@ -118,6 +137,9 @@ type AgentManifestConfig struct {
 	// HMACKey is a 32-byte key derived from the CA seed via HKDF.
 	// It is used to sign and verify stateless manifest tokens.
 	HMACKey []byte
+	// HarborURL is the externally reachable Harbor registry URL.
+	// Empty when Harbor integration is disabled.
+	HarborURL string
 }
 
 // ManifestParams holds the parameters needed to render an agent
@@ -129,6 +151,12 @@ type ManifestParams struct {
 	Image     string
 	ServerURL string
 	TunnelURL string
+	// HarborURL is the Harbor registry URL. Empty when Harbor
+	// integration is disabled.
+	HarborURL string
+	// HarborCreds holds the per-cluster robot account credentials.
+	// Nil when Harbor integration is disabled.
+	HarborCreds *HarborRobotCredentials
 }
 
 // ManifestRenderer renders agent installation manifests from the given
@@ -147,6 +175,7 @@ type LinkUseCase struct {
 	manifestCfg AgentManifestConfig
 	renderer    ManifestRenderer
 	tokenIssuer *ManifestTokenIssuer
+	harbor      HarborClient // nil when Harbor integration is disabled
 }
 
 // NewLinkUseCase returns a LinkUseCase backed by the given
@@ -155,7 +184,7 @@ type LinkUseCase struct {
 // manifestCfg provides the external URLs embedded in generated agent
 // installation manifests. It returns an error if any required
 // manifest configuration field is missing.
-func NewLinkUseCase(tunnel TunnelProvider, version Version, manifestCfg AgentManifestConfig, renderer ManifestRenderer) (*LinkUseCase, error) {
+func NewLinkUseCase(tunnel TunnelProvider, version Version, manifestCfg AgentManifestConfig, renderer ManifestRenderer, harbor HarborClient) (*LinkUseCase, error) {
 	if manifestCfg.ServerURL == "" {
 		return nil, fmt.Errorf("manifest config: server URL is required")
 	}
@@ -172,6 +201,7 @@ func NewLinkUseCase(tunnel TunnelProvider, version Version, manifestCfg AgentMan
 		manifestCfg: manifestCfg,
 		renderer:    renderer,
 		tokenIssuer: tokenIssuer,
+		harbor:      harbor,
 	}, nil
 }
 
@@ -237,7 +267,7 @@ func (uc *LinkUseCase) VerifyManifestToken(_ context.Context, token string) (clu
 // The manifest includes a Namespace, ServiceAccount,
 // ClusterRoleBinding (binding userName to cluster-admin), and a
 // Deployment that runs the agent with the correct server/tunnel URLs.
-func (uc *LinkUseCase) GenerateAgentManifest(_ context.Context, cluster, userName string) (string, error) {
+func (uc *LinkUseCase) GenerateAgentManifest(ctx context.Context, cluster, userName string) (string, error) {
 	if err := ValidateClusterName(cluster); err != nil {
 		return "", err
 	}
@@ -245,11 +275,22 @@ func (uc *LinkUseCase) GenerateAgentManifest(_ context.Context, cluster, userNam
 		return "", &ErrInvalidInput{Field: "user_name", Message: "must not be empty"}
 	}
 
-	return uc.renderer.RenderAgentManifest(&ManifestParams{
+	params := &ManifestParams{
 		Cluster:   cluster,
 		UserName:  userName,
 		Image:     fmt.Sprintf("ghcr.io/otterscale/otterscale:%s", uc.version),
 		ServerURL: uc.manifestCfg.ServerURL,
 		TunnelURL: uc.manifestCfg.TunnelURL,
-	})
+	}
+
+	if uc.harbor != nil {
+		creds, err := uc.harbor.EnsureRobotAccount(ctx, cluster)
+		if err != nil {
+			return "", fmt.Errorf("create harbor robot account: %w", err)
+		}
+		params.HarborURL = uc.manifestCfg.HarborURL
+		params.HarborCreds = creds
+	}
+
+	return uc.renderer.RenderAgentManifest(params)
 }

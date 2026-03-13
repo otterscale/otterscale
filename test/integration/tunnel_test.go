@@ -16,7 +16,7 @@ import (
 func TestLinkRegisterClusterUsesSingleSharedTunnelPort(t *testing.T) {
 	tunnel := newTestTunnel(t)
 	initTunnelServer(t, tunnel)
-	link, err := core.NewLinkUseCase(tunnel, "test", testManifestConfig(), manifest.NewRenderer())
+	link, err := core.NewLinkUseCase(tunnel, "test", testManifestConfig(), manifest.NewRenderer(), nil)
 	if err != nil {
 		t.Fatalf("create link use case: %v", err)
 	}
@@ -64,7 +64,7 @@ func TestLinkRegisterClusterUsesSingleSharedTunnelPort(t *testing.T) {
 func TestLinkRegisterClusterLatestAgentWinsForSameCluster(t *testing.T) {
 	tunnel := newTestTunnel(t)
 	initTunnelServer(t, tunnel)
-	link, err := core.NewLinkUseCase(tunnel, "test", testManifestConfig(), manifest.NewRenderer())
+	link, err := core.NewLinkUseCase(tunnel, "test", testManifestConfig(), manifest.NewRenderer(), nil)
 	if err != nil {
 		t.Fatalf("create link use case: %v", err)
 	}
@@ -101,7 +101,7 @@ func TestLinkRegisterClusterLatestAgentWinsForSameCluster(t *testing.T) {
 func TestLinkRegisterClusterReregisterAndReplaceAcrossAgents(t *testing.T) {
 	tunnel := newTestTunnel(t)
 	initTunnelServer(t, tunnel)
-	link, err := core.NewLinkUseCase(tunnel, "test", testManifestConfig(), manifest.NewRenderer())
+	link, err := core.NewLinkUseCase(tunnel, "test", testManifestConfig(), manifest.NewRenderer(), nil)
 	if err != nil {
 		t.Fatalf("create link use case: %v", err)
 	}
