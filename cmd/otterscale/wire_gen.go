@@ -15,6 +15,7 @@ import (
 	"github.com/otterscale/otterscale/internal/handler"
 	"github.com/otterscale/otterscale/internal/providers"
 	"github.com/otterscale/otterscale/internal/providers/chisel"
+	"github.com/otterscale/otterscale/internal/providers/harbor"
 	"github.com/otterscale/otterscale/internal/providers/kubernetes"
 	"github.com/otterscale/otterscale/internal/providers/manifest"
 	"github.com/otterscale/otterscale/internal/providers/otterscale"
@@ -51,7 +52,8 @@ func wireServer(v core.Version, conf *config.Config) (*server.Server, func(), er
 		return nil, nil, err
 	}
 	renderer := manifest.NewRenderer()
-	linkUseCase, err := core.NewLinkUseCase(service, v, agentManifestConfig, renderer)
+	harborClient := harbor.ProvideHarborClient(conf)
+	linkUseCase, err := core.NewLinkUseCase(service, v, agentManifestConfig, renderer, harborClient)
 	if err != nil {
 		return nil, nil, err
 	}
