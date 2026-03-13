@@ -27,10 +27,10 @@ import (
 const (
 	// harborSecretNamespace is the Kubernetes namespace where the
 	// Harbor admin secret is stored.
-	harborSecretNamespace = "otterscale-system"
+	harborSecretNamespace = "otterscale-system" //nolint:gosec // not credentials, just a namespace name
 	// harborSecretName is the name of the Kubernetes Secret
 	// containing the Harbor admin password.
-	harborSecretName = "otterscale-harbor-admin"
+	harborSecretName = "otterscale-harbor-admin" //nolint:gosec // not credentials, just a secret resource name
 	// harborSecretKey is the data key within the Secret that holds
 	// the admin password.
 	harborSecretKey = "HARBOR_ADMIN_PASSWORD"
@@ -235,7 +235,7 @@ func (c *Client) findRobotID(ctx context.Context, clusterName, password string) 
 	query.Set("q", "name=~"+clusterName)
 
 	reqURL := c.baseURL + "/api/v2.0/robots?" + query.Encode()
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, reqURL, nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, reqURL, http.NoBody)
 	if err != nil {
 		return 0, fmt.Errorf("harbor: create request: %w", err)
 	}
@@ -271,7 +271,7 @@ func (c *Client) findRobotID(ctx context.Context, clusterName, password string) 
 // deleteRobot sends DELETE /api/v2.0/robots/{id}.
 func (c *Client) deleteRobot(ctx context.Context, robotID int, password string) error {
 	reqURL := fmt.Sprintf("%s/api/v2.0/robots/%d", c.baseURL, robotID)
-	req, err := http.NewRequestWithContext(ctx, http.MethodDelete, reqURL, nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodDelete, reqURL, http.NoBody)
 	if err != nil {
 		return fmt.Errorf("harbor: create request: %w", err)
 	}

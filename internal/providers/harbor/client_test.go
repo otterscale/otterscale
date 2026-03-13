@@ -10,16 +10,21 @@ import (
 	"testing"
 )
 
+const (
+	testRobotsPath = "/api/v2.0/robots"
+	testPassword   = "secret"
+)
+
 func TestCreateRobot_Success(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost || r.URL.Path != "/api/v2.0/robots" {
+		if r.Method != http.MethodPost || r.URL.Path != testRobotsPath {
 			t.Errorf("unexpected request: %s %s", r.Method, r.URL.Path)
 			http.Error(w, "not found", http.StatusNotFound)
 			return
 		}
 
 		user, pass, ok := r.BasicAuth()
-		if !ok || user != "admin" || pass != "secret" {
+		if !ok || user != "admin" || pass != testPassword {
 			t.Errorf("unexpected auth: user=%q pass=%q ok=%v", user, pass, ok)
 			http.Error(w, "unauthorized", http.StatusUnauthorized)
 			return
@@ -46,18 +51,20 @@ func TestCreateRobot_Success(t *testing.T) {
 		}
 
 		w.WriteHeader(http.StatusCreated)
-		json.NewEncoder(w).Encode(robotResponse{
+		if err := json.NewEncoder(w).Encode(robotResponse{ //nolint:gosec // test data
 			ID:     42,
 			Name:   "robot$my-cluster",
 			Secret: "robot-secret-token",
-		})
+		}); err != nil {
+			t.Errorf("encode response: %v", err)
+		}
 	}))
 	defer srv.Close()
 
 	c := NewClient(srv.URL)
-	c.password = "secret" // skip K8s secret read
+	c.password = testPassword // skip K8s secret read
 
-	creds, err := c.createRobot(t.Context(), "my-cluster", "secret")
+	creds, err := c.createRobot(t.Context(), "my-cluster", testPassword)
 	if err != nil {
 		t.Fatalf("createRobot: %v", err)
 	}
@@ -77,27 +84,31 @@ func TestCreateRobot_Conflict_DeleteAndRetry(t *testing.T) {
 
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch {
-		case r.Method == http.MethodPost && r.URL.Path == "/api/v2.0/robots":
+		case r.Method == http.MethodPost && r.URL.Path == testRobotsPath:
 			createCalls++
 			if createCalls == 1 {
 				w.WriteHeader(http.StatusConflict)
 				return
 			}
 			w.WriteHeader(http.StatusCreated)
-			json.NewEncoder(w).Encode(robotResponse{
+			if err := json.NewEncoder(w).Encode(robotResponse{ //nolint:gosec // test data
 				ID:     99,
 				Name:   "robot$test-cluster",
 				Secret: "new-secret",
-			})
+			}); err != nil {
+				t.Errorf("encode response: %v", err)
+			}
 
-		case r.Method == http.MethodGet && r.URL.Path == "/api/v2.0/robots":
+		case r.Method == http.MethodGet && r.URL.Path == testRobotsPath:
 			q := r.URL.Query().Get("q")
 			if !strings.Contains(q, "test-cluster") {
 				t.Errorf("unexpected query: %q", q)
 			}
-			json.NewEncoder(w).Encode([]robotListItem{
+			if err := json.NewEncoder(w).Encode([]robotListItem{
 				{ID: 50, Name: "robot$test-cluster"},
-			})
+			}); err != nil {
+				t.Errorf("encode response: %v", err)
+			}
 
 		case r.Method == http.MethodDelete && r.URL.Path == "/api/v2.0/robots/50":
 			deleteCalled = true
@@ -111,7 +122,7 @@ func TestCreateRobot_Conflict_DeleteAndRetry(t *testing.T) {
 	defer srv.Close()
 
 	c := NewClient(srv.URL)
-	c.password = "secret"
+	c.password = testPassword
 
 	creds, err := c.EnsureRobotAccount(t.Context(), "test-cluster")
 	if err != nil {
@@ -133,13 +144,13 @@ func TestCreateRobot_Conflict_DeleteAndRetry(t *testing.T) {
 }
 
 func TestCreateRobot_UnexpectedStatus(t *testing.T) {
-	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		http.Error(w, "internal server error", http.StatusInternalServerError)
 	}))
 	defer srv.Close()
 
 	c := NewClient(srv.URL)
-	c.password = "secret"
+	c.password = testPassword
 
 	_, err := c.EnsureRobotAccount(context.Background(), "fail-cluster")
 	if err == nil {
@@ -151,14 +162,16 @@ func TestCreateRobot_UnexpectedStatus(t *testing.T) {
 }
 
 func TestFindRobotID_NotFound(t *testing.T) {
-	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		json.NewEncoder(w).Encode([]robotListItem{})
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		if err := json.NewEncoder(w).Encode([]robotListItem{}); err != nil {
+			t.Errorf("encode response: %v", err)
+		}
 	}))
 	defer srv.Close()
 
 	c := NewClient(srv.URL)
 
-	_, err := c.findRobotID(t.Context(), "missing-cluster", "secret")
+	_, err := c.findRobotID(t.Context(), "missing-cluster", testPassword)
 	if err == nil {
 		t.Fatal("expected error, got nil")
 	}
@@ -171,14 +184,18 @@ func TestRobotPermissions(t *testing.T) {
 	var gotReq robotRequest
 
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		json.NewDecoder(r.Body).Decode(&gotReq)
+		if err := json.NewDecoder(r.Body).Decode(&gotReq); err != nil {
+			t.Errorf("decode request: %v", err)
+		}
 		w.WriteHeader(http.StatusCreated)
-		json.NewEncoder(w).Encode(robotResponse{ID: 1, Name: "robot$perm-test", Secret: "s"})
+		if err := json.NewEncoder(w).Encode(robotResponse{ID: 1, Name: "robot$perm-test", Secret: "s"}); err != nil { //nolint:gosec // test data
+			t.Errorf("encode response: %v", err)
+		}
 	}))
 	defer srv.Close()
 
 	c := NewClient(srv.URL)
-	c.password = "secret"
+	c.password = testPassword
 
 	_, err := c.EnsureRobotAccount(t.Context(), "perm-test")
 	if err != nil {
@@ -242,21 +259,21 @@ func TestDeleteRobot_Success(t *testing.T) {
 
 	c := NewClient(srv.URL)
 
-	err := c.deleteRobot(t.Context(), 42, "secret")
+	err := c.deleteRobot(t.Context(), 42, testPassword)
 	if err != nil {
 		t.Fatalf("deleteRobot: %v", err)
 	}
 }
 
 func TestDeleteRobot_Error(t *testing.T) {
-	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		http.Error(w, "forbidden", http.StatusForbidden)
 	}))
 	defer srv.Close()
 
 	c := NewClient(srv.URL)
 
-	err := c.deleteRobot(t.Context(), 42, "secret")
+	err := c.deleteRobot(t.Context(), 42, testPassword)
 	if err == nil {
 		t.Fatal("expected error, got nil")
 	}
