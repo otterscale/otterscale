@@ -171,6 +171,8 @@ func (c *Client) createRobot(ctx context.Context, clusterName, password string) 
 				Access: []robotAccess{
 					{Resource: "project", Action: "list"},
 					{Resource: "project", Action: "create"},
+					{Resource: "robot", Action: "list"},
+					{Resource: "robot", Action: "read"},
 				},
 			},
 			{
@@ -186,6 +188,8 @@ func (c *Client) createRobot(ctx context.Context, clusterName, password string) 
 					{Resource: "robot", Action: "read"},
 					{Resource: "robot", Action: "create"},
 					{Resource: "robot", Action: "delete"},
+					{Resource: "repository", Action: "pull"},
+					{Resource: "repository", Action: "push"},
 				},
 			},
 		},
