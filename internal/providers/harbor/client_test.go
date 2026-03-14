@@ -235,6 +235,7 @@ func TestRobotPermissions(t *testing.T) {
 	}
 
 	wantProjectAccess := map[string][]string{
+		"project":    {"read"},
 		"member":     {"create", "update", "list", "read", "delete"},
 		"robot":      {"create", "list", "read", "delete"},
 		"repository": {"pull", "push"},

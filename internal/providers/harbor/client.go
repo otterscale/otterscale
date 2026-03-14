@@ -179,6 +179,7 @@ func (c *Client) createRobot(ctx context.Context, clusterName, password string) 
 				Kind:      "project",
 				Namespace: "*",
 				Access: []robotAccess{
+					{Resource: "project", Action: "read"},
 					{Resource: "member", Action: "list"},
 					{Resource: "member", Action: "read"},
 					{Resource: "member", Action: "create"},
