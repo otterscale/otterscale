@@ -40,6 +40,7 @@ const certManagerWebhookName = "cert-manager-webhook"
 // called during agent startup.
 type Bootstrapper struct {
 	dynamic    dynamic.Interface
+	disc       discovery.DiscoveryInterface
 	cachedDisc discovery.CachedDiscoveryInterface
 	log        *slog.Logger
 }
@@ -63,6 +64,7 @@ func New(cfg *rest.Config) (*Bootstrapper, error) {
 
 	return &Bootstrapper{
 		dynamic:    dyn,
+		disc:       disc,
 		cachedDisc: cachedDisc,
 		log:        slog.Default().With("component", "bootstrap"),
 	}, nil
