@@ -15,6 +15,7 @@ import (
 	"sort"
 
 	"k8s.io/client-go/discovery"
+	"k8s.io/client-go/discovery/cached/memory"
 	"k8s.io/client-go/dynamic"
 	"k8s.io/client-go/rest"
 
@@ -38,9 +39,10 @@ const certManagerWebhookName = "cert-manager-webhook"
 // Kubernetes cluster. It is injected into the Agent via Wire and
 // called during agent startup.
 type Bootstrapper struct {
-	dynamic dynamic.Interface
-	disc    discovery.DiscoveryInterface
-	log     *slog.Logger
+	dynamic    dynamic.Interface
+	disc       discovery.DiscoveryInterface
+	cachedDisc discovery.CachedDiscoveryInterface
+	log        *slog.Logger
 }
 
 // New creates a Bootstrapper from the given rest.Config. The config
@@ -58,10 +60,13 @@ func New(cfg *rest.Config) (*Bootstrapper, error) {
 		return nil, fmt.Errorf("create discovery client: %w", err)
 	}
 
+	cachedDisc := memory.NewMemCacheClient(disc)
+
 	return &Bootstrapper{
-		dynamic: dyn,
-		disc:    disc,
-		log:     slog.Default().With("component", "bootstrap"),
+		dynamic:    dyn,
+		disc:       disc,
+		cachedDisc: cachedDisc,
+		log:        slog.Default().With("component", "bootstrap"),
 	}, nil
 }
 

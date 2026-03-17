@@ -15,7 +15,6 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/apimachinery/pkg/util/wait"
 	utilyaml "k8s.io/apimachinery/pkg/util/yaml"
-	"k8s.io/client-go/discovery/cached/memory"
 	"k8s.io/client-go/dynamic"
 	"k8s.io/client-go/restmapper"
 )
@@ -166,12 +165,12 @@ func isCRDEstablished(obj *unstructured.Unstructured) bool {
 	return false
 }
 
-// newMapper creates a fresh REST mapper backed by a cached discovery
-// client. Callers should create a new mapper after applying CRDs so
-// that newly registered API resources are visible.
+// newMapper invalidates the shared cached discovery client and returns
+// a fresh REST mapper so that newly registered API resources (e.g.
+// CRDs applied in an earlier phase) are visible.
 func (b *Bootstrapper) newMapper() meta.RESTMapper {
-	cachedDisc := memory.NewMemCacheClient(b.disc)
-	return restmapper.NewDeferredDiscoveryRESTMapper(cachedDisc)
+	b.cachedDisc.Invalidate()
+	return restmapper.NewDeferredDiscoveryRESTMapper(b.cachedDisc)
 }
 
 // parseMultiDoc splits a multi-document YAML byte slice into
