@@ -16,7 +16,7 @@ require (
 	github.com/google/uuid v1.6.0
 	github.com/google/wire v0.7.0
 	github.com/jpillora/chisel v1.11.5
-	github.com/otterscale/api v0.9.0-beta.1
+	github.com/otterscale/api v0.9.0-beta.2
 	github.com/prometheus/client_golang v1.23.2
 	github.com/rs/cors v1.11.1
 	github.com/spf13/cobra v1.10.2
@@ -31,7 +31,7 @@ require (
 	k8s.io/apimachinery v0.35.2
 	k8s.io/apiserver v0.35.2
 	k8s.io/client-go v0.35.2
-	k8s.io/kube-openapi v0.0.0-20260304202019-5b3e3fdb0acf
+	k8s.io/kube-openapi v0.0.0-20260317180543-43fb72c5454a
 )
 
 require (
