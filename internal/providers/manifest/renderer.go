@@ -171,6 +171,14 @@ rules:
   - apiGroups: ["cert-manager.io"]
     resources: ["certificates", "issuers"]
     verbs: ["get", "create", "patch"]
+  # Bootstrap: Module operator ModuleTemplate CRs.
+  - apiGroups: ["module.otterscale.io"]
+    resources: ["moduletemplates"]
+    verbs: ["get", "create", "patch"]
+  # Bootstrap: FluxCD source resources (GitRepository, HelmRepository).
+  - apiGroups: ["source.toolkit.fluxcd.io"]
+    resources: ["gitrepositories", "helmrepositories"]
+    verbs: ["get", "create", "patch"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
