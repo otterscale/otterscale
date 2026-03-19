@@ -126,7 +126,6 @@ func (k *Kubernetes) spdyConfig(ctx context.Context, cluster string) (*rest.Conf
 			UserName: userInfo.Subject,
 			Groups:   userInfo.Groups,
 		},
-		Timeout: clientTimeout,
 	}, nil
 }
 
