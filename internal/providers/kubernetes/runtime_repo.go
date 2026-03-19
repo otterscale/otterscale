@@ -28,7 +28,7 @@ import (
 )
 
 // runtimeRepo implements core.RuntimeRepo by delegating to the
-// Kubernetes typed, dynamic, and SPDY clients, accessed through
+// Kubernetes typed, dynamic, and streaming clients, accessed through
 // the tunnel.
 type runtimeRepo struct {
 	kubernetes *Kubernetes
@@ -81,7 +81,7 @@ func (r *runtimeRepo) PodLogs(ctx context.Context, cluster, namespace, name stri
 
 // Exec starts an interactive exec session and blocks until it completes.
 func (r *runtimeRepo) Exec(ctx context.Context, cluster, namespace, name string, opts *core.ExecOptions) error {
-	config, err := r.kubernetes.spdyConfig(ctx, cluster)
+	config, err := r.kubernetes.streamConfig(ctx, cluster)
 	if err != nil {
 		return err
 	}
@@ -107,9 +107,21 @@ func (r *runtimeRepo) Exec(ctx context.Context, cluster, namespace, name string,
 		SubResource("exec").
 		VersionedParams(execOpts, scheme.ParameterCodec)
 
-	executor, err := remotecommand.NewSPDYExecutor(config, http.MethodPost, req.URL())
+	wsExec, err := remotecommand.NewWebSocketExecutor(config, http.MethodPost, req.URL().String())
+	if err != nil {
+		return &core.DomainError{Code: core.ErrorCodeInternal, Message: "create WebSocket executor", Cause: err}
+	}
+
+	spdyExec, err := remotecommand.NewSPDYExecutor(config, http.MethodPost, req.URL())
 	if err != nil {
 		return &core.DomainError{Code: core.ErrorCodeInternal, Message: "create SPDY executor", Cause: err}
+	}
+
+	executor, err := remotecommand.NewFallbackExecutor(wsExec, spdyExec, func(err error) bool {
+		return httpstream.IsUpgradeFailure(err) || httpstream.IsHTTPSProxyError(err)
+	})
+	if err != nil {
+		return &core.DomainError{Code: core.ErrorCodeInternal, Message: "create fallback executor", Cause: err}
 	}
 
 	streamOpts := remotecommand.StreamOptions{
@@ -234,7 +246,7 @@ func (r *runtimeRepo) Restart(ctx context.Context, cluster string, gvr schema.Gr
 // bidirectionally between the caller's stdin/stdout and the pod.
 // It waits for both copy directions to complete before returning.
 func (r *runtimeRepo) PortForward(ctx context.Context, cluster, namespace, name string, opts core.PortForwardOptions) error {
-	config, err := r.kubernetes.spdyConfig(ctx, cluster)
+	config, err := r.kubernetes.streamConfig(ctx, cluster)
 	if err != nil {
 		return err
 	}
@@ -402,7 +414,7 @@ func (r *runtimeRepo) SubResourceAction(ctx context.Context, cluster string, gvr
 // ---------------------------------------------------------------------------
 
 // sizeQueueAdapter bridges the domain core.TerminalSizer interface to
-// the remotecommand.TerminalSizeQueue interface required by SPDY
+// the remotecommand.TerminalSizeQueue interface required by streaming
 // executors. This keeps the domain layer free of client-go dependencies.
 type sizeQueueAdapter struct {
 	inner core.TerminalSizer
