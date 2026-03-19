@@ -174,7 +174,7 @@ func (r *resourceRepo) Watch(
 	namespace string,
 	opts core.WatchOptions,
 ) (core.Watcher, error) {
-	client, err := r.dynamicClient(ctx, cluster)
+	client, err := r.watchDynamicClient(ctx, cluster)
 	if err != nil {
 		return nil, err
 	}
@@ -325,6 +325,21 @@ func (r *resourceRepo) ListEvents(
 // ---------------------------------------------------------------------------
 // Client helpers
 // ---------------------------------------------------------------------------
+
+// watchDynamicClient builds a dynamic client with no HTTP timeout, suitable
+// for long-lived Watch streams that rely on context cancellation instead.
+func (r *resourceRepo) watchDynamicClient(ctx context.Context, cluster string) (*dynamic.DynamicClient, error) {
+	config, err := r.kubernetes.impersonationConfig(ctx, cluster)
+	if err != nil {
+		return nil, err
+	}
+	config.Timeout = 0
+	dc, err := dynamic.NewForConfig(config)
+	if err != nil {
+		return nil, &core.DomainError{Code: core.ErrorCodeInternal, Message: "create dynamic client", Cause: err}
+	}
+	return dc, nil
+}
 
 // dynamicClient builds a fresh impersonated dynamic client for the given cluster.
 // A new client is created per request because each request may carry
