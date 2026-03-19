@@ -103,7 +103,7 @@ func (k *Kubernetes) impersonationConfig(ctx context.Context, cluster string) (*
 // (exec, port-forward). Unlike impersonationConfig, it does NOT
 // set a pre-built Transport because SPDY executors and dialers need
 // to negotiate their own connection upgrade.
-func (k *Kubernetes) spdyConfig(ctx context.Context, cluster string) (*rest.Config, error) {
+func (k *Kubernetes) streamConfig(ctx context.Context, cluster string) (*rest.Config, error) {
 	userInfo, ok := core.UserInfoFromContext(ctx)
 	if !ok {
 		return nil, &core.DomainError{
