@@ -17,9 +17,7 @@ func TestListener_DialAndAccept(t *testing.T) {
 	const msg = "hello pipe"
 
 	var wg sync.WaitGroup
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
+	wg.Go(func() {
 		conn, err := ln.Accept()
 		if err != nil {
 			t.Errorf("Accept: %v", err)
@@ -35,7 +33,7 @@ func TestListener_DialAndAccept(t *testing.T) {
 		if string(buf) != msg {
 			t.Errorf("server got %q, want %q", buf, msg)
 		}
-	}()
+	})
 
 	client, err := ln.Dial()
 	if err != nil {
@@ -58,9 +56,7 @@ func TestListener_BidirectionalData(t *testing.T) {
 	defer ln.Close()
 
 	var wg sync.WaitGroup
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
+	wg.Go(func() {
 		conn, err := ln.Accept()
 		if err != nil {
 			t.Errorf("Accept: %v", err)
@@ -76,7 +72,7 @@ func TestListener_BidirectionalData(t *testing.T) {
 		if _, err := conn.Write([]byte("pong")); err != nil {
 			t.Errorf("server write: %v", err)
 		}
-	}()
+	})
 
 	client, err := ln.Dial()
 	if err != nil {
@@ -171,9 +167,7 @@ func TestListener_MultipleConcurrentDials(t *testing.T) {
 	var wg sync.WaitGroup
 
 	// Server: accept n connections.
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
+	wg.Go(func() {
 		for i := range n {
 			conn, err := ln.Accept()
 			if err != nil {
@@ -182,20 +176,18 @@ func TestListener_MultipleConcurrentDials(t *testing.T) {
 			}
 			conn.Close()
 		}
-	}()
+	})
 
 	// Clients: dial n times concurrently.
 	for range n {
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
+		wg.Go(func() {
 			conn, err := ln.Dial()
 			if err != nil {
 				t.Errorf("Dial: %v", err)
 				return
 			}
 			conn.Close()
-		}()
+		})
 	}
 
 	wg.Wait()

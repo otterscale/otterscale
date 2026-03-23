@@ -148,7 +148,7 @@ func TestLinkRegisterClusterReregisterAndReplaceAcrossAgents(t *testing.T) {
 		t.Fatal("expected auth rotation for same agent re-register")
 	}
 
-	for i := 0; i < 3; i++ {
+	for i := range 3 {
 		addr, err := tunnel.ResolveAddress(t.Context(), "cluster-z")
 		if err != nil {
 			t.Fatalf("resolve #%d: %v", i+1, err)

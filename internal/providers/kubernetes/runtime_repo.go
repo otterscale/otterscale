@@ -312,9 +312,7 @@ func (r *runtimeRepo) runPortForwardStreams(ctx context.Context, streamConn http
 	var wg sync.WaitGroup
 
 	// Check for immediate errors from kubelet.
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
+	wg.Go(func() {
 		const errorBufSize = 1024
 		buf := make([]byte, errorBufSize)
 		n, _ := errorStream.Read(buf)
@@ -323,7 +321,7 @@ func (r *runtimeRepo) runPortForwardStreams(ctx context.Context, streamConn http
 				slog.Warn("failed to close data stream after kubelet error", "error", err)
 			}
 		}
-	}()
+	})
 
 	// Bidirectional copy — wait for BOTH directions to complete.
 	errCh := make(chan error, 2)
@@ -342,7 +340,7 @@ func (r *runtimeRepo) runPortForwardStreams(ctx context.Context, streamConn http
 	}()
 
 	var firstErr error
-	for i := 0; i < 2; i++ {
+	for range 2 {
 		select {
 		case <-ctx.Done():
 			streamConn.Close()

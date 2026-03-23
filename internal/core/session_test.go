@@ -21,7 +21,7 @@ func TestTerminalSizeQueue_OverflowDropsOldest(t *testing.T) {
 	q := NewTerminalSizeQueue()
 
 	// Fill the buffer (capacity 4).
-	for i := uint16(0); i < 4; i++ {
+	for i := range uint16(4) {
 		q.Set(i, i)
 	}
 
