@@ -96,21 +96,17 @@ func TestBridge_MultipleConnections(t *testing.T) {
 
 	// Server side: accept n connections and echo back.
 	for i := range n {
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
+		wg.Go(func() {
 			echoConnection(t, pl, i)
-		}()
+		})
 	}
 
 	// Client side: dial n connections concurrently.
 	addr := fmt.Sprintf("127.0.0.1:%d", bridge.Port())
 	for i := range n {
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
+		wg.Go(func() {
 			verifyRoundTrip(t.Context(), t, addr, i)
-		}()
+		})
 	}
 
 	wg.Wait()

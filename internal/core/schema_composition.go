@@ -184,7 +184,7 @@ func extractSubSchema(s *spec.Schema, path string) *spec.Schema {
 	}
 
 	current := s
-	for _, seg := range strings.Split(path, ".") {
+	for seg := range strings.SplitSeq(path, ".") {
 		if current.Properties == nil {
 			return nil
 		}

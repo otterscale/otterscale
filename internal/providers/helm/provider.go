@@ -79,7 +79,7 @@ func (r *Repo) ShowChart(_ context.Context, repoURL, chartName, version string) 
 		}
 	}
 
-	chrt, err := loader.Load(chartPath)
+	chart, err := loader.Load(chartPath)
 	if err != nil {
 		return nil, nil, &core.DomainError{
 			Code:    core.ErrorCodeInternal,
@@ -88,14 +88,14 @@ func (r *Repo) ShowChart(_ context.Context, repoURL, chartName, version string) 
 		}
 	}
 
-	for _, f := range chrt.Raw {
+	for _, f := range chart.Raw {
 		if f.Name == chartutil.ValuesfileName {
 			values = f.Data
 			break
 		}
 	}
 
-	if f := findReadme(chrt.Files); f != nil {
+	if f := findReadme(chart.Files); f != nil {
 		readme = f.Data
 	}
 

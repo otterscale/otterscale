@@ -155,7 +155,7 @@ func isCRDEstablished(obj *unstructured.Unstructured) bool {
 		return false
 	}
 	for _, c := range conditions {
-		m, ok := c.(map[string]interface{})
+		m, ok := c.(map[string]any)
 		if !ok {
 			continue
 		}
@@ -257,7 +257,7 @@ func isDeploymentAvailable(obj *unstructured.Unstructured) bool {
 		return false
 	}
 	for _, c := range conditions {
-		m, ok := c.(map[string]interface{})
+		m, ok := c.(map[string]any)
 		if !ok {
 			continue
 		}
