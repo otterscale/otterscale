@@ -2,7 +2,6 @@ VERSION ?= $(shell git describe --tags --always 2>/dev/null || echo devel)
 
 API_VERSION ?= $(call gomodver,github.com/otterscale/api)
 TENANT_OPERATOR_VERSION := v0.9.1
-
 CERT_MANAGER_VERSION  := v1.20.0
 FLUX2_VERSION := v2.8.3
 
@@ -36,7 +35,6 @@ bootstrap-manifests: \
 	$(STAGE1_DIR)/cert-manager.yaml \
 	$(STAGE1_DIR)/crds.yaml \
 	$(STAGE2_DIR)/flux2.yaml \
-	$(STAGE2_DIR)/module-operator.yaml \
 	$(STAGE2_DIR)/tenant-operator.yaml
 
 $(STAGE1_DIR)/cert-manager.yaml: | $(STAGE1_DIR)
