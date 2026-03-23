@@ -385,3 +385,21 @@ func (s *RuntimeService) SubResourceAction(ctx context.Context, req *pb.SubResou
 	}
 	return resp, nil
 }
+
+// ---------------------------------------------------------------------------
+// ShowChart
+// ---------------------------------------------------------------------------
+
+// ShowChart retrieves chart values and readme from a remote
+// Helm repository.
+func (s *RuntimeService) ShowChart(ctx context.Context, req *pb.ShowChartRequest) (*pb.ShowChartResponse, error) {
+	values, readme, err := s.runtime.ShowChart(ctx, req.GetRepoUrl(), req.GetChartName(), req.GetVersion())
+	if err != nil {
+		return nil, domainErrorToConnectError(err)
+	}
+
+	resp := &pb.ShowChartResponse{}
+	resp.SetValues(values)
+	resp.SetReadme(readme)
+	return resp, nil
+}

@@ -41,6 +41,15 @@ type RuntimeRepo interface {
 		namespace, name, subresource, method string, body []byte) (map[string]any, error)
 }
 
+// HelmRepo abstracts server-side Helm chart repository operations.
+// Unlike RuntimeRepo (which routes through the tunnel), HelmRepo
+// executes directly on the server using the Helm Go SDK.
+type HelmRepo interface {
+	// ShowChart retrieves the default values.yaml and README.md content
+	// from a chart in a remote Helm repository (HTTP or OCI).
+	ShowChart(ctx context.Context, repoURL, chartName, version string) (values, readme []byte, err error)
+}
+
 // ---------------------------------------------------------------------------
 // Options types
 // ---------------------------------------------------------------------------
@@ -99,6 +108,7 @@ type PortForwardOptions struct {
 type RuntimeUseCase struct {
 	discovery DiscoveryClient
 	runtime   RuntimeRepo
+	helm      HelmRepo
 	sessions  *SessionStore
 }
 
@@ -106,10 +116,11 @@ type RuntimeUseCase struct {
 // discovery, runtime, and session store backends. The SessionStore is
 // injected rather than created internally so that callers can supply
 // alternative implementations for testing or monitoring.
-func NewRuntimeUseCase(discovery DiscoveryClient, runtime RuntimeRepo, sessions *SessionStore) *RuntimeUseCase {
+func NewRuntimeUseCase(discovery DiscoveryClient, runtime RuntimeRepo, helm HelmRepo, sessions *SessionStore) *RuntimeUseCase {
 	return &RuntimeUseCase{
 		discovery: discovery,
 		runtime:   runtime,
+		helm:      helm,
 		sessions:  sessions,
 	}
 }
@@ -425,4 +436,16 @@ func (uc *RuntimeUseCase) SubResourceAction(ctx context.Context, id *ResourceIde
 	}
 
 	return uc.runtime.SubResourceAction(ctx, id.Cluster, gvr, id.Namespace, id.Name, id.SubResource, method, body)
+}
+
+// ShowChart validates the inputs and delegates to HelmRepo to
+// retrieve chart values and readme from a remote repository.
+func (uc *RuntimeUseCase) ShowChart(ctx context.Context, repoURL, chartName, version string) (values, readme []byte, err error) {
+	if repoURL == "" {
+		return nil, nil, &ErrInvalidInput{Field: "repo_url", Message: "repository URL is required"}
+	}
+	if chartName == "" {
+		return nil, nil, &ErrInvalidInput{Field: "chart_name", Message: "chart name is required"}
+	}
+	return uc.helm.ShowChart(ctx, repoURL, chartName, version)
 }
