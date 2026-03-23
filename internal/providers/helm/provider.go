@@ -42,9 +42,19 @@ func NewRepo() (core.HelmRepo, error) {
 // the values.yaml and README.md content. The chart is loaded once
 // and both outputs are extracted from the in-memory structure.
 func (r *Repo) ShowChart(_ context.Context, repoURL, chartName, version string) (values, readme []byte, err error) {
+	tmpDir, tmpErr := os.MkdirTemp("", "otterscale-helm-")
+	if tmpErr != nil {
+		return nil, nil, &core.DomainError{
+			Code:    core.ErrorCodeInternal,
+			Message: "failed to create temporary directory for helm",
+			Cause:   tmpErr,
+		}
+	}
+	defer os.RemoveAll(tmpDir)
+
 	settings := cli.New()
-	settings.RepositoryConfig = filepath.Join(os.TempDir(), "helm", "repositories.yaml")
-	settings.RepositoryCache = filepath.Join(os.TempDir(), "helm", "repository")
+	settings.RepositoryConfig = filepath.Join(tmpDir, "repositories.yaml")
+	settings.RepositoryCache = filepath.Join(tmpDir, "repository")
 
 	cfg := action.NewConfiguration()
 	cfg.RegistryClient = r.registryClient
