@@ -131,6 +131,7 @@ func TestRuntimeUseCase_SubResourceAction_Validation(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			tt.id.SubResource = tt.subresource
 			_, err := uc.SubResourceAction(t.Context(), tt.id, tt.method, nil)
 			if err == nil {
 				t.Fatal("expected error, got nil")
