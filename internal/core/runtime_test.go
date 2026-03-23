@@ -76,8 +76,15 @@ func (m *mockDiscoveryForRuntime) SupportsWatchList(context.Context, string) (bo
 	return false, nil
 }
 
+// mockHelmRepoForRuntime implements HelmRepo for runtime tests.
+type mockHelmRepoForRuntime struct{}
+
+func (m *mockHelmRepoForRuntime) ShowChart(context.Context, string, string, string) (values, readme []byte, err error) {
+	return nil, nil, nil
+}
+
 func newTestRuntimeUseCase(discovery DiscoveryClient, runtime RuntimeRepo) *RuntimeUseCase {
-	return NewRuntimeUseCase(discovery, runtime, NewSessionStore())
+	return NewRuntimeUseCase(discovery, runtime, &mockHelmRepoForRuntime{}, NewSessionStore())
 }
 
 func TestRuntimeUseCase_SubResourceAction_Validation(t *testing.T) {

@@ -9,6 +9,7 @@ import (
 	"github.com/otterscale/otterscale/internal/providers/cache"
 	"github.com/otterscale/otterscale/internal/providers/chisel"
 	"github.com/otterscale/otterscale/internal/providers/harbor"
+	"github.com/otterscale/otterscale/internal/providers/helm"
 	"github.com/otterscale/otterscale/internal/providers/kubernetes"
 	"github.com/otterscale/otterscale/internal/providers/manifest"
 	"github.com/otterscale/otterscale/internal/providers/otterscale"
@@ -44,6 +45,7 @@ var ProviderSet = wire.NewSet(
 	kubernetes.NewRuntimeRepo,
 	otterscale.NewLinkRegistrar,
 	harbor.ProvideHarborClient,
+	helm.NewRepo,
 	ProvideDiscoveryCache,
 	ProvideComposingSchemaResolver,
 	wire.Bind(new(core.SchemaResolver), new(*core.ComposingSchemaResolver)),

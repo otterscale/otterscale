@@ -16,6 +16,7 @@ import (
 	"github.com/otterscale/otterscale/internal/providers"
 	"github.com/otterscale/otterscale/internal/providers/chisel"
 	"github.com/otterscale/otterscale/internal/providers/harbor"
+	"github.com/otterscale/otterscale/internal/providers/helm"
 	"github.com/otterscale/otterscale/internal/providers/kubernetes"
 	"github.com/otterscale/otterscale/internal/providers/manifest"
 	"github.com/otterscale/otterscale/internal/providers/otterscale"
@@ -66,8 +67,12 @@ func wireServer(v core.Version, conf *config.Config) (*server.Server, func(), er
 	resourceUseCase := core.NewResourceUseCase(discoveryClient, resourceRepo, composingSchemaResolver)
 	resourceService := handler.NewResourceService(resourceUseCase)
 	runtimeRepo := kubernetes.NewRuntimeRepo(kubernetesKubernetes)
+	helmRepo, err := helm.NewRepo()
+	if err != nil {
+		return nil, nil, err
+	}
 	sessionStore := core.NewSessionStore()
-	runtimeUseCase := core.NewRuntimeUseCase(discoveryClient, runtimeRepo, sessionStore)
+	runtimeUseCase := core.NewRuntimeUseCase(discoveryClient, runtimeRepo, helmRepo, sessionStore)
 	runtimeService := handler.NewRuntimeService(runtimeUseCase)
 	manifestHandler := handler.NewManifestHandler(linkUseCase)
 	proxyHandler := handler.NewProxyHandler(service)
