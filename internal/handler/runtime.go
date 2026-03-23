@@ -360,14 +360,14 @@ func (s *RuntimeService) SubResourceAction(ctx context.Context, req *pb.SubResou
 	result, err := s.runtime.SubResourceAction(
 		ctx,
 		&core.ResourceIdentifier{
-			Cluster:   req.GetCluster(),
-			Group:     req.GetGroup(),
-			Version:   req.GetVersion(),
-			Resource:  req.GetResource(),
-			Namespace: req.GetNamespace(),
-			Name:      req.GetName(),
+			Cluster:     req.GetCluster(),
+			Group:       req.GetGroup(),
+			Version:     req.GetVersion(),
+			Resource:    req.GetResource(),
+			SubResource: req.GetSubresource(),
+			Namespace:   req.GetNamespace(),
+			Name:        req.GetName(),
 		},
-		req.GetSubresource(),
 		req.GetMethod(),
 		req.GetBody(),
 	)

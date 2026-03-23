@@ -39,7 +39,7 @@ import (
 type DiscoveryClient interface {
 	// LookupResource validates that a group/version/resource triple
 	// exists on the target cluster.
-	LookupResource(ctx context.Context, cluster, group, version, resource string) (schema.GroupVersionResource, error)
+	LookupResource(ctx context.Context, cluster, group, version, resource, subresource string) (schema.GroupVersionResource, error)
 	// ServerResources returns all API resources advertised by the cluster.
 	ServerResources(ctx context.Context, cluster string) ([]*metav1.APIResourceList, error)
 	// ResolveSchema fetches the OpenAPI schema for a given GVK.
@@ -145,17 +145,18 @@ type SchemaResolver interface {
 // positional parameter lists in use-case methods with a single,
 // self-documenting value object.
 type ResourceIdentifier struct {
-	Cluster   string
-	Group     string
-	Version   string
-	Resource  string
-	Namespace string
-	Name      string
+	Cluster     string
+	Group       string
+	Version     string
+	Resource    string
+	SubResource string
+	Namespace   string
+	Name        string
 }
 
 // lookupGVR validates the resource triple via the DiscoveryClient.
 func (id *ResourceIdentifier) lookupGVR(ctx context.Context, dc DiscoveryClient) (schema.GroupVersionResource, error) {
-	return dc.LookupResource(ctx, id.Cluster, id.Group, id.Version, id.Resource)
+	return dc.LookupResource(ctx, id.Cluster, id.Group, id.Version, id.Resource, id.SubResource)
 }
 
 // ---------------------------------------------------------------------------

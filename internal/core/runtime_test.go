@@ -53,7 +53,7 @@ type mockDiscoveryForRuntime struct {
 	lookupErr error
 }
 
-func (m *mockDiscoveryForRuntime) LookupResource(_ context.Context, _, group, ver, resource string) (schema.GroupVersionResource, error) {
+func (m *mockDiscoveryForRuntime) LookupResource(_ context.Context, _, group, ver, resource, _ string) (schema.GroupVersionResource, error) {
 	if m.lookupErr != nil {
 		return schema.GroupVersionResource{}, m.lookupErr
 	}
@@ -131,7 +131,7 @@ func TestRuntimeUseCase_SubResourceAction_Validation(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, err := uc.SubResourceAction(t.Context(), tt.id, tt.subresource, tt.method, nil)
+			_, err := uc.SubResourceAction(t.Context(), tt.id, tt.method, nil)
 			if err == nil {
 				t.Fatal("expected error, got nil")
 			}
@@ -156,14 +156,14 @@ func TestRuntimeUseCase_SubResourceAction_Success(t *testing.T) {
 	result, err := uc.SubResourceAction(
 		t.Context(),
 		&ResourceIdentifier{
-			Cluster:   "prod",
-			Group:     "kubevirt.io",
-			Version:   "v1",
-			Resource:  "virtualmachines",
-			Namespace: "default",
-			Name:      "my-vm",
+			Cluster:     "prod",
+			Group:       "kubevirt.io",
+			Version:     "v1",
+			Resource:    "virtualmachines",
+			SubResource: "start",
+			Namespace:   "default",
+			Name:        "my-vm",
 		},
-		"start",
 		"PUT",
 		nil,
 	)
@@ -185,14 +185,14 @@ func TestRuntimeUseCase_SubResourceAction_POST(t *testing.T) {
 	result, err := uc.SubResourceAction(
 		t.Context(),
 		&ResourceIdentifier{
-			Cluster:   "prod",
-			Group:     "kubevirt.io",
-			Version:   "v1",
-			Resource:  "virtualmachines",
-			Namespace: "default",
-			Name:      "my-vm",
+			Cluster:     "prod",
+			Group:       "kubevirt.io",
+			Version:     "v1",
+			Resource:    "virtualmachines",
+			SubResource: "start",
+			Namespace:   "default",
+			Name:        "my-vm",
 		},
-		"restart",
 		"POST",
 		[]byte(`{"gracePeriod": 30}`),
 	)
@@ -212,14 +212,14 @@ func TestRuntimeUseCase_SubResourceAction_LookupError(t *testing.T) {
 	_, err := uc.SubResourceAction(
 		t.Context(),
 		&ResourceIdentifier{
-			Cluster:   "prod",
-			Group:     "kubevirt.io",
-			Version:   "v1",
-			Resource:  "virtualmachines",
-			Namespace: "default",
-			Name:      "my-vm",
+			Cluster:     "prod",
+			Group:       "kubevirt.io",
+			Version:     "v1",
+			Resource:    "virtualmachines",
+			SubResource: "start",
+			Namespace:   "default",
+			Name:        "my-vm",
 		},
-		"start",
 		"PUT",
 		nil,
 	)

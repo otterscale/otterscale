@@ -21,6 +21,7 @@ import (
 	"k8s.io/client-go/dynamic"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/kubernetes/scheme"
+	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/remotecommand"
 	"k8s.io/client-go/transport/spdy"
 
@@ -374,39 +375,62 @@ const portForwardProtocolV1 = "portforward.k8s.io"
 func (r *runtimeRepo) SubResourceAction(ctx context.Context, cluster string, gvr schema.GroupVersionResource,
 	namespace, name, subresource, method string, body []byte,
 ) (map[string]any, error) {
-	client, err := r.dynamicClient(ctx, cluster)
+	config, err := r.kubernetes.impersonationConfig(ctx, cluster)
 	if err != nil {
 		return nil, err
 	}
 
-	obj := &unstructured.Unstructured{}
-	if len(body) > 0 {
-		if err := json.Unmarshal(body, &obj.Object); err != nil {
-			return nil, &core.DomainError{Code: core.ErrorCodeInvalidArgument, Message: "invalid JSON body", Cause: err}
-		}
+	// Use dynamic.ConfigFor to get the unstructured JSON serializer that
+	// CRD API servers (e.g. KubeVirt) require — scheme.Codecs only handles
+	// built-in types and breaks content negotiation for custom resources.
+	config = dynamic.ConfigFor(config)
+	config.AcceptContentTypes = "*/*"
+	config.GroupVersion = &schema.GroupVersion{Group: gvr.Group, Version: gvr.Version}
+	if gvr.Group == "" {
+		config.APIPath = "/api"
+	} else {
+		config.APIPath = "/apis"
 	}
-	if obj.Object == nil {
-		obj.Object = map[string]any{}
-	}
-	obj.SetName(name)
-	obj.SetNamespace(namespace)
 
-	var result *unstructured.Unstructured
+	restClient, err := rest.RESTClientFor(config)
+	if err != nil {
+		return nil, &core.DomainError{Code: core.ErrorCodeInternal, Message: "create REST client for subresource action", Cause: err}
+	}
+
+	var req *rest.Request
 	switch method {
 	case "PUT":
-		result, err = client.Resource(gvr).Namespace(namespace).Update(ctx, obj, metav1.UpdateOptions{}, subresource)
+		req = restClient.Put()
 	case "POST":
-		result, err = client.Resource(gvr).Namespace(namespace).Create(ctx, obj, metav1.CreateOptions{}, subresource)
+		req = restClient.Post()
 	default:
 		return nil, &core.DomainError{Code: core.ErrorCodeInvalidArgument, Message: fmt.Sprintf("unsupported method %q for subresource action", method)}
 	}
+
+	req = req.
+		Namespace(namespace).
+		Resource(gvr.Resource).
+		Name(name).
+		SubResource(subresource)
+
+	if len(body) > 0 {
+		req = req.Body(body)
+	}
+
+	raw, err := req.DoRaw(ctx)
 	if err != nil {
 		return nil, wrapK8sError(err)
 	}
-	if result == nil {
+
+	if len(raw) == 0 {
 		return nil, nil
 	}
-	return result.Object, nil
+
+	var result map[string]any
+	if err := json.Unmarshal(raw, &result); err != nil {
+		return nil, &core.DomainError{Code: core.ErrorCodeInternal, Message: "unmarshal subresource response", Cause: err}
+	}
+	return result, nil
 }
 
 // ---------------------------------------------------------------------------
