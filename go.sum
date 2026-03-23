@@ -106,8 +106,8 @@ github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 h1:C3w9PqII01/Oq
 github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822/go.mod h1:+n7T8mK8HuQTcFwEeznm/DIxMOiR9yIdICNftLE1DvQ=
 github.com/mxk/go-flowrate v0.0.0-20140419014527-cca7078d478f h1:y5//uYreIhSUg3J1GEMiLbxo1LJaP8RfCpH6pymGZus=
 github.com/mxk/go-flowrate v0.0.0-20140419014527-cca7078d478f/go.mod h1:ZdcZmHo+o7JKHSa8/e818NopupXU1YMK5fe1lsApnBw=
-github.com/otterscale/api v0.9.0-beta.2 h1:rrL3x1QpyR4YITUxr0Slf5SFNG1dbLNlW45rtDGs/FE=
-github.com/otterscale/api v0.9.0-beta.2/go.mod h1:EADd26b/FpPfG+FMkNJU9KnAt19XQrHL4sbpGSWZIBM=
+github.com/otterscale/api v0.9.0 h1:mzJLbwnYGLQgASSPqMW9IF2/GrgLNKIB0oT7i50q+Ao=
+github.com/otterscale/api v0.9.0/go.mod h1:EADd26b/FpPfG+FMkNJU9KnAt19XQrHL4sbpGSWZIBM=
 github.com/pelletier/go-toml/v2 v2.2.4 h1:mye9XuhQ6gvn5h28+VilKrrPoQVanw5PMw/TB0t5Ec4=
 github.com/pelletier/go-toml/v2 v2.2.4/go.mod h1:2gIqNv+qfxSVS7cM2xJQKtLSTLUE9V8t9Stt+h56mCY=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
