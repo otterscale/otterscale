@@ -1,7 +1,6 @@
 VERSION ?= $(shell git describe --tags --always 2>/dev/null || echo devel)
 
 API_VERSION ?= $(call gomodver,github.com/otterscale/api)
-MODULE_OPERATOR_VERSION := v0.9.0
 TENANT_OPERATOR_VERSION := v0.9.0
 
 CERT_MANAGER_VERSION  := v1.20.0
@@ -51,10 +50,6 @@ $(STAGE1_DIR)/crds.yaml: | $(STAGE1_DIR)
 $(STAGE2_DIR)/flux2.yaml: | $(STAGE2_DIR)
 	curl -sSL -o $@ \
 	  https://github.com/fluxcd/flux2/releases/download/$(FLUX2_VERSION)/install.yaml
-
-$(STAGE2_DIR)/module-operator.yaml: | $(STAGE2_DIR)
-	curl -sSL -o $@ \
-	  https://github.com/otterscale/module-operator/releases/download/$(MODULE_OPERATOR_VERSION)/install.yaml
 
 $(STAGE2_DIR)/tenant-operator.yaml: | $(STAGE2_DIR)
 	curl -sSL -o $@ \
