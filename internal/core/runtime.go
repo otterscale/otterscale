@@ -408,11 +408,11 @@ var allowedSubResourceMethods = map[string]bool{"PUT": true, "POST": true}
 // SubResourceAction validates the inputs and forwards a PUT/POST
 // subresource action to the Kubernetes API via impersonation. This
 // covers use-cases such as KubeVirt VM start/stop/restart/migrate.
-func (uc *RuntimeUseCase) SubResourceAction(ctx context.Context, id *ResourceIdentifier, subresource, method string, body []byte) (map[string]any, error) {
+func (uc *RuntimeUseCase) SubResourceAction(ctx context.Context, id *ResourceIdentifier, method string, body []byte) (map[string]any, error) {
 	if id.Name == "" {
 		return nil, &ErrInvalidInput{Field: "name", Message: "resource name is required"}
 	}
-	if subresource == "" {
+	if id.SubResource == "" {
 		return nil, &ErrInvalidInput{Field: "subresource", Message: "subresource is required"}
 	}
 	if !allowedSubResourceMethods[method] {
@@ -424,5 +424,5 @@ func (uc *RuntimeUseCase) SubResourceAction(ctx context.Context, id *ResourceIde
 		return nil, err
 	}
 
-	return uc.runtime.SubResourceAction(ctx, id.Cluster, gvr, id.Namespace, id.Name, subresource, method, body)
+	return uc.runtime.SubResourceAction(ctx, id.Cluster, gvr, id.Namespace, id.Name, id.SubResource, method, body)
 }
