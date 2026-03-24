@@ -14,8 +14,9 @@ import (
 	"helm.sh/helm/v4/pkg/action"
 	"helm.sh/helm/v4/pkg/chart/common"
 	"helm.sh/helm/v4/pkg/chart/v2/loader"
-	chartutil "helm.sh/helm/v4/pkg/chart/v2/util"
+	"helm.sh/helm/v4/pkg/chart/v2/util"
 	"helm.sh/helm/v4/pkg/cli"
+	"helm.sh/helm/v4/pkg/helmpath"
 	"helm.sh/helm/v4/pkg/registry"
 
 	"github.com/otterscale/otterscale/internal/core"
@@ -35,6 +36,19 @@ func NewRepo() (core.HelmRepo, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to create helm registry client: %w", err)
 	}
+
+	tmpDir, err := os.MkdirTemp("", "helm-")
+	if err != nil {
+		return nil, fmt.Errorf("failed to create helm base directory: %w", err)
+	}
+
+	// Set process-wide environment variables once so that internal Helm
+	// functions (e.g. helmpath.CachePath in repo.NewChartRepository)
+	// resolve to a writable directory instead of the default home path.
+	os.Setenv(helmpath.CacheHomeEnvVar, filepath.Join(tmpDir, "cache"))
+	os.Setenv(helmpath.ConfigHomeEnvVar, filepath.Join(tmpDir, "config"))
+	os.Setenv(helmpath.DataHomeEnvVar, filepath.Join(tmpDir, "data"))
+
 	return &Repo{registryClient: rc}, nil
 }
 
@@ -56,16 +70,7 @@ func (r *Repo) ShowChart(_ context.Context, repoURL, chartName, version string) 
 		chartRef = chartName
 	}
 
-	settings, cleanup, tmpErr := newTempSettings()
-	if tmpErr != nil {
-		return nil, nil, &core.DomainError{
-			Code:    core.ErrorCodeInternal,
-			Message: "failed to create temporary directory for helm",
-			Cause:   tmpErr,
-		}
-	}
-	defer cleanup()
-
+	settings := cli.New()
 	chartPath, err := show.LocateChart(chartRef, settings)
 	if err != nil {
 		return nil, nil, &core.DomainError{
@@ -85,7 +90,7 @@ func (r *Repo) ShowChart(_ context.Context, repoURL, chartName, version string) 
 	}
 
 	for _, f := range chart.Raw {
-		if f.Name == chartutil.ValuesfileName {
+		if f.Name == util.ValuesfileName {
 			values = f.Data
 			break
 		}
@@ -110,22 +115,6 @@ func findReadme(files []*common.File) *common.File {
 		}
 	}
 	return nil
-}
-
-// newTempSettings creates a Helm EnvSettings with all filesystem paths
-// redirected to the given temporary directory.
-func newTempSettings() (*cli.EnvSettings, func(), error) {
-	tmpDir, err := os.MkdirTemp("", "otterscale-helm-")
-	if err != nil {
-		return nil, nil, err
-	}
-	settings := cli.New()
-	settings.PluginsDirectory = filepath.Join(tmpDir, "plugins")
-	settings.RegistryConfig = filepath.Join(tmpDir, "registry", "config.json")
-	settings.RepositoryConfig = filepath.Join(tmpDir, "repositories.yaml")
-	settings.RepositoryCache = filepath.Join(tmpDir, "repository")
-	settings.ContentCache = filepath.Join(tmpDir, "content")
-	return settings, func() { os.RemoveAll(tmpDir) }, nil
 }
 
 // classifyHelmError maps a Helm SDK error to a domain error code.
