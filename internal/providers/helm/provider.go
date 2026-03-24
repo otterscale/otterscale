@@ -42,20 +42,6 @@ func NewRepo() (core.HelmRepo, error) {
 // the values.yaml and README.md content. The chart is loaded once
 // and both outputs are extracted from the in-memory structure.
 func (r *Repo) ShowChart(_ context.Context, repoURL, chartName, version string) (values, readme []byte, err error) {
-	tmpDir, tmpErr := os.MkdirTemp("", "otterscale-helm-")
-	if tmpErr != nil {
-		return nil, nil, &core.DomainError{
-			Code:    core.ErrorCodeInternal,
-			Message: "failed to create temporary directory for helm",
-			Cause:   tmpErr,
-		}
-	}
-	defer os.RemoveAll(tmpDir)
-
-	settings := cli.New()
-	settings.RepositoryConfig = filepath.Join(tmpDir, "repositories.yaml")
-	settings.RepositoryCache = filepath.Join(tmpDir, "repository")
-
 	cfg := action.NewConfiguration()
 	cfg.RegistryClient = r.registryClient
 
@@ -69,6 +55,16 @@ func (r *Repo) ShowChart(_ context.Context, repoURL, chartName, version string) 
 		show.RepoURL = repoURL
 		chartRef = chartName
 	}
+
+	settings, cleanup, tmpErr := newTempSettings()
+	if tmpErr != nil {
+		return nil, nil, &core.DomainError{
+			Code:    core.ErrorCodeInternal,
+			Message: "failed to create temporary directory for helm",
+			Cause:   tmpErr,
+		}
+	}
+	defer cleanup()
 
 	chartPath, err := show.LocateChart(chartRef, settings)
 	if err != nil {
@@ -114,6 +110,22 @@ func findReadme(files []*common.File) *common.File {
 		}
 	}
 	return nil
+}
+
+// newTempSettings creates a Helm EnvSettings with all filesystem paths
+// redirected to the given temporary directory.
+func newTempSettings() (*cli.EnvSettings, func(), error) {
+	tmpDir, err := os.MkdirTemp("", "otterscale-helm-")
+	if err != nil {
+		return nil, nil, err
+	}
+	settings := cli.New()
+	settings.PluginsDirectory = filepath.Join(tmpDir, "plugins")
+	settings.RegistryConfig = filepath.Join(tmpDir, "registry", "config.json")
+	settings.RepositoryConfig = filepath.Join(tmpDir, "repositories.yaml")
+	settings.RepositoryCache = filepath.Join(tmpDir, "repository")
+	settings.ContentCache = filepath.Join(tmpDir, "content")
+	return settings, func() { os.RemoveAll(tmpDir) }, nil
 }
 
 // classifyHelmError maps a Helm SDK error to a domain error code.
