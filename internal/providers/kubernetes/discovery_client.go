@@ -39,12 +39,13 @@ func NewDiscoveryClient(kubernetes *Kubernetes) core.DiscoveryClient {
 var _ core.DiscoveryClient = (*discoveryClient)(nil)
 
 // LookupResource verifies that the given group/version/resource triple
-// exists on the target cluster. It returns the validated GVR or a
-// BadRequest error if the resource is not recognized.
-func (d *discoveryClient) LookupResource(ctx context.Context, cluster, group, version, resource, subresource string) (schema.GroupVersionResource, error) {
+// exists on the target cluster and returns whether it is namespace-scoped.
+// It returns the validated GVR, the namespace scope flag, or a BadRequest
+// error if the resource is not recognized.
+func (d *discoveryClient) LookupResource(ctx context.Context, cluster, group, version, resource, subresource string) (schema.GroupVersionResource, bool, error) {
 	client, err := d.client(ctx, cluster)
 	if err != nil {
-		return schema.GroupVersionResource{}, err
+		return schema.GroupVersionResource{}, false, err
 	}
 
 	gvr := schema.GroupVersionResource{
@@ -55,7 +56,7 @@ func (d *discoveryClient) LookupResource(ctx context.Context, cluster, group, ve
 
 	resources, err := client.ServerResourcesForGroupVersion(gvr.GroupVersion().String())
 	if err != nil {
-		return schema.GroupVersionResource{}, wrapK8sError(err)
+		return schema.GroupVersionResource{}, false, wrapK8sError(err)
 	}
 
 	target := resource
@@ -65,10 +66,10 @@ func (d *discoveryClient) LookupResource(ctx context.Context, cluster, group, ve
 
 	for i := range resources.APIResources {
 		if resources.APIResources[i].Name == target {
-			return gvr, nil
+			return gvr, resources.APIResources[i].Namespaced, nil
 		}
 	}
-	return schema.GroupVersionResource{}, wrapK8sError(apierrors.NewBadRequest(fmt.Sprintf("unable to recognize resource %s", gvr)))
+	return schema.GroupVersionResource{}, false, wrapK8sError(apierrors.NewBadRequest(fmt.Sprintf("unable to recognize resource %s", gvr)))
 }
 
 // ServerResources returns the full list of API resources available on
@@ -128,31 +129,6 @@ func (d *discoveryClient) SupportsWatchList(ctx context.Context, cluster string)
 	}
 
 	return kubeVersion.GreaterThanEqual(minWatchListVersion), nil
-}
-
-// IsNamespacedResource reports whether the given resource is
-// namespace-scoped (true) or cluster-scoped (false).
-func (d *discoveryClient) IsNamespacedResource(ctx context.Context, cluster string, gvr schema.GroupVersionResource) (bool, error) {
-	client, err := d.client(ctx, cluster)
-	if err != nil {
-		return false, err
-	}
-
-	resources, err := client.ServerResourcesForGroupVersion(gvr.GroupVersion().String())
-	if err != nil {
-		return false, wrapK8sError(err)
-	}
-
-	for i := range resources.APIResources {
-		if resources.APIResources[i].Name == gvr.Resource {
-			return resources.APIResources[i].Namespaced, nil
-		}
-	}
-
-	return false, wrapK8sError(apierrors.NewNotFound(schema.GroupResource{
-		Group:    gvr.Group,
-		Resource: gvr.Resource,
-	}, ""))
 }
 
 // client returns a fresh discovery client for the given cluster with

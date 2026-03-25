@@ -38,8 +38,8 @@ import (
 // depending on a concrete client implementation.
 type DiscoveryClient interface {
 	// LookupResource validates that a group/version/resource triple
-	// exists on the target cluster.
-	LookupResource(ctx context.Context, cluster, group, version, resource, subresource string) (schema.GroupVersionResource, error)
+	// exists on the target cluster and returns whether it is namespace-scoped.
+	LookupResource(ctx context.Context, cluster, group, version, resource, subresource string) (gvr schema.GroupVersionResource, isNamespaced bool, err error)
 	// ServerResources returns all API resources advertised by the cluster.
 	ServerResources(ctx context.Context, cluster string) ([]*metav1.APIResourceList, error)
 	// ResolveSchema fetches the OpenAPI schema for a given GVK.
@@ -49,9 +49,6 @@ type DiscoveryClient interface {
 	// SupportsWatchList reports whether the target cluster supports
 	// the WatchList streaming feature (Kubernetes >= 1.34).
 	SupportsWatchList(ctx context.Context, cluster string) (bool, error)
-	// IsNamespacedResource reports whether the given resource is
-	// namespace-scoped (true) or cluster-scoped (false).
-	IsNamespacedResource(ctx context.Context, cluster string, gvr schema.GroupVersionResource) (bool, error)
 }
 
 // ResourceRepo abstracts Kubernetes resource CRUD and watch operations
@@ -157,20 +154,16 @@ type ResourceIdentifier struct {
 	Name        string
 }
 
-// lookupGVR validates the resource triple via the DiscoveryClient.
-func (id *ResourceIdentifier) lookupGVR(ctx context.Context, dc DiscoveryClient) (schema.GroupVersionResource, error) {
+// lookupGVR validates the resource triple via the DiscoveryClient
+// and returns both the GVR and whether it is namespace-scoped.
+func (id *ResourceIdentifier) lookupGVR(ctx context.Context, dc DiscoveryClient) (schema.GroupVersionResource, bool, error) {
 	return dc.LookupResource(ctx, id.Cluster, id.Group, id.Version, id.Resource, id.SubResource)
 }
 
 // validateNamespaceScope checks if the namespace parameter matches the
 // resource's scope (namespace-scoped or cluster-scoped) and returns a
 // clear validation error if there's a mismatch.
-func (id *ResourceIdentifier) validateNamespaceScope(ctx context.Context, dc DiscoveryClient, gvr schema.GroupVersionResource) error {
-	isNamespaced, err := dc.IsNamespacedResource(ctx, id.Cluster, gvr)
-	if err != nil {
-		return err
-	}
-
+func (id *ResourceIdentifier) validateNamespaceScope(gvr schema.GroupVersionResource, isNamespaced bool) error {
 	if !isNamespaced && id.Namespace != "" {
 		return &ErrInvalidInput{
 			Field:   "namespace",
@@ -234,12 +227,12 @@ func (uc *ResourceUseCase) ListResources(
 	id *ResourceIdentifier,
 	opts ListOptions,
 ) (*unstructured.UnstructuredList, error) {
-	gvr, err := id.lookupGVR(ctx, uc.discovery)
+	gvr, isNamespaced, err := id.lookupGVR(ctx, uc.discovery)
 	if err != nil {
 		return nil, err
 	}
 
-	if err := id.validateNamespaceScope(ctx, uc.discovery, gvr); err != nil {
+	if err := id.validateNamespaceScope(gvr, isNamespaced); err != nil {
 		return nil, err
 	}
 
@@ -251,12 +244,12 @@ func (uc *ResourceUseCase) GetResource(
 	ctx context.Context,
 	id *ResourceIdentifier,
 ) (*unstructured.Unstructured, error) {
-	gvr, err := id.lookupGVR(ctx, uc.discovery)
+	gvr, isNamespaced, err := id.lookupGVR(ctx, uc.discovery)
 	if err != nil {
 		return nil, err
 	}
 
-	if err := id.validateNamespaceScope(ctx, uc.discovery, gvr); err != nil {
+	if err := id.validateNamespaceScope(gvr, isNamespaced); err != nil {
 		return nil, err
 	}
 
@@ -271,12 +264,12 @@ func (uc *ResourceUseCase) DescribeResource(
 	ctx context.Context,
 	id *ResourceIdentifier,
 ) (*unstructured.Unstructured, *unstructured.UnstructuredList, error) {
-	gvr, err := id.lookupGVR(ctx, uc.discovery)
+	gvr, isNamespaced, err := id.lookupGVR(ctx, uc.discovery)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	if err := id.validateNamespaceScope(ctx, uc.discovery, gvr); err != nil {
+	if err := id.validateNamespaceScope(gvr, isNamespaced); err != nil {
 		return nil, nil, err
 	}
 
@@ -306,12 +299,12 @@ func (uc *ResourceUseCase) CreateResource(
 	id *ResourceIdentifier,
 	manifest []byte,
 ) (*unstructured.Unstructured, error) {
-	gvr, err := id.lookupGVR(ctx, uc.discovery)
+	gvr, isNamespaced, err := id.lookupGVR(ctx, uc.discovery)
 	if err != nil {
 		return nil, err
 	}
 
-	if err := id.validateNamespaceScope(ctx, uc.discovery, gvr); err != nil {
+	if err := id.validateNamespaceScope(gvr, isNamespaced); err != nil {
 		return nil, err
 	}
 
@@ -326,12 +319,12 @@ func (uc *ResourceUseCase) ApplyResource(
 	manifest []byte,
 	opts ApplyOptions,
 ) (*unstructured.Unstructured, error) {
-	gvr, err := id.lookupGVR(ctx, uc.discovery)
+	gvr, isNamespaced, err := id.lookupGVR(ctx, uc.discovery)
 	if err != nil {
 		return nil, err
 	}
 
-	if err := id.validateNamespaceScope(ctx, uc.discovery, gvr); err != nil {
+	if err := id.validateNamespaceScope(gvr, isNamespaced); err != nil {
 		return nil, err
 	}
 
@@ -344,12 +337,12 @@ func (uc *ResourceUseCase) DeleteResource(
 	id *ResourceIdentifier,
 	opts DeleteOptions,
 ) error {
-	gvr, err := id.lookupGVR(ctx, uc.discovery)
+	gvr, isNamespaced, err := id.lookupGVR(ctx, uc.discovery)
 	if err != nil {
 		return err
 	}
 
-	if err := id.validateNamespaceScope(ctx, uc.discovery, gvr); err != nil {
+	if err := id.validateNamespaceScope(gvr, isNamespaced); err != nil {
 		return err
 	}
 
@@ -364,12 +357,12 @@ func (uc *ResourceUseCase) WatchResource(
 	id *ResourceIdentifier,
 	opts WatchOptions,
 ) (Watcher, error) {
-	gvr, err := id.lookupGVR(ctx, uc.discovery)
+	gvr, isNamespaced, err := id.lookupGVR(ctx, uc.discovery)
 	if err != nil {
 		return nil, err
 	}
 
-	if err := id.validateNamespaceScope(ctx, uc.discovery, gvr); err != nil {
+	if err := id.validateNamespaceScope(gvr, isNamespaced); err != nil {
 		return nil, err
 	}
 

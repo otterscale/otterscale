@@ -53,11 +53,11 @@ type mockDiscoveryForRuntime struct {
 	lookupErr error
 }
 
-func (m *mockDiscoveryForRuntime) LookupResource(_ context.Context, _, group, ver, resource, _ string) (schema.GroupVersionResource, error) {
+func (m *mockDiscoveryForRuntime) LookupResource(_ context.Context, _, group, ver, resource, _ string) (schema.GroupVersionResource, bool, error) {
 	if m.lookupErr != nil {
-		return schema.GroupVersionResource{}, m.lookupErr
+		return schema.GroupVersionResource{}, false, m.lookupErr
 	}
-	return schema.GroupVersionResource{Group: group, Version: ver, Resource: resource}, nil
+	return schema.GroupVersionResource{Group: group, Version: ver, Resource: resource}, true, nil
 }
 
 func (m *mockDiscoveryForRuntime) ServerResources(context.Context, string) ([]*metav1.APIResourceList, error) {
@@ -74,10 +74,6 @@ func (m *mockDiscoveryForRuntime) ServerVersion(context.Context, string) (*versi
 
 func (m *mockDiscoveryForRuntime) SupportsWatchList(context.Context, string) (bool, error) {
 	return false, nil
-}
-
-func (m *mockDiscoveryForRuntime) IsNamespacedResource(context.Context, string, schema.GroupVersionResource) (bool, error) {
-	return true, nil
 }
 
 // mockHelmRepoForRuntime implements HelmRepo for runtime tests.

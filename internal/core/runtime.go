@@ -356,7 +356,7 @@ func (uc *RuntimeUseCase) GetScale(ctx context.Context, id *ResourceIdentifier) 
 	if id.Name == "" {
 		return 0, &ErrInvalidInput{Field: "name", Message: "resource name is required"}
 	}
-	gvr, err := id.lookupGVR(ctx, uc.discovery)
+	gvr, _, err := id.lookupGVR(ctx, uc.discovery)
 	if err != nil {
 		return 0, err
 	}
@@ -372,7 +372,7 @@ func (uc *RuntimeUseCase) Scale(ctx context.Context, id *ResourceIdentifier, rep
 	if replicas < 0 {
 		return 0, &ErrInvalidInput{Field: "replicas", Message: "must be non-negative"}
 	}
-	gvr, err := id.lookupGVR(ctx, uc.discovery)
+	gvr, _, err := id.lookupGVR(ctx, uc.discovery)
 	if err != nil {
 		return 0, err
 	}
@@ -405,7 +405,7 @@ func (uc *RuntimeUseCase) Restart(ctx context.Context, id *ResourceIdentifier) e
 	if id.Name == "" {
 		return &ErrInvalidInput{Field: "name", Message: "resource name is required"}
 	}
-	gvr, err := id.lookupGVR(ctx, uc.discovery)
+	gvr, _, err := id.lookupGVR(ctx, uc.discovery)
 	if err != nil {
 		return err
 	}
@@ -430,7 +430,7 @@ func (uc *RuntimeUseCase) SubResourceAction(ctx context.Context, id *ResourceIde
 		return nil, &ErrInvalidInput{Field: "method", Message: "must be PUT or POST"}
 	}
 
-	gvr, err := id.lookupGVR(ctx, uc.discovery)
+	gvr, _, err := id.lookupGVR(ctx, uc.discovery)
 	if err != nil {
 		return nil, err
 	}
