@@ -49,6 +49,9 @@ type DiscoveryClient interface {
 	// SupportsWatchList reports whether the target cluster supports
 	// the WatchList streaming feature (Kubernetes >= 1.34).
 	SupportsWatchList(ctx context.Context, cluster string) (bool, error)
+	// IsNamespacedResource reports whether the given resource is
+	// namespace-scoped (true) or cluster-scoped (false).
+	IsNamespacedResource(ctx context.Context, cluster string, gvr schema.GroupVersionResource) (bool, error)
 }
 
 // ResourceRepo abstracts Kubernetes resource CRUD and watch operations
@@ -159,6 +162,32 @@ func (id *ResourceIdentifier) lookupGVR(ctx context.Context, dc DiscoveryClient)
 	return dc.LookupResource(ctx, id.Cluster, id.Group, id.Version, id.Resource, id.SubResource)
 }
 
+// validateNamespaceScope checks if the namespace parameter matches the
+// resource's scope (namespace-scoped or cluster-scoped) and returns a
+// clear validation error if there's a mismatch.
+func (id *ResourceIdentifier) validateNamespaceScope(ctx context.Context, dc DiscoveryClient, gvr schema.GroupVersionResource) error {
+	isNamespaced, err := dc.IsNamespacedResource(ctx, id.Cluster, gvr)
+	if err != nil {
+		return err
+	}
+
+	if !isNamespaced && id.Namespace != "" {
+		return &ErrInvalidInput{
+			Field:   "namespace",
+			Message: fmt.Sprintf("resource '%s' is cluster-scoped and cannot have a namespace", gvr.Resource),
+		}
+	}
+
+	if isNamespaced && id.Namespace == "" {
+		return &ErrInvalidInput{
+			Field:   "namespace",
+			Message: fmt.Sprintf("resource '%s' is namespace-scoped and requires a namespace", gvr.Resource),
+		}
+	}
+
+	return nil
+}
+
 // ---------------------------------------------------------------------------
 // Use case
 // ---------------------------------------------------------------------------
@@ -210,6 +239,10 @@ func (uc *ResourceUseCase) ListResources(
 		return nil, err
 	}
 
+	if err := id.validateNamespaceScope(ctx, uc.discovery, gvr); err != nil {
+		return nil, err
+	}
+
 	return uc.resource.List(ctx, id.Cluster, gvr, id.Namespace, opts)
 }
 
@@ -220,6 +253,10 @@ func (uc *ResourceUseCase) GetResource(
 ) (*unstructured.Unstructured, error) {
 	gvr, err := id.lookupGVR(ctx, uc.discovery)
 	if err != nil {
+		return nil, err
+	}
+
+	if err := id.validateNamespaceScope(ctx, uc.discovery, gvr); err != nil {
 		return nil, err
 	}
 
@@ -236,6 +273,10 @@ func (uc *ResourceUseCase) DescribeResource(
 ) (*unstructured.Unstructured, *unstructured.UnstructuredList, error) {
 	gvr, err := id.lookupGVR(ctx, uc.discovery)
 	if err != nil {
+		return nil, nil, err
+	}
+
+	if err := id.validateNamespaceScope(ctx, uc.discovery, gvr); err != nil {
 		return nil, nil, err
 	}
 
@@ -270,6 +311,10 @@ func (uc *ResourceUseCase) CreateResource(
 		return nil, err
 	}
 
+	if err := id.validateNamespaceScope(ctx, uc.discovery, gvr); err != nil {
+		return nil, err
+	}
+
 	return uc.resource.Create(ctx, id.Cluster, gvr, id.Namespace, manifest)
 }
 
@@ -283,6 +328,10 @@ func (uc *ResourceUseCase) ApplyResource(
 ) (*unstructured.Unstructured, error) {
 	gvr, err := id.lookupGVR(ctx, uc.discovery)
 	if err != nil {
+		return nil, err
+	}
+
+	if err := id.validateNamespaceScope(ctx, uc.discovery, gvr); err != nil {
 		return nil, err
 	}
 
@@ -300,6 +349,10 @@ func (uc *ResourceUseCase) DeleteResource(
 		return err
 	}
 
+	if err := id.validateNamespaceScope(ctx, uc.discovery, gvr); err != nil {
+		return err
+	}
+
 	return uc.resource.Delete(ctx, id.Cluster, gvr, id.Namespace, id.Name, opts)
 }
 
@@ -313,6 +366,10 @@ func (uc *ResourceUseCase) WatchResource(
 ) (Watcher, error) {
 	gvr, err := id.lookupGVR(ctx, uc.discovery)
 	if err != nil {
+		return nil, err
+	}
+
+	if err := id.validateNamespaceScope(ctx, uc.discovery, gvr); err != nil {
 		return nil, err
 	}
 

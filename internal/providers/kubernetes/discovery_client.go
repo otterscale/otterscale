@@ -130,6 +130,31 @@ func (d *discoveryClient) SupportsWatchList(ctx context.Context, cluster string)
 	return kubeVersion.GreaterThanEqual(minWatchListVersion), nil
 }
 
+// IsNamespacedResource reports whether the given resource is
+// namespace-scoped (true) or cluster-scoped (false).
+func (d *discoveryClient) IsNamespacedResource(ctx context.Context, cluster string, gvr schema.GroupVersionResource) (bool, error) {
+	client, err := d.client(ctx, cluster)
+	if err != nil {
+		return false, err
+	}
+
+	resources, err := client.ServerResourcesForGroupVersion(gvr.GroupVersion().String())
+	if err != nil {
+		return false, wrapK8sError(err)
+	}
+
+	for i := range resources.APIResources {
+		if resources.APIResources[i].Name == gvr.Resource {
+			return resources.APIResources[i].Namespaced, nil
+		}
+	}
+
+	return false, wrapK8sError(apierrors.NewNotFound(schema.GroupResource{
+		Group:    gvr.Group,
+		Resource: gvr.Resource,
+	}, ""))
+}
+
 // client returns a fresh discovery client for the given cluster with
 // impersonation headers set for the calling user. A new client is
 // created per request because each request may carry different

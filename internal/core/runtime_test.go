@@ -76,6 +76,10 @@ func (m *mockDiscoveryForRuntime) SupportsWatchList(context.Context, string) (bo
 	return false, nil
 }
 
+func (m *mockDiscoveryForRuntime) IsNamespacedResource(context.Context, string, schema.GroupVersionResource) (bool, error) {
+	return true, nil
+}
+
 // mockHelmRepoForRuntime implements HelmRepo for runtime tests.
 type mockHelmRepoForRuntime struct{}
 
