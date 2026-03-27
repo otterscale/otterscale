@@ -350,6 +350,60 @@ func (s *RuntimeService) Restart(ctx context.Context, req *pb.RestartRequest) (*
 }
 
 // ---------------------------------------------------------------------------
+// VNC / WriteVNC
+// ---------------------------------------------------------------------------
+
+// VNC opens a VNC session to a KubeVirt VMI and streams raw VNC
+// protocol data back to the client. The first response message
+// contains the session_id that the client must use for WriteVNC calls.
+func (s *RuntimeService) VNC(ctx context.Context, req *pb.VNCRequest, stream *connect.ServerStream[pb.VNCResponse]) error {
+	sess, dataOutR, err := s.runtime.StartVNC(
+		ctx,
+		req.GetCluster(),
+		req.GetNamespace(),
+		req.GetName(),
+	)
+	if err != nil {
+		return domainErrorToConnectError(err)
+	}
+	defer s.runtime.CleanupVNC(ctx, sess.ID)
+
+	// Send the session ID as the first message.
+	first := &pb.VNCResponse{}
+	first.SetSessionId(sess.ID)
+	if err := stream.Send(first); err != nil {
+		return err
+	}
+
+	// Stream VNC data from the VMI.
+	buf := make([]byte, streamChunkSize)
+	for {
+		n, readErr := dataOutR.Read(buf)
+		if n > 0 {
+			msg := &pb.VNCResponse{}
+			msg.SetData(append([]byte(nil), buf[:n]...))
+			if err := stream.Send(msg); err != nil {
+				return err
+			}
+		}
+		if readErr != nil {
+			if errors.Is(readErr, io.EOF) {
+				return nil
+			}
+			return domainErrorToConnectError(readErr)
+		}
+	}
+}
+
+// WriteVNC sends VNC data to an active VNC session.
+func (s *RuntimeService) WriteVNC(ctx context.Context, req *pb.WriteVNCRequest) (*emptypb.Empty, error) {
+	if err := s.runtime.WriteVNC(ctx, req.GetSessionId(), req.GetData()); err != nil {
+		return nil, domainErrorToConnectError(err)
+	}
+	return &emptypb.Empty{}, nil
+}
+
+// ---------------------------------------------------------------------------
 // SubResourceAction
 // ---------------------------------------------------------------------------
 

@@ -9,9 +9,11 @@ import (
 	"math"
 	"net/http"
 	"strconv"
+	"strings"
 	"sync"
 	"time"
 
+	"github.com/gorilla/websocket"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
@@ -429,6 +431,129 @@ func (r *runtimeRepo) SubResourceAction(ctx context.Context, cluster string, gvr
 		return nil, &core.DomainError{Code: core.ErrorCodeInternal, Message: "unmarshal subresource response", Cause: err}
 	}
 	return result, nil
+}
+
+// ---------------------------------------------------------------------------
+// VNC
+// ---------------------------------------------------------------------------
+
+// vncChunkSize is the read buffer size for VNC data from the client.
+const vncChunkSize = 32 * 1024
+
+// VNC opens a VNC WebSocket session to a KubeVirt VMI and copies data
+// bidirectionally until the context is canceled or the connection closes.
+func (r *runtimeRepo) VNC(ctx context.Context, cluster, namespace, name string, opts core.VNCOptions) error {
+	config, err := r.kubernetes.streamConfig(ctx, cluster)
+	if err != nil {
+		return err
+	}
+
+	// KubeVirt exposes VNC at:
+	//   /apis/subresources.kubevirt.io/v1/namespaces/{ns}/virtualmachineinstances/{name}/vnc
+	host := config.Host
+	vncURL := fmt.Sprintf("%s/apis/subresources.kubevirt.io/v1/namespaces/%s/virtualmachineinstances/%s/vnc",
+		host, namespace, name)
+
+	wsConn, err := r.dialVNCWebSocket(ctx, config, vncURL)
+	if err != nil {
+		return err
+	}
+	defer wsConn.Close()
+
+	return r.copyVNCBidirectional(ctx, wsConn, opts)
+}
+
+// dialVNCWebSocket dials the KubeVirt VNC WebSocket endpoint with
+// impersonation headers derived from the rest.Config.
+func (r *runtimeRepo) dialVNCWebSocket(ctx context.Context, config *rest.Config, rawURL string) (*websocket.Conn, error) {
+	wsURL := strings.Replace(strings.Replace(rawURL, "https://", "wss://", 1), "http://", "ws://", 1)
+
+	tlsConfig, err := rest.TLSConfigFor(config)
+	if err != nil {
+		return nil, &core.DomainError{Code: core.ErrorCodeInternal, Message: "create TLS config for VNC", Cause: err}
+	}
+
+	dialer := websocket.Dialer{
+		TLSClientConfig: tlsConfig,
+	}
+
+	headers := http.Header{}
+	if config.BearerToken != "" {
+		headers.Set("Authorization", "Bearer "+config.BearerToken)
+	}
+	if config.Impersonate.UserName != "" {
+		headers.Set("Impersonate-User", config.Impersonate.UserName)
+	}
+	for _, g := range config.Impersonate.Groups {
+		headers.Add("Impersonate-Group", g)
+	}
+
+	conn, resp, err := dialer.DialContext(ctx, wsURL, headers)
+	if err != nil {
+		if resp != nil {
+			resp.Body.Close()
+		}
+		return nil, wrapK8sError(err)
+	}
+	return conn, nil
+}
+
+// copyVNCBidirectional copies data between the WebSocket connection
+// and the VNC session's stdin/stdout pipes.
+func (r *runtimeRepo) copyVNCBidirectional(ctx context.Context, wsConn *websocket.Conn, opts core.VNCOptions) error {
+	var wg sync.WaitGroup
+	errCh := make(chan error, 2)
+
+	// WebSocket → Stdout (VMI to client).
+	wg.Go(func() {
+		for {
+			_, message, err := wsConn.ReadMessage()
+			if err != nil {
+				errCh <- err
+				return
+			}
+			if _, err := opts.Stdout.Write(message); err != nil {
+				errCh <- err
+				return
+			}
+		}
+	})
+
+	// Stdin → WebSocket (client to VMI).
+	wg.Go(func() {
+		buf := make([]byte, vncChunkSize)
+		for {
+			n, err := opts.Stdin.Read(buf)
+			if n > 0 {
+				if werr := wsConn.WriteMessage(websocket.BinaryMessage, buf[:n]); werr != nil {
+					errCh <- werr
+					return
+				}
+			}
+			if err != nil {
+				errCh <- err
+				return
+			}
+		}
+	})
+
+	var firstErr error
+	for range 2 {
+		select {
+		case <-ctx.Done():
+			wsConn.Close()
+			wg.Wait()
+			return ctx.Err()
+		case err := <-errCh:
+			if err != nil && firstErr == nil {
+				firstErr = err
+				wsConn.Close()
+			}
+		}
+	}
+
+	wg.Wait()
+	return firstErr
 }
 
 // ---------------------------------------------------------------------------
