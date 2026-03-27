@@ -8,8 +8,8 @@ import (
 	"log/slog"
 	"math"
 	"net/http"
+	"net/url"
 	"strconv"
-	"strings"
 	"sync"
 	"time"
 
@@ -466,7 +466,17 @@ func (r *runtimeRepo) VNC(ctx context.Context, cluster, namespace, name string, 
 // dialVNCWebSocket dials the KubeVirt VNC WebSocket endpoint with
 // impersonation headers derived from the rest.Config.
 func (r *runtimeRepo) dialVNCWebSocket(ctx context.Context, config *rest.Config, rawURL string) (*websocket.Conn, error) {
-	wsURL := strings.Replace(strings.Replace(rawURL, "https://", "wss://", 1), "http://", "ws://", 1)
+	u, err := url.Parse(rawURL)
+	if err != nil {
+		return nil, &core.DomainError{Code: core.ErrorCodeInvalidArgument, Message: "parse VNC URL", Cause: err}
+	}
+	switch u.Scheme {
+	case "https":
+		u.Scheme = "wss"
+	case "http":
+		u.Scheme = "ws"
+	}
+	wsURL := u.String()
 
 	tlsConfig, err := rest.TLSConfigFor(config)
 	if err != nil {
@@ -509,6 +519,9 @@ func (r *runtimeRepo) copyVNCBidirectional(ctx context.Context, wsConn *websocke
 		for {
 			_, message, err := wsConn.ReadMessage()
 			if err != nil {
+				if !websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
+					errCh <- nil
+				}
 				errCh <- err
 				return
 			}
@@ -531,6 +544,9 @@ func (r *runtimeRepo) copyVNCBidirectional(ctx context.Context, wsConn *websocke
 				}
 			}
 			if err != nil {
+				if err == io.EOF {
+					errCh <- nil
+				}
 				errCh <- err
 				return
 			}
