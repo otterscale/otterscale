@@ -119,6 +119,21 @@ type PortForwardSession struct {
 	Done <-chan error
 }
 
+// VNCSession represents an active VNC session to a KubeVirt VMI.
+type VNCSession struct {
+	// ID is the unique session identifier.
+	ID string
+	// Writer is the writer side of the data pipe. WriteVNC writes here.
+	Writer io.WriteCloser
+	// Cancel stops the VNC session.
+	Cancel context.CancelFunc
+	// Done is closed when the VNC goroutine finishes.
+	Done chan struct{}
+	// Err holds the error returned by the VNC goroutine, if any.
+	// It is safe to read after Done is closed.
+	Err error
+}
+
 // ---------------------------------------------------------------------------
 // Session store
 // ---------------------------------------------------------------------------
@@ -132,11 +147,16 @@ const maxExecSessions = 100
 // port-forward sessions allowed.
 const maxPortForwardSessions = 100
 
-// SessionStore manages active exec and port-forward sessions.
+// maxVNCSessions is the maximum number of concurrent VNC sessions
+// allowed.
+const maxVNCSessions = 100
+
+// SessionStore manages active exec, port-forward, and VNC sessions.
 type SessionStore struct {
 	mu       sync.RWMutex
 	execSess map[string]*ExecSession
 	pfSess   map[string]*PortForwardSession
+	vncSess  map[string]*VNCSession
 }
 
 // NewSessionStore returns an initialized SessionStore.
@@ -144,6 +164,7 @@ func NewSessionStore() *SessionStore {
 	return &SessionStore{
 		execSess: make(map[string]*ExecSession),
 		pfSess:   make(map[string]*PortForwardSession),
+		vncSess:  make(map[string]*VNCSession),
 	}
 }
 
@@ -224,6 +245,42 @@ func (s *SessionStore) RemovePortForward(id string) *PortForwardSession {
 	return sess
 }
 
+// PutVNC stores a VNC session. It returns an error if the maximum
+// number of concurrent VNC sessions has been reached.
+func (s *SessionStore) PutVNC(sess *VNCSession) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	if len(s.vncSess) >= maxVNCSessions {
+		return &DomainError{
+			Code:    ErrorCodeResourceExhausted,
+			Message: fmt.Sprintf("max concurrent VNC sessions (%d) reached", maxVNCSessions),
+		}
+	}
+	s.vncSess[sess.ID] = sess
+	return nil
+}
+
+// GetVNC retrieves a VNC session by ID.
+func (s *SessionStore) GetVNC(id string) (*VNCSession, bool) {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+	sess, ok := s.vncSess[id]
+	return sess, ok
+}
+
+// RemoveVNC atomically retrieves and removes a VNC session. It
+// returns nil if the session does not exist.
+func (s *SessionStore) RemoveVNC(id string) *VNCSession {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	sess, ok := s.vncSess[id]
+	if !ok {
+		return nil
+	}
+	delete(s.vncSess, id)
+	return sess
+}
+
 // ReapStaleSessions scans all sessions and removes those whose Done
 // channel has already been closed (goroutine finished). This prevents
 // session leaks when clients disconnect without calling Cleanup.
@@ -257,6 +314,16 @@ func (s *SessionStore) ReapStaleSessions() int {
 		}
 	}
 
+	var staleVNC []*VNCSession
+	for id, sess := range s.vncSess {
+		select {
+		case <-sess.Done:
+			staleVNC = append(staleVNC, sess)
+			delete(s.vncSess, id)
+		default:
+		}
+	}
+
 	s.mu.Unlock()
 
 	// Phase 2: cancel and close resources outside the lock.
@@ -272,6 +339,12 @@ func (s *SessionStore) ReapStaleSessions() int {
 			slog.Warn("failed to close port-forward writer", "session", sess.ID, "error", err)
 		}
 	}
+	for _, sess := range staleVNC {
+		sess.Cancel()
+		if err := sess.Writer.Close(); err != nil {
+			slog.Warn("failed to close VNC writer", "session", sess.ID, "error", err)
+		}
+	}
 
-	return len(staleExec) + len(stalePF)
+	return len(staleExec) + len(stalePF) + len(staleVNC)
 }

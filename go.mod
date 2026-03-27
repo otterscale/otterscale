@@ -15,8 +15,9 @@ require (
 	github.com/coreos/go-oidc/v3 v3.17.0
 	github.com/google/uuid v1.6.0
 	github.com/google/wire v0.7.0
+	github.com/gorilla/websocket v1.5.4-0.20250319132907-e064f32e3674
 	github.com/jpillora/chisel v1.11.5
-	github.com/otterscale/api v0.9.3
+	github.com/otterscale/api v1.0.0-beta.1
 	github.com/prometheus/client_golang v1.23.2
 	github.com/rs/cors v1.11.1
 	github.com/spf13/cobra v1.10.2
@@ -78,7 +79,6 @@ require (
 	github.com/google/gnostic-models v0.7.0 // indirect
 	github.com/google/go-cmp v0.7.0 // indirect
 	github.com/google/subcommands v1.2.0 // indirect
-	github.com/gorilla/websocket v1.5.4-0.20250319132907-e064f32e3674 // indirect
 	github.com/gosuri/uitable v0.0.4 // indirect
 	github.com/gregjones/httpcache v0.0.0-20190611155906-901d90724c79 // indirect
 	github.com/huandu/xstrings v1.5.0 // indirect

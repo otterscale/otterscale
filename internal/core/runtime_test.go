@@ -48,6 +48,10 @@ func (m *mockRuntimeRepo) SubResourceAction(_ context.Context, _ string, _ schem
 	return m.subResourceResult, m.subResourceErr
 }
 
+func (m *mockRuntimeRepo) VNC(context.Context, string, string, string, VNCOptions) error {
+	return nil
+}
+
 // mockDiscoveryForRuntime implements DiscoveryClient for runtime tests.
 type mockDiscoveryForRuntime struct {
 	lookupErr error

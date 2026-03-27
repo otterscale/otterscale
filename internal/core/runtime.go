@@ -39,6 +39,10 @@ type RuntimeRepo interface {
 	// the response body, if any.
 	SubResourceAction(ctx context.Context, cluster string, gvr schema.GroupVersionResource,
 		namespace, name, subresource, method string, body []byte) (map[string]any, error)
+	// VNC opens a VNC WebSocket session to a KubeVirt VMI and copies
+	// data bidirectionally until the context is canceled or the
+	// connection closes.
+	VNC(ctx context.Context, cluster, namespace, name string, opts VNCOptions) error
 }
 
 // HelmRepo abstracts server-side Helm chart repository operations.
@@ -95,6 +99,12 @@ type StartExecParams struct {
 // PortForwardOptions holds parameters for a port-forward session.
 type PortForwardOptions struct {
 	Port   int32
+	Stdin  io.Reader
+	Stdout io.Writer
+}
+
+// VNCOptions holds parameters for a VNC session.
+type VNCOptions struct {
 	Stdin  io.Reader
 	Stdout io.Writer
 }
@@ -343,6 +353,89 @@ func (uc *RuntimeUseCase) WritePortForward(ctx context.Context, sessionID string
 // ReapStaleSessions.
 func (uc *RuntimeUseCase) CleanupPortForward(_ context.Context, sessionID string) {
 	sess := uc.sessions.RemovePortForward(sessionID)
+	if sess == nil {
+		return
+	}
+	sess.Cancel()
+	sess.Writer.Close()
+}
+
+// StartVNC creates a VNC session, starts the VNC connection in a
+// background goroutine, and returns the session together with a reader
+// for data coming from the VMI.
+func (uc *RuntimeUseCase) StartVNC(ctx context.Context, cluster, namespace, name string) (*VNCSession, io.ReadCloser, error) {
+	if name == "" {
+		return nil, nil, &ErrInvalidInput{Field: "name", Message: "VMI name is required"}
+	}
+
+	dataInR, dataInW := io.Pipe()
+	dataOutR, dataOutW := io.Pipe()
+
+	ctx, cancel := context.WithCancel(ctx)
+	done := make(chan struct{})
+
+	sess := &VNCSession{
+		ID:     uuid.New().String(),
+		Writer: dataInW,
+		Cancel: cancel,
+		Done:   done,
+	}
+
+	if err := uc.sessions.PutVNC(sess); err != nil {
+		cancel()
+		dataInW.Close()
+		dataInR.Close()
+		dataOutR.Close()
+		dataOutW.Close()
+		return nil, nil, err
+	}
+
+	go func() {
+		defer close(done)
+		defer dataInR.Close()
+		defer dataOutW.Close()
+		sess.Err = uc.runtime.VNC(ctx, cluster, namespace, name, VNCOptions{
+			Stdin:  dataInR,
+			Stdout: dataOutW,
+		})
+	}()
+
+	return sess, dataOutR, nil
+}
+
+// WriteVNC writes data to an active VNC session.
+func (uc *RuntimeUseCase) WriteVNC(ctx context.Context, sessionID string, data []byte) error {
+	sess, ok := uc.sessions.GetVNC(sessionID)
+	if !ok {
+		return &ErrSessionNotFound{Resource: "vnc-session", ID: sessionID}
+	}
+
+	select {
+	case <-sess.Done:
+		if sess.Err != nil {
+			return sess.Err
+		}
+		return &ErrSessionNotFound{Resource: "vnc-session", ID: sessionID}
+	default:
+	}
+
+	errCh := make(chan error, 1)
+	go func() {
+		_, err := sess.Writer.Write(data)
+		errCh <- err
+	}()
+
+	select {
+	case <-ctx.Done():
+		return ctx.Err()
+	case err := <-errCh:
+		return err
+	}
+}
+
+// CleanupVNC stops a VNC session and removes it from the store.
+func (uc *RuntimeUseCase) CleanupVNC(_ context.Context, sessionID string) {
+	sess := uc.sessions.RemoveVNC(sessionID)
 	if sess == nil {
 		return
 	}
