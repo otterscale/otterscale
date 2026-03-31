@@ -35,3 +35,4 @@ go.work.sum
 bin/
 *.pem
 manifests/bootstrap/**/*.yaml
+!manifests/bootstrap/platform/helmrepository.yaml

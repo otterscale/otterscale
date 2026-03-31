@@ -6,8 +6,8 @@ CERT_MANAGER_VERSION    := v1.20.1
 FLUX2_VERSION           := v2.8.3
 
 BOOTSTRAP_DIR := manifests/bootstrap
-STAGE1_DIR    := $(BOOTSTRAP_DIR)/stage1
-STAGE2_DIR    := $(BOOTSTRAP_DIR)/stage2
+BASE_DIR      := $(BOOTSTRAP_DIR)/base
+PLATFORM_DIR  := $(BOOTSTRAP_DIR)/platform
 
 .PHONY: build
 # build cli
@@ -29,37 +29,39 @@ test:
 lint:
 	golangci-lint run
 
+DOWNLOADED_MANIFESTS := \
+	$(BASE_DIR)/cert-manager.yaml \
+	$(BASE_DIR)/crds.yaml \
+	$(BASE_DIR)/flux2.yaml \
+	$(PLATFORM_DIR)/tenant-operator.yaml
+
 .PHONY: bootstrap-manifests
 # download bootstrap manifests
-bootstrap-manifests: \
-	$(STAGE1_DIR)/cert-manager.yaml \
-	$(STAGE1_DIR)/crds.yaml \
-	$(STAGE2_DIR)/flux2.yaml \
-	$(STAGE2_DIR)/tenant-operator.yaml
+bootstrap-manifests: $(DOWNLOADED_MANIFESTS)
 
-$(STAGE1_DIR)/cert-manager.yaml: | $(STAGE1_DIR)
+$(BASE_DIR)/cert-manager.yaml: | $(BASE_DIR)
 	curl -sSL -o $@ \
 	  https://github.com/cert-manager/cert-manager/releases/download/$(CERT_MANAGER_VERSION)/cert-manager.yaml
 
-$(STAGE1_DIR)/crds.yaml: | $(STAGE1_DIR)
+$(BASE_DIR)/crds.yaml: | $(BASE_DIR)
 	curl -sSL -o $@ \
 	  https://github.com/otterscale/api/releases/download/$(API_VERSION)/crds.yaml
 
-$(STAGE2_DIR)/flux2.yaml: | $(STAGE2_DIR)
+$(BASE_DIR)/flux2.yaml: | $(BASE_DIR)
 	curl -sSL -o $@ \
 	  https://github.com/fluxcd/flux2/releases/download/$(FLUX2_VERSION)/install.yaml
 
-$(STAGE2_DIR)/tenant-operator.yaml: | $(STAGE2_DIR)
+$(PLATFORM_DIR)/tenant-operator.yaml: | $(PLATFORM_DIR)
 	curl -sSL -o $@ \
 	  https://github.com/otterscale/tenant-operator/releases/download/$(TENANT_OPERATOR_VERSION)/install.yaml
 
-$(STAGE1_DIR) $(STAGE2_DIR):
+$(BASE_DIR) $(PLATFORM_DIR):
 	@mkdir -p $@
 
 .PHONY: update-bootstrap
 # force re-download all bootstrap manifests
 update-bootstrap:
-	@rm -rf $(BOOTSTRAP_DIR)/stage1 $(BOOTSTRAP_DIR)/stage2
+	@rm -f $(DOWNLOADED_MANIFESTS)
 	$(MAKE) bootstrap-manifests
 
 .PHONY: help

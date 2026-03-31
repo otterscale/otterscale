@@ -69,9 +69,9 @@ func New(cfg *rest.Config) (*Bootstrapper, error) {
 func (b *Bootstrapper) Run(ctx context.Context) error {
 	b.log.Info("starting Layer 0 bootstrap")
 
-	// Stage 1: cert-manager + CRDs
-	if err := b.applyStage(ctx, manifests.Stage1, "bootstrap/stage1"); err != nil {
-		return fmt.Errorf("stage 1: %w", err)
+	// Base: cert-manager + CRDs + FluxCD
+	if err := b.applyStage(ctx, manifests.Base, "bootstrap/base"); err != nil {
+		return fmt.Errorf("base: %w", err)
 	}
 
 	// Wait for cert-manager-webhook Deployment to be Available.
@@ -80,9 +80,9 @@ func (b *Bootstrapper) Run(ctx context.Context) error {
 	}
 	b.log.Info("cert-manager webhook is available")
 
-	// Stage 2: FluxCD + module-operator + tenant-operator
-	if err := b.applyStage(ctx, manifests.Stage2, "bootstrap/stage2"); err != nil {
-		return fmt.Errorf("stage 2: %w", err)
+	// Platform: tenant-operator + HelmRepository
+	if err := b.applyStage(ctx, manifests.Platform, "bootstrap/platform"); err != nil {
+		return fmt.Errorf("platform: %w", err)
 	}
 
 	b.log.Info("layer 0 bootstrap completed successfully")
