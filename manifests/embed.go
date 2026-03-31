@@ -4,8 +4,8 @@ package manifests
 
 import "embed"
 
-//go:embed bootstrap/stage1/*.yaml
-var Stage1 embed.FS
+//go:embed bootstrap/base/*.yaml
+var Base embed.FS
 
-//go:embed bootstrap/stage2/*.yaml
-var Stage2 embed.FS
+//go:embed bootstrap/platform/*.yaml
+var Platform embed.FS

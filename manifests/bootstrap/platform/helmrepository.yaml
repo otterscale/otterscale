@@ -1,0 +1,9 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: otterscale-charts
+  namespace: otterscale-system
+spec:
+  interval: 1h
+  provider: generic
+  url: https://otterscale.github.io/charts
