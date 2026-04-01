@@ -194,33 +194,6 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
 ---
 apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
-metadata:
-  name: otterscale-agent
-  namespace: otterscale-system
-rules:
-  # The agent self-updates by patching its own Deployment image when
-  # the server advertises a newer version.
-  - apiGroups: ["apps"]
-    resources: ["deployments"]
-    resourceNames: ["otterscale-agent"]
-    verbs: ["get", "patch"]
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  name: otterscale-agent
-  namespace: otterscale-system
-subjects:
-  - kind: ServiceAccount
-    name: otterscale-agent
-    namespace: otterscale-system
-roleRef:
-  kind: Role
-  name: otterscale-agent
-  apiGroup: rbac.authorization.k8s.io
----
-apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   name: otterscale-{{ .SanitizedUser }}-cluster-admin
