@@ -6,20 +6,12 @@ package manifest
 
 import (
 	"bytes"
-	"crypto/sha256"
 	"encoding/json"
 	"fmt"
-	"regexp"
-	"strings"
 	"text/template"
 
 	"github.com/otterscale/otterscale/internal/core"
 )
-
-// reNonAlphaNum matches one or more consecutive non-alphanumeric
-// characters. Compiled once at package level to avoid recompiling on
-// every sanitizeK8sName call.
-var reNonAlphaNum = regexp.MustCompile(`[^a-z0-9]+`)
 
 // Renderer implements core.ManifestRenderer by executing a Go
 // text/template that produces multi-document YAML.
@@ -40,12 +32,11 @@ func NewRenderer() *Renderer {
 // Deployment that runs the agent with the correct server/tunnel URLs.
 func (r *Renderer) RenderAgentManifest(params *core.ManifestParams) (string, error) {
 	data := agentManifestData{
-		Cluster:       params.Cluster,
-		UserName:      params.UserName,
-		SanitizedUser: sanitizeK8sName(params.UserName),
-		Image:         params.Image,
-		ServerURL:     params.ServerURL,
-		TunnelURL:     params.TunnelURL,
+		Cluster:   params.Cluster,
+		UserName:  params.UserName,
+		Image:     params.Image,
+		ServerURL: params.ServerURL,
+		TunnelURL: params.TunnelURL,
 	}
 	if params.HarborCreds != nil {
 		data.HarborURL = params.HarborURL
@@ -65,40 +56,12 @@ func (r *Renderer) RenderAgentManifest(params *core.ManifestParams) (string, err
 type agentManifestData struct {
 	Cluster           string
 	UserName          string
-	SanitizedUser     string
 	Image             string
 	ServerURL         string
 	TunnelURL         string
 	HarborURL         string
 	HarborRobotName   string
 	HarborRobotSecret string
-}
-
-// sanitizeK8sName converts an arbitrary string (e.g. an OIDC subject
-// or email) into a valid Kubernetes resource name component. It
-// lower-cases the input, replaces non-alphanumeric characters with
-// hyphens, collapses consecutive hyphens, and trims leading/trailing
-// hyphens. The result is truncated to 63 characters (the Kubernetes
-// name length limit). If the sanitized result is empty (e.g. the
-// input consisted entirely of special characters), a deterministic
-// hash-based fallback is used.
-func sanitizeK8sName(s string) string {
-	original := s
-	s = strings.ToLower(s)
-	s = reNonAlphaNum.ReplaceAllString(s, "-")
-	s = strings.Trim(s, "-")
-	const maxK8sNameLen = 63 // Kubernetes name length limit
-	if len(s) > maxK8sNameLen {
-		s = s[:maxK8sNameLen]
-		s = strings.TrimRight(s, "-")
-	}
-	if s == "" {
-		// Fallback: use a truncated SHA-256 hash of the original
-		// input to produce a deterministic, valid name.
-		h := sha256.Sum256([]byte(original))
-		s = fmt.Sprintf("u-%x", h[:8])
-	}
-	return s
 }
 
 // yamlQuote produces a JSON-encoded string (with surrounding quotes)
@@ -223,7 +186,7 @@ roleRef:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: otterscale-{{ .SanitizedUser }}-cluster-admin
+  name: otterscale-cluster-admin
 subjects:
   - kind: User
     name: {{ yamlQuote .UserName }}
@@ -231,6 +194,28 @@ subjects:
 roleRef:
   kind: ClusterRole
   name: cluster-admin
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: otterscale-node-reader
+rules:
+  - apiGroups: [""]
+    resources: ["nodes"]
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: otterscale-node-reader
+subjects:
+  - kind: Group
+    name: system:authenticated
+    apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: otterscale-node-reader
   apiGroup: rbac.authorization.k8s.io
 ---
 apiVersion: apps/v1
