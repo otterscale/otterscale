@@ -98,14 +98,14 @@ func (h *Handler) Mount(mux *http.ServeMux) error {
 func (h *Handler) handleRawManifest(w http.ResponseWriter, r *http.Request) {
 	token := r.PathValue("token")
 
-	cluster, userName, err := h.manifest.VerifyManifestToken(r.Context(), token)
+	cluster, userName, extraUsers, err := h.manifest.VerifyManifestToken(r.Context(), token)
 	if err != nil {
 		slog.Debug("manifest token verification failed", "error", err)
 		http.Error(w, "invalid or expired token", http.StatusUnauthorized)
 		return
 	}
 
-	manifest, err := h.manifest.RenderManifest(r.Context(), cluster, userName)
+	manifest, err := h.manifest.RenderManifest(r.Context(), cluster, userName, extraUsers)
 	if err != nil {
 		http.Error(w, "failed to render manifest", http.StatusInternalServerError)
 		return

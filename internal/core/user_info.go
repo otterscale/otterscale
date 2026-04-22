@@ -1,11 +1,24 @@
 package core
 
-import "context"
+import (
+	"context"
+	"slices"
+)
 
 // UserInfo holds the authenticated user's identity and group memberships.
 type UserInfo struct {
 	Subject string
 	Groups  []string
+}
+
+// adminGroup is the group membership required to perform privileged
+// operations such as generating an agent manifest (which grants
+// cluster-admin on the target cluster).
+const adminGroup = "admin"
+
+// IsAdmin reports whether the given group list contains the admin group.
+func IsAdmin(groups []string) bool {
+	return slices.Contains(groups, adminGroup)
 }
 
 // userInfoKey is the context key for UserInfo. Using an unexported
