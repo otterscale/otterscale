@@ -153,7 +153,7 @@ type ManifestParams struct {
 	TunnelURL string
 	// ExtraUsers are additional user identities bound to cluster-admin
 	// via the otterscale-cluster-admin ClusterRoleBinding, in addition
-	// to UserName. Already deduplicated and non-empty.
+	// to UserName.
 	ExtraUsers []string
 	// HarborURL is the Harbor registry URL. Empty when Harbor
 	// integration is disabled.
