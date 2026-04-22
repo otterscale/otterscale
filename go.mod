@@ -6,7 +6,7 @@ tool github.com/google/wire/cmd/wire
 
 require (
 	connectrpc.com/authn v0.2.0
-	connectrpc.com/connect v1.19.1
+	connectrpc.com/connect v1.19.2
 	connectrpc.com/cors v0.1.0
 	connectrpc.com/grpchealth v1.4.0
 	connectrpc.com/grpcreflect v1.3.0
