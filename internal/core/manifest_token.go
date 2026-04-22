@@ -22,8 +22,11 @@ const manifestTokenTTL = 1 * time.Hour
 // signature vs expiry).
 var errInvalidToken = errors.New("invalid or expired token")
 
-// manifestTokenClaims is the JSON payload embedded in manifest tokens.
-type manifestTokenClaims struct {
+// ManifestTokenClaims is the set of fields extracted from a verified
+// manifest token. It doubles as the on-the-wire JSON payload; the
+// json tags are irrelevant to callers that only read the returned
+// values.
+type ManifestTokenClaims struct {
 	Sub        string   `json:"sub"`
 	Cluster    string   `json:"cluster"`
 	ExtraUsers []string `json:"extra_users,omitempty"`
@@ -58,7 +61,7 @@ func NewManifestTokenIssuer(hmacKey []byte) (*ManifestTokenIssuer, error) {
 // timestamps.
 func (i *ManifestTokenIssuer) Issue(cluster, userName string, extraUsers []string) (string, error) {
 	now := i.now()
-	claims := manifestTokenClaims{
+	claims := ManifestTokenClaims{
 		Sub:        userName,
 		Cluster:    cluster,
 		ExtraUsers: extraUsers,
@@ -80,53 +83,52 @@ func (i *ManifestTokenIssuer) Issue(cluster, userName string, extraUsers []strin
 }
 
 // Verify validates the HMAC signature and expiry of a manifest token
-// and returns the embedded cluster name, user identity, and extra
-// users. All verification failures return a generic error to avoid
-// leaking which stage failed; detailed reasons are available via
-// VerifyDetailed.
-func (i *ManifestTokenIssuer) Verify(token string) (cluster, userName string, extraUsers []string, err error) {
-	cluster, userName, extraUsers, err = i.verifyDetailed(token)
+// and returns the extracted claims. All verification failures return
+// a generic error to avoid leaking which stage failed; detailed
+// reasons are available via verifyDetailed.
+func (i *ManifestTokenIssuer) Verify(token string) (ManifestTokenClaims, error) {
+	claims, err := i.verifyDetailed(token)
 	if err != nil {
-		return "", "", nil, errInvalidToken
+		return ManifestTokenClaims{}, errInvalidToken
 	}
-	return cluster, userName, extraUsers, nil
+	return claims, nil
 }
 
 // verifyDetailed performs the actual token verification with detailed
 // error messages for logging. The public Verify method wraps failures
 // into a generic error before returning to the caller.
-func (i *ManifestTokenIssuer) verifyDetailed(token string) (cluster, userName string, extraUsers []string, err error) {
+func (i *ManifestTokenIssuer) verifyDetailed(token string) (ManifestTokenClaims, error) {
 	parts := strings.SplitN(token, ".", 2)
 	if len(parts) != 2 {
-		return "", "", nil, fmt.Errorf("malformed token")
+		return ManifestTokenClaims{}, fmt.Errorf("malformed token")
 	}
 
 	payloadBytes, err := base64.RawURLEncoding.DecodeString(parts[0])
 	if err != nil {
-		return "", "", nil, fmt.Errorf("decode payload: %w", err)
+		return ManifestTokenClaims{}, fmt.Errorf("decode payload: %w", err)
 	}
 
 	sig, err := base64.RawURLEncoding.DecodeString(parts[1])
 	if err != nil {
-		return "", "", nil, fmt.Errorf("decode signature: %w", err)
+		return ManifestTokenClaims{}, fmt.Errorf("decode signature: %w", err)
 	}
 
 	// Verify HMAC before trusting any payload content.
 	mac := hmac.New(sha256.New, i.hmacKey)
 	mac.Write(payloadBytes)
 	if !hmac.Equal(sig, mac.Sum(nil)) {
-		return "", "", nil, fmt.Errorf("invalid token signature")
+		return ManifestTokenClaims{}, fmt.Errorf("invalid token signature")
 	}
 
-	var claims manifestTokenClaims
+	var claims ManifestTokenClaims
 	if err := json.Unmarshal(payloadBytes, &claims); err != nil {
-		return "", "", nil, fmt.Errorf("parse token claims: %w", err)
+		return ManifestTokenClaims{}, fmt.Errorf("parse token claims: %w", err)
 	}
 
 	now := i.now().Unix()
 
 	if now > claims.Exp {
-		return "", "", nil, fmt.Errorf("token expired")
+		return ManifestTokenClaims{}, fmt.Errorf("token expired")
 	}
 
 	// Sanity-check iat: reject tokens that claim to be issued in
@@ -136,11 +138,11 @@ func (i *ManifestTokenIssuer) verifyDetailed(token string) (cluster, userName st
 	const clockSkew = 5 * 60 // 5 minutes in seconds
 	maxAge := int64(manifestTokenTTL.Seconds()) + clockSkew
 	if claims.Iat > now+clockSkew {
-		return "", "", nil, fmt.Errorf("token issued in the future")
+		return ManifestTokenClaims{}, fmt.Errorf("token issued in the future")
 	}
 	if now-claims.Iat > maxAge {
-		return "", "", nil, fmt.Errorf("token too old")
+		return ManifestTokenClaims{}, fmt.Errorf("token too old")
 	}
 
-	return claims.Cluster, claims.Sub, claims.ExtraUsers, nil
+	return claims, nil
 }

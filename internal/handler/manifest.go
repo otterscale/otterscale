@@ -22,14 +22,13 @@ func NewManifestHandler(link *core.LinkUseCase) *ManifestHandler {
 }
 
 // VerifyManifestToken validates an HMAC-signed manifest token and
-// returns the embedded cluster name, user identity, and extra users
-// bound to cluster-admin.
-func (h *ManifestHandler) VerifyManifestToken(ctx context.Context, token string) (cluster, userName string, extraUsers []string, err error) {
+// returns the extracted claims.
+func (h *ManifestHandler) VerifyManifestToken(ctx context.Context, token string) (core.ManifestTokenClaims, error) {
 	return h.link.VerifyManifestToken(ctx, token)
 }
 
 // RenderManifest generates the agent installation manifest for the
-// given cluster, user, and additional cluster-admin users.
-func (h *ManifestHandler) RenderManifest(ctx context.Context, cluster, userName string, extraUsers []string) (string, error) {
-	return h.link.GenerateAgentManifest(ctx, cluster, userName, extraUsers)
+// given token claims.
+func (h *ManifestHandler) RenderManifest(ctx context.Context, claims core.ManifestTokenClaims) (string, error) {
+	return h.link.GenerateAgentManifest(ctx, claims.Cluster, claims.Sub, claims.ExtraUsers)
 }

@@ -189,18 +189,18 @@ func TestLinkUseCase_ManifestToken_IssueAndVerify(t *testing.T) {
 	}
 	token := parts[1]
 
-	cluster, userName, extraUsers, err := uc.VerifyManifestToken(t.Context(), token)
+	claims, err := uc.VerifyManifestToken(t.Context(), token)
 	if err != nil {
 		t.Fatalf("VerifyManifestToken: %v", err)
 	}
-	if cluster != "test-cluster" {
-		t.Errorf("cluster = %q, want %q", cluster, "test-cluster")
+	if claims.Cluster != "test-cluster" {
+		t.Errorf("cluster = %q, want %q", claims.Cluster, "test-cluster")
 	}
-	if userName != "user@example.com" {
-		t.Errorf("userName = %q, want %q", userName, "user@example.com")
+	if claims.Sub != "user@example.com" {
+		t.Errorf("userName = %q, want %q", claims.Sub, "user@example.com")
 	}
-	if len(extraUsers) != 1 || extraUsers[0] != "bob@example.com" {
-		t.Errorf("extraUsers = %v, want [bob@example.com]", extraUsers)
+	if len(claims.ExtraUsers) != 1 || claims.ExtraUsers[0] != "bob@example.com" {
+		t.Errorf("extraUsers = %v, want [bob@example.com]", claims.ExtraUsers)
 	}
 }
 
@@ -220,7 +220,7 @@ func TestLinkUseCase_VerifyManifestToken_MalformedToken(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, _, _, err := uc.VerifyManifestToken(t.Context(), tt.token)
+			_, err := uc.VerifyManifestToken(t.Context(), tt.token)
 			if err == nil {
 				t.Fatal("expected error, got nil")
 			}
@@ -244,7 +244,7 @@ func TestLinkUseCase_VerifyManifestToken_TamperedSignature(t *testing.T) {
 	tokenParts := strings.SplitN(token, ".", 2)
 	tampered := tokenParts[0] + ".dGFtcGVyZWQ"
 
-	_, _, _, err = uc.VerifyManifestToken(t.Context(), tampered)
+	_, err = uc.VerifyManifestToken(t.Context(), tampered)
 	if err == nil {
 		t.Fatal("expected error for tampered token")
 	}

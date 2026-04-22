@@ -253,17 +253,16 @@ func (uc *LinkUseCase) IssueManifestURL(_ context.Context, cluster, userName str
 }
 
 // VerifyManifestToken validates the HMAC signature and expiry of a
-// manifest token and returns the embedded cluster name, user
-// identity, and extra users. All verification failures return a
-// generic error to avoid leaking which stage failed; detailed reasons
-// are logged at debug level.
-func (uc *LinkUseCase) VerifyManifestToken(_ context.Context, token string) (cluster, userName string, extraUsers []string, err error) {
-	cluster, userName, extraUsers, err = uc.tokenIssuer.Verify(token)
+// manifest token and returns the extracted claims. All verification
+// failures return a generic error to avoid leaking which stage failed;
+// detailed reasons are logged at debug level.
+func (uc *LinkUseCase) VerifyManifestToken(_ context.Context, token string) (ManifestTokenClaims, error) {
+	claims, err := uc.tokenIssuer.Verify(token)
 	if err != nil {
 		slog.Debug("manifest token verification failed", "error", err)
-		return "", "", nil, err
+		return ManifestTokenClaims{}, err
 	}
-	return cluster, userName, extraUsers, nil
+	return claims, nil
 }
 
 // GenerateAgentManifest produces a multi-document YAML manifest for
