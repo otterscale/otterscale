@@ -151,6 +151,10 @@ type ManifestParams struct {
 	Image     string
 	ServerURL string
 	TunnelURL string
+	// ExtraUsers are additional user identities bound to cluster-admin
+	// via the otterscale-cluster-admin ClusterRoleBinding, in addition
+	// to UserName.
+	ExtraUsers []string
 	// HarborURL is the Harbor registry URL. Empty when Harbor
 	// integration is disabled.
 	HarborURL string
@@ -237,11 +241,11 @@ func (uc *LinkUseCase) RegisterCluster(ctx context.Context, cluster, agentID, ag
 }
 
 // IssueManifestURL generates an HMAC-signed token that encodes the
-// cluster name and user identity, and returns a full URL that serves
-// the agent manifest as raw YAML. The token is valid for
-// manifestTokenTTL.
-func (uc *LinkUseCase) IssueManifestURL(_ context.Context, cluster, userName string) (string, error) {
-	token, err := uc.tokenIssuer.Issue(cluster, userName)
+// cluster name, user identity, and extra users bound to cluster-admin,
+// and returns a full URL that serves the agent manifest as raw YAML.
+// The token is valid for manifestTokenTTL.
+func (uc *LinkUseCase) IssueManifestURL(_ context.Context, cluster, userName string, extraUsers []string) (string, error) {
+	token, err := uc.tokenIssuer.Issue(cluster, userName, extraUsers)
 	if err != nil {
 		return "", fmt.Errorf("issue manifest token: %w", err)
 	}
@@ -249,17 +253,16 @@ func (uc *LinkUseCase) IssueManifestURL(_ context.Context, cluster, userName str
 }
 
 // VerifyManifestToken validates the HMAC signature and expiry of a
-// manifest token and returns the embedded cluster name and user
-// identity. All verification failures return a generic error to
-// avoid leaking which stage failed; detailed reasons are logged at
-// debug level.
-func (uc *LinkUseCase) VerifyManifestToken(_ context.Context, token string) (cluster, userName string, err error) {
-	cluster, userName, err = uc.tokenIssuer.Verify(token)
+// manifest token and returns the extracted claims. All verification
+// failures return a generic error to avoid leaking which stage failed;
+// detailed reasons are logged at debug level.
+func (uc *LinkUseCase) VerifyManifestToken(_ context.Context, token string) (ManifestTokenClaims, error) {
+	claims, err := uc.tokenIssuer.Verify(token)
 	if err != nil {
 		slog.Debug("manifest token verification failed", "error", err)
-		return "", "", err
+		return ManifestTokenClaims{}, err
 	}
-	return cluster, userName, nil
+	return claims, nil
 }
 
 // GenerateAgentManifest produces a multi-document YAML manifest for
@@ -267,7 +270,7 @@ func (uc *LinkUseCase) VerifyManifestToken(_ context.Context, token string) (clu
 // The manifest includes a Namespace, ServiceAccount,
 // ClusterRoleBinding (binding userName to cluster-admin), and a
 // Deployment that runs the agent with the correct server/tunnel URLs.
-func (uc *LinkUseCase) GenerateAgentManifest(ctx context.Context, cluster, userName string) (string, error) {
+func (uc *LinkUseCase) GenerateAgentManifest(ctx context.Context, cluster, userName string, extraUsers []string) (string, error) {
 	if err := ValidateClusterName(cluster); err != nil {
 		return "", err
 	}
@@ -276,11 +279,12 @@ func (uc *LinkUseCase) GenerateAgentManifest(ctx context.Context, cluster, userN
 	}
 
 	params := &ManifestParams{
-		Cluster:   cluster,
-		UserName:  userName,
-		Image:     fmt.Sprintf("ghcr.io/otterscale/otterscale:%s", uc.version),
-		ServerURL: uc.manifestCfg.ServerURL,
-		TunnelURL: uc.manifestCfg.TunnelURL,
+		Cluster:    cluster,
+		UserName:   userName,
+		ExtraUsers: extraUsers,
+		Image:      fmt.Sprintf("ghcr.io/otterscale/otterscale:%s", uc.version),
+		ServerURL:  uc.manifestCfg.ServerURL,
+		TunnelURL:  uc.manifestCfg.TunnelURL,
 	}
 
 	if uc.harbor != nil {

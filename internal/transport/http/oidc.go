@@ -13,10 +13,17 @@ import (
 )
 
 // oidcGroupClaims holds the custom claims extracted from an OIDC ID
-// token. The "groups" claim is a standard OIDC claim supported by
-// most providers (Keycloak, Dex, Auth0, etc.).
+// token. "groups" is a standard OIDC claim; "resource_access" is the
+// Keycloak-specific container for client-scoped roles, keyed by client
+// id. Both sources are merged and prefixed with "oidc:" by the
+// middleware so callers can treat roles and groups uniformly.
 type oidcGroupClaims struct {
-	Groups []string `json:"groups"`
+	Groups         []string                      `json:"groups"`
+	ResourceAccess map[string]oidcResourceAccess `json:"resource_access"`
+}
+
+type oidcResourceAccess struct {
+	Roles []string `json:"roles"`
 }
 
 // NewOIDC creates a ConnectRPC authentication middleware that verifies
@@ -57,12 +64,18 @@ func NewOIDC(issuer, clientID string) (*authn.Middleware, error) {
 			return nil, authn.Errorf("parse token claims: %s", err)
 		}
 
-		groups := make([]string, 0, len(claims.Groups)+1)
+		// Prefix with "oidc:" to avoid collisions with Kubernetes
+		// built-in groups (e.g. "system:masters"). Roles attached to
+		// the verifier's client id in resource_access are merged with
+		// top-level groups so a Keycloak client role named "admin"
+		// and a realm group named "admin" both land on "oidc:admin".
+		clientRoles := claims.ResourceAccess[clientID].Roles
+		groups := make([]string, 0, 1+len(claims.Groups)+len(clientRoles))
 		groups = append(groups, "system:authenticated")
-		for _, g := range claims.Groups {
-			// Prefix with "oidc:" to avoid collisions with
-			// Kubernetes built-in groups (e.g. "system:masters").
-			groups = append(groups, "oidc:"+g)
+		for _, names := range [][]string{claims.Groups, clientRoles} {
+			for _, n := range names {
+				groups = append(groups, "oidc:"+n)
+			}
 		}
 
 		return core.UserInfo{

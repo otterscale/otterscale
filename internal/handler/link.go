@@ -70,15 +70,19 @@ func (s *LinkService) GetAgentManifest(ctx context.Context, req *pb.GetAgentMani
 	if !ok {
 		return nil, connect.NewError(connect.CodeUnauthenticated, errors.New("user info not found in context"))
 	}
+	if !core.IsAdmin(userInfo.Groups) {
+		return nil, connect.NewError(connect.CodePermissionDenied, errors.New("caller is not a member of the admin group"))
+	}
 
 	cluster := req.GetCluster()
+	extraUsers := req.GetExtraUsers()
 
-	manifest, err := s.link.GenerateAgentManifest(ctx, cluster, userInfo.Subject)
+	manifest, err := s.link.GenerateAgentManifest(ctx, cluster, userInfo.Subject, extraUsers)
 	if err != nil {
 		return nil, domainErrorToConnectError(err)
 	}
 
-	url, err := s.link.IssueManifestURL(ctx, cluster, userInfo.Subject)
+	url, err := s.link.IssueManifestURL(ctx, cluster, userInfo.Subject, extraUsers)
 	if err != nil {
 		return nil, domainErrorToConnectError(err)
 	}

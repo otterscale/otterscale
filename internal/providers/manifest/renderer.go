@@ -32,11 +32,11 @@ func NewRenderer() *Renderer {
 // Deployment that runs the agent with the correct server/tunnel URLs.
 func (r *Renderer) RenderAgentManifest(params *core.ManifestParams) (string, error) {
 	data := agentManifestData{
-		Cluster:   params.Cluster,
-		UserName:  params.UserName,
-		Image:     params.Image,
-		ServerURL: params.ServerURL,
-		TunnelURL: params.TunnelURL,
+		Cluster:           params.Cluster,
+		ClusterAdminUsers: append([]string{params.UserName}, params.ExtraUsers...),
+		Image:             params.Image,
+		ServerURL:         params.ServerURL,
+		TunnelURL:         params.TunnelURL,
 	}
 	if params.HarborCreds != nil {
 		data.HarborURL = params.HarborURL
@@ -55,7 +55,7 @@ func (r *Renderer) RenderAgentManifest(params *core.ManifestParams) (string, err
 // generation.
 type agentManifestData struct {
 	Cluster           string
-	UserName          string
+	ClusterAdminUsers []string
 	Image             string
 	ServerURL         string
 	TunnelURL         string
@@ -188,9 +188,11 @@ kind: ClusterRoleBinding
 metadata:
   name: otterscale-cluster-admin
 subjects:
+{{- range .ClusterAdminUsers }}
   - kind: User
-    name: {{ yamlQuote .UserName }}
+    name: {{ yamlQuote . }}
     apiGroup: rbac.authorization.k8s.io
+{{- end }}
 roleRef:
   kind: ClusterRole
   name: cluster-admin
