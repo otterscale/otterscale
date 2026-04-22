@@ -13,8 +13,9 @@ type UserInfo struct {
 
 // adminGroup is the group membership required to perform privileged
 // operations such as generating an agent manifest (which grants
-// cluster-admin on the target cluster).
-const adminGroup = "admin"
+// cluster-admin on the target cluster). The "oidc:" prefix matches
+// the convention applied by the OIDC middleware to token group claims.
+const adminGroup = "oidc:admin"
 
 // IsAdmin reports whether the given group list contains the admin group.
 func IsAdmin(groups []string) bool {
