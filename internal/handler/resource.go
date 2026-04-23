@@ -334,6 +334,10 @@ func processEvent(event core.WatchEvent) (*pb.WatchEvent, error) {
 			return nil, fmt.Errorf("nil object for event type %s", event.Type)
 		}
 
+		// Strip noisy metadata (managedFields, last-applied-configuration)
+		// before serializing to protobuf, consistent with List API behavior.
+		cleanObject(event.Object)
+
 		resource, err := toProtoResource(event.Object)
 		if err != nil {
 			return nil, fmt.Errorf("convert resource for event type %s: %w", event.Type, err)
