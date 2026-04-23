@@ -110,13 +110,6 @@ func (s *ResourceService) List(ctx context.Context, req *pb.ListRequest) (*pb.Li
 		return nil, domainErrorToConnectError(err)
 	}
 
-	// Strip noisy metadata (managedFields, last-applied-configuration)
-	// before serializing to protobuf. This is a presentation concern
-	// that belongs in the handler layer, not the domain use-case.
-	for i := range resources.Items {
-		cleanObject(resources.Items[i].Object)
-	}
-
 	pbResources, err := toProtoResources(resources.Items)
 	if err != nil {
 		return nil, connect.NewError(connect.CodeInternal, err)
@@ -446,8 +439,15 @@ func toProtoResources(list []unstructured.Unstructured) ([]*pb.Resource, error) 
 }
 
 // toProtoResource wraps a raw Kubernetes object map in a protobuf
-// Resource message.
+// Resource message. It strips noisy metadata (managedFields,
+// last-applied-configuration) before serializing to ensure a
+// consistent presentation across all endpoints.
 func toProtoResource(obj map[string]any) (*pb.Resource, error) {
+	// Clean the object in-place before conversion. This is safe
+	// because Kubernetes client-go provides fresh objects for each
+	// API call and watch event.
+	cleanObject(obj)
+
 	object, err := structpb.NewStruct(obj)
 	if err != nil {
 		return nil, err
