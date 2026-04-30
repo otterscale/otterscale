@@ -6,7 +6,7 @@ tool github.com/google/wire/cmd/wire
 
 require (
 	connectrpc.com/authn v0.2.0
-	connectrpc.com/connect v1.19.1
+	connectrpc.com/connect v1.19.2
 	connectrpc.com/cors v0.1.0
 	connectrpc.com/grpchealth v1.4.0
 	connectrpc.com/grpcreflect v1.3.0
@@ -17,7 +17,7 @@ require (
 	github.com/google/wire v0.7.0
 	github.com/gorilla/websocket v1.5.4-0.20250319132907-e064f32e3674
 	github.com/jpillora/chisel v1.11.5
-	github.com/otterscale/api v1.0.2
+	github.com/otterscale/api v1.1.1
 	github.com/prometheus/client_golang v1.23.2
 	github.com/rs/cors v1.11.1
 	github.com/spf13/cobra v1.10.2
@@ -33,7 +33,7 @@ require (
 	k8s.io/apimachinery v0.35.4
 	k8s.io/apiserver v0.35.4
 	k8s.io/client-go v0.35.4
-	k8s.io/kube-openapi v0.0.0-20260414162039-ec9c827d403f
+	k8s.io/kube-openapi v0.0.0-20260427204847-8949caaa1199
 )
 
 require (
