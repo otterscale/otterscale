@@ -1,7 +1,7 @@
 VERSION ?= $(shell git describe --tags --always 2>/dev/null || echo devel)
 
 API_VERSION ?= $(call gomodver,github.com/otterscale/api)
-TENANT_OPERATOR_VERSION := v1.1.1
+TENANT_OPERATOR_VERSION := v1.1.3
 CERT_MANAGER_VERSION    := v1.20.2
 FLUX2_VERSION           := v2.8.6
 
