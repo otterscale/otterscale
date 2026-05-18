@@ -77,6 +77,14 @@ type ResourceRepo interface {
 		namespace, name string, manifest []byte, opts ApplyOptions,
 	) (*unstructured.Unstructured, error)
 
+	// Update decodes a YAML manifest and performs a full replacement
+	// (PUT with the Update verb) for the given resource. The caller is
+	// responsible for supplying any server-required fields (such as
+	// metadata.resourceVersion) inside the manifest.
+	Update(ctx context.Context, cluster string, gvr schema.GroupVersionResource,
+		namespace, name string, manifest []byte, opts UpdateOptions,
+	) (*unstructured.Unstructured, error)
+
 	// Delete removes a resource.
 	Delete(ctx context.Context, cluster string, gvr schema.GroupVersionResource,
 		namespace, name string, opts DeleteOptions,
@@ -110,6 +118,12 @@ type ListOptions struct {
 // Mirrors the commonly used fields of metav1.PatchOptions.
 type ApplyOptions struct {
 	Force        bool
+	FieldManager string
+}
+
+// UpdateOptions configures a full-replacement update (PUT) operation.
+// Mirrors the commonly used fields of metav1.UpdateOptions.
+type UpdateOptions struct {
 	FieldManager string
 }
 
@@ -287,6 +301,24 @@ func (uc *ResourceUseCase) ApplyResource(
 	}
 
 	return uc.resource.Apply(ctx, id.Cluster, gvr, id.Namespace, id.Name, manifest, opts)
+}
+
+// UpdateResource validates the GVR and performs a full replacement (PUT)
+// on the target cluster from the given YAML manifest. Server-required
+// fields such as metadata.resourceVersion must be present in the
+// manifest; this method passes the manifest through unchanged.
+func (uc *ResourceUseCase) UpdateResource(
+	ctx context.Context,
+	id *ResourceIdentifier,
+	manifest []byte,
+	opts UpdateOptions,
+) (*unstructured.Unstructured, error) {
+	gvr, err := id.lookupGVR(ctx, uc.discovery)
+	if err != nil {
+		return nil, err
+	}
+
+	return uc.resource.Update(ctx, id.Cluster, gvr, id.Namespace, id.Name, manifest, opts)
 }
 
 // DeleteResource validates the GVR and deletes the named resource.

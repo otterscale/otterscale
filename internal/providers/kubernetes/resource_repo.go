@@ -135,6 +135,36 @@ func (r *resourceRepo) Apply(
 	return result, wrapK8sError(err)
 }
 
+// Update decodes a YAML manifest and performs a full replacement (PUT
+// with the Update verb). The manifest is forwarded to the API server
+// unchanged; the caller must supply any server-required fields such
+// as metadata.resourceVersion.
+func (r *resourceRepo) Update(
+	ctx context.Context,
+	cluster string,
+	gvr schema.GroupVersionResource,
+	namespace, name string,
+	manifest []byte,
+	opts core.UpdateOptions,
+) (*unstructured.Unstructured, error) {
+	client, err := r.dynamicClient(ctx, cluster)
+	if err != nil {
+		return nil, err
+	}
+
+	obj, err := fromYAML(manifest)
+	if err != nil {
+		return nil, err
+	}
+
+	updateOpts := metav1.UpdateOptions{
+		FieldManager: opts.FieldManager,
+	}
+
+	result, err := client.Resource(gvr).Namespace(namespace).Update(ctx, obj, updateOpts)
+	return result, wrapK8sError(err)
+}
+
 // Delete removes a resource.
 func (r *resourceRepo) Delete(
 	ctx context.Context,
