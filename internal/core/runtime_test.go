@@ -68,7 +68,7 @@ func (m *mockDiscoveryForRuntime) ServerResources(context.Context, string) ([]*m
 	return nil, nil
 }
 
-func (m *mockDiscoveryForRuntime) ResolveSchema(context.Context, string, string, string, string) (*spec.Schema, error) {
+func (m *mockDiscoveryForRuntime) ResolveGroupVersionSchemas(context.Context, string, string, string) (map[string]*spec.Schema, error) {
 	return nil, nil
 }
 
