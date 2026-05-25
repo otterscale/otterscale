@@ -42,8 +42,11 @@ type DiscoveryClient interface {
 	LookupResource(ctx context.Context, cluster, group, version, resource, subresource string) (schema.GroupVersionResource, error)
 	// ServerResources returns all API resources advertised by the cluster.
 	ServerResources(ctx context.Context, cluster string) ([]*metav1.APIResourceList, error)
-	// ResolveSchema fetches the OpenAPI schema for a given GVK.
-	ResolveSchema(ctx context.Context, cluster, group, version, kind string) (*spec.Schema, error)
+	// ResolveGroupVersionSchemas fetches the OpenAPI schemas for every
+	// kind in the given group/version. Kubernetes serves one OpenAPI
+	// document per group/version, so the caller is expected to cache the
+	// result and reuse it across kinds rather than refetching per-GVK.
+	ResolveGroupVersionSchemas(ctx context.Context, cluster, group, version string) (map[string]*spec.Schema, error)
 	// ServerVersion returns the Kubernetes version of the cluster.
 	ServerVersion(ctx context.Context, cluster string) (*version.Info, error)
 	// SupportsWatchList reports whether the target cluster supports

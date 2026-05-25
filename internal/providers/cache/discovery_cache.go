@@ -6,12 +6,15 @@ package cache
 
 import (
 	"context"
+	"fmt"
 	"log/slog"
+	"math/rand/v2"
 	"strings"
 	"sync"
 	"time"
 
 	"golang.org/x/sync/singleflight"
+	"k8s.io/apiserver/pkg/cel/openapi/resolver"
 	"k8s.io/kube-openapi/pkg/validation/spec"
 
 	"github.com/otterscale/otterscale/internal/core"
@@ -22,30 +25,46 @@ import (
 // DiscoveryCache.
 const DefaultTTL = 10 * time.Minute
 
-// defaultMaxSchemaEntries is the upper bound on the number of schema
-// cache entries. When exceeded, expired entries are eagerly evicted
-// before inserting new ones.
-const defaultMaxSchemaEntries = 10000
+// defaultMaxGVEntries is the upper bound on the number of cached
+// group/version entries. Each entry holds every kind in that
+// group/version, so the bound on actual kinds cached is much higher
+// than this number suggests.
+const defaultMaxGVEntries = 1024
+
+// ttlJitterFraction is the maximum random jitter applied to an entry's
+// TTL, as a fraction of the configured TTL. Spreading expirations
+// prevents a thundering-herd cache stampede when many entries are
+// populated in the same burst.
+const ttlJitterFraction = 0.2
 
 // DiscoveryCache provides TTL-based caching with singleflight
 // deduplication for OpenAPI schemas. It implements
 // core.SchemaResolver and core.CacheEvictor, and reduces redundant
 // discovery API calls when multiple concurrent requests target the
 // same cluster.
+//
+// Entries are keyed at group/version granularity because the
+// Kubernetes OpenAPI v3 endpoint returns one document per GV. Caching
+// per-GVK would re-download the same document for every kind; the GV
+// scheme amortizes a single fetch across all kinds in that GV and
+// lets singleflight deduplicate concurrent misses for different kinds
+// of the same GV.
 type DiscoveryCache struct {
-	discovery        core.DiscoveryClient
-	ttl              time.Duration
-	now              func() time.Time
-	maxSchemaEntries int
+	discovery     core.DiscoveryClient
+	ttl           time.Duration
+	now           func() time.Time
+	maxGVEntries  int
+	jitterSampler func() float64
 
-	mu            sync.RWMutex
-	schemaCache   map[string]*schemaCacheEntry
-	schemaFlights singleflight.Group
+	mu        sync.RWMutex
+	gvCache   map[string]*gvCacheEntry
+	gvFlights singleflight.Group
 }
 
-// schemaCacheEntry pairs a cached schema with its expiration time.
-type schemaCacheEntry struct {
-	schema    *spec.Schema
+// gvCacheEntry pairs the kind→schema map for a single group/version
+// with its (jittered) expiration time.
+type gvCacheEntry struct {
+	schemas   map[string]*spec.Schema
 	expiresAt time.Time
 }
 
@@ -65,13 +84,22 @@ func WithClock(now func() time.Time) Option {
 	}
 }
 
-// WithMaxSchemaEntries overrides the default upper bound on cached
-// schema entries.
-func WithMaxSchemaEntries(n int) Option {
+// WithMaxGVEntries overrides the default upper bound on cached
+// group/version entries.
+func WithMaxGVEntries(n int) Option {
 	return func(c *DiscoveryCache) {
 		if n > 0 {
-			c.maxSchemaEntries = n
+			c.maxGVEntries = n
 		}
+	}
+}
+
+// WithJitterSampler injects a custom [0,1) sampler used to compute
+// TTL jitter. Intended for deterministic testing; production callers
+// can rely on the default math/rand/v2-backed sampler.
+func WithJitterSampler(sample func() float64) Option {
+	return func(c *DiscoveryCache) {
+		c.jitterSampler = sample
 	}
 }
 
@@ -79,11 +107,12 @@ func WithMaxSchemaEntries(n int) Option {
 // DiscoveryClient and caches results for the specified TTL.
 func NewDiscoveryCache(discovery core.DiscoveryClient, ttl time.Duration, opts ...Option) *DiscoveryCache {
 	c := &DiscoveryCache{
-		discovery:        discovery,
-		ttl:              ttl,
-		now:              time.Now,
-		maxSchemaEntries: defaultMaxSchemaEntries,
-		schemaCache:      make(map[string]*schemaCacheEntry),
+		discovery:     discovery,
+		ttl:           ttl,
+		now:           time.Now,
+		maxGVEntries:  defaultMaxGVEntries,
+		jitterSampler: rand.Float64,
+		gvCache:       make(map[string]*gvCacheEntry),
 	}
 	for _, o := range opts {
 		o(c)
@@ -92,62 +121,80 @@ func NewDiscoveryCache(discovery core.DiscoveryClient, ttl time.Duration, opts .
 }
 
 // ResolveSchema fetches the OpenAPI schema for the given GVK. Results
-// are cached for the configured TTL and concurrent requests for the
-// same key are deduplicated via singleflight.
+// are cached per group/version for the configured TTL and concurrent
+// requests for the same group/version are deduplicated via
+// singleflight.
 func (c *DiscoveryCache) ResolveSchema(
 	ctx context.Context,
 	cluster, group, version, kind string,
 ) (*spec.Schema, error) {
-	key := c.schemaCacheKey(cluster, group, version, kind)
+	key := c.gvCacheKey(cluster, group, version)
 
 	c.mu.RLock()
-	entry, ok := c.schemaCache[key]
+	entry, ok := c.gvCache[key]
 	c.mu.RUnlock()
 
 	if ok && c.now().Before(entry.expiresAt) {
-		return entry.schema, nil
+		return lookupKind(entry.schemas, group, version, kind)
 	}
 
-	v, err, _ := c.schemaFlights.Do(key, func() (any, error) {
+	v, err, _ := c.gvFlights.Do(key, func() (any, error) {
 		// Use a non-cancellable context with its own timeout so that
 		// a single caller's cancellation does not fail all waiters
 		// sharing this singleflight key.
 		fetchCtx, cancel := context.WithTimeout(context.WithoutCancel(ctx), singleflightFetchTimeout)
 		defer cancel()
 
-		resolved, err := c.discovery.ResolveSchema(fetchCtx, cluster, group, version, kind)
+		schemas, err := c.discovery.ResolveGroupVersionSchemas(fetchCtx, cluster, group, version)
 		if err != nil {
 			return nil, err
 		}
 
 		c.mu.Lock()
-		// Enforce size limit: eagerly evict expired entries before
-		// inserting a new one to stay within the bound.
-		if len(c.schemaCache) >= c.maxSchemaEntries {
-			c.evictExpiredSchemas()
+		if len(c.gvCache) >= c.maxGVEntries {
+			c.evictExpiredGVs()
 		}
-		// Only cache if eviction freed enough space; otherwise
-		// return the result uncached to prevent unbounded growth.
-		if len(c.schemaCache) < c.maxSchemaEntries {
-			c.schemaCache[key] = &schemaCacheEntry{
-				schema:    resolved,
-				expiresAt: c.now().Add(c.ttl),
+		if len(c.gvCache) < c.maxGVEntries {
+			c.gvCache[key] = &gvCacheEntry{
+				schemas:   schemas,
+				expiresAt: c.now().Add(c.jitteredTTL()),
 			}
 		}
 		c.mu.Unlock()
 
-		return resolved, nil
+		return schemas, nil
 	})
 	if err != nil {
 		return nil, err
 	}
 
-	return v.(*spec.Schema), nil
+	return lookupKind(v.(map[string]*spec.Schema), group, version, kind)
 }
 
-// schemaCacheKey builds a cache key from the cluster/group/version/kind tuple.
-func (c *DiscoveryCache) schemaCacheKey(cluster, group, version, kind string) string {
-	return strings.Join([]string{cluster, group, version, kind}, "/")
+// lookupKind returns the schema for kind from the given GV map, or a
+// schema-not-found error wrapping resolver.ErrSchemaNotFound when the
+// kind is absent. The wrapped sentinel preserves the error semantics
+// of the upstream Kubernetes resolver.
+func lookupKind(schemas map[string]*spec.Schema, group, version, kind string) (*spec.Schema, error) {
+	if s, ok := schemas[kind]; ok {
+		return s, nil
+	}
+	return nil, fmt.Errorf("cannot resolve group version kind %q: %w",
+		group+"/"+version+"/"+kind, resolver.ErrSchemaNotFound)
+}
+
+// gvCacheKey builds a cache key from the cluster/group/version tuple.
+func (c *DiscoveryCache) gvCacheKey(cluster, group, version string) string {
+	return strings.Join([]string{cluster, group, version}, "/")
+}
+
+// jitteredTTL returns the configured TTL with ±ttlJitterFraction
+// random jitter applied. Spreading expirations prevents the
+// thundering-herd stampede that occurs when a batch of entries
+// populated at the same instant all expire together.
+func (c *DiscoveryCache) jitteredTTL() time.Duration {
+	jitter := (c.jitterSampler()*2 - 1) * ttlJitterFraction
+	return c.ttl + time.Duration(float64(c.ttl)*jitter)
 }
 
 // StartEvictionLoop launches a background goroutine that periodically
@@ -165,9 +212,9 @@ func (c *DiscoveryCache) StartEvictionLoop(ctx context.Context, interval time.Du
 			return
 		case <-ticker.C:
 			c.mu.Lock()
-			before := len(c.schemaCache)
-			c.evictExpiredSchemas()
-			after := len(c.schemaCache)
+			before := len(c.gvCache)
+			c.evictExpiredGVs()
+			after := len(c.gvCache)
 			c.mu.Unlock()
 
 			if evicted := before - after; evicted > 0 {
@@ -177,13 +224,13 @@ func (c *DiscoveryCache) StartEvictionLoop(ctx context.Context, interval time.Du
 	}
 }
 
-// evictExpiredSchemas removes expired entries from the schema cache.
-// Must be called with mu held for writing.
-func (c *DiscoveryCache) evictExpiredSchemas() {
+// evictExpiredGVs removes expired entries from the group/version
+// cache. Must be called with mu held for writing.
+func (c *DiscoveryCache) evictExpiredGVs() {
 	now := c.now()
-	for key, entry := range c.schemaCache {
+	for key, entry := range c.gvCache {
 		if now.After(entry.expiresAt) {
-			delete(c.schemaCache, key)
+			delete(c.gvCache, key)
 		}
 	}
 }
