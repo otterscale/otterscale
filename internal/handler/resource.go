@@ -197,6 +197,33 @@ func (s *ResourceService) Apply(ctx context.Context, req *pb.ApplyRequest) (*pb.
 	return result, nil
 }
 
+// Update performs a full replacement update for the given resource.
+func (s *ResourceService) Update(ctx context.Context, req *pb.UpdateRequest) (*pb.Resource, error) {
+	resource, err := s.resource.UpdateResource(
+		ctx,
+		&core.ResourceIdentifier{
+			Cluster:   req.GetCluster(),
+			Group:     req.GetGroup(),
+			Version:   req.GetVersion(),
+			Resource:  req.GetResource(),
+			Namespace: req.GetNamespace(),
+			Name:      req.GetName(),
+		},
+		req.GetManifest(),
+		core.UpdateOptions{
+			FieldManager: req.GetFieldManager(),
+		},
+	)
+	if err != nil {
+		return nil, domainErrorToConnectError(err)
+	}
+	result, err := toProtoResource(resource.Object)
+	if err != nil {
+		return nil, connect.NewError(connect.CodeInternal, err)
+	}
+	return result, nil
+}
+
 // Delete removes the named resource. An optional grace period may be
 // specified in the request.
 func (s *ResourceService) Delete(ctx context.Context, req *pb.DeleteRequest) (*emptypb.Empty, error) {

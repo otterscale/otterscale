@@ -135,6 +135,42 @@ func (r *resourceRepo) Apply(
 	return result, wrapK8sError(err)
 }
 
+// Update decodes a YAML manifest and performs a full
+// replacement update (PUT). The manifest must carry metadata.name so
+// the dynamic client updates the same resource identified by the
+// request path.
+func (r *resourceRepo) Update(
+	ctx context.Context,
+	cluster string,
+	gvr schema.GroupVersionResource,
+	namespace, name string,
+	manifest []byte,
+	opts core.UpdateOptions,
+) (*unstructured.Unstructured, error) {
+	client, err := r.dynamicClient(ctx, cluster)
+	if err != nil {
+		return nil, err
+	}
+
+	obj, err := fromYAML(manifest)
+	if err != nil {
+		return nil, err
+	}
+	if obj.GetName() == "" {
+		return nil, &core.ErrInvalidInput{Field: "manifest.metadata.name", Message: "must not be empty for update"}
+	}
+	if obj.GetName() != name {
+		return nil, &core.ErrInvalidInput{Field: "manifest.metadata.name", Message: fmt.Sprintf("must match request name %q", name)}
+	}
+
+	updateOpts := metav1.UpdateOptions{
+		FieldManager: opts.FieldManager,
+	}
+
+	result, err := client.Resource(gvr).Namespace(namespace).Update(ctx, obj, updateOpts)
+	return result, wrapK8sError(err)
+}
+
 // Delete removes a resource.
 func (r *resourceRepo) Delete(
 	ctx context.Context,
