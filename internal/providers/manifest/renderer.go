@@ -214,14 +214,9 @@ metadata:
     rbac.authorization.k8s.io/aggregate-to-view: "true"
   name: otterscale-storageclass-viewer
 rules:
-  - apiGroups:
-      - storage.k8s.io
-    resources:
-      - storageclasses
-    verbs:
-      - get
-      - list
-      - watch
+  - apiGroups: ["storage.k8s.io"]
+    resources: ["storageclasses"]
+    verbs: ["get", "list", "watch"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
