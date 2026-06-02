@@ -19,13 +19,13 @@ import (
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/types"
-	"k8s.io/apimachinery/pkg/util/httpstream"
 	"k8s.io/client-go/dynamic"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/kubernetes/scheme"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/remotecommand"
 	"k8s.io/client-go/transport/spdy"
+	"k8s.io/streaming/pkg/httpstream"
 
 	"github.com/otterscale/otterscale/internal/core"
 )
@@ -270,7 +270,7 @@ func (r *runtimeRepo) PortForward(ctx context.Context, cluster, namespace, name 
 		return &core.DomainError{Code: core.ErrorCodeInternal, Message: "create SPDY round-tripper", Cause: err}
 	}
 
-	dialer := spdy.NewDialer(upgrader, &http.Client{Transport: transport}, http.MethodPost, req.URL())
+	dialer := spdy.NewDialerForStreaming(upgrader, &http.Client{Transport: transport}, http.MethodPost, req.URL())
 	streamConn, _, err := dialer.Dial(portForwardProtocolV1)
 	if err != nil {
 		return wrapK8sError(err)
