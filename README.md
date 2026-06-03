@@ -55,7 +55,7 @@ Installation, configuration, and operational guides will be published in the pro
 
 ## Ecosystem
 
-OtterScale is built from several repositories:
+OtterScale's open-source components live across these repositories:
 
 | Repository                                                       | Description                                      |
 | ---------------------------------------------------------------- | ------------------------------------------------ |
