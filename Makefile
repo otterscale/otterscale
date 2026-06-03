@@ -3,7 +3,7 @@ VERSION ?= $(shell git describe --tags --always 2>/dev/null || echo devel)
 API_VERSION ?= $(call gomodver,github.com/otterscale/api)
 TENANT_OPERATOR_VERSION := v1.2.0-rc.1
 CERT_MANAGER_VERSION    := v1.20.2
-FLUX2_VERSION           := v2.8.8
+FLUX2_VERSION           := v2.8.6
 
 BOOTSTRAP_DIR := manifests/bootstrap
 BASE_DIR      := $(BOOTSTRAP_DIR)/base
