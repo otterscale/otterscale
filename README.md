@@ -7,15 +7,13 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/otterscale/otterscale)](https://goreportcard.com/report/github.com/otterscale/otterscale)
 [![FIPS 140-3](https://img.shields.io/badge/FIPS%20140--3-enabled-green)](https://go.dev/doc/security/fips140)
 
-> The original OtterScale repository has been moved to [legacy](https://github.com/otterscale/legacy).
->
-> This repository now houses the core application, while the user interface has been split into a separate project [dashboard](https://github.com/otterscale/dashboard).
+**Multi-cluster Kubernetes API gateway — a unified ConnectRPC endpoint over Chisel reverse tunnels, secured with OIDC and mTLS.**
 
-**Multi-cluster Kubernetes API gateway — unified ConnectRPC endpoint over Chisel reverse tunnels with OIDC + mTLS.**
+OtterScale provides a single, authenticated entry point to many Kubernetes clusters — including clusters behind NAT, firewalls, or in air-gapped environments. A central **server (hub)** accepts ConnectRPC requests, while lightweight **agents (spokes)** running inside each cluster dial home over an mTLS reverse tunnel and forward requests to their local `kube-apiserver` with the caller's identity preserved through impersonation. The result is consistent RBAC, discovery, and runtime operations across every connected cluster.
+
+> The original OtterScale repository now lives at [legacy](https://github.com/otterscale/legacy). This repository houses the core application; the user interface has moved to [dashboard](https://github.com/otterscale/dashboard).
 
 ## Architecture
-
-### Request Sequence
 
 ```mermaid
   sequenceDiagram
@@ -43,67 +41,36 @@
     Server-->>User: ConnectRPC response
 ```
 
-## 🚀 Quick Start
-
-```bash
-# Clone
-git clone https://github.com/otterscale/otterscale.git && cd otterscale-agent
-
-# Build (downloads bootstrap manifests, FIPS 140-3 enabled)
-make build
-
-# Run server locally
-./bin/otterscale server \
-  --address :8299 \
-  --keycloak-realm-url https://id.example.com/realms/otterscale \
-  --allowed-origins https://app.example.com \
-  --external-url https://api.example.com \
-  --external-tunnel-url https://tunnel.example.com
-
-# Run agent (in-cluster)
-./bin/otterscale agent \
-  --server-url https://api.example.com \
-  --tunnel-server-url https://tunnel.example.com \
-  --cluster my-cluster
-
-# Docker
-docker build -t otterscale-agent .
-docker run -p 8299:8299 -p 8300:8300 otterscale-agent
-```
-
-## ⚙️ Configuration
-
-Env prefix: `OTTERSCALE_`, dots → underscores. Config file: `config.yaml` in `.` or `/etc/otterscale/`.
-
-### Server
-
-| ENV_VAR                                 | Default             | Description                                 |
-| --------------------------------------- | ------------------- | ------------------------------------------- |
-| `OTTERSCALE_SERVER_ADDRESS`             | `:8299`             | HTTP listen address                         |
-| `OTTERSCALE_SERVER_ALLOWED_ORIGINS`     | —                   | CORS origins **(required)**                 |
-| `OTTERSCALE_SERVER_TUNNEL_ADDRESS`      | `127.0.0.1:8300`    | Chisel tunnel listen address                |
-| `OTTERSCALE_SERVER_KEYCLOAK_REALM_URL`  | —                   | OIDC issuer URL **(required)**              |
-| `OTTERSCALE_SERVER_KEYCLOAK_CLIENT_ID`  | `otterscale-server` | Expected OIDC `aud` claim                   |
-| `OTTERSCALE_SERVER_EXTERNAL_URL`        | —                   | Public server URL for agents **(required)** |
-| `OTTERSCALE_SERVER_EXTERNAL_TUNNEL_URL` | —                   | Public tunnel URL for agents **(required)** |
-
-### Agent
-
-| ENV_VAR                              | Default                  | Description                              |
-| ------------------------------------ | ------------------------ | ---------------------------------------- |
-| `OTTERSCALE_AGENT_CLUSTER`           | `default`                | Cluster name                             |
-| `OTTERSCALE_AGENT_SERVER_URL`        | `http://127.0.0.1:8299`  | Control-plane URL **(required)**         |
-| `OTTERSCALE_AGENT_TUNNEL_SERVER_URL` | `https://127.0.0.1:8300` | Tunnel URL **(required)**                |
-| `OTTERSCALE_AGENT_BOOTSTRAP`         | `true`                   | Install FluxCD + Operator CRD on startup |
-
 ## Features
 
-- **Link** — Agent registration with auto-provisioned mTLS certs (CSR flow)
-- **Resources** — Generic K8s CRUD, watch, server-side apply across clusters
-- **Runtime** — Exec/TTY, log streaming, port-forward, scale, rolling restart
-- **Discovery** — API resource discovery + OpenAPI schema resolution with TTL cache
-- **Security** — FIPS 140-3, OIDC (Keycloak), per-tunnel mTLS, user impersonation for RBAC
+- **Link** — Agent registration with auto-provisioned mTLS certificates via a CSR flow.
+- **Resources** — Generic Kubernetes CRUD, watch, and server-side apply across clusters.
+- **Runtime** — Exec/TTY, log streaming, port-forward, scaling, and rolling restarts.
+- **Discovery** — API resource discovery and OpenAPI schema resolution with a TTL cache.
+- **Security** — FIPS 140-3, OIDC (Keycloak), per-tunnel mTLS, and user impersonation for RBAC.
+
+## Documentation
+
+Installation, configuration, and operational guides will be published in the project documentation. In the meantime, `otterscale server --help` and `otterscale agent --help` describe the available options.
+
+## Ecosystem
+
+OtterScale's open-source components live across these repositories:
+
+| Repository                                                       | Description                                      |
+| ---------------------------------------------------------------- | ------------------------------------------------ |
+| [otterscale](https://github.com/otterscale/otterscale)           | Multi-cluster Kubernetes API gateway (this repo) |
+| [dashboard](https://github.com/otterscale/dashboard)             | Web management UI                                |
+| [api](https://github.com/otterscale/api)                         | Shared API contract — CRDs + ConnectRPC services |
+| [types](https://github.com/otterscale/types)                     | Generated TypeScript type definitions            |
+| [tenant-operator](https://github.com/otterscale/tenant-operator) | Workspace / multi-tenancy operator               |
+
+## Contributing
+
+Contributions are welcome. A contribution guide (`CONTRIBUTING.md`) will follow; until then, please open an issue or a pull request to get involved.
 
 ## License
 
-[Apache 2.0](LICENSE)
+This project is licensed under the [Apache License 2.0](LICENSE).
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fotterscale%2Fotterscale.svg?type=large&issueType=license)](https://app.fossa.com/projects/git%2Bgithub.com%2Fotterscale%2Fotterscale?ref=badge_large&issueType=license)
