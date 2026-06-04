@@ -46,11 +46,10 @@ jobs:
           else
             report_basename="$image_name_tag"
           fi
-          artifact_basename="$(echo "$report_basename" | sed 's/[^A-Za-z0-9._-]/-/g')"
+          report_basename="$(echo "$report_basename" | sed 's/[^A-Za-z0-9._-]/_/g')"
 
           echo "image_ref=$image_ref" >> "$GITHUB_OUTPUT"
           echo "report_basename=$report_basename" >> "$GITHUB_OUTPUT"
-          echo "artifact_basename=$artifact_basename" >> "$GITHUB_OUTPUT"
           echo "Image reference: $image_ref"
           echo "Report basename: $report_basename"
 
@@ -128,7 +127,7 @@ jobs:
         if: always() && hashFiles(format('{0}-cve-scan-report.txt', steps.image.outputs.report_basename)) != ''
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: ${{ steps.image.outputs.artifact_basename }}-cve-scan-report-text
+          name: ${{ steps.image.outputs.report_basename }}-cve-scan-report-text
           path: ${{ steps.image.outputs.report_basename }}-cve-scan-report.txt
           retention-days: 30
 
@@ -136,6 +135,6 @@ jobs:
         if: always() && hashFiles(format('{0}-cve-scan-report.md', steps.image.outputs.report_basename)) != ''
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: ${{ steps.image.outputs.artifact_basename }}-cve-scan-report-markdown
+          name: ${{ steps.image.outputs.report_basename }}-cve-scan-report-markdown
           path: ${{ steps.image.outputs.report_basename }}-cve-scan-report.md
           retention-days: 30
