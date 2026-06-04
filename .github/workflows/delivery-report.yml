@@ -1,7 +1,6 @@
 name: Image CVE Scan Report
 
 on:
-  pull_request:
   workflow_dispatch:
     inputs:
       image_ref:
