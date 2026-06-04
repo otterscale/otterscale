@@ -37,8 +37,22 @@ jobs:
             image_ref="ghcr.io/${GITHUB_REPOSITORY}:${tag}"
           fi
 
+          image_name_tag="${image_ref##*/}"
+          if [ "$image_name_tag" != "${image_name_tag%@*}" ]; then
+            image_name="${image_name_tag%@*}"
+            image_digest="${image_name_tag#*@}"
+            image_digest="${image_digest//:/-}"
+            report_basename="${image_name}-${image_digest}"
+          else
+            report_basename="$image_name_tag"
+          fi
+          artifact_basename="$(echo "$report_basename" | sed 's/[^A-Za-z0-9._-]/-/g')"
+
           echo "image_ref=$image_ref" >> "$GITHUB_OUTPUT"
+          echo "report_basename=$report_basename" >> "$GITHUB_OUTPUT"
+          echo "artifact_basename=$artifact_basename" >> "$GITHUB_OUTPUT"
           echo "Image reference: $image_ref"
+          echo "Report basename: $report_basename"
 
       - name: Log in to the Container registry
         if: startsWith(steps.image.outputs.image_ref, 'ghcr.io/')
@@ -74,7 +88,7 @@ jobs:
             echo "============"
             echo
             cat trivy-image-cve-scan.txt
-          } > image-cve-scan-report.txt
+          } > "${REPORT_BASENAME}-cve-scan-report.txt"
 
           {
             echo "# Image CVE Scan Report"
@@ -91,36 +105,37 @@ jobs:
             echo '```text'
             cat trivy-image-cve-scan.txt
             echo '```'
-          } > image-cve-scan-report.md
+          } > "${REPORT_BASENAME}-cve-scan-report.md"
 
           {
             echo "## Image CVE Scan Report"
             echo
             echo "### Markdown"
             echo
-            cat image-cve-scan-report.md
+            cat "${REPORT_BASENAME}-cve-scan-report.md"
             echo
             echo "### Text"
             echo
             echo '```text'
-            cat image-cve-scan-report.txt
+            cat "${REPORT_BASENAME}-cve-scan-report.txt"
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
         env:
           IMAGE_REF: ${{ steps.image.outputs.image_ref }}
+          REPORT_BASENAME: ${{ steps.image.outputs.report_basename }}
 
       - name: Upload text image scan report
-        if: always() && hashFiles('image-cve-scan-report.txt') != ''
+        if: always() && hashFiles(format('{0}-cve-scan-report.txt', steps.image.outputs.report_basename)) != ''
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: image-cve-scan-report-text
-          path: image-cve-scan-report.txt
+          name: ${{ steps.image.outputs.artifact_basename }}-cve-scan-report-text
+          path: ${{ steps.image.outputs.report_basename }}-cve-scan-report.txt
           retention-days: 30
 
       - name: Upload Markdown image scan report
-        if: always() && hashFiles('image-cve-scan-report.md') != ''
+        if: always() && hashFiles(format('{0}-cve-scan-report.md', steps.image.outputs.report_basename)) != ''
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: image-cve-scan-report-markdown
-          path: image-cve-scan-report.md
+          name: ${{ steps.image.outputs.artifact_basename }}-cve-scan-report-markdown
+          path: ${{ steps.image.outputs.report_basename }}-cve-scan-report.md
           retention-days: 30
