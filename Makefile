@@ -12,7 +12,7 @@ PLATFORM_DIR  := $(BOOTSTRAP_DIR)/platform
 .PHONY: build
 # build cli
 build: bootstrap-manifests
-	mkdir -p ./bin && GOFIPS140=latest go build -ldflags "-w -s -X main.version=$(VERSION)" -o ./bin/ ./cmd/otterscale/...
+	mkdir -p ./bin && GOFIPS140=certified go build -ldflags "-w -s -X main.version=$(VERSION)" -o ./bin/ ./cmd/otterscale/...
 
 .PHONY: vet
 # examine code
