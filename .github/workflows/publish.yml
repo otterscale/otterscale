@@ -17,7 +17,6 @@ jobs:
     permissions:
       contents: read
       packages: write
-      security-events: write
       attestations: write
       id-token: write
       artifact-metadata: write
@@ -55,27 +54,6 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
             VERSION=${{ github.event.release.tag_name }}
-
-      - name: Generate Trivy SARIF image scan report
-        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
-        with:
-          image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@${{ steps.push.outputs.digest }}
-          scanners: vuln
-          vuln-type: os,library
-          severity: HIGH,CRITICAL
-          ignore-unfixed: true
-          format: sarif
-          output: results.sarif
-          exit-code: "0"
-          limit-severities-for-sarif: true
-
-      - name: Upload Trivy SARIF
-        if: always() && hashFiles('results.sarif') != ''
-        continue-on-error: true
-        uses: github/codeql-action/upload-sarif@7211b7c8077ea37d8641b6271f6a365a22a5fbfa # v4.36.0
-        with:
-          sarif_file: results.sarif
-          category: trivy-release-image
 
       - name: Generate artifact attestation
         uses: actions/attest-build-provenance@a2bbfa25375fe432b6a289bc6b6cd05ecd0c4c32 # v4.1.0
