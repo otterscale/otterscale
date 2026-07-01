@@ -1,0 +1,139 @@
+name: Image CVE Scan Report
+
+on:
+  workflow_dispatch:
+    inputs:
+      image_ref:
+        description: "Container image reference to scan. Defaults to the latest GitHub release image."
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  generate-table-report:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      packages: read
+    steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@9af89fc71515a100421586dfdb3dc9c984fbf411 # v2.19.4
+        with:
+          egress-policy: audit
+
+      - name: Resolve image reference
+        id: image
+        env:
+          GH_TOKEN: ${{ github.token }}
+          INPUT_IMAGE_REF: ${{ inputs.image_ref }}
+        run: |
+          if [ -n "$INPUT_IMAGE_REF" ]; then
+            image_ref="$INPUT_IMAGE_REF"
+          else
+            tag="$(gh release view --repo "$GITHUB_REPOSITORY" --json tagName --jq '.tagName')"
+            image_ref="ghcr.io/${GITHUB_REPOSITORY}:${tag}"
+          fi
+
+          image_name_tag="${image_ref##*/}"
+          if [ "$image_name_tag" != "${image_name_tag%@*}" ]; then
+            image_name="${image_name_tag%@*}"
+            image_digest="${image_name_tag#*@}"
+            image_digest="${image_digest//:/-}"
+            report_basename="${image_name}-${image_digest}"
+          else
+            report_basename="$image_name_tag"
+          fi
+          report_basename="$(echo "$report_basename" | sed 's/[^A-Za-z0-9._-]/_/g')"
+
+          echo "image_ref=$image_ref" >> "$GITHUB_OUTPUT"
+          echo "report_basename=$report_basename" >> "$GITHUB_OUTPUT"
+          echo "Image reference: $image_ref"
+          echo "Report basename: $report_basename"
+
+      - name: Log in to the Container registry
+        if: startsWith(steps.image.outputs.image_ref, 'ghcr.io/')
+        uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee # v4.2.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Generate Trivy table image scan report
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          image-ref: ${{ steps.image.outputs.image_ref }}
+          scanners: vuln
+          vuln-type: os,library
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          format: table
+          output: trivy-image-cve-scan.txt
+          exit-code: "0"
+
+      - name: Write image scan reports
+        run: |
+          {
+            echo "Image CVE Scan Report"
+            echo
+            echo "Image: ${IMAGE_REF}"
+            echo "Repository: ${GITHUB_REPOSITORY}"
+            echo "Workflow run: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+            echo "Scope: Fixed HIGH and CRITICAL OS/library vulnerabilities"
+            echo
+            echo "Trivy Result"
+            echo "============"
+            echo
+            cat trivy-image-cve-scan.txt
+          } > "${REPORT_BASENAME}-cve-scan-report.txt"
+
+          {
+            echo "# Image CVE Scan Report"
+            echo
+            echo "| Field | Value |"
+            echo "| --- | --- |"
+            echo "| Image | \`${IMAGE_REF}\` |"
+            echo "| Repository | \`${GITHUB_REPOSITORY}\` |"
+            echo "| Workflow run | [${GITHUB_RUN_ID}](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}) |"
+            echo "| Scope | Fixed HIGH and CRITICAL OS/library vulnerabilities |"
+            echo
+            echo "## Trivy Result"
+            echo
+            echo '```text'
+            cat trivy-image-cve-scan.txt
+            echo '```'
+          } > "${REPORT_BASENAME}-cve-scan-report.md"
+
+          {
+            echo "## Image CVE Scan Report"
+            echo
+            echo "### Markdown"
+            echo
+            cat "${REPORT_BASENAME}-cve-scan-report.md"
+            echo
+            echo "### Text"
+            echo
+            echo '```text'
+            cat "${REPORT_BASENAME}-cve-scan-report.txt"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+        env:
+          IMAGE_REF: ${{ steps.image.outputs.image_ref }}
+          REPORT_BASENAME: ${{ steps.image.outputs.report_basename }}
+
+      - name: Upload text image scan report
+        if: always() && hashFiles(format('{0}-cve-scan-report.txt', steps.image.outputs.report_basename)) != ''
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: ${{ steps.image.outputs.report_basename }}-cve-scan-report-text
+          path: ${{ steps.image.outputs.report_basename }}-cve-scan-report.txt
+          retention-days: 30
+
+      - name: Upload Markdown image scan report
+        if: always() && hashFiles(format('{0}-cve-scan-report.md', steps.image.outputs.report_basename)) != ''
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: ${{ steps.image.outputs.report_basename }}-cve-scan-report-markdown
+          path: ${{ steps.image.outputs.report_basename }}-cve-scan-report.md
+          retention-days: 30
