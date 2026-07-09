@@ -136,6 +136,8 @@ kind: HelmRepository
 metadata:
   name: oci-modules
   namespace: otterscale-system
+  labels:
+    tenant.otterscale.io/from-harbor: "true"
 spec:
   type: oci
   interval: 6h
