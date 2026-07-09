@@ -13,6 +13,7 @@ import (
 	"io/fs"
 	"log/slog"
 	"sort"
+	"strings"
 
 	"k8s.io/client-go/discovery"
 	"k8s.io/client-go/dynamic"
@@ -65,8 +66,12 @@ func New(cfg *rest.Config) (*Bootstrapper, error) {
 	}, nil
 }
 
+// harborURL, when non-empty, is the Harbor registry host used to
+// register an additional OCI HelmRepository (oci://<host>/modules) on
+// top of the embedded platform manifests.
+//
 // The method is idempotent and safe to call on every agent restart.
-func (b *Bootstrapper) Run(ctx context.Context) error {
+func (b *Bootstrapper) Run(ctx context.Context, harborURL string) error {
 	b.log.Info("starting Layer 0 bootstrap")
 
 	// Base: cert-manager + CRDs + FluxCD
@@ -85,8 +90,58 @@ func (b *Bootstrapper) Run(ctx context.Context) error {
 		return fmt.Errorf("platform: %w", err)
 	}
 
+	// Harbor: register the OCI modules HelmRepository when a Harbor
+	// registry host is configured. The Flux HelmRepository CRD is
+	// already established by the base stage, so its GVR resolves here.
+	if harborURL != "" {
+		if err := b.applyManifest(ctx, harborModulesRepository(harborURL)); err != nil {
+			return fmt.Errorf("harbor modules helm repository: %w", err)
+		}
+		b.log.Info("applied harbor modules HelmRepository", "host", harborHost(harborURL))
+	}
+
 	b.log.Info("layer 0 bootstrap completed successfully")
 	return nil
+}
+
+// harborHost normalizes a configured Harbor value into a bare registry
+// host suitable for an oci:// URL. It strips any http/https scheme and
+// trailing slashes; the configured value may or may not carry a scheme.
+func harborHost(harborURL string) string {
+	host := harborURL
+	host = strings.TrimPrefix(host, "https://")
+	host = strings.TrimPrefix(host, "http://")
+	return strings.TrimRight(host, "/")
+}
+
+// harborInsecure reports whether the OCI registry should be contacted
+// over plaintext HTTP. A value with an explicit "http://" scheme is
+// treated as insecure; "https://" or a bare host defaults to secure.
+func harborInsecure(harborURL string) bool {
+	return strings.HasPrefix(harborURL, "http://")
+}
+
+// harborModulesRepository renders a Flux OCI HelmRepository manifest
+// pointing at oci://<host>/modules. The host is normalized via
+// harborHost. When the configured value uses an "http://" scheme, the
+// repository is marked insecure so Flux allows plaintext connections.
+// The value originates from trusted operator configuration.
+func harborModulesRepository(harborURL string) []byte {
+	insecure := ""
+	if harborInsecure(harborURL) {
+		insecure = "\n  insecure: true"
+	}
+	return fmt.Appendf(nil, `apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: oci-modules
+  namespace: otterscale-system
+spec:
+  type: oci
+  interval: 6h
+  provider: generic
+  url: oci://%s/modules%s
+`, harborHost(harborURL), insecure)
 }
 
 // applyStage reads every embedded YAML manifest from the given
