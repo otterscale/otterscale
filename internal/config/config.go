@@ -164,3 +164,9 @@ func (c *Config) AgentBootstrap() bool {
 func (c *Config) AgentProxyPrometheusURL() string {
 	return c.v.GetString(keyAgentProxyPrometheusURL)
 }
+
+// AgentHarborURL returns the Harbor registry host used to register the OCI
+// modules HelmRepository during bootstrap. An empty string disables it.
+func (c *Config) AgentHarborURL() string {
+	return c.v.GetString(keyAgentHarborURL)
+}

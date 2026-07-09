@@ -35,6 +35,7 @@ func NewAgentCommand(conf *config.Config, newAgent AgentInjector) (*cobra.Comman
 				TunnelServerURL:    conf.AgentTunnelServerURL(),
 				Bootstrap:          conf.AgentBootstrap(),
 				ProxyPrometheusURL: conf.AgentProxyPrometheusURL(),
+				HarborURL:          conf.AgentHarborURL(),
 			}
 
 			return agt.Run(cmd.Context(), cfg)
