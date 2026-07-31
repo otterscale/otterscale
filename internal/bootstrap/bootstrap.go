@@ -90,14 +90,17 @@ func (b *Bootstrapper) Run(ctx context.Context, harborURL string) error {
 		return fmt.Errorf("platform: %w", err)
 	}
 
-	// Harbor: register the OCI modules HelmRepository when a Harbor
+	// Harbor: register the OCI HelmRepositories when a Harbor
 	// registry host is configured. The Flux HelmRepository CRD is
 	// already established by the base stage, so its GVR resolves here.
 	if harborURL != "" {
-		if err := b.applyManifest(ctx, harborModulesRepository(harborURL)); err != nil {
+		if err := b.applyManifest(ctx, harborRepository(harborURL, "oci-modules", "modules")); err != nil {
 			return fmt.Errorf("harbor modules helm repository: %w", err)
 		}
-		b.log.Info("applied harbor modules HelmRepository", "host", harborHost(harborURL))
+		if err := b.applyManifest(ctx, harborRepository(harborURL, "operator", "operator")); err != nil {
+			return fmt.Errorf("harbor operator helm repository: %w", err)
+		}
+		b.log.Info("applied harbor HelmRepositories", "host", harborHost(harborURL))
 	}
 
 	b.log.Info("layer 0 bootstrap completed successfully")
@@ -121,12 +124,12 @@ func harborInsecure(harborURL string) bool {
 	return strings.HasPrefix(harborURL, "http://")
 }
 
-// harborModulesRepository renders a Flux OCI HelmRepository manifest
-// pointing at oci://<host>/modules. The host is normalized via
+// harborRepository renders a Flux OCI HelmRepository manifest named
+// name and pointing at oci://<host>/<path>. The host is normalized via
 // harborHost. When the configured value uses an "http://" scheme, the
 // repository is marked insecure so Flux allows plaintext connections.
 // The value originates from trusted operator configuration.
-func harborModulesRepository(harborURL string) []byte {
+func harborRepository(harborURL, name, path string) []byte {
 	insecure := ""
 	if harborInsecure(harborURL) {
 		insecure = "\n  insecure: true"
@@ -134,7 +137,7 @@ func harborModulesRepository(harborURL string) []byte {
 	return fmt.Appendf(nil, `apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
 metadata:
-  name: oci-modules
+  name: %s
   namespace: otterscale-system
   labels:
     tenant.otterscale.io/from-harbor: "true"
@@ -142,8 +145,8 @@ spec:
   type: oci
   interval: 6h
   provider: generic
-  url: oci://%s/modules%s
-`, harborHost(harborURL), insecure)
+  url: oci://%s/%s%s
+`, name, harborHost(harborURL), path, insecure)
 }
 
 // applyStage reads every embedded YAML manifest from the given
