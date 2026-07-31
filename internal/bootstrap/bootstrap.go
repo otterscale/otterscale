@@ -90,17 +90,17 @@ func (b *Bootstrapper) Run(ctx context.Context, harborURL string) error {
 		return fmt.Errorf("platform: %w", err)
 	}
 
-	// Harbor: register the OCI HelmRepositories when a Harbor
-	// registry host is configured. The Flux HelmRepository CRD is
-	// already established by the base stage, so its GVR resolves here.
+	// Harbor: register additional OCI HelmRepositories (oci://<host>/modules and
+	// oci://<host>/operators) when a Harbor registry host is configured. The Flux
+	// HelmRepository CRD is already established by the base stage, so its GVR resolves here.
 	if harborURL != "" {
 		if err := b.applyManifest(ctx, harborRepository(harborURL, "oci-modules", "modules")); err != nil {
 			return fmt.Errorf("harbor modules helm repository: %w", err)
 		}
-		if err := b.applyManifest(ctx, harborRepository(harborURL, "operator", "operator")); err != nil {
-			return fmt.Errorf("harbor operator helm repository: %w", err)
+		if err := b.applyManifest(ctx, harborRepository(harborURL, "operators", "operators")); err != nil {
+			return fmt.Errorf("harbor operators helm repository: %w", err)
 		}
-		b.log.Info("applied harbor HelmRepositories", "host", harborHost(harborURL))
+		b.log.Info("applied harbor HelmRepositories", "host", harborHost(harborURL), "repositories", []string{"oci-modules", "operators"})
 	}
 
 	b.log.Info("layer 0 bootstrap completed successfully")
