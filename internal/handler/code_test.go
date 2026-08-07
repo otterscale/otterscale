@@ -35,6 +35,11 @@ func TestDomainErrorToConnectError_ConcreteTypes(t *testing.T) {
 			err:      &core.ErrNotReady{Subsystem: "chisel"},
 			wantCode: connect.CodeUnavailable,
 		},
+		{
+			name:     "ErrRancherProjectCacheNotReady",
+			err:      core.ErrRancherProjectCacheNotReady,
+			wantCode: connect.CodeUnavailable,
+		},
 	}
 
 	for _, tt := range tests {

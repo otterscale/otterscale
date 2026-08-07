@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/otterscale/otterscale/internal/core"
+	"github.com/otterscale/otterscale/internal/providers/rancher"
 )
 
 // sessionReapInterval is the interval at which the session reaper
@@ -20,10 +21,11 @@ const cacheEvictionInterval = 5 * time.Minute
 // server's managed lifecycle. The CacheEvictor interface decouples
 // this function from the concrete cache implementation, keeping the
 // application layer free of infrastructure dependencies.
-func ProvideBackgroundListeners(runtime *core.RuntimeUseCase, evictor core.CacheEvictor) BackgroundListeners {
+func ProvideBackgroundListeners(runtime *core.RuntimeUseCase, evictor core.CacheEvictor, projects *rancher.Store) BackgroundListeners {
 	return BackgroundListeners{
 		&sessionReaperListener{runtime: runtime},
 		&cacheEvictorListener{cache: evictor},
+		projects,
 	}
 }
 

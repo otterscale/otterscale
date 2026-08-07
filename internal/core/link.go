@@ -56,7 +56,7 @@ type TunnelProvider interface {
 	// RegisterLink validates and signs the agent's CSR, creates
 	// a tunnel user, and returns the allocated endpoint together
 	// with the PEM-encoded signed certificate.
-	RegisterLink(ctx context.Context, cluster, agentID, agentVersion string, csrPEM []byte) (endpoint string, certPEM []byte, err error)
+	RegisterLink(ctx context.Context, cluster, agentID, agentVersion, rancherProjectID string, csrPEM []byte) (endpoint string, certPEM []byte, err error)
 	// ResolveAddress returns the HTTP base URL for the given cluster.
 	ResolveAddress(ctx context.Context, cluster string) (string, error)
 }
@@ -69,7 +69,7 @@ type TunnelConsumer interface {
 	// private key that corresponds to the CSR. Returning the key
 	// alongside the certificate eliminates the TOCTOU race that
 	// would occur if callers had to fetch the key separately.
-	Register(ctx context.Context, serverURL, cluster string) (Registration, error)
+	Register(ctx context.Context, serverURL, cluster, rancherProjectID string) (Registration, error)
 }
 
 // Registration holds the credentials and connection details returned
@@ -101,9 +101,10 @@ type Registration struct {
 // Cluster holds the per-cluster tunnel state: the allocated
 // loopback host and the chisel user name.
 type Link struct {
-	Host         string // unique 127.x.x.x loopback address
-	User         string // chisel user name
-	AgentVersion string // agent binary version
+	Host             string // unique 127.x.x.x loopback address
+	User             string // chisel user name
+	AgentVersion     string // agent binary version
+	RancherProjectID string // full Rancher Project identifier
 }
 
 // HarborRobotCredentials holds the name and secret for a Harbor
@@ -146,11 +147,12 @@ type AgentManifestConfig struct {
 // installation manifest. It is defined in the core layer as a
 // pure value object; the rendering logic lives in the providers layer.
 type ManifestParams struct {
-	Cluster   string
-	UserName  string
-	Image     string
-	ServerURL string
-	TunnelURL string
+	Cluster          string
+	UserName         string
+	Image            string
+	ServerURL        string
+	TunnelURL        string
+	RancherProjectID string
 	// ExtraUsers are additional user identities bound to cluster-admin
 	// via the otterscale-cluster-admin ClusterRoleBinding, in addition
 	// to UserName.
@@ -180,6 +182,7 @@ type LinkUseCase struct {
 	renderer    ManifestRenderer
 	tokenIssuer *ManifestTokenIssuer
 	harbor      HarborClient // nil when Harbor integration is disabled
+	projects    RancherProjectStore
 }
 
 // NewLinkUseCase returns a LinkUseCase backed by the given
@@ -188,7 +191,7 @@ type LinkUseCase struct {
 // manifestCfg provides the external URLs embedded in generated agent
 // installation manifests. It returns an error if any required
 // manifest configuration field is missing.
-func NewLinkUseCase(tunnel TunnelProvider, version Version, manifestCfg AgentManifestConfig, renderer ManifestRenderer, harbor HarborClient) (*LinkUseCase, error) {
+func NewLinkUseCase(tunnel TunnelProvider, version Version, manifestCfg AgentManifestConfig, renderer ManifestRenderer, harbor HarborClient, projects RancherProjectStore) (*LinkUseCase, error) {
 	if manifestCfg.ServerURL == "" {
 		return nil, fmt.Errorf("manifest config: server URL is required")
 	}
@@ -206,6 +209,7 @@ func NewLinkUseCase(tunnel TunnelProvider, version Version, manifestCfg AgentMan
 		renderer:    renderer,
 		tokenIssuer: tokenIssuer,
 		harbor:      harbor,
+		projects:    projects,
 	}, nil
 }
 
@@ -214,10 +218,35 @@ func (uc *LinkUseCase) ListLinks(_ context.Context) map[string]Link {
 	return uc.tunnel.ListLinks()
 }
 
+// ListRancherProjects returns valid Projects from the informer's
+// last-known store.
+func (uc *LinkUseCase) ListRancherProjects(ctx context.Context) ([]RancherProject, error) {
+	return uc.projects.ListProjects(ctx)
+}
+
+// ValidateRancherProject checks the optional Project ID's format and
+// membership in the synchronized informer store.
+func (uc *LinkUseCase) ValidateRancherProject(ctx context.Context, id string) error {
+	if id == "" {
+		return nil
+	}
+	if _, _, err := ParseRancherProjectID(id); err != nil {
+		return err
+	}
+	exists, err := uc.projects.HasProject(ctx, id)
+	if err != nil {
+		return err
+	}
+	if !exists {
+		return &ErrInvalidInput{Field: "rancher_project_id", Message: "selected Rancher Project is invalid"}
+	}
+	return nil
+}
+
 // RegisterCluster validates the inputs, forwards the agent's CSR to
 // the tunnel provider for signing, and returns the signed certificate,
 // CA certificate, tunnel endpoint, and the server's version.
-func (uc *LinkUseCase) RegisterCluster(ctx context.Context, cluster, agentID, agentVersion string, csrPEM []byte) (Registration, error) {
+func (uc *LinkUseCase) RegisterCluster(ctx context.Context, cluster, agentID, agentVersion, rancherProjectID string, csrPEM []byte) (Registration, error) {
 	if err := ValidateClusterName(cluster); err != nil {
 		return Registration{}, err
 	}
@@ -227,8 +256,13 @@ func (uc *LinkUseCase) RegisterCluster(ctx context.Context, cluster, agentID, ag
 	if len(csrPEM) == 0 {
 		return Registration{}, &ErrInvalidInput{Field: "csr", Message: "must not be empty"}
 	}
+	if rancherProjectID != "" {
+		if _, _, err := ParseRancherProjectID(rancherProjectID); err != nil {
+			return Registration{}, err
+		}
+	}
 
-	endpoint, certPEM, err := uc.tunnel.RegisterLink(ctx, cluster, agentID, agentVersion, csrPEM)
+	endpoint, certPEM, err := uc.tunnel.RegisterLink(ctx, cluster, agentID, agentVersion, rancherProjectID, csrPEM)
 	if err != nil {
 		return Registration{}, err
 	}
@@ -244,8 +278,8 @@ func (uc *LinkUseCase) RegisterCluster(ctx context.Context, cluster, agentID, ag
 // cluster name, user identity, and extra users bound to cluster-admin,
 // and returns a full URL that serves the agent manifest as raw YAML.
 // The token is valid for manifestTokenTTL.
-func (uc *LinkUseCase) IssueManifestURL(_ context.Context, cluster, userName string, extraUsers []string) (string, error) {
-	token, err := uc.tokenIssuer.Issue(cluster, userName, extraUsers)
+func (uc *LinkUseCase) IssueManifestURL(_ context.Context, cluster, userName string, extraUsers []string, rancherProjectID string) (string, error) {
+	token, err := uc.tokenIssuer.Issue(cluster, userName, extraUsers, rancherProjectID)
 	if err != nil {
 		return "", fmt.Errorf("issue manifest token: %w", err)
 	}
@@ -270,7 +304,7 @@ func (uc *LinkUseCase) VerifyManifestToken(_ context.Context, token string) (Man
 // The manifest includes a Namespace, ServiceAccount,
 // ClusterRoleBinding (binding userName to cluster-admin), and a
 // Deployment that runs the agent with the correct server/tunnel URLs.
-func (uc *LinkUseCase) GenerateAgentManifest(ctx context.Context, cluster, userName string, extraUsers []string) (string, error) {
+func (uc *LinkUseCase) GenerateAgentManifest(ctx context.Context, cluster, userName string, extraUsers []string, rancherProjectID string) (string, error) {
 	if err := ValidateClusterName(cluster); err != nil {
 		return "", err
 	}
@@ -279,12 +313,13 @@ func (uc *LinkUseCase) GenerateAgentManifest(ctx context.Context, cluster, userN
 	}
 
 	params := &ManifestParams{
-		Cluster:    cluster,
-		UserName:   userName,
-		ExtraUsers: extraUsers,
-		Image:      fmt.Sprintf("ghcr.io/otterscale/otterscale:%s", uc.version),
-		ServerURL:  uc.manifestCfg.ServerURL,
-		TunnelURL:  uc.manifestCfg.TunnelURL,
+		Cluster:          cluster,
+		UserName:         userName,
+		ExtraUsers:       extraUsers,
+		Image:            fmt.Sprintf("ghcr.io/otterscale/otterscale:%s", uc.version),
+		ServerURL:        uc.manifestCfg.ServerURL,
+		TunnelURL:        uc.manifestCfg.TunnelURL,
+		RancherProjectID: rancherProjectID,
 	}
 
 	if uc.harbor != nil {

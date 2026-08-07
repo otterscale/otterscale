@@ -20,7 +20,7 @@ func (m *mockTunnelForProxy) ListLinks() map[string]core.Link {
 	return nil
 }
 
-func (m *mockTunnelForProxy) RegisterLink(context.Context, string, string, string, []byte) (addr string, cert []byte, err error) {
+func (m *mockTunnelForProxy) RegisterLink(context.Context, string, string, string, string, []byte) (addr string, cert []byte, err error) {
 	return "", nil, nil
 }
 

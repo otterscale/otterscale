@@ -170,3 +170,9 @@ func (c *Config) AgentProxyPrometheusURL() string {
 func (c *Config) AgentHarborURL() string {
 	return c.v.GetString(keyAgentHarborURL)
 }
+
+// AgentRancherProjectID returns the optional full Rancher Project ID
+// persisted in the agent Deployment environment.
+func (c *Config) AgentRancherProjectID() string {
+	return c.v.GetString(keyAgentRancherProjectID)
+}

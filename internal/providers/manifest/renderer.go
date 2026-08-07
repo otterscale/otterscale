@@ -37,6 +37,7 @@ func (r *Renderer) RenderAgentManifest(params *core.ManifestParams) (string, err
 		Image:             params.Image,
 		ServerURL:         params.ServerURL,
 		TunnelURL:         params.TunnelURL,
+		RancherProjectID:  params.RancherProjectID,
 		HarborURL:         params.HarborURL,
 	}
 	if params.HarborCreds != nil {
@@ -59,6 +60,7 @@ type agentManifestData struct {
 	Image             string
 	ServerURL         string
 	TunnelURL         string
+	RancherProjectID  string
 	HarborURL         string
 	HarborRobotName   string
 	HarborRobotSecret string
@@ -269,7 +271,9 @@ spec:
             - name: OTTERSCALE_AGENT_TUNNEL_SERVER_URL
               value: {{ yamlQuote .TunnelURL }}
             - name: OTTERSCALE_AGENT_CLUSTER
-              value: {{ yamlQuote .Cluster }}
+              value: {{ yamlQuote .Cluster }}{{ if .RancherProjectID }}
+            - name: OTTERSCALE_AGENT_RANCHER_PROJECT_ID
+              value: {{ yamlQuote .RancherProjectID }}{{ end }}
 {{- if .HarborURL }}
             - name: OTTERSCALE_AGENT_HARBOR_URL
               value: {{ yamlQuote .HarborURL }}
