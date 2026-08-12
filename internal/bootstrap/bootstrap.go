@@ -97,7 +97,7 @@ func (b *Bootstrapper) Run(ctx context.Context, harborURL, rancherProjectID stri
 	// runs after base because the Workspace VAP needs the established CRD for
 	// type checking, and before platform starts tenant-operator.
 	if err := b.activateRancherWebhookAccess(ctx, rancherProjectID); err != nil {
-		return fmt.Errorf("Rancher admission prerequisites: %w", err)
+		return fmt.Errorf("rancher admission prerequisites: %w", err)
 	}
 
 	// Wait for cert-manager-webhook Deployment to be Available.

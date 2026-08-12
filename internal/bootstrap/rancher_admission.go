@@ -66,7 +66,7 @@ func (b *Bootstrapper) activateRancherWebhookAccess(ctx context.Context, rancher
 		if lastErr == nil {
 			lastErr = err
 		}
-		return fmt.Errorf("Rancher admission guard not ready: %w", lastErr)
+		return fmt.Errorf("rancher admission guard not ready: %w", lastErr)
 	}
 
 	binding := &unstructured.Unstructured{Object: map[string]any{
@@ -107,7 +107,7 @@ func (b *Bootstrapper) validateRancherAdmissionGuard(ctx context.Context, ranche
 	}
 	roleSnapshot, found := role.GetAnnotations()[rancherProjectSnapshotAnnotation]
 	if !found || roleSnapshot != rancherProjectID {
-		return fmt.Errorf("Rancher webhook ClusterRole has Project snapshot %q, want %q", roleSnapshot, rancherProjectID)
+		return fmt.Errorf("rancher webhook ClusterRole has Project snapshot %q, want %q", roleSnapshot, rancherProjectID)
 	}
 	if err := validateRancherWebhookRole(role, rancherProjectID); err != nil {
 		return err
@@ -118,41 +118,55 @@ func (b *Bootstrapper) validateRancherAdmissionGuard(ctx context.Context, ranche
 		if err != nil {
 			return fmt.Errorf("get ValidatingAdmissionPolicy %s: %w", name, err)
 		}
-		got, found := policy.GetAnnotations()[rancherProjectSnapshotAnnotation]
-		if !found || got != rancherProjectID {
-			return fmt.Errorf("ValidatingAdmissionPolicy %s has Project snapshot %q, want %q", name, got, rancherProjectID)
-		}
-		failurePolicy, found, err := unstructured.NestedString(policy.Object, "spec", "failurePolicy")
-		if err != nil || !found || failurePolicy != "Fail" {
-			return fmt.Errorf("ValidatingAdmissionPolicy %s is not fail closed", name)
-		}
-		observed, found, err := unstructured.NestedInt64(policy.Object, "status", "observedGeneration")
-		if err != nil || !found || observed != policy.GetGeneration() {
-			return fmt.Errorf("ValidatingAdmissionPolicy %s generation is not observed", name)
-		}
-		if _, found, err := unstructured.NestedMap(policy.Object, "status", "typeChecking"); err != nil || !found {
-			return fmt.Errorf("ValidatingAdmissionPolicy %s type checking is not complete", name)
-		}
-		warnings, found, err := unstructured.NestedSlice(policy.Object, "status", "typeChecking", "expressionWarnings")
-		if err != nil || (found && len(warnings) != 0) {
-			return fmt.Errorf("ValidatingAdmissionPolicy %s has type-check warnings", name)
+		if err := validateRancherAdmissionPolicy(policy, name, rancherProjectID); err != nil {
+			return err
 		}
 
 		binding, err := b.dynamic.Resource(validatingAdmissionPolicyBindingGVR).Get(ctx, name, metav1.GetOptions{})
 		if err != nil {
 			return fmt.Errorf("get ValidatingAdmissionPolicyBinding %s: %w", name, err)
 		}
-		policyName, found, err := unstructured.NestedString(binding.Object, "spec", "policyName")
-		if err != nil || !found || policyName != name {
-			return fmt.Errorf("ValidatingAdmissionPolicyBinding %s references the wrong policy", name)
+		if err := validateRancherAdmissionPolicyBinding(binding, name); err != nil {
+			return err
 		}
-		actions, found, err := unstructured.NestedStringSlice(binding.Object, "spec", "validationActions")
-		if err != nil || !found || len(actions) != 1 || actions[0] != "Deny" {
-			return fmt.Errorf("ValidatingAdmissionPolicyBinding %s is not Deny-only", name)
-		}
-		if _, found, err := unstructured.NestedFieldNoCopy(binding.Object, "spec", "matchResources"); err != nil || found {
-			return fmt.Errorf("ValidatingAdmissionPolicyBinding %s narrows guarded resources", name)
-		}
+	}
+	return nil
+}
+
+func validateRancherAdmissionPolicy(policy *unstructured.Unstructured, name, rancherProjectID string) error {
+	got, found := policy.GetAnnotations()[rancherProjectSnapshotAnnotation]
+	if !found || got != rancherProjectID {
+		return fmt.Errorf("ValidatingAdmissionPolicy %s has Project snapshot %q, want %q", name, got, rancherProjectID)
+	}
+	failurePolicy, found, err := unstructured.NestedString(policy.Object, "spec", "failurePolicy")
+	if err != nil || !found || failurePolicy != "Fail" {
+		return fmt.Errorf("ValidatingAdmissionPolicy %s is not fail closed", name)
+	}
+	observed, found, err := unstructured.NestedInt64(policy.Object, "status", "observedGeneration")
+	if err != nil || !found || observed != policy.GetGeneration() {
+		return fmt.Errorf("ValidatingAdmissionPolicy %s generation is not observed", name)
+	}
+	if _, found, err := unstructured.NestedMap(policy.Object, "status", "typeChecking"); err != nil || !found {
+		return fmt.Errorf("ValidatingAdmissionPolicy %s type checking is not complete", name)
+	}
+	warnings, found, err := unstructured.NestedSlice(policy.Object, "status", "typeChecking", "expressionWarnings")
+	if err != nil || (found && len(warnings) != 0) {
+		return fmt.Errorf("ValidatingAdmissionPolicy %s has type-check warnings", name)
+	}
+	return nil
+}
+
+func validateRancherAdmissionPolicyBinding(binding *unstructured.Unstructured, name string) error {
+	policyName, found, err := unstructured.NestedString(binding.Object, "spec", "policyName")
+	if err != nil || !found || policyName != name {
+		return fmt.Errorf("ValidatingAdmissionPolicyBinding %s references the wrong policy", name)
+	}
+	actions, found, err := unstructured.NestedStringSlice(binding.Object, "spec", "validationActions")
+	if err != nil || !found || len(actions) != 1 || actions[0] != "Deny" {
+		return fmt.Errorf("ValidatingAdmissionPolicyBinding %s is not Deny-only", name)
+	}
+	if _, found, err := unstructured.NestedFieldNoCopy(binding.Object, "spec", "matchResources"); err != nil || found {
+		return fmt.Errorf("ValidatingAdmissionPolicyBinding %s narrows guarded resources", name)
 	}
 	return nil
 }
@@ -160,11 +174,11 @@ func (b *Bootstrapper) validateRancherAdmissionGuard(ctx context.Context, ranche
 func validateRancherWebhookRole(role *unstructured.Unstructured, rancherProjectID string) error {
 	rules, found, err := unstructured.NestedSlice(role.Object, "rules")
 	if err != nil || !found || len(rules) != 1 {
-		return fmt.Errorf("Rancher webhook ClusterRole must contain exactly one rule")
+		return fmt.Errorf("rancher webhook ClusterRole must contain exactly one rule")
 	}
 	rule, ok := rules[0].(map[string]any)
 	if !ok || !exactStringSlice(rule["apiGroups"], "management.cattle.io") || !exactStringSlice(rule["resources"], "projects") {
-		return fmt.Errorf("Rancher webhook ClusterRole has unexpected API resources")
+		return fmt.Errorf("rancher webhook ClusterRole has unexpected API resources")
 	}
 
 	if rancherProjectID == "" {
