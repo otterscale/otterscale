@@ -27,18 +27,24 @@ func NewRenderer() *Renderer {
 
 // RenderAgentManifest produces a multi-document YAML manifest for
 // installing the otterscale agent on a target Kubernetes cluster.
-// The manifest includes a Namespace, ServiceAccount,
-// ClusterRoleBinding (binding userName to cluster-admin), and a
-// Deployment that runs the agent with the correct server/tunnel URLs.
+// The manifest includes downstream admission prerequisites, a Namespace,
+// ServiceAccount, ClusterRoleBindings, and a Deployment that runs the agent
+// with the correct server/tunnel URLs.
 func (r *Renderer) RenderAgentManifest(params *core.ManifestParams) (string, error) {
+	projectName, err := rancherProjectName(params.RancherProjectID)
+	if err != nil {
+		return "", fmt.Errorf("render agent manifest: %w", err)
+	}
+
 	data := agentManifestData{
-		Cluster:           params.Cluster,
-		ClusterAdminUsers: append([]string{params.UserName}, params.ExtraUsers...),
-		Image:             params.Image,
-		ServerURL:         params.ServerURL,
-		TunnelURL:         params.TunnelURL,
-		RancherProjectID:  params.RancherProjectID,
-		HarborURL:         params.HarborURL,
+		Cluster:            params.Cluster,
+		ClusterAdminUsers:  append([]string{params.UserName}, params.ExtraUsers...),
+		Image:              params.Image,
+		ServerURL:          params.ServerURL,
+		TunnelURL:          params.TunnelURL,
+		RancherProjectID:   params.RancherProjectID,
+		RancherProjectName: projectName,
+		HarborURL:          params.HarborURL,
 	}
 	if params.HarborCreds != nil {
 		data.HarborRobotName = params.HarborCreds.Name
@@ -52,18 +58,29 @@ func (r *Renderer) RenderAgentManifest(params *core.ManifestParams) (string, err
 	return buf.String(), nil
 }
 
+// rancherProjectName returns the Project resource name used by Kubernetes
+// RBAC. An empty full ID is the supported no-selection path.
+func rancherProjectName(id string) (string, error) {
+	if id == "" {
+		return "", nil
+	}
+	_, projectName, err := core.ParseRancherProjectID(id)
+	return projectName, err
+}
+
 // agentManifestData holds the template parameters for agent manifest
 // generation.
 type agentManifestData struct {
-	Cluster           string
-	ClusterAdminUsers []string
-	Image             string
-	ServerURL         string
-	TunnelURL         string
-	RancherProjectID  string
-	HarborURL         string
-	HarborRobotName   string
-	HarborRobotSecret string
+	Cluster            string
+	ClusterAdminUsers  []string
+	Image              string
+	ServerURL          string
+	TunnelURL          string
+	RancherProjectID   string
+	RancherProjectName string
+	HarborURL          string
+	HarborRobotName    string
+	HarborRobotSecret  string
 }
 
 // yamlQuote produces a JSON-encoded string (with surrounding quotes)
@@ -85,6 +102,162 @@ var agentManifestTmpl = template.Must(
 )
 
 const agentManifestYAML = `---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: otterscale-workspace-rancher-project
+  annotations:
+    security.otterscale.io/rancher-project-id: {{ yamlQuote .RancherProjectID }}
+spec:
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
+      - apiGroups: ["tenant.otterscale.io"]
+        apiVersions: ["v1alpha1"]
+        operations: ["CREATE", "UPDATE"]
+        resources: ["workspaces", "workspaces/status"]
+        scope: Cluster
+  validations:
+    - expression: >-{{ if .RancherProjectID }}
+        request.operation != 'CREATE' ||
+        (has(object.spec.rancherProjectID) &&
+        object.spec.rancherProjectID == {{ yamlQuote .RancherProjectID }}){{ else }}
+        request.operation != 'CREATE' ||
+        !has(object.spec.rancherProjectID) ||
+        object.spec.rancherProjectID == ''{{ end }}
+      message: Workspace Rancher Project must match the managed Cluster configuration
+    - expression: >-
+        request.operation != 'UPDATE' ||
+        ((!has(oldObject.spec.rancherProjectID) && !has(object.spec.rancherProjectID)) ||
+        (has(oldObject.spec.rancherProjectID) && has(object.spec.rancherProjectID) &&
+        oldObject.spec.rancherProjectID == object.spec.rancherProjectID))
+      message: Workspace Rancher Project is immutable
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicyBinding
+metadata:
+  name: otterscale-workspace-rancher-project
+spec:
+  policyName: otterscale-workspace-rancher-project
+  validationActions: [Deny]
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: otterscale-workspace-namespace-security
+  annotations:
+    security.otterscale.io/rancher-project-id: {{ yamlQuote .RancherProjectID }}
+spec:
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
+      - apiGroups: [""]
+        apiVersions: ["v1"]
+        operations: ["CREATE", "UPDATE"]
+        resources: ["namespaces"]
+        scope: Cluster
+  matchConditions:
+    - name: tenant-operator-or-workspace-namespace
+      expression: >-
+        request.userInfo.username == 'system:serviceaccount:otterscale-system:tenant-operator-controller-manager' ||
+        (has(object.metadata.ownerReferences) && object.metadata.ownerReferences.exists(r,
+        r.apiVersion == 'tenant.otterscale.io/v1alpha1' && r.kind == 'Workspace' &&
+        has(r.controller) && r.controller == true)) ||
+        (request.operation == 'UPDATE' && has(oldObject.metadata.ownerReferences) &&
+        oldObject.metadata.ownerReferences.exists(r,
+        r.apiVersion == 'tenant.otterscale.io/v1alpha1' && r.kind == 'Workspace' &&
+        has(r.controller) && r.controller == true))
+  validations:
+    - expression: >-
+        request.operation != 'CREATE' ||
+        request.userInfo.username == 'system:serviceaccount:otterscale-system:tenant-operator-controller-manager'
+      message: Only tenant-operator may create an OtterScale Workspace Namespace
+    - expression: >-
+        request.userInfo.username != 'system:serviceaccount:otterscale-system:tenant-operator-controller-manager' ||
+        (has(object.metadata.ownerReferences) && object.metadata.ownerReferences.exists(r,
+        r.apiVersion == 'tenant.otterscale.io/v1alpha1' && r.kind == 'Workspace' &&
+        has(r.controller) && r.controller == true))
+      message: tenant-operator may only modify OtterScale Workspace Namespaces
+    - expression: >-
+        has(object.metadata.ownerReferences) &&
+        object.metadata.ownerReferences.filter(r,
+        r.apiVersion == 'tenant.otterscale.io/v1alpha1' && r.kind == 'Workspace' &&
+        has(r.controller) && r.controller == true).size() == 1
+      message: An OtterScale Workspace Namespace must have exactly one Workspace controller owner
+    - expression: >-
+        request.operation != 'UPDATE' ||
+        (has(oldObject.metadata.ownerReferences) &&
+        oldObject.metadata.ownerReferences.filter(r,
+        r.apiVersion == 'tenant.otterscale.io/v1alpha1' && r.kind == 'Workspace' &&
+        has(r.controller) && r.controller == true).size() == 1 &&
+        (has(object.metadata.ownerReferences) && object.metadata.ownerReferences.exists(r,
+        r.apiVersion == 'tenant.otterscale.io/v1alpha1' && r.kind == 'Workspace' &&
+        has(r.controller) && r.controller == true &&
+        r.name == oldObject.metadata.ownerReferences.filter(o,
+        o.apiVersion == 'tenant.otterscale.io/v1alpha1' && o.kind == 'Workspace' &&
+        has(o.controller) && o.controller == true)[0].name &&
+        r.uid == oldObject.metadata.ownerReferences.filter(o,
+        o.apiVersion == 'tenant.otterscale.io/v1alpha1' && o.kind == 'Workspace' &&
+        has(o.controller) && o.controller == true)[0].uid)))
+      message: The Workspace controller owner is immutable
+    - expression: >-
+        has(object.metadata.labels) &&
+        object.metadata.labels['pod-security.kubernetes.io/enforce'] == 'baseline' &&
+        object.metadata.labels['pod-security.kubernetes.io/warn'] == 'restricted' &&
+        object.metadata.labels['pod-security.kubernetes.io/audit'] == 'restricted' &&
+        !('pod-security.kubernetes.io/enforce-version' in object.metadata.labels) &&
+        !('pod-security.kubernetes.io/warn-version' in object.metadata.labels) &&
+        !('pod-security.kubernetes.io/audit-version' in object.metadata.labels)
+      message: Workspace Namespace Pod Security labels must remain at the OtterScale baseline
+    - expression: >-{{ if .RancherProjectID }}
+        request.operation != 'CREATE' ||
+        (has(object.metadata.annotations) &&
+        object.metadata.annotations['field.cattle.io/projectId'] == {{ yamlQuote .RancherProjectID }}){{ else }}
+        request.operation != 'CREATE' ||
+        !has(object.metadata.annotations) ||
+        !('field.cattle.io/projectId' in object.metadata.annotations){{ end }}
+      message: Workspace Namespace Rancher Project must match the managed Cluster configuration
+    - expression: >-{{ if .RancherProjectID }}
+        request.operation != 'UPDATE' ||
+        ((!has(oldObject.metadata.annotations) || !('field.cattle.io/projectId' in oldObject.metadata.annotations)) &&
+        (!has(object.metadata.annotations) || !('field.cattle.io/projectId' in object.metadata.annotations))) ||
+        (has(oldObject.metadata.annotations) && has(object.metadata.annotations) &&
+        'field.cattle.io/projectId' in oldObject.metadata.annotations &&
+        'field.cattle.io/projectId' in object.metadata.annotations &&
+        oldObject.metadata.annotations['field.cattle.io/projectId'] == object.metadata.annotations['field.cattle.io/projectId']) ||
+        (request.userInfo.username == 'system:serviceaccount:otterscale-system:tenant-operator-controller-manager' &&
+        has(object.metadata.annotations) &&
+        object.metadata.annotations['field.cattle.io/projectId'] == {{ yamlQuote .RancherProjectID }}){{ else }}
+        request.operation != 'UPDATE' ||
+        ((!has(oldObject.metadata.annotations) || !('field.cattle.io/projectId' in oldObject.metadata.annotations)) &&
+        (!has(object.metadata.annotations) || !('field.cattle.io/projectId' in object.metadata.annotations))) ||
+        (has(oldObject.metadata.annotations) && has(object.metadata.annotations) &&
+        'field.cattle.io/projectId' in oldObject.metadata.annotations &&
+        'field.cattle.io/projectId' in object.metadata.annotations &&
+        oldObject.metadata.annotations['field.cattle.io/projectId'] == object.metadata.annotations['field.cattle.io/projectId']){{ end }}
+      message: Workspace Namespace Rancher Project may not move to an unapproved Project
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicyBinding
+metadata:
+  name: otterscale-workspace-namespace-security
+spec:
+  policyName: otterscale-workspace-namespace-security
+  validationActions: [Deny]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: otterscale-tenant-operator-rancher-webhook
+  annotations:
+    security.otterscale.io/rancher-project-id: {{ yamlQuote .RancherProjectID }}
+rules:
+  - apiGroups: ["management.cattle.io"]
+    resources: ["projects"]{{ if .RancherProjectID }}
+    resourceNames: [{{ yamlQuote .RancherProjectName }}]
+    verbs: ["updatepsa", "manage-namespaces"]{{ else }}
+    verbs: ["updatepsa"]{{ end }}
+---
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -120,6 +293,12 @@ rules:
   - apiGroups: ["rbac.authorization.k8s.io"]
     resources: ["clusterroles", "clusterrolebindings", "roles", "rolebindings"]
     verbs: ["get", "create", "patch", "bind", "escalate"]
+  # Rancher webhook access is deactivated before its fail-closed guards are
+  # verified on every bootstrap run.
+  - apiGroups: ["rbac.authorization.k8s.io"]
+    resources: ["clusterrolebindings"]
+    resourceNames: ["otterscale-tenant-operator-rancher-webhook"]
+    verbs: ["delete"]
   # Bootstrap: CRDs for FluxCD and Module.
   - apiGroups: ["apiextensions.k8s.io"]
     resources: ["customresourcedefinitions"]
@@ -132,6 +311,12 @@ rules:
   - apiGroups: ["admissionregistration.k8s.io"]
     resources: ["mutatingwebhookconfigurations", "validatingwebhookconfigurations"]
     verbs: ["get", "create", "patch"]
+  # Read the VAP status/spec before activating tenant-operator's synthetic
+  # Rancher webhook access.
+  - apiGroups: ["admissionregistration.k8s.io"]
+    resources: ["validatingadmissionpolicies", "validatingadmissionpolicybindings"]
+    resourceNames: ["otterscale-workspace-rancher-project", "otterscale-workspace-namespace-security"]
+    verbs: ["get"]
   # Bootstrap: cert-manager resources (tenant-operator webhook TLS).
   - apiGroups: ["cert-manager.io"]
     resources: ["certificates", "issuers"]

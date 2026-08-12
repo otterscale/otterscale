@@ -60,7 +60,7 @@ func NewAgent(cfg *rest.Config, handler *Handler, tunnel core.TunnelConsumer, ve
 // then blocks until ctx is canceled.
 func (a *Agent) Run(ctx context.Context, cfg *Config) error {
 	if cfg.Bootstrap {
-		if err := a.bootstrapper.Run(ctx, cfg.HarborURL); err != nil {
+		if err := a.bootstrapper.Run(ctx, cfg.HarborURL, cfg.RancherProjectID); err != nil {
 			return fmt.Errorf("bootstrap: %w", err)
 		}
 	}

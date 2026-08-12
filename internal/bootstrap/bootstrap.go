@@ -14,6 +14,7 @@ import (
 	"log/slog"
 	"sort"
 	"strings"
+	"time"
 
 	"k8s.io/client-go/discovery"
 	"k8s.io/client-go/dynamic"
@@ -39,9 +40,11 @@ const certManagerWebhookName = "cert-manager-webhook"
 // Kubernetes cluster. It is injected into the Agent via Wire and
 // called during agent startup.
 type Bootstrapper struct {
-	dynamic dynamic.Interface
-	disc    discovery.DiscoveryInterface
-	log     *slog.Logger
+	dynamic                  dynamic.Interface
+	disc                     discovery.DiscoveryInterface
+	log                      *slog.Logger
+	rancherGuardPollInterval time.Duration
+	rancherGuardPollTimeout  time.Duration
 }
 
 // New creates a Bootstrapper from the given rest.Config. The config
@@ -60,23 +63,41 @@ func New(cfg *rest.Config) (*Bootstrapper, error) {
 	}
 
 	return &Bootstrapper{
-		dynamic: dyn,
-		disc:    disc,
-		log:     slog.Default().With("component", "bootstrap"),
+		dynamic:                  dyn,
+		disc:                     disc,
+		log:                      slog.Default().With("component", "bootstrap"),
+		rancherGuardPollInterval: rancherGuardDefaultPollInterval,
+		rancherGuardPollTimeout:  rancherGuardDefaultPollTimeout,
 	}, nil
 }
 
 // harborURL, when non-empty, is the Harbor registry host used to
 // register an additional OCI HelmRepository (oci://<host>/modules) on
-// top of the embedded platform manifests.
+// top of the embedded platform manifests. rancherProjectID is the trusted
+// manifest snapshot that both admission guards must match before the
+// tenant-operator synthetic Rancher webhook binding is activated.
 //
 // The method is idempotent and safe to call on every agent restart.
-func (b *Bootstrapper) Run(ctx context.Context, harborURL string) error {
+func (b *Bootstrapper) Run(ctx context.Context, harborURL, rancherProjectID string) error {
 	b.log.Info("starting Layer 0 bootstrap")
+
+	// Fail closed immediately on restart. The binding is recreated only after
+	// the Workspace CRD is established and both admission guards are ready.
+	if err := b.deactivateRancherWebhookAccess(ctx); err != nil {
+		return fmt.Errorf("deactivate Rancher webhook access: %w", err)
+	}
 
 	// Base: cert-manager + CRDs + FluxCD
 	if err := b.applyStage(ctx, manifests.Base, "bootstrap/base"); err != nil {
 		return fmt.Errorf("base: %w", err)
+	}
+
+	// The tenant-operator must not receive synthetic Rancher webhook access
+	// until both admission guards are compiled, current, and fail closed. This
+	// runs after base because the Workspace VAP needs the established CRD for
+	// type checking, and before platform starts tenant-operator.
+	if err := b.activateRancherWebhookAccess(ctx, rancherProjectID); err != nil {
+		return fmt.Errorf("Rancher admission prerequisites: %w", err)
 	}
 
 	// Wait for cert-manager-webhook Deployment to be Available.
