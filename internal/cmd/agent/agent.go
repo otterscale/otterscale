@@ -53,7 +53,7 @@ func NewAgent(cfg *rest.Config, handler *Handler, tunnel core.TunnelConsumer, ve
 }
 
 // Run starts the agent. When bootstrap is enabled, it first applies
-// embedded infrastructure manifests (FluxCD, Module CRD) to the local
+// embedded infrastructure manifests (FluxCD) to the local
 // cluster. It then creates an in-memory pipe listener for the HTTP
 // server, a TCP bridge for chisel to forward to, and a tunnel client,
 // then blocks until ctx is canceled.

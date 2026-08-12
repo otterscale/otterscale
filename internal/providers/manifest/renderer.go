@@ -106,7 +106,7 @@ rules:
   - apiGroups: [""]
     resources: ["users", "groups"]
     verbs: ["impersonate"]
-  # Bootstrap: core resources required by FluxCD and Module CRD.
+  # Bootstrap: core resources required by FluxCD.
   - apiGroups: [""]
     resources: ["namespaces", "serviceaccounts", "services", "configmaps", "secrets", "resourcequotas"]
     verbs: ["get", "create", "patch"]
@@ -118,7 +118,7 @@ rules:
   - apiGroups: ["rbac.authorization.k8s.io"]
     resources: ["clusterroles", "clusterrolebindings", "roles", "rolebindings"]
     verbs: ["get", "create", "patch", "bind", "escalate"]
-  # Bootstrap: CRDs for FluxCD and Module.
+  # Bootstrap: CRDs for FluxCD.
   - apiGroups: ["apiextensions.k8s.io"]
     resources: ["customresourcedefinitions"]
     verbs: ["get", "create", "patch"]
@@ -133,10 +133,6 @@ rules:
   # Bootstrap: cert-manager resources (tenant-operator webhook TLS).
   - apiGroups: ["cert-manager.io"]
     resources: ["certificates", "issuers"]
-    verbs: ["get", "create", "patch"]
-  # Bootstrap: Module operator ModuleTemplate CRs.
-  - apiGroups: ["module.otterscale.io"]
-    resources: ["moduletemplates"]
     verbs: ["get", "create", "patch"]
   # Bootstrap: FluxCD source resources (GitRepository, HelmRepository).
   - apiGroups: ["source.toolkit.fluxcd.io"]
