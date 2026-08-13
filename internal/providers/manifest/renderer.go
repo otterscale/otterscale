@@ -106,8 +106,6 @@ apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingAdmissionPolicy
 metadata:
   name: otterscale-workspace-rancher-project
-  annotations:
-    security.otterscale.io/rancher-project-id: {{ yamlQuote .RancherProjectID }}
 spec:
   failurePolicy: Fail
   matchConstraints:
@@ -145,8 +143,6 @@ apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingAdmissionPolicy
 metadata:
   name: otterscale-workspace-namespace-security
-  annotations:
-    security.otterscale.io/rancher-project-id: {{ yamlQuote .RancherProjectID }}
 spec:
   failurePolicy: Fail
   matchConstraints:
@@ -249,14 +245,25 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   name: otterscale-tenant-operator-rancher-webhook
-  annotations:
-    security.otterscale.io/rancher-project-id: {{ yamlQuote .RancherProjectID }}
 rules:
   - apiGroups: ["management.cattle.io"]
     resources: ["projects"]{{ if .RancherProjectID }}
     resourceNames: [{{ yamlQuote .RancherProjectName }}]
     verbs: ["updatepsa", "manage-namespaces"]{{ else }}
     verbs: ["updatepsa"]{{ end }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: otterscale-tenant-operator-rancher-webhook
+subjects:
+  - kind: ServiceAccount
+    name: tenant-operator-controller-manager
+    namespace: otterscale-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: otterscale-tenant-operator-rancher-webhook
 ---
 apiVersion: v1
 kind: Namespace
@@ -293,12 +300,6 @@ rules:
   - apiGroups: ["rbac.authorization.k8s.io"]
     resources: ["clusterroles", "clusterrolebindings", "roles", "rolebindings"]
     verbs: ["get", "create", "patch", "bind", "escalate"]
-  # Rancher webhook access is deactivated before its fail-closed guards are
-  # verified on every bootstrap run.
-  - apiGroups: ["rbac.authorization.k8s.io"]
-    resources: ["clusterrolebindings"]
-    resourceNames: ["otterscale-tenant-operator-rancher-webhook"]
-    verbs: ["delete"]
   # Bootstrap: CRDs for FluxCD and Module.
   - apiGroups: ["apiextensions.k8s.io"]
     resources: ["customresourcedefinitions"]
@@ -311,12 +312,6 @@ rules:
   - apiGroups: ["admissionregistration.k8s.io"]
     resources: ["mutatingwebhookconfigurations", "validatingwebhookconfigurations"]
     verbs: ["get", "create", "patch"]
-  # Read the VAP status/spec before activating tenant-operator's synthetic
-  # Rancher webhook access.
-  - apiGroups: ["admissionregistration.k8s.io"]
-    resources: ["validatingadmissionpolicies", "validatingadmissionpolicybindings"]
-    resourceNames: ["otterscale-workspace-rancher-project", "otterscale-workspace-namespace-security"]
-    verbs: ["get"]
   # Bootstrap: cert-manager resources (tenant-operator webhook TLS).
   - apiGroups: ["cert-manager.io"]
     resources: ["certificates", "issuers"]
