@@ -65,6 +65,7 @@ func TestRancherProjectName(t *testing.T) {
 	}
 }
 
+//nolint:gocyclo,funlen // This table-driven test intentionally verifies the complete rendered security contract.
 func TestRenderAgentManifestRancherSecurity(t *testing.T) {
 	t.Parallel()
 
@@ -166,7 +167,10 @@ func TestRenderAgentManifestRancherSecurity(t *testing.T) {
 				t.Fatalf("Workspace policy resources = %q", got)
 			}
 
-			securityPrefix := manifest[:strings.Index(manifest, "kind: Namespace")]
+			securityPrefix, _, found := strings.Cut(manifest, "kind: Namespace")
+			if !found {
+				t.Fatal("manifest does not contain the agent Namespace")
+			}
 			if strings.Count(securityPrefix, "failurePolicy: Fail") != 2 || strings.Count(securityPrefix, "validationActions: [Deny]") != 2 {
 				t.Fatal("both admission policies must fail closed with Deny bindings")
 			}

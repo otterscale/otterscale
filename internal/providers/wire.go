@@ -27,15 +27,6 @@ func ProvideDiscoveryCache(discovery core.DiscoveryClient) *cache.DiscoveryCache
 	return cache.NewDiscoveryCache(discovery, cache.DefaultTTL)
 }
 
-// ProvideComposingSchemaResolver wraps the DiscoveryCache with a
-// ComposingSchemaResolver that applies schema composition rules
-// (e.g. injecting FluxCD HelmRelease schema into ModuleTemplate).
-// Accepting the concrete *cache.DiscoveryCache lets Wire distinguish
-// the upstream cache from the composed resolver.
-func ProvideComposingSchemaResolver(dc *cache.DiscoveryCache) *core.ComposingSchemaResolver {
-	return core.NewComposingSchemaResolver(dc)
-}
-
 // ProvideRancherStore keeps Rancher Project discovery optional at server
 // startup. Configuration or client construction failures leave the Project
 // cache unavailable without blocking unrelated HTTP and tunnel services.
