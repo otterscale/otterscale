@@ -82,6 +82,15 @@ func (h *Handler) Mount(mux *http.ServeMux) error {
 	// route is registered as a public path prefix in server.go.
 	mux.HandleFunc("GET /link/manifest/{token}", h.handleRawManifest)
 
+	// Interactive terminal over a single WebSocket. The ExecuteTTY
+	// stream can only carry output, so its clients have to send
+	// every keystroke as a separate unary WriteTTY call — a full
+	// authenticated round trip per character. This route carries
+	// stdin, stdout and resize on one connection instead. It is not
+	// a public path, so the OIDC middleware still guards the
+	// handshake.
+	mux.HandleFunc("GET /runtime/v1/tty", h.runtime.ServeTTYWebSocket)
+
 	// Prometheus reverse proxy. Requests arrive as
 	// /proxy/{cluster}/prometheus/api/v1/query?... and are
 	// forwarded through the tunnel to the agent's
