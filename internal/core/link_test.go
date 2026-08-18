@@ -9,11 +9,12 @@ import (
 
 // mockTunnelProvider implements TunnelProvider for testing.
 type mockTunnelProvider struct {
-	links       map[string]Link
-	caCertPEM   []byte
-	regEndpoint string
-	regCertPEM  []byte
-	regErr      error
+	links            map[string]Link
+	caCertPEM        []byte
+	regEndpoint      string
+	regCertPEM       []byte
+	regErr           error
+	rancherProjectID string
 }
 
 func (m *mockTunnelProvider) CACertPEM() []byte { return m.caCertPEM }
@@ -24,7 +25,8 @@ func (m *mockTunnelProvider) ListLinks() map[string]Link {
 	return m.links
 }
 
-func (m *mockTunnelProvider) RegisterLink(_ context.Context, _, _, _ string, _ []byte) (endpoint string, certPEM []byte, err error) {
+func (m *mockTunnelProvider) RegisterLink(_ context.Context, _, _, _, rancherProjectID string, _ []byte) (endpoint string, certPEM []byte, err error) {
+	m.rancherProjectID = rancherProjectID
 	return m.regEndpoint, m.regCertPEM, m.regErr
 }
 
@@ -36,6 +38,20 @@ func (m *mockTunnelProvider) ResolveAddress(_ context.Context, _ string) (string
 type mockManifestRenderer struct {
 	result string
 	err    error
+}
+
+type mockRancherProjectStore struct {
+	projects []RancherProject
+	has      bool
+	err      error
+}
+
+func (m *mockRancherProjectStore) ListProjects(context.Context) ([]RancherProject, error) {
+	return m.projects, m.err
+}
+
+func (m *mockRancherProjectStore) HasProject(context.Context, string) (bool, error) {
+	return m.has, m.err
 }
 
 func (m *mockManifestRenderer) RenderAgentManifest(_ *ManifestParams) (string, error) {
@@ -52,7 +68,7 @@ func testLinkConfig() AgentManifestConfig {
 
 func newTestLinkUseCase(t *testing.T, tp TunnelProvider, renderer ManifestRenderer) *LinkUseCase {
 	t.Helper()
-	uc, err := NewLinkUseCase(tp, "v1.0.0", testLinkConfig(), renderer, nil)
+	uc, err := NewLinkUseCase(tp, "v1.0.0", testLinkConfig(), renderer, nil, &mockRancherProjectStore{})
 	if err != nil {
 		t.Fatalf("NewLinkUseCase: %v", err)
 	}
@@ -87,7 +103,7 @@ func TestNewLinkUseCase_ValidationErrors(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, err := NewLinkUseCase(tp, "v1.0.0", tt.cfg, renderer, nil)
+			_, err := NewLinkUseCase(tp, "v1.0.0", tt.cfg, renderer, nil, &mockRancherProjectStore{})
 			if err == nil {
 				t.Fatal("expected error, got nil")
 			}
@@ -112,6 +128,56 @@ func TestLinkUseCase_ListLinks(t *testing.T) {
 	}
 }
 
+func TestLinkUseCase_RancherProjects(t *testing.T) {
+	store := &mockRancherProjectStore{
+		projects: []RancherProject{{ID: "local:p-test", DisplayName: "Test"}},
+		has:      true,
+	}
+	uc, err := NewLinkUseCase(&mockTunnelProvider{}, "v1.0.0", testLinkConfig(), &mockManifestRenderer{}, nil, store)
+	if err != nil {
+		t.Fatalf("NewLinkUseCase: %v", err)
+	}
+
+	projects, err := uc.ListRancherProjects(t.Context())
+	if err != nil || len(projects) != 1 {
+		t.Fatalf("ListRancherProjects() = %v, %v", projects, err)
+	}
+	if err := uc.ValidateRancherProject(t.Context(), ""); err != nil {
+		t.Fatalf("empty Project ID must remain optional: %v", err)
+	}
+	if err := uc.ValidateRancherProject(t.Context(), "local:p-test"); err != nil {
+		t.Fatalf("valid Project ID: %v", err)
+	}
+
+	store.has = false
+	if err := uc.ValidateRancherProject(t.Context(), "local:p-missing"); err == nil {
+		t.Fatal("expected cache miss to be rejected")
+	}
+	store.err = ErrRancherProjectCacheNotReady
+	if err := uc.ValidateRancherProject(t.Context(), "local:p-test"); !errors.Is(err, ErrRancherProjectCacheNotReady) {
+		t.Fatalf("expected cache-not-ready, got %v", err)
+	}
+	if err := uc.ValidateRancherProject(t.Context(), "INVALID"); err == nil {
+		t.Fatal("expected malformed ID to be rejected before cache access")
+	}
+}
+
+func TestLinkUseCase_RegisterCluster_DoesNotUseProjectStore(t *testing.T) {
+	store := &mockRancherProjectStore{err: ErrRancherProjectCacheNotReady}
+	tp := &mockTunnelProvider{regEndpoint: "127.0.0.1:8080", regCertPEM: []byte("cert")}
+	uc, err := NewLinkUseCase(tp, "v1.0.0", testLinkConfig(), &mockManifestRenderer{}, nil, store)
+	if err != nil {
+		t.Fatalf("NewLinkUseCase: %v", err)
+	}
+
+	if _, err := uc.RegisterCluster(t.Context(), "cluster", "agent", "v1", "local:p-test", []byte("csr")); err != nil {
+		t.Fatalf("registration must not depend on Project cache: %v", err)
+	}
+	if _, err := uc.RegisterCluster(t.Context(), "cluster", "agent", "v1", "bad", []byte("csr")); err == nil {
+		t.Fatal("expected malformed Project ID to be rejected")
+	}
+}
+
 func TestLinkUseCase_RegisterCluster_Validation(t *testing.T) {
 	tp := &mockTunnelProvider{regEndpoint: "127.0.0.1:8080", regCertPEM: []byte("cert")}
 	uc := newTestLinkUseCase(t, tp, &mockManifestRenderer{})
@@ -132,7 +198,7 @@ func TestLinkUseCase_RegisterCluster_Validation(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, err := uc.RegisterCluster(t.Context(), tt.cluster, tt.agentID, "v1", tt.csr)
+			_, err := uc.RegisterCluster(t.Context(), tt.cluster, tt.agentID, "v1", "", tt.csr)
 			if err == nil {
 				t.Fatal("expected error, got nil")
 			}
@@ -155,7 +221,7 @@ func TestLinkUseCase_RegisterCluster_Success(t *testing.T) {
 	}
 	uc := newTestLinkUseCase(t, tp, &mockManifestRenderer{})
 
-	reg, err := uc.RegisterCluster(t.Context(), "my-cluster", "agent-1", "v1", []byte("csr-data"))
+	reg, err := uc.RegisterCluster(t.Context(), "my-cluster", "agent-1", "v1", "local:p-test", []byte("csr-data"))
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -171,13 +237,16 @@ func TestLinkUseCase_RegisterCluster_Success(t *testing.T) {
 	if reg.ServerVersion != "v1.0.0" {
 		t.Errorf("server version = %q, want %q", reg.ServerVersion, "v1.0.0")
 	}
+	if tp.rancherProjectID != "local:p-test" {
+		t.Errorf("rancher project ID = %q, want %q", tp.rancherProjectID, "local:p-test")
+	}
 }
 
 func TestLinkUseCase_ManifestToken_IssueAndVerify(t *testing.T) {
 	tp := &mockTunnelProvider{}
 	uc := newTestLinkUseCase(t, tp, &mockManifestRenderer{})
 
-	url, err := uc.IssueManifestURL(t.Context(), "test-cluster", "user@example.com", []string{"bob@example.com"})
+	url, err := uc.IssueManifestURL(t.Context(), "test-cluster", "user@example.com", []string{"bob@example.com"}, "local:p-test")
 	if err != nil {
 		t.Fatalf("IssueManifestURL: %v", err)
 	}
@@ -201,6 +270,9 @@ func TestLinkUseCase_ManifestToken_IssueAndVerify(t *testing.T) {
 	}
 	if len(claims.ExtraUsers) != 1 || claims.ExtraUsers[0] != "bob@example.com" {
 		t.Errorf("extraUsers = %v, want [bob@example.com]", claims.ExtraUsers)
+	}
+	if claims.RancherProjectID != "local:p-test" {
+		t.Errorf("rancherProjectID = %q, want %q", claims.RancherProjectID, "local:p-test")
 	}
 }
 
@@ -232,7 +304,7 @@ func TestLinkUseCase_VerifyManifestToken_TamperedSignature(t *testing.T) {
 	tp := &mockTunnelProvider{}
 	uc := newTestLinkUseCase(t, tp, &mockManifestRenderer{})
 
-	url, err := uc.IssueManifestURL(t.Context(), "test-cluster", "user@example.com", nil)
+	url, err := uc.IssueManifestURL(t.Context(), "test-cluster", "user@example.com", nil, "")
 	if err != nil {
 		t.Fatalf("IssueManifestURL: %v", err)
 	}
@@ -272,7 +344,7 @@ func TestLinkUseCase_GenerateAgentManifest_Validation(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, err := uc.GenerateAgentManifest(ctx, tt.cluster, tt.userName, nil)
+			_, err := uc.GenerateAgentManifest(ctx, tt.cluster, tt.userName, nil, "")
 			if err == nil {
 				t.Fatal("expected error, got nil")
 			}
@@ -285,7 +357,7 @@ func TestLinkUseCase_GenerateAgentManifest_Success(t *testing.T) {
 	renderer := &mockManifestRenderer{result: "---\napiVersion: v1\nkind: Namespace"}
 	uc := newTestLinkUseCase(t, tp, renderer)
 
-	manifest, err := uc.GenerateAgentManifest(t.Context(), "my-cluster", "admin@example.com", nil)
+	manifest, err := uc.GenerateAgentManifest(t.Context(), "my-cluster", "admin@example.com", nil, "")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}

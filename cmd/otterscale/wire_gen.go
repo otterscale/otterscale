@@ -54,7 +54,8 @@ func wireServer(v core.Version, conf *config.Config) (*server.Server, func(), er
 	}
 	renderer := manifest.NewRenderer()
 	harborClient := harbor.ProvideHarborClient(conf)
-	linkUseCase, err := core.NewLinkUseCase(service, v, agentManifestConfig, renderer, harborClient)
+	store := providers.ProvideRancherStore()
+	linkUseCase, err := core.NewLinkUseCase(service, v, agentManifestConfig, renderer, harborClient, store)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -76,7 +77,7 @@ func wireServer(v core.Version, conf *config.Config) (*server.Server, func(), er
 	manifestHandler := handler.NewManifestHandler(linkUseCase)
 	proxyHandler := handler.NewProxyHandler(service)
 	serverHandler := server.NewHandler(linkService, resourceService, runtimeService, manifestHandler, proxyHandler)
-	backgroundListeners := server.ProvideBackgroundListeners(runtimeUseCase, discoveryCache)
+	backgroundListeners := server.ProvideBackgroundListeners(runtimeUseCase, discoveryCache, store)
 	serverServer := server.NewServer(serverHandler, service, backgroundListeners)
 	return serverServer, func() {
 	}, nil

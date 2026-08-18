@@ -4,6 +4,8 @@ package main
 
 import (
 	"github.com/google/wire"
+	"github.com/spf13/cobra"
+
 	"github.com/otterscale/otterscale/internal/bootstrap"
 	"github.com/otterscale/otterscale/internal/cmd"
 	"github.com/otterscale/otterscale/internal/cmd/agent"
@@ -14,7 +16,6 @@ import (
 	"github.com/otterscale/otterscale/internal/providers"
 	"github.com/otterscale/otterscale/internal/providers/kubernetes"
 	"github.com/otterscale/otterscale/internal/providers/manifest"
-	"github.com/spf13/cobra"
 )
 
 // wireCmd assembles the root Cobra command with configuration loaded.

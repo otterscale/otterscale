@@ -36,6 +36,7 @@ var AgentOptions = []Option{
 	{Key: keyAgentBootstrap, Flag: toFlag(keyAgentBootstrap), Default: true, Description: "Run Layer 0 bootstrap on startup (install FluxCD)"},
 	{Key: keyAgentProxyPrometheusURL, Flag: toFlag(keyAgentProxyPrometheusURL), Default: "http://otterscale-prometheus-kube-prometheus.monitoring.svc:9090", Description: "In-cluster Prometheus URL for the metrics proxy"},
 	{Key: keyAgentHarborURL, Flag: toFlag(keyAgentHarborURL), Default: "", Description: "Harbor registry host for the OCI modules HelmRepository (optional)"},
+	{Key: keyAgentRancherProjectID, Flag: toFlag(keyAgentRancherProjectID), Default: "", Description: "Full Rancher Project ID associated with this cluster (optional)"},
 }
 
 // toFlag converts a viper key like "server.tunnel.key_seed" into a

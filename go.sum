@@ -272,6 +272,8 @@ github.com/opencontainers/image-spec v1.1.1 h1:y0fUlFfIZhPF1W537XOLg0/fcx6zcHCJw
 github.com/opencontainers/image-spec v1.1.1/go.mod h1:qpqAh3Dmcf36wStyyWU+kCeDgrGnAve2nCC8+7h8Q0M=
 github.com/otterscale/api v1.4.0 h1:EPs0ELwLmkBr7MmOTtSHq70QH2912OKO7SfXNVtmkl4=
 github.com/otterscale/api v1.4.0/go.mod h1:0TCkMhMd2ccnBCpV3JEWYP7RJ7H9QWBZW5FCOxqPZcI=
+github.com/otterscale/api v1.4.1 h1:QtzXRKqZz5MCL1oYru7d1tjOFluTnXjWL2pL98kbO6o=
+github.com/otterscale/api v1.4.1/go.mod h1:0TCkMhMd2ccnBCpV3JEWYP7RJ7H9QWBZW5FCOxqPZcI=
 github.com/pelletier/go-toml/v2 v2.4.3 h1:GTRvJQutkOSftxIFD5xw9aepkYNuPWmVJpffdDPYVpY=
 github.com/pelletier/go-toml/v2 v2.4.3/go.mod h1:2gIqNv+qfxSVS7cM2xJQKtLSTLUE9V8t9Stt+h56mCY=
 github.com/peterbourgon/diskv v2.0.1+incompatible h1:UBdAOUP5p4RWqPBg048CAvpKN+vxiaj6gdUUzhl4XmI=

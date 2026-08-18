@@ -54,7 +54,7 @@ var _ core.TunnelConsumer = (*linkRegistrar)(nil)
 // generated on every call to provide forward secrecy. The private
 // key is returned inside the Registration to guarantee the cert/key
 // pair is always consistent (no TOCTOU race).
-func (f *linkRegistrar) Register(ctx context.Context, serverURL, cluster string) (core.Registration, error) {
+func (f *linkRegistrar) Register(ctx context.Context, serverURL, cluster, rancherProjectID string) (core.Registration, error) {
 	key, keyPEM, err := pki.GenerateKey()
 	if err != nil {
 		return core.Registration{}, fmt.Errorf("generate key pair: %w", err)
@@ -71,6 +71,9 @@ func (f *linkRegistrar) Register(ctx context.Context, serverURL, cluster string)
 	req.SetAgentId(f.agentID)
 	req.SetCsr(csrPEM)
 	req.SetAgentVersion(f.agentVersion)
+	if rancherProjectID != "" {
+		req.SetRancherProjectId(rancherProjectID)
+	}
 
 	resp, err := client.Register(ctx, req)
 	if err != nil {

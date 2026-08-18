@@ -3,7 +3,10 @@
 package providers
 
 import (
+	"log/slog"
+
 	"github.com/google/wire"
+	"k8s.io/client-go/rest"
 
 	"github.com/otterscale/otterscale/internal/core"
 	"github.com/otterscale/otterscale/internal/providers/cache"
@@ -13,6 +16,7 @@ import (
 	"github.com/otterscale/otterscale/internal/providers/kubernetes"
 	"github.com/otterscale/otterscale/internal/providers/manifest"
 	"github.com/otterscale/otterscale/internal/providers/otterscale"
+	"github.com/otterscale/otterscale/internal/providers/rancher"
 	"github.com/otterscale/otterscale/internal/transport"
 )
 
@@ -21,6 +25,27 @@ import (
 // interface via caching.
 func ProvideDiscoveryCache(discovery core.DiscoveryClient) *cache.DiscoveryCache {
 	return cache.NewDiscoveryCache(discovery, cache.DefaultTTL)
+}
+
+// ProvideRancherStore keeps Rancher Project discovery optional at server
+// startup. Configuration or client construction failures leave the Project
+// cache unavailable without blocking unrelated HTTP and tunnel services.
+func ProvideRancherStore() *rancher.Store {
+	return provideRancherStore(kubernetes.ProvideInClusterConfig)
+}
+
+func provideRancherStore(provideConfig func() (*rest.Config, error)) *rancher.Store {
+	config, err := provideConfig()
+	if err != nil {
+		slog.Error("Rancher Project informer disabled: Kubernetes config unavailable", "error", err)
+		return rancher.NewUnavailableStore()
+	}
+	store, err := rancher.NewStore(config)
+	if err != nil {
+		slog.Error("Rancher Project informer disabled: client initialization failed", "error", err)
+		return rancher.NewUnavailableStore()
+	}
+	return store
 }
 
 // ProviderSet is the Wire provider set for all external adapters.
@@ -35,6 +60,8 @@ var ProviderSet = wire.NewSet(
 	kubernetes.NewResourceRepo,
 	kubernetes.NewRuntimeRepo,
 	otterscale.NewLinkRegistrar,
+	ProvideRancherStore,
+	wire.Bind(new(core.RancherProjectStore), new(*rancher.Store)),
 	harbor.ProvideHarborClient,
 	helm.NewRepo,
 	ProvideDiscoveryCache,
