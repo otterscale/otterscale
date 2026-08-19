@@ -43,39 +43,12 @@ func (s *LinkService) ListLinks(ctx context.Context, _ *pb.ListLinksRequest) (*p
 	return resp, nil
 }
 
-// ListRancherProjects returns Projects visible to the management-plane
-// ServiceAccount. Only OtterScale admins may inspect the cache.
-func (s *LinkService) ListRancherProjects(ctx context.Context, _ *pb.ListRancherProjectsRequest) (*pb.ListRancherProjectsResponse, error) {
-	userInfo, ok := core.UserInfoFromContext(ctx)
-	if !ok {
-		return nil, connect.NewError(connect.CodeUnauthenticated, errors.New("user info not found in context"))
-	}
-	if !core.IsAdmin(userInfo.Groups) {
-		return nil, connect.NewError(connect.CodePermissionDenied, errors.New("caller is not a member of the admin group"))
-	}
-
-	projects, err := s.link.ListRancherProjects(ctx)
-	if err != nil {
-		return nil, domainErrorToConnectError(err)
-	}
-	resp := &pb.ListRancherProjectsResponse{}
-	protoProjects := make([]*pb.RancherProject, 0, len(projects))
-	for _, project := range projects {
-		item := &pb.RancherProject{}
-		item.SetId(project.ID)
-		item.SetDisplayName(project.DisplayName)
-		protoProjects = append(protoProjects, item)
-	}
-	resp.SetProjects(protoProjects)
-	return resp, nil
-}
-
 // Register validates and signs the agent's CSR, allocates a tunnel
 // endpoint, and returns the signed certificate together with the CA
 // certificate for mTLS. The response includes the server version so
 // agents can detect mismatches and self-update.
 func (s *LinkService) Register(ctx context.Context, req *pb.RegisterRequest) (*pb.RegisterResponse, error) {
-	reg, err := s.link.RegisterCluster(ctx, req.GetCluster(), req.GetAgentId(), req.GetAgentVersion(), req.GetRancherProjectId(), req.GetCsr())
+	reg, err := s.link.RegisterCluster(ctx, req.GetCluster(), req.GetAgentId(), req.GetAgentVersion(), req.GetCsr())
 	if err != nil {
 		return nil, domainErrorToConnectError(err)
 	}
@@ -103,18 +76,13 @@ func (s *LinkService) GetAgentManifest(ctx context.Context, req *pb.GetAgentMani
 
 	cluster := req.GetCluster()
 	extraUsers := req.GetExtraUsers()
-	rancherProjectID := req.GetRancherProjectId()
 
-	if err := s.link.ValidateRancherProject(ctx, rancherProjectID); err != nil {
-		return nil, domainErrorToConnectError(err)
-	}
-
-	manifest, err := s.link.GenerateAgentManifest(ctx, cluster, userInfo.Subject, extraUsers, rancherProjectID)
+	manifest, err := s.link.GenerateAgentManifest(ctx, cluster, userInfo.Subject, extraUsers)
 	if err != nil {
 		return nil, domainErrorToConnectError(err)
 	}
 
-	url, err := s.link.IssueManifestURL(ctx, cluster, userInfo.Subject, extraUsers, rancherProjectID)
+	url, err := s.link.IssueManifestURL(ctx, cluster, userInfo.Subject, extraUsers)
 	if err != nil {
 		return nil, domainErrorToConnectError(err)
 	}
@@ -145,8 +113,5 @@ func toProtoLink(cluster string, link core.Link) *pb.Link {
 	ret := &pb.Link{}
 	ret.SetCluster(cluster)
 	ret.SetAgentVersion(link.AgentVersion)
-	if link.RancherProjectID != "" {
-		ret.SetRancherProjectId(link.RancherProjectID)
-	}
 	return ret
 }

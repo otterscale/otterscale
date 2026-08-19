@@ -28,5 +28,4 @@ const (
 	keyAgentBootstrap          = "agent.bootstrap"
 	keyAgentProxyPrometheusURL = "agent.proxy.prometheus_url"
 	keyAgentHarborURL          = "agent.harbor_url"
-	keyAgentRancherProjectID   = "agent.rancher_project_id"
 )

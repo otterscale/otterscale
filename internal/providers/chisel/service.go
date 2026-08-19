@@ -96,7 +96,7 @@ func (s *Service) ListLinks() map[string]core.Link {
 // If the cluster was previously registered, the old host allocation
 // is released first so that re-registration always moves the cluster
 // to a fresh address.
-func (s *Service) RegisterLink(_ context.Context, cluster, agentID, agentVersion, rancherProjectID string, csrPEM []byte) (endpoint string, certPEM []byte, err error) {
+func (s *Service) RegisterLink(_ context.Context, cluster, agentID, agentVersion string, csrPEM []byte) (endpoint string, certPEM []byte, err error) {
 	// Sign the agent's CSR with the internal CA.
 	certPEM, err = s.ca.SignCSR(csrPEM)
 	if err != nil {
@@ -145,10 +145,9 @@ func (s *Service) RegisterLink(_ context.Context, cluster, agentID, agentVersion
 	}
 
 	s.links[cluster] = core.Link{
-		Host:             host,
-		User:             agentID,
-		AgentVersion:     agentVersion,
-		RancherProjectID: rancherProjectID,
+		Host:         host,
+		User:         agentID,
+		AgentVersion: agentVersion,
 	}
 
 	return fmt.Sprintf("%s:%d", host, tunnelPort), certPEM, nil

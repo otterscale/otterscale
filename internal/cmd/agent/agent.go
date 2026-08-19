@@ -26,7 +26,6 @@ type Config struct {
 	Bootstrap          bool
 	ProxyPrometheusURL string
 	HarborURL          string
-	RancherProjectID   string
 }
 
 // SelfUpdater abstracts the self-update mechanism so it can be
@@ -86,7 +85,7 @@ func (a *Agent) Run(ctx context.Context, cfg *Config) error {
 		tunnel.WithTunnelServerURL(cfg.TunnelServerURL),
 		tunnel.WithCluster(cfg.Cluster),
 		tunnel.WithLocalPort(bridge.Port()),
-		tunnel.WithRegister(a.register(cfg.RancherProjectID)),
+		tunnel.WithRegister(a.register()),
 	)
 	if err != nil {
 		return fmt.Errorf("failed to create tunnel client: %w", err)
@@ -99,9 +98,9 @@ func (a *Agent) Run(ctx context.Context, cfg *Config) error {
 // After a successful registration it checks whether the server
 // version diverges from the agent version and, if so, triggers a
 // self-update by patching its own Deployment image.
-func (a *Agent) register(rancherProjectID string) tunnel.RegisterFunc {
+func (a *Agent) register() tunnel.RegisterFunc {
 	return func(ctx context.Context, serverURL, cluster string) (*tunnel.RegisterResult, error) {
-		reg, err := a.tunnel.Register(ctx, serverURL, cluster, rancherProjectID)
+		reg, err := a.tunnel.Register(ctx, serverURL, cluster)
 		if err != nil {
 			return nil, err
 		}

@@ -27,12 +27,11 @@ var errInvalidToken = errors.New("invalid or expired token")
 // json tags are irrelevant to callers that only read the returned
 // values.
 type ManifestTokenClaims struct {
-	Sub              string   `json:"sub"`
-	Cluster          string   `json:"cluster"`
-	ExtraUsers       []string `json:"extra_users,omitempty"`
-	RancherProjectID string   `json:"rancher_project_id,omitempty"`
-	Iat              int64    `json:"iat"`
-	Exp              int64    `json:"exp"`
+	Sub        string   `json:"sub"`
+	Cluster    string   `json:"cluster"`
+	ExtraUsers []string `json:"extra_users,omitempty"`
+	Iat        int64    `json:"iat"`
+	Exp        int64    `json:"exp"`
 }
 
 // ManifestTokenIssuer signs and verifies HMAC-based manifest tokens.
@@ -60,15 +59,14 @@ func NewManifestTokenIssuer(hmacKey []byte) (*ManifestTokenIssuer, error) {
 // Issue creates a signed token containing the user identity, cluster
 // name, extra users bound to cluster-admin, issued-at, and expiry
 // timestamps.
-func (i *ManifestTokenIssuer) Issue(cluster, userName string, extraUsers []string, rancherProjectID string) (string, error) {
+func (i *ManifestTokenIssuer) Issue(cluster, userName string, extraUsers []string) (string, error) {
 	now := i.now()
 	claims := ManifestTokenClaims{
-		Sub:              userName,
-		Cluster:          cluster,
-		ExtraUsers:       extraUsers,
-		RancherProjectID: rancherProjectID,
-		Iat:              now.Unix(),
-		Exp:              now.Add(manifestTokenTTL).Unix(),
+		Sub:        userName,
+		Cluster:    cluster,
+		ExtraUsers: extraUsers,
+		Iat:        now.Unix(),
+		Exp:        now.Add(manifestTokenTTL).Unix(),
 	}
 
 	payload, err := json.Marshal(claims)
