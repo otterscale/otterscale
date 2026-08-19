@@ -16,7 +16,7 @@ import (
 func TestLinkRegisterClusterUsesSingleSharedTunnelPort(t *testing.T) {
 	tunnel := newTestTunnel(t)
 	initTunnelServer(t, tunnel)
-	link, err := core.NewLinkUseCase(tunnel, "test", testManifestConfig(), manifest.NewRenderer(), nil, nil)
+	link, err := core.NewLinkUseCase(tunnel, "test", testManifestConfig(), manifest.NewRenderer(), nil)
 	if err != nil {
 		t.Fatalf("create link use case: %v", err)
 	}
@@ -24,11 +24,11 @@ func TestLinkRegisterClusterUsesSingleSharedTunnelPort(t *testing.T) {
 	csrA := generateCSR(t, "agent-a")
 	csrB := generateCSR(t, "agent-b")
 
-	regA, err := link.RegisterCluster(t.Context(), "cluster-a", "agent-a", "test", "local:p-test", csrA)
+	regA, err := link.RegisterCluster(t.Context(), "cluster-a", "agent-a", "test", csrA)
 	if err != nil {
 		t.Fatalf("register cluster-a: %v", err)
 	}
-	regB, err := link.RegisterCluster(t.Context(), "cluster-b", "agent-b", "test", "", csrB)
+	regB, err := link.RegisterCluster(t.Context(), "cluster-b", "agent-b", "test", csrB)
 	if err != nil {
 		t.Fatalf("register cluster-b: %v", err)
 	}
@@ -45,9 +45,6 @@ func TestLinkRegisterClusterUsesSingleSharedTunnelPort(t *testing.T) {
 	}
 	if regA.Endpoint == regB.Endpoint {
 		t.Fatalf("expected distinct endpoints for different clusters, got %q", regA.Endpoint)
-	}
-	if got := tunnel.ListLinks()["cluster-a"].RancherProjectID; got != "local:p-test" {
-		t.Fatalf("cluster-a Rancher Project ID = %q", got)
 	}
 
 	addrA, err := tunnel.ResolveAddress(t.Context(), "cluster-a")
@@ -67,7 +64,7 @@ func TestLinkRegisterClusterUsesSingleSharedTunnelPort(t *testing.T) {
 func TestLinkRegisterClusterLatestAgentWinsForSameCluster(t *testing.T) {
 	tunnel := newTestTunnel(t)
 	initTunnelServer(t, tunnel)
-	link, err := core.NewLinkUseCase(tunnel, "test", testManifestConfig(), manifest.NewRenderer(), nil, nil)
+	link, err := core.NewLinkUseCase(tunnel, "test", testManifestConfig(), manifest.NewRenderer(), nil)
 	if err != nil {
 		t.Fatalf("create link use case: %v", err)
 	}
@@ -75,11 +72,11 @@ func TestLinkRegisterClusterLatestAgentWinsForSameCluster(t *testing.T) {
 	csr1 := generateCSR(t, "agent-r-1")
 	csr2 := generateCSR(t, "agent-r-2")
 
-	_, err = link.RegisterCluster(t.Context(), "cluster-r", "agent-r-1", "test", "", csr1)
+	_, err = link.RegisterCluster(t.Context(), "cluster-r", "agent-r-1", "test", csr1)
 	if err != nil {
 		t.Fatalf("register agent-r-1: %v", err)
 	}
-	reg2, err := link.RegisterCluster(t.Context(), "cluster-r", "agent-r-2", "test", "", csr2)
+	reg2, err := link.RegisterCluster(t.Context(), "cluster-r", "agent-r-2", "test", csr2)
 	if err != nil {
 		t.Fatalf("register agent-r-2: %v", err)
 	}
@@ -104,7 +101,7 @@ func TestLinkRegisterClusterLatestAgentWinsForSameCluster(t *testing.T) {
 func TestLinkRegisterClusterReregisterAndReplaceAcrossAgents(t *testing.T) {
 	tunnel := newTestTunnel(t)
 	initTunnelServer(t, tunnel)
-	link, err := core.NewLinkUseCase(tunnel, "test", testManifestConfig(), manifest.NewRenderer(), nil, nil)
+	link, err := core.NewLinkUseCase(tunnel, "test", testManifestConfig(), manifest.NewRenderer(), nil)
 	if err != nil {
 		t.Fatalf("create link use case: %v", err)
 	}
@@ -112,12 +109,12 @@ func TestLinkRegisterClusterReregisterAndReplaceAcrossAgents(t *testing.T) {
 	csrA := generateCSR(t, "agent-a")
 	csrB := generateCSR(t, "agent-b")
 
-	regA1, err := link.RegisterCluster(t.Context(), "cluster-z", "agent-a", "test", "", csrA)
+	regA1, err := link.RegisterCluster(t.Context(), "cluster-z", "agent-a", "test", csrA)
 	if err != nil {
 		t.Fatalf("register agent-a #1: %v", err)
 	}
 
-	regB, err := link.RegisterCluster(t.Context(), "cluster-z", "agent-b", "test", "", csrB)
+	regB, err := link.RegisterCluster(t.Context(), "cluster-z", "agent-b", "test", csrB)
 	if err != nil {
 		t.Fatalf("register agent-b: %v", err)
 	}
@@ -132,7 +129,7 @@ func TestLinkRegisterClusterReregisterAndReplaceAcrossAgents(t *testing.T) {
 		t.Fatalf("expected resolve to point to agent-b endpoint %q, got %q", regB.Endpoint, addrB)
 	}
 
-	regA2, err := link.RegisterCluster(t.Context(), "cluster-z", "agent-a", "test", "", csrA)
+	regA2, err := link.RegisterCluster(t.Context(), "cluster-z", "agent-a", "test", csrA)
 	if err != nil {
 		t.Fatalf("register agent-a #2: %v", err)
 	}

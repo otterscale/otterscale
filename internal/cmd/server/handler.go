@@ -105,7 +105,7 @@ func (h *Handler) handleRawManifest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	manifest, err := h.manifest.RenderManifest(r.Context(), &claims)
+	manifest, err := h.manifest.RenderManifest(r.Context(), claims)
 	if err != nil {
 		http.Error(w, "failed to render manifest", http.StatusInternalServerError)
 		return

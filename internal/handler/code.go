@@ -30,9 +30,6 @@ var domainCodeToConnectCode = map[core.ErrorCode]connect.Code{
 // then DomainError codes are mapped. Unrecognized errors fall back to
 // connect.CodeInternal.
 func domainErrorToConnectError(err error) error {
-	if errors.Is(err, core.ErrRancherProjectCacheNotReady) {
-		return connect.NewError(connect.CodeUnavailable, err)
-	}
 	// Concrete domain error types.
 	var invalidInput *core.ErrInvalidInput
 	if errors.As(err, &invalidInput) {

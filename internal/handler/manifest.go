@@ -29,6 +29,6 @@ func (h *ManifestHandler) VerifyManifestToken(ctx context.Context, token string)
 
 // RenderManifest generates the agent installation manifest for the
 // given token claims.
-func (h *ManifestHandler) RenderManifest(ctx context.Context, claims *core.ManifestTokenClaims) (string, error) {
-	return h.link.GenerateAgentManifest(ctx, claims.Cluster, claims.Sub, claims.ExtraUsers, claims.RancherProjectID)
+func (h *ManifestHandler) RenderManifest(ctx context.Context, claims core.ManifestTokenClaims) (string, error) {
+	return h.link.GenerateAgentManifest(ctx, claims.Cluster, claims.Sub, claims.ExtraUsers)
 }
