@@ -14,12 +14,13 @@ import (
 	"github.com/otterscale/otterscale/internal/transport/tunnel"
 )
 
-// Config holds the runtime parameters for an Agent.
+// Config holds the runtime parameters for an Agent. The Prometheus
+// proxy target is not listed here: it is read straight from the
+// application config by NewHandler.
 type Config struct {
-	Cluster            string
-	ServerURL          string
-	TunnelServerURL    string
-	ProxyPrometheusURL string
+	Cluster         string
+	ServerURL       string
+	TunnelServerURL string
 }
 
 // Agent binds a local HTTP reverse-proxy to a dynamically allocated

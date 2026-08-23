@@ -30,10 +30,9 @@ func NewAgentCommand(conf *config.Config, newAgent AgentInjector) (*cobra.Comman
 			defer cleanup()
 
 			cfg := &agent.Config{
-				Cluster:            conf.AgentCluster(),
-				ServerURL:          conf.AgentServerURL(),
-				TunnelServerURL:    conf.AgentTunnelServerURL(),
-				ProxyPrometheusURL: conf.AgentProxyPrometheusURL(),
+				Cluster:         conf.AgentCluster(),
+				ServerURL:       conf.AgentServerURL(),
+				TunnelServerURL: conf.AgentTunnelServerURL(),
 			}
 
 			return agt.Run(cmd.Context(), cfg)

@@ -55,22 +55,9 @@ func (s *Server) Run(ctx context.Context, cfg *Config) error {
 		return fmt.Errorf("keycloak realm URL is required but not configured")
 	}
 
-	// Determine the host for the TLS certificate SAN. Prefer the
-	// external tunnel URL (the address agents actually connect to)
-	// over the local listen address which may be 0.0.0.0.
-	var tunnelHost string
-	if cfg.ExternalTunnelURL != "" {
-		u, err := url.Parse(cfg.ExternalTunnelURL)
-		if err != nil {
-			return fmt.Errorf("parse external tunnel URL %q: %w", cfg.ExternalTunnelURL, err)
-		}
-		tunnelHost = u.Hostname()
-	} else {
-		var err error
-		tunnelHost, _, err = net.SplitHostPort(cfg.TunnelAddress)
-		if err != nil {
-			return fmt.Errorf("parse tunnel address %q: %w", cfg.TunnelAddress, err)
-		}
+	tunnelHost, err := resolveTunnelHost(cfg)
+	if err != nil {
+		return err
 	}
 
 	oidc, err := http.NewOIDC(cfg.KeycloakRealmURL, cfg.KeycloakClientID)
@@ -111,4 +98,55 @@ func (s *Server) Run(ctx context.Context, cfg *Config) error {
 	listeners = append(listeners, s.background...)
 
 	return transport.Serve(ctx, listeners...)
+}
+
+// resolveTunnelHost determines the host embedded as the SAN of the
+// tunnel server's TLS certificate. Agents dial the tunnel over mTLS
+// with the CA pinned and full hostname verification enabled, so this
+// host must be the name agents actually connect to — never a wildcard
+// listen address.
+//
+// The external tunnel URL is preferred; the local listen address is
+// only a fallback for setups that bind to a concrete address. Both
+// paths are validated at startup so a mismatch surfaces here instead
+// of as an opaque TLS handshake failure on every agent.
+func resolveTunnelHost(cfg *Config) (string, error) {
+	if cfg.ExternalTunnelURL != "" {
+		u, err := url.Parse(cfg.ExternalTunnelURL)
+		if err != nil {
+			return "", fmt.Errorf("parse external tunnel URL %q: %w", cfg.ExternalTunnelURL, err)
+		}
+		host := u.Hostname()
+		if host == "" {
+			return "", fmt.Errorf(
+				"external tunnel URL %q has no host; expected a form like https://tunnel.example.com:8300",
+				cfg.ExternalTunnelURL,
+			)
+		}
+		return host, nil
+	}
+
+	host, _, err := net.SplitHostPort(cfg.TunnelAddress)
+	if err != nil {
+		return "", fmt.Errorf("parse tunnel address %q: %w", cfg.TunnelAddress, err)
+	}
+	if isWildcardHost(host) {
+		return "", fmt.Errorf(
+			"tunnel address %q binds to a wildcard address, which cannot be used as the tunnel certificate host: "+
+				"set --external-tunnel-url to the URL agents dial (e.g. https://tunnel.example.com:8300)",
+			cfg.TunnelAddress,
+		)
+	}
+	return host, nil
+}
+
+// isWildcardHost reports whether host is empty or an unspecified IP
+// address (0.0.0.0, ::). Such a host would produce a certificate no
+// agent can verify, since agents dial a real hostname or address.
+func isWildcardHost(host string) bool {
+	if host == "" {
+		return true
+	}
+	ip := net.ParseIP(host)
+	return ip != nil && ip.IsUnspecified()
 }
