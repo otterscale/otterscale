@@ -89,9 +89,6 @@ func (s *Server) Run(ctx context.Context, cfg *Config) error {
 			"/grpc.reflection.v1.ServerReflection/ServerReflectionInfo",
 			linkv1.LinkServiceRegisterProcedure,
 		}),
-		http.WithPublicPathPrefixes([]string{
-			"/link/manifest/",
-		}),
 		http.WithMount(s.handler.Mount),
 	)
 	if err != nil {

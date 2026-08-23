@@ -9,17 +9,13 @@ import (
 	"github.com/otterscale/otterscale/internal/core"
 	"github.com/otterscale/otterscale/internal/pki"
 	"github.com/otterscale/otterscale/internal/providers/chisel"
-	"github.com/otterscale/otterscale/internal/providers/manifest"
 	tunneltransport "github.com/otterscale/otterscale/internal/transport/tunnel"
 )
 
 func TestLinkRegisterClusterUsesSingleSharedTunnelPort(t *testing.T) {
 	tunnel := newTestTunnel(t)
 	initTunnelServer(t, tunnel)
-	link, err := core.NewLinkUseCase(tunnel, "test", testManifestConfig(), manifest.NewRenderer(), nil)
-	if err != nil {
-		t.Fatalf("create link use case: %v", err)
-	}
+	link := core.NewLinkUseCase(tunnel, "test")
 
 	csrA := generateCSR(t, "agent-a")
 	csrB := generateCSR(t, "agent-b")
@@ -64,15 +60,12 @@ func TestLinkRegisterClusterUsesSingleSharedTunnelPort(t *testing.T) {
 func TestLinkRegisterClusterLatestAgentWinsForSameCluster(t *testing.T) {
 	tunnel := newTestTunnel(t)
 	initTunnelServer(t, tunnel)
-	link, err := core.NewLinkUseCase(tunnel, "test", testManifestConfig(), manifest.NewRenderer(), nil)
-	if err != nil {
-		t.Fatalf("create link use case: %v", err)
-	}
+	link := core.NewLinkUseCase(tunnel, "test")
 
 	csr1 := generateCSR(t, "agent-r-1")
 	csr2 := generateCSR(t, "agent-r-2")
 
-	_, err = link.RegisterCluster(t.Context(), "cluster-r", "agent-r-1", "test", csr1)
+	_, err := link.RegisterCluster(t.Context(), "cluster-r", "agent-r-1", "test", csr1)
 	if err != nil {
 		t.Fatalf("register agent-r-1: %v", err)
 	}
@@ -101,10 +94,7 @@ func TestLinkRegisterClusterLatestAgentWinsForSameCluster(t *testing.T) {
 func TestLinkRegisterClusterReregisterAndReplaceAcrossAgents(t *testing.T) {
 	tunnel := newTestTunnel(t)
 	initTunnelServer(t, tunnel)
-	link, err := core.NewLinkUseCase(tunnel, "test", testManifestConfig(), manifest.NewRenderer(), nil)
-	if err != nil {
-		t.Fatalf("create link use case: %v", err)
-	}
+	link := core.NewLinkUseCase(tunnel, "test")
 
 	csrA := generateCSR(t, "agent-a")
 	csrB := generateCSR(t, "agent-b")
@@ -182,16 +172,6 @@ func initTunnelServer(t *testing.T, tunnel *chisel.Service) {
 	t.Cleanup(func() {
 		_ = srv.Stop(t.Context())
 	})
-}
-
-// testManifestConfig returns an AgentManifestConfig with dummy values
-// suitable for integration tests.
-func testManifestConfig() core.AgentManifestConfig {
-	return core.AgentManifestConfig{
-		ServerURL: "https://test.example.com",
-		TunnelURL: "https://tunnel.example.com:8300",
-		HMACKey:   []byte("test-hmac-key-for-integration-tt"),
-	}
 }
 
 // generateCSR creates a fresh ECDSA key pair and PEM-encoded CSR for

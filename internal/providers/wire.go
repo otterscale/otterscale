@@ -8,10 +8,8 @@ import (
 	"github.com/otterscale/otterscale/internal/core"
 	"github.com/otterscale/otterscale/internal/providers/cache"
 	"github.com/otterscale/otterscale/internal/providers/chisel"
-	"github.com/otterscale/otterscale/internal/providers/harbor"
 	"github.com/otterscale/otterscale/internal/providers/helm"
 	"github.com/otterscale/otterscale/internal/providers/kubernetes"
-	"github.com/otterscale/otterscale/internal/providers/manifest"
 	"github.com/otterscale/otterscale/internal/providers/otterscale"
 	"github.com/otterscale/otterscale/internal/transport"
 )
@@ -28,14 +26,11 @@ var ProviderSet = wire.NewSet(
 	chisel.NewService,
 	wire.Bind(new(core.TunnelProvider), new(*chisel.Service)),
 	wire.Bind(new(transport.TunnelService), new(*chisel.Service)),
-	manifest.NewRenderer,
-	wire.Bind(new(core.ManifestRenderer), new(*manifest.Renderer)),
 	kubernetes.New,
 	kubernetes.NewDiscoveryClient,
 	kubernetes.NewResourceRepo,
 	kubernetes.NewRuntimeRepo,
 	otterscale.NewLinkRegistrar,
-	harbor.ProvideHarborClient,
 	helm.NewRepo,
 	ProvideDiscoveryCache,
 	wire.Bind(new(core.SchemaResolver), new(*cache.DiscoveryCache)),

@@ -14,10 +14,8 @@ import (
 	"github.com/otterscale/otterscale/internal/handler"
 	"github.com/otterscale/otterscale/internal/providers"
 	"github.com/otterscale/otterscale/internal/providers/chisel"
-	"github.com/otterscale/otterscale/internal/providers/harbor"
 	"github.com/otterscale/otterscale/internal/providers/helm"
 	"github.com/otterscale/otterscale/internal/providers/kubernetes"
-	"github.com/otterscale/otterscale/internal/providers/manifest"
 	"github.com/otterscale/otterscale/internal/providers/otterscale"
 	"github.com/spf13/cobra"
 )
@@ -47,16 +45,7 @@ func wireServer(v core.Version, conf *config.Config) (*server.Server, func(), er
 		return nil, nil, err
 	}
 	service := chisel.NewService(ca)
-	agentManifestConfig, err := manifest.ProvideAgentManifestConfig(conf, ca)
-	if err != nil {
-		return nil, nil, err
-	}
-	renderer := manifest.NewRenderer()
-	harborClient := harbor.ProvideHarborClient(conf)
-	linkUseCase, err := core.NewLinkUseCase(service, v, agentManifestConfig, renderer, harborClient)
-	if err != nil {
-		return nil, nil, err
-	}
+	linkUseCase := core.NewLinkUseCase(service, v)
 	linkService := handler.NewLinkService(linkUseCase)
 	kubernetesKubernetes := kubernetes.New(service)
 	discoveryClient := kubernetes.NewDiscoveryClient(kubernetesKubernetes)
@@ -72,9 +61,8 @@ func wireServer(v core.Version, conf *config.Config) (*server.Server, func(), er
 	sessionStore := core.NewSessionStore()
 	runtimeUseCase := core.NewRuntimeUseCase(discoveryClient, runtimeRepo, helmRepo, sessionStore)
 	runtimeService := handler.NewRuntimeService(runtimeUseCase)
-	manifestHandler := handler.NewManifestHandler(linkUseCase)
 	proxyHandler := handler.NewProxyHandler(service)
-	serverHandler := server.NewHandler(linkService, resourceService, runtimeService, manifestHandler, proxyHandler)
+	serverHandler := server.NewHandler(linkService, resourceService, runtimeService, proxyHandler)
 	backgroundListeners := server.ProvideBackgroundListeners(runtimeUseCase, discoveryCache)
 	serverServer := server.NewServer(serverHandler, service, backgroundListeners)
 	return serverServer, func() {

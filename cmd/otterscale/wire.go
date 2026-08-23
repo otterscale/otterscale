@@ -12,7 +12,6 @@ import (
 	"github.com/otterscale/otterscale/internal/handler"
 	"github.com/otterscale/otterscale/internal/providers"
 	"github.com/otterscale/otterscale/internal/providers/kubernetes"
-	"github.com/otterscale/otterscale/internal/providers/manifest"
 	"github.com/spf13/cobra"
 )
 
@@ -25,7 +24,7 @@ func wireCmd() (*cobra.Command, func(), error) {
 // use-cases, and infrastructure providers. The version parameter is
 // provided by the caller and flows through Wire to LinkUseCase.
 func wireServer(v core.Version, conf *config.Config) (*server.Server, func(), error) {
-	panic(wire.Build(cmd.ProviderSet, handler.ProviderSet, core.ProviderSet, providers.ProviderSet, provideCA, manifest.ProvideAgentManifestConfig))
+	panic(wire.Build(cmd.ProviderSet, handler.ProviderSet, core.ProviderSet, providers.ProviderSet, provideCA))
 }
 
 // wireAgent assembles a fully wired Agent with its handler and link
