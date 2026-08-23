@@ -15,9 +15,7 @@ const (
 	keyServerTunnelAddress     = "server.tunnel.address"
 	keyServerKeycloakRealmURL  = "server.keycloak.realm_url"
 	keyServerKeycloakClientID  = "server.keycloak.client_id"
-	keyServerExternalURL       = "server.external_url"
 	keyServerExternalTunnelURL = "server.external_tunnel_url"
-	keyServerHarborURL         = "server.harbor_url"
 )
 
 // Viper keys for agent-mode configuration.
@@ -25,7 +23,5 @@ const (
 	keyAgentCluster            = "agent.cluster"
 	keyAgentServerURL          = "agent.server_url"
 	keyAgentTunnelServerURL    = "agent.tunnel.server_url"
-	keyAgentBootstrap          = "agent.bootstrap"
 	keyAgentProxyPrometheusURL = "agent.proxy.prometheus_url"
-	keyAgentHarborURL          = "agent.harbor_url"
 )

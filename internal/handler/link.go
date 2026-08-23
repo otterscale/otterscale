@@ -6,10 +6,7 @@ package handler
 import (
 	"cmp"
 	"context"
-	"errors"
 	"slices"
-
-	"connectrpc.com/connect"
 
 	pb "github.com/otterscale/api/link/v1"
 
@@ -45,8 +42,8 @@ func (s *LinkService) ListLinks(ctx context.Context, _ *pb.ListLinksRequest) (*p
 
 // Register validates and signs the agent's CSR, allocates a tunnel
 // endpoint, and returns the signed certificate together with the CA
-// certificate for mTLS. The response includes the server version so
-// agents can detect mismatches and self-update.
+// certificate for mTLS. The response includes the server version for
+// diagnostics.
 func (s *LinkService) Register(ctx context.Context, req *pb.RegisterRequest) (*pb.RegisterResponse, error) {
 	reg, err := s.link.RegisterCluster(ctx, req.GetCluster(), req.GetAgentId(), req.GetAgentVersion(), req.GetCsr())
 	if err != nil {
@@ -58,38 +55,6 @@ func (s *LinkService) Register(ctx context.Context, req *pb.RegisterRequest) (*p
 	resp.SetCertificate(reg.Certificate)
 	resp.SetCaCertificate(reg.CACertificate)
 	resp.SetServerVersion(reg.ServerVersion)
-	return resp, nil
-}
-
-// GetAgentManifest returns a multi-document YAML manifest for
-// installing the otterscale agent on the caller's target cluster.
-// The manifest includes a ClusterRoleBinding that grants the
-// authenticated user cluster-admin access.
-func (s *LinkService) GetAgentManifest(ctx context.Context, req *pb.GetAgentManifestRequest) (*pb.GetAgentManifestResponse, error) {
-	userInfo, ok := core.UserInfoFromContext(ctx)
-	if !ok {
-		return nil, connect.NewError(connect.CodeUnauthenticated, errors.New("user info not found in context"))
-	}
-	if !core.IsAdmin(userInfo.Groups) {
-		return nil, connect.NewError(connect.CodePermissionDenied, errors.New("caller is not a member of the admin group"))
-	}
-
-	cluster := req.GetCluster()
-	extraUsers := req.GetExtraUsers()
-
-	manifest, err := s.link.GenerateAgentManifest(ctx, cluster, userInfo.Subject, extraUsers)
-	if err != nil {
-		return nil, domainErrorToConnectError(err)
-	}
-
-	url, err := s.link.IssueManifestURL(ctx, cluster, userInfo.Subject, extraUsers)
-	if err != nil {
-		return nil, domainErrorToConnectError(err)
-	}
-
-	resp := &pb.GetAgentManifestResponse{}
-	resp.SetManifest(manifest)
-	resp.SetUrl(url)
 	return resp, nil
 }
 

@@ -4,7 +4,6 @@ package main
 
 import (
 	"github.com/google/wire"
-	"github.com/otterscale/otterscale/internal/bootstrap"
 	"github.com/otterscale/otterscale/internal/cmd"
 	"github.com/otterscale/otterscale/internal/cmd/agent"
 	"github.com/otterscale/otterscale/internal/cmd/server"
@@ -13,7 +12,6 @@ import (
 	"github.com/otterscale/otterscale/internal/handler"
 	"github.com/otterscale/otterscale/internal/providers"
 	"github.com/otterscale/otterscale/internal/providers/kubernetes"
-	"github.com/otterscale/otterscale/internal/providers/manifest"
 	"github.com/spf13/cobra"
 )
 
@@ -26,12 +24,12 @@ func wireCmd() (*cobra.Command, func(), error) {
 // use-cases, and infrastructure providers. The version parameter is
 // provided by the caller and flows through Wire to LinkUseCase.
 func wireServer(v core.Version, conf *config.Config) (*server.Server, func(), error) {
-	panic(wire.Build(cmd.ProviderSet, handler.ProviderSet, core.ProviderSet, providers.ProviderSet, provideCA, manifest.ProvideAgentManifestConfig))
+	panic(wire.Build(cmd.ProviderSet, handler.ProviderSet, core.ProviderSet, providers.ProviderSet, provideCA))
 }
 
-// wireAgent assembles a fully wired Agent with its handler, link
-// registrar, and bootstrapper. The version parameter is provided by
-// the caller and flows through Wire to both LinkRegistrar and Agent.
+// wireAgent assembles a fully wired Agent with its handler and link
+// registrar. The version parameter is provided by the caller and flows
+// through Wire to the LinkRegistrar.
 func wireAgent(v core.Version, conf *config.Config) (*agent.Agent, func(), error) {
-	panic(wire.Build(cmd.ProviderSet, providers.ProviderSet, bootstrap.ProviderSet, kubernetes.ProvideInClusterConfig))
+	panic(wire.Build(cmd.ProviderSet, providers.ProviderSet, kubernetes.ProvideInClusterConfig))
 }
