@@ -7,7 +7,6 @@
 package main
 
 import (
-	"github.com/otterscale/otterscale/internal/bootstrap"
 	"github.com/otterscale/otterscale/internal/cmd/agent"
 	"github.com/otterscale/otterscale/internal/cmd/server"
 	"github.com/otterscale/otterscale/internal/config"
@@ -82,9 +81,9 @@ func wireServer(v core.Version, conf *config.Config) (*server.Server, func(), er
 	}, nil
 }
 
-// wireAgent assembles a fully wired Agent with its handler, link
-// registrar, and bootstrapper. The version parameter is provided by
-// the caller and flows through Wire to both LinkRegistrar and Agent.
+// wireAgent assembles a fully wired Agent with its handler and link
+// registrar. The version parameter is provided by the caller and flows
+// through Wire to the LinkRegistrar.
 func wireAgent(v core.Version, conf *config.Config) (*agent.Agent, func(), error) {
 	restConfig, err := kubernetes.ProvideInClusterConfig()
 	if err != nil {
@@ -95,12 +94,7 @@ func wireAgent(v core.Version, conf *config.Config) (*agent.Agent, func(), error
 	if err != nil {
 		return nil, nil, err
 	}
-	bootstrapper, err := bootstrap.New(restConfig)
-	if err != nil {
-		return nil, nil, err
-	}
-	selfUpdater := agent.NewUpdater(restConfig)
-	agentAgent := agent.NewAgent(restConfig, agentHandler, tunnelConsumer, v, bootstrapper, selfUpdater)
+	agentAgent := agent.NewAgent(agentHandler, tunnelConsumer)
 	return agentAgent, func() {
 	}, nil
 }

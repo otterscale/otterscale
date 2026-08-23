@@ -25,7 +25,5 @@ const (
 	keyAgentCluster            = "agent.cluster"
 	keyAgentServerURL          = "agent.server_url"
 	keyAgentTunnelServerURL    = "agent.tunnel.server_url"
-	keyAgentBootstrap          = "agent.bootstrap"
 	keyAgentProxyPrometheusURL = "agent.proxy.prometheus_url"
-	keyAgentHarborURL          = "agent.harbor_url"
 )

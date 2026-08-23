@@ -153,20 +153,8 @@ func (c *Config) AgentTunnelServerURL() string {
 	return c.v.GetString(keyAgentTunnelServerURL)
 }
 
-// AgentBootstrap returns whether the agent should run the Layer 0
-// bootstrap process on startup, installing FluxCD.
-func (c *Config) AgentBootstrap() bool {
-	return c.v.GetBool(keyAgentBootstrap)
-}
-
 // AgentProxyPrometheusURL returns the in-cluster Prometheus URL used by the
 // agent-side metrics proxy. An empty string disables the proxy.
 func (c *Config) AgentProxyPrometheusURL() string {
 	return c.v.GetString(keyAgentProxyPrometheusURL)
-}
-
-// AgentHarborURL returns the Harbor registry host used to register the OCI
-// modules HelmRepository during bootstrap. An empty string disables it.
-func (c *Config) AgentHarborURL() string {
-	return c.v.GetString(keyAgentHarborURL)
 }

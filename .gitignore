@@ -34,5 +34,3 @@ go.work.sum
 # Other files to ignore
 bin/
 *.pem
-manifests/bootstrap/**/*.yaml
-!manifests/bootstrap/platform/helmrepository.yaml

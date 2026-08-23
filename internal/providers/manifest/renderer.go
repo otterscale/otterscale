@@ -106,38 +106,6 @@ rules:
   - apiGroups: [""]
     resources: ["users", "groups"]
     verbs: ["impersonate"]
-  # Bootstrap: core resources required by FluxCD.
-  - apiGroups: [""]
-    resources: ["namespaces", "serviceaccounts", "services", "configmaps", "secrets", "resourcequotas"]
-    verbs: ["get", "create", "patch"]
-  # Bootstrap: workloads (FluxCD controllers).
-  - apiGroups: ["apps"]
-    resources: ["deployments"]
-    verbs: ["get", "create", "patch"]
-  # Bootstrap: RBAC for FluxCD and operator components.
-  - apiGroups: ["rbac.authorization.k8s.io"]
-    resources: ["clusterroles", "clusterrolebindings", "roles", "rolebindings"]
-    verbs: ["get", "create", "patch", "bind", "escalate"]
-  # Bootstrap: CRDs for FluxCD.
-  - apiGroups: ["apiextensions.k8s.io"]
-    resources: ["customresourcedefinitions"]
-    verbs: ["get", "create", "patch"]
-  # Bootstrap: NetworkPolicy (FluxCD hardening).
-  - apiGroups: ["networking.k8s.io"]
-    resources: ["networkpolicies"]
-    verbs: ["get", "create", "patch"]
-  # Bootstrap: Admission webhooks (cert-manager + tenant-operator).
-  - apiGroups: ["admissionregistration.k8s.io"]
-    resources: ["mutatingwebhookconfigurations", "validatingwebhookconfigurations"]
-    verbs: ["get", "create", "patch"]
-  # Bootstrap: cert-manager resources (tenant-operator webhook TLS).
-  - apiGroups: ["cert-manager.io"]
-    resources: ["certificates", "issuers"]
-    verbs: ["get", "create", "patch"]
-  # Bootstrap: FluxCD source resources (GitRepository, HelmRepository).
-  - apiGroups: ["source.toolkit.fluxcd.io"]
-    resources: ["gitrepositories", "helmrepositories"]
-    verbs: ["get", "create", "patch"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -149,33 +117,6 @@ subjects:
     namespace: otterscale-system
 roleRef:
   kind: ClusterRole
-  name: otterscale-agent
-  apiGroup: rbac.authorization.k8s.io
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
-metadata:
-  name: otterscale-agent
-  namespace: otterscale-system
-rules:
-  # The agent self-updates by patching its own Deployment image when
-  # the server advertises a newer version.
-  - apiGroups: ["apps"]
-    resources: ["deployments"]
-    resourceNames: ["otterscale-agent"]
-    verbs: ["get", "patch"]
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  name: otterscale-agent
-  namespace: otterscale-system
-subjects:
-  - kind: ServiceAccount
-    name: otterscale-agent
-    namespace: otterscale-system
-roleRef:
-  kind: Role
   name: otterscale-agent
   apiGroup: rbac.authorization.k8s.io
 ---
@@ -266,10 +207,6 @@ spec:
               value: {{ yamlQuote .TunnelURL }}
             - name: OTTERSCALE_AGENT_CLUSTER
               value: {{ yamlQuote .Cluster }}
-{{- if .HarborURL }}
-            - name: OTTERSCALE_AGENT_HARBOR_URL
-              value: {{ yamlQuote .HarborURL }}
-{{- end }}
 {{- if .HarborRobotName }}
 ---
 apiVersion: v1
