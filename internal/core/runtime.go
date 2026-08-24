@@ -23,8 +23,6 @@ type RuntimeRepo interface {
 	PodLogs(ctx context.Context, cluster, namespace, name string, opts PodLogOptions) (io.ReadCloser, error)
 	// Exec starts an exec session and blocks until it completes.
 	Exec(ctx context.Context, cluster, namespace, name string, opts *ExecOptions) error
-	// GetScale reads the current replica count via the /scale subresource.
-	GetScale(ctx context.Context, cluster string, gvr schema.GroupVersionResource, namespace, name string) (int32, error)
 	// UpdateScale sets the desired replica count via the /scale subresource
 	// and returns the updated value.
 	UpdateScale(ctx context.Context, cluster string, gvr schema.GroupVersionResource, namespace, name string, replicas int32) (int32, error)
@@ -441,19 +439,6 @@ func (uc *RuntimeUseCase) CleanupVNC(_ context.Context, sessionID string) {
 	}
 	sess.Cancel()
 	sess.Writer.Close()
-}
-
-// GetScale validates the inputs, looks up the GVR, and returns the
-// current replica count without modifying it.
-func (uc *RuntimeUseCase) GetScale(ctx context.Context, id *ResourceIdentifier) (int32, error) {
-	if id.Name == "" {
-		return 0, &ErrInvalidInput{Field: "name", Message: "resource name is required"}
-	}
-	gvr, err := id.lookupGVR(ctx, uc.discovery)
-	if err != nil {
-		return 0, err
-	}
-	return uc.runtime.GetScale(ctx, id.Cluster, gvr, id.Namespace, id.Name)
 }
 
 // Scale validates the inputs, looks up the GVR, updates the desired

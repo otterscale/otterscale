@@ -2,15 +2,15 @@
 // short-lived TLS certificates used in agent-to-server mTLS tunnels.
 //
 // The CA key pair is generated using crypto/rand (NIST SP 800-90A DRBG
-// in FIPS 140-3 mode) and must be persisted externally so that
-// restarts reload the same CA, keeping previously issued agent
-// certificates valid until they expire.
+// in FIPS 140-3 mode). It is ephemeral: a fresh CA is created on every
+// server start and is never persisted, so previously issued agent
+// certificates stop being trusted after a restart. Agents recover by
+// re-registering through the link API, which signs a new CSR.
 package pki
 
 import (
 	"crypto/ecdsa"
 	"crypto/elliptic"
-	"crypto/hkdf"
 	"crypto/rand"
 	"crypto/sha256"
 	"crypto/x509"
@@ -39,9 +39,6 @@ type CA struct {
 // NewCA generates a new ECDSA P-256 CA key pair and self-signed
 // certificate using crypto/rand.Reader. In FIPS 140-3 mode the
 // reader is backed by a NIST SP 800-90A DRBG.
-//
-// The caller is responsible for persisting CertPEM() and KeyPEM()
-// so that subsequent restarts can reload the same CA via LoadCA.
 func NewCA() (*CA, error) {
 	key, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
 	if err != nil {
@@ -83,78 +80,10 @@ func NewCA() (*CA, error) {
 	return &CA{cert: cert, key: key, certPEM: certPEM}, nil
 }
 
-// LoadCA reconstructs a CA from PEM-encoded certificate and private
-// key material. It validates that the certificate is a CA and that the
-// private key matches the certificate's public key.
-func LoadCA(certPEM, keyPEM []byte) (*CA, error) {
-	certBlock, _ := pem.Decode(certPEM)
-	if certBlock == nil {
-		return nil, fmt.Errorf("pki: failed to decode CA certificate PEM")
-	}
-
-	cert, err := x509.ParseCertificate(certBlock.Bytes)
-	if err != nil {
-		return nil, fmt.Errorf("pki: parse CA cert: %w", err)
-	}
-
-	if !cert.IsCA {
-		return nil, fmt.Errorf("pki: certificate is not a CA")
-	}
-
-	keyBlock, _ := pem.Decode(keyPEM)
-	if keyBlock == nil {
-		return nil, fmt.Errorf("pki: failed to decode CA private key PEM")
-	}
-
-	key, err := x509.ParseECPrivateKey(keyBlock.Bytes)
-	if err != nil {
-		return nil, fmt.Errorf("pki: parse CA key: %w", err)
-	}
-
-	// Verify the private key corresponds to the certificate's public
-	// key by comparing the public key parameters.
-	certPub, ok := cert.PublicKey.(*ecdsa.PublicKey)
-	if !ok {
-		return nil, fmt.Errorf("pki: CA certificate does not contain an ECDSA public key")
-	}
-	if !key.PublicKey.Equal(certPub) {
-		return nil, fmt.Errorf("pki: CA private key does not match certificate public key")
-	}
-
-	return &CA{cert: cert, key: key, certPEM: certPEM}, nil
-}
-
 // CertPEM returns the PEM-encoded CA certificate. Agents use this to
 // verify the tunnel server's identity and to be verified themselves.
 func (ca *CA) CertPEM() []byte {
 	return ca.certPEM
-}
-
-// KeyPEM returns the PEM-encoded CA private key for external
-// persistence. The caller should store this securely (e.g. with
-// 0600 permissions) so the CA can be reloaded via LoadCA.
-func (ca *CA) KeyPEM() ([]byte, error) {
-	keyDER, err := x509.MarshalECPrivateKey(ca.key)
-	if err != nil {
-		return nil, fmt.Errorf("pki: marshal CA key: %w", err)
-	}
-	return pem.EncodeToMemory(&pem.Block{Type: "EC PRIVATE KEY", Bytes: keyDER}), nil
-}
-
-// DeriveHMACKey deterministically derives a 32-byte HMAC key from the
-// CA's private key and a label using HKDF (RFC 5869). The derivation
-// is deterministic for the same CA key and label, so the result
-// survives server restarts as long as the same CA is loaded.
-//
-// This uses crypto/hkdf which is inside the Go Cryptographic Module's
-// FIPS 140-3 boundary.
-func (ca *CA) DeriveHMACKey(label string) ([]byte, error) {
-	keyDER, err := x509.MarshalECPrivateKey(ca.key)
-	if err != nil {
-		return nil, fmt.Errorf("pki: marshal key for HKDF: %w", err)
-	}
-	const hmacKeyLen = 32 // 256-bit HMAC key
-	return hkdf.Key(sha256.New, keyDER, nil, label, hmacKeyLen)
 }
 
 // SignCSR validates a PEM-encoded PKCS#10 certificate signing request

@@ -26,10 +26,6 @@ func (m *mockRuntimeRepo) Exec(context.Context, string, string, string, *ExecOpt
 	return nil
 }
 
-func (m *mockRuntimeRepo) GetScale(context.Context, string, schema.GroupVersionResource, string, string) (int32, error) {
-	return 0, nil
-}
-
 func (m *mockRuntimeRepo) UpdateScale(context.Context, string, schema.GroupVersionResource, string, string, int32) (int32, error) {
 	return 0, nil
 }

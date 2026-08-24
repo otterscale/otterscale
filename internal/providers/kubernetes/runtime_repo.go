@@ -144,29 +144,6 @@ func (r *runtimeRepo) Exec(ctx context.Context, cluster, namespace, name string,
 // Scale
 // ---------------------------------------------------------------------------
 
-// GetScale reads the current replica count via the /scale subresource.
-func (r *runtimeRepo) GetScale(ctx context.Context, cluster string, gvr schema.GroupVersionResource, namespace, name string) (int32, error) {
-	client, err := r.dynamicClient(ctx, cluster)
-	if err != nil {
-		return 0, err
-	}
-
-	scaleObj, err := client.Resource(gvr).Namespace(namespace).Get(ctx, name, metav1.GetOptions{}, "scale")
-	if err != nil {
-		return 0, wrapK8sError(err)
-	}
-
-	replicas, found, err := unstructured.NestedInt64(scaleObj.Object, "spec", "replicas")
-	if err != nil || !found {
-		return 0, &core.DomainError{Code: core.ErrorCodeInternal, Message: "failed to read spec.replicas from scale subresource"}
-	}
-
-	if replicas < math.MinInt32 || replicas > math.MaxInt32 {
-		return 0, &core.DomainError{Code: core.ErrorCodeInternal, Message: "spec.replicas out of int32 range"}
-	}
-	return int32(replicas), nil
-}
-
 // UpdateScale sets the desired replica count via the /scale subresource.
 func (r *runtimeRepo) UpdateScale(ctx context.Context, cluster string, gvr schema.GroupVersionResource, namespace, name string, replicas int32) (int32, error) {
 	client, err := r.dynamicClient(ctx, cluster)
