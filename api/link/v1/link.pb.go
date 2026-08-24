@@ -7,7 +7,6 @@
 package linkv1
 
 import (
-	_ "github.com/otterscale/otterscale/api"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -612,7 +611,7 @@ var File_link_v1_link_proto protoreflect.FileDescriptor
 
 const file_link_v1_link_proto_rawDesc = "" +
 	"\n" +
-	"\x12link/v1/link.proto\x12\x12otterscale.link.v1\x1a\rfeature.proto\"E\n" +
+	"\x12link/v1/link.proto\x12\x12otterscale.link.v1\"E\n" +
 	"\x04Link\x12\x18\n" +
 	"\acluster\x18\x01 \x01(\tR\acluster\x12#\n" +
 	"\ragent_version\x18\x02 \x01(\tR\fagentVersion\"\x12\n" +
@@ -628,12 +627,10 @@ const file_link_v1_link_proto_rawDesc = "" +
 	"\bendpoint\x18\x01 \x01(\tR\bendpoint\x12 \n" +
 	"\vcertificate\x18\x02 \x01(\fR\vcertificate\x12%\n" +
 	"\x0eca_certificate\x18\x03 \x01(\fR\rcaCertificate\x12%\n" +
-	"\x0eserver_version\x18\x04 \x01(\tR\rserverVersion2\xe8\x01\n" +
-	"\vLinkService\x12m\n" +
-	"\tListLinks\x12$.otterscale.link.v1.ListLinksRequest\x1a%.otterscale.link.v1.ListLinksResponse\"\x13\x8a\xdf\xd5\x1d\x0e\n" +
-	"\flink-enabled\x12j\n" +
-	"\bRegister\x12#.otterscale.link.v1.RegisterRequest\x1a$.otterscale.link.v1.RegisterResponse\"\x13\x8a\xdf\xd5\x1d\x0e\n" +
-	"\flink-enabledB5Z3github.com/otterscale/otterscale/api/link/v1;linkv1b\beditionsp\xe8\a"
+	"\x0eserver_version\x18\x04 \x01(\tR\rserverVersion2\xc2\x01\n" +
+	"\vLinkService\x12Z\n" +
+	"\tListLinks\x12$.otterscale.link.v1.ListLinksRequest\x1a%.otterscale.link.v1.ListLinksResponse\"\x00\x12W\n" +
+	"\bRegister\x12#.otterscale.link.v1.RegisterRequest\x1a$.otterscale.link.v1.RegisterResponse\"\x00B5Z3github.com/otterscale/otterscale/api/link/v1;linkv1b\beditionsp\xe8\a"
 
 var file_link_v1_link_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_link_v1_link_proto_goTypes = []any{

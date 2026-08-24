@@ -1548,14 +1548,6 @@ components:
          variants. Absence of any variant indicates an error.
 
          The JSON representation for `Value` is JSON value.
-    otterscale.api.Feature:
-      type: object
-      properties:
-        name:
-          type: string
-          title: name
-      title: Feature
-      additionalProperties: false
     otterscale.link.v1.Link:
       type: object
       properties:

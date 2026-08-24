@@ -7,7 +7,6 @@
 package resourcev1
 
 import (
-	_ "github.com/otterscale/otterscale/api"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
@@ -3552,7 +3551,7 @@ var File_resource_v1_resource_proto protoreflect.FileDescriptor
 
 const file_resource_v1_resource_proto_rawDesc = "" +
 	"\n" +
-	"\x1aresource/v1/resource.proto\x12\x16otterscale.resource.v1\x1a\rfeature.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1cgoogle/protobuf/struct.proto\"\xc4\x01\n" +
+	"\x1aresource/v1/resource.proto\x12\x16otterscale.resource.v1\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1cgoogle/protobuf/struct.proto\"\xc4\x01\n" +
 	"\vAPIResource\x12\x14\n" +
 	"\x05group\x18\x01 \x01(\tR\x05group\x12\x18\n" +
 	"\aversion\x18\x02 \x01(\tR\aversion\x12\x1a\n" +
@@ -3666,28 +3665,18 @@ const file_resource_v1_resource_proto_rawDesc = "" +
 	"\fTYPE_DELETED\x10\x03\x12\x11\n" +
 	"\rTYPE_BOOKMARK\x10\x04\x12\x0e\n" +
 	"\n" +
-	"TYPE_ERROR\x10\x052\xda\b\n" +
-	"\x0fResourceService\x12y\n" +
-	"\tDiscovery\x12(.otterscale.resource.v1.DiscoveryRequest\x1a).otterscale.resource.v1.DiscoveryResponse\"\x17\x8a\xdf\xd5\x1d\x12\n" +
-	"\x10resource-enabled\x12p\n" +
-	"\x06Schema\x12%.otterscale.resource.v1.SchemaRequest\x1a&.otterscale.resource.v1.SchemaResponse\"\x17\x8a\xdf\xd5\x1d\x12\n" +
-	"\x10resource-enabled\x12j\n" +
-	"\x04List\x12#.otterscale.resource.v1.ListRequest\x1a$.otterscale.resource.v1.ListResponse\"\x17\x8a\xdf\xd5\x1d\x12\n" +
-	"\x10resource-enabled\x12d\n" +
-	"\x03Get\x12\".otterscale.resource.v1.GetRequest\x1a .otterscale.resource.v1.Resource\"\x17\x8a\xdf\xd5\x1d\x12\n" +
-	"\x10resource-enabled\x12v\n" +
-	"\bDescribe\x12'.otterscale.resource.v1.DescribeRequest\x1a(.otterscale.resource.v1.DescribeResponse\"\x17\x8a\xdf\xd5\x1d\x12\n" +
-	"\x10resource-enabled\x12j\n" +
-	"\x06Create\x12%.otterscale.resource.v1.CreateRequest\x1a .otterscale.resource.v1.Resource\"\x17\x8a\xdf\xd5\x1d\x12\n" +
-	"\x10resource-enabled\x12h\n" +
-	"\x05Apply\x12$.otterscale.resource.v1.ApplyRequest\x1a .otterscale.resource.v1.Resource\"\x17\x8a\xdf\xd5\x1d\x12\n" +
-	"\x10resource-enabled\x12j\n" +
-	"\x06Update\x12%.otterscale.resource.v1.UpdateRequest\x1a .otterscale.resource.v1.Resource\"\x17\x8a\xdf\xd5\x1d\x12\n" +
-	"\x10resource-enabled\x12`\n" +
-	"\x06Delete\x12%.otterscale.resource.v1.DeleteRequest\x1a\x16.google.protobuf.Empty\"\x17\x8a\xdf\xd5\x1d\x12\n" +
-	"\x10resource-enabled\x12l\n" +
-	"\x05Watch\x12$.otterscale.resource.v1.WatchRequest\x1a\".otterscale.resource.v1.WatchEvent\"\x17\x8a\xdf\xd5\x1d\x12\n" +
-	"\x10resource-enabled0\x01B=Z;github.com/otterscale/otterscale/api/resource/v1;resourcev1b\beditionsp\xe8\a"
+	"TYPE_ERROR\x10\x052\xf4\x06\n" +
+	"\x0fResourceService\x12b\n" +
+	"\tDiscovery\x12(.otterscale.resource.v1.DiscoveryRequest\x1a).otterscale.resource.v1.DiscoveryResponse\"\x00\x12Y\n" +
+	"\x06Schema\x12%.otterscale.resource.v1.SchemaRequest\x1a&.otterscale.resource.v1.SchemaResponse\"\x00\x12S\n" +
+	"\x04List\x12#.otterscale.resource.v1.ListRequest\x1a$.otterscale.resource.v1.ListResponse\"\x00\x12M\n" +
+	"\x03Get\x12\".otterscale.resource.v1.GetRequest\x1a .otterscale.resource.v1.Resource\"\x00\x12_\n" +
+	"\bDescribe\x12'.otterscale.resource.v1.DescribeRequest\x1a(.otterscale.resource.v1.DescribeResponse\"\x00\x12S\n" +
+	"\x06Create\x12%.otterscale.resource.v1.CreateRequest\x1a .otterscale.resource.v1.Resource\"\x00\x12Q\n" +
+	"\x05Apply\x12$.otterscale.resource.v1.ApplyRequest\x1a .otterscale.resource.v1.Resource\"\x00\x12S\n" +
+	"\x06Update\x12%.otterscale.resource.v1.UpdateRequest\x1a .otterscale.resource.v1.Resource\"\x00\x12I\n" +
+	"\x06Delete\x12%.otterscale.resource.v1.DeleteRequest\x1a\x16.google.protobuf.Empty\"\x00\x12U\n" +
+	"\x05Watch\x12$.otterscale.resource.v1.WatchRequest\x1a\".otterscale.resource.v1.WatchEvent\"\x000\x01B=Z;github.com/otterscale/otterscale/api/resource/v1;resourcev1b\beditionsp\xe8\a"
 
 var file_resource_v1_resource_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
 var file_resource_v1_resource_proto_msgTypes = make([]protoimpl.MessageInfo, 17)

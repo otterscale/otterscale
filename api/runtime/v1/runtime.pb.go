@@ -7,7 +7,6 @@
 package runtimev1
 
 import (
-	_ "github.com/otterscale/otterscale/api"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
@@ -3287,7 +3286,7 @@ var File_runtime_v1_runtime_proto protoreflect.FileDescriptor
 
 const file_runtime_v1_runtime_proto_rawDesc = "" +
 	"\n" +
-	"\x18runtime/v1/runtime.proto\x12\x15otterscale.runtime.v1\x1a\rfeature.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\x82\x03\n" +
+	"\x18runtime/v1/runtime.proto\x12\x15otterscale.runtime.v1\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\x82\x03\n" +
 	"\rPodLogRequest\x12\x18\n" +
 	"\acluster\x18\x01 \x01(\tR\acluster\x12\x1c\n" +
 	"\tnamespace\x18\x02 \x01(\tR\tnamespace\x12\x12\n" +
@@ -3393,34 +3392,21 @@ const file_runtime_v1_runtime_proto_rawDesc = "" +
 	"\aversion\x18\x03 \x01(\tR\aversion\"C\n" +
 	"\x11ShowChartResponse\x12\x16\n" +
 	"\x06values\x18\x01 \x01(\fR\x06values\x12\x16\n" +
-	"\x06readme\x18\x02 \x01(\fR\x06readme2\xe2\n" +
+	"\x06readme\x18\x02 \x01(\fR\x06readme2\xd9\b\n" +
+	"\x0eRuntimeService\x12Y\n" +
+	"\x06PodLog\x12$.otterscale.runtime.v1.PodLogRequest\x1a%.otterscale.runtime.v1.PodLogResponse\"\x000\x01\x12e\n" +
 	"\n" +
-	"\x0eRuntimeService\x12o\n" +
-	"\x06PodLog\x12$.otterscale.runtime.v1.PodLogRequest\x1a%.otterscale.runtime.v1.PodLogResponse\"\x16\x8a\xdf\xd5\x1d\x11\n" +
-	"\x0fruntime-enabled0\x01\x12{\n" +
-	"\n" +
-	"ExecuteTTY\x12(.otterscale.runtime.v1.ExecuteTTYRequest\x1a).otterscale.runtime.v1.ExecuteTTYResponse\"\x16\x8a\xdf\xd5\x1d\x11\n" +
-	"\x0fruntime-enabled0\x01\x12b\n" +
-	"\bWriteTTY\x12&.otterscale.runtime.v1.WriteTTYRequest\x1a\x16.google.protobuf.Empty\"\x16\x8a\xdf\xd5\x1d\x11\n" +
-	"\x0fruntime-enabled\x12d\n" +
-	"\tResizeTTY\x12'.otterscale.runtime.v1.ResizeTTYRequest\x1a\x16.google.protobuf.Empty\"\x16\x8a\xdf\xd5\x1d\x11\n" +
-	"\x0fruntime-enabled\x12~\n" +
-	"\vPortForward\x12).otterscale.runtime.v1.PortForwardRequest\x1a*.otterscale.runtime.v1.PortForwardResponse\"\x16\x8a\xdf\xd5\x1d\x11\n" +
-	"\x0fruntime-enabled0\x01\x12r\n" +
-	"\x10WritePortForward\x12..otterscale.runtime.v1.WritePortForwardRequest\x1a\x16.google.protobuf.Empty\"\x16\x8a\xdf\xd5\x1d\x11\n" +
-	"\x0fruntime-enabled\x12j\n" +
-	"\x05Scale\x12#.otterscale.runtime.v1.ScaleRequest\x1a$.otterscale.runtime.v1.ScaleResponse\"\x16\x8a\xdf\xd5\x1d\x11\n" +
-	"\x0fruntime-enabled\x12`\n" +
-	"\aRestart\x12%.otterscale.runtime.v1.RestartRequest\x1a\x16.google.protobuf.Empty\"\x16\x8a\xdf\xd5\x1d\x11\n" +
-	"\x0fruntime-enabled\x12\x8e\x01\n" +
-	"\x11SubResourceAction\x12/.otterscale.runtime.v1.SubResourceActionRequest\x1a0.otterscale.runtime.v1.SubResourceActionResponse\"\x16\x8a\xdf\xd5\x1d\x11\n" +
-	"\x0fruntime-enabled\x12f\n" +
-	"\x03VNC\x12!.otterscale.runtime.v1.VNCRequest\x1a\".otterscale.runtime.v1.VNCResponse\"\x16\x8a\xdf\xd5\x1d\x11\n" +
-	"\x0fruntime-enabled0\x01\x12b\n" +
-	"\bWriteVNC\x12&.otterscale.runtime.v1.WriteVNCRequest\x1a\x16.google.protobuf.Empty\"\x16\x8a\xdf\xd5\x1d\x11\n" +
-	"\x0fruntime-enabled\x12y\n" +
-	"\tShowChart\x12'.otterscale.runtime.v1.ShowChartRequest\x1a(.otterscale.runtime.v1.ShowChartResponse\"\x19\x8a\xdf\xd5\x1d\x11\n" +
-	"\x0fruntime-enabled\x90\x02\x01B;Z9github.com/otterscale/otterscale/api/runtime/v1;runtimev1b\beditionsp\xe8\a"
+	"ExecuteTTY\x12(.otterscale.runtime.v1.ExecuteTTYRequest\x1a).otterscale.runtime.v1.ExecuteTTYResponse\"\x000\x01\x12L\n" +
+	"\bWriteTTY\x12&.otterscale.runtime.v1.WriteTTYRequest\x1a\x16.google.protobuf.Empty\"\x00\x12N\n" +
+	"\tResizeTTY\x12'.otterscale.runtime.v1.ResizeTTYRequest\x1a\x16.google.protobuf.Empty\"\x00\x12h\n" +
+	"\vPortForward\x12).otterscale.runtime.v1.PortForwardRequest\x1a*.otterscale.runtime.v1.PortForwardResponse\"\x000\x01\x12\\\n" +
+	"\x10WritePortForward\x12..otterscale.runtime.v1.WritePortForwardRequest\x1a\x16.google.protobuf.Empty\"\x00\x12T\n" +
+	"\x05Scale\x12#.otterscale.runtime.v1.ScaleRequest\x1a$.otterscale.runtime.v1.ScaleResponse\"\x00\x12J\n" +
+	"\aRestart\x12%.otterscale.runtime.v1.RestartRequest\x1a\x16.google.protobuf.Empty\"\x00\x12x\n" +
+	"\x11SubResourceAction\x12/.otterscale.runtime.v1.SubResourceActionRequest\x1a0.otterscale.runtime.v1.SubResourceActionResponse\"\x00\x12P\n" +
+	"\x03VNC\x12!.otterscale.runtime.v1.VNCRequest\x1a\".otterscale.runtime.v1.VNCResponse\"\x000\x01\x12L\n" +
+	"\bWriteVNC\x12&.otterscale.runtime.v1.WriteVNCRequest\x1a\x16.google.protobuf.Empty\"\x00\x12c\n" +
+	"\tShowChart\x12'.otterscale.runtime.v1.ShowChartRequest\x1a(.otterscale.runtime.v1.ShowChartResponse\"\x03\x90\x02\x01B;Z9github.com/otterscale/otterscale/api/runtime/v1;runtimev1b\beditionsp\xe8\a"
 
 var file_runtime_v1_runtime_proto_msgTypes = make([]protoimpl.MessageInfo, 19)
 var file_runtime_v1_runtime_proto_goTypes = []any{

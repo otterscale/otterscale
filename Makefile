@@ -30,7 +30,9 @@ proto-lint: buf
 
 # Override in CI to compare against the pull request base branch, e.g.
 # make proto-breaking PROTO_BREAKING_AGAINST="https://github.com/otterscale/otterscale.git#branch=main"
-PROTO_BREAKING_AGAINST ?= .git#branch=main
+# The '#' must stay escaped: an unescaped one starts a make comment and would
+# silently reduce this to '.git', comparing against the current HEAD instead.
+PROTO_BREAKING_AGAINST ?= .git\#branch=main
 
 .PHONY: proto-breaking
 # check proto files for breaking changes against the main branch

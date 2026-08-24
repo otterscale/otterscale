@@ -2,7 +2,6 @@ edition = "2023";
 
 package otterscale.runtime.v1;
 
-import "feature.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/struct.proto";
 import "google/protobuf/timestamp.proto";
@@ -14,78 +13,55 @@ option go_package = "github.com/otterscale/otterscale/api/runtime/v1;runtimev1";
 // and rolling restarts.
 service RuntimeService {
   // PodLog streams log output from a container, similar to `kubectl logs -f`.
-  rpc PodLog(PodLogRequest) returns (stream PodLogResponse) {
-    option (otterscale.api.feature) = {name: "runtime-enabled"};
-  }
+  rpc PodLog(PodLogRequest) returns (stream PodLogResponse) {}
 
   // ExecuteTTY starts an interactive exec session in a container and streams
   // stdout/stderr back. Due to browser limitations, bidirectional streaming
   // cannot be used; stdin is sent via the separate WriteTTY RPC.
-  rpc ExecuteTTY(ExecuteTTYRequest) returns (stream ExecuteTTYResponse) {
-    option (otterscale.api.feature) = {name: "runtime-enabled"};
-  }
+  rpc ExecuteTTY(ExecuteTTYRequest) returns (stream ExecuteTTYResponse) {}
 
   // WriteTTY sends stdin data to an active exec session identified by session_id.
-  rpc WriteTTY(WriteTTYRequest) returns (google.protobuf.Empty) {
-    option (otterscale.api.feature) = {name: "runtime-enabled"};
-  }
+  rpc WriteTTY(WriteTTYRequest) returns (google.protobuf.Empty) {}
 
   // ResizeTTY updates the terminal dimensions of an active exec session.
-  rpc ResizeTTY(ResizeTTYRequest) returns (google.protobuf.Empty) {
-    option (otterscale.api.feature) = {name: "runtime-enabled"};
-  }
+  rpc ResizeTTY(ResizeTTYRequest) returns (google.protobuf.Empty) {}
 
   // PortForward opens a port-forward session to a pod and streams data back.
   // Due to browser limitations, bidirectional streaming cannot be used;
   // data to the pod is sent via the separate WritePortForward RPC.
-  rpc PortForward(PortForwardRequest) returns (stream PortForwardResponse) {
-    option (otterscale.api.feature) = {name: "runtime-enabled"};
-  }
+  rpc PortForward(PortForwardRequest) returns (stream PortForwardResponse) {}
 
   // WritePortForward sends data to an active port-forward session.
-  rpc WritePortForward(WritePortForwardRequest) returns (google.protobuf.Empty) {
-    option (otterscale.api.feature) = {name: "runtime-enabled"};
-  }
+  rpc WritePortForward(WritePortForwardRequest) returns (google.protobuf.Empty) {}
 
   // Scale updates the replica count of a scalable workload
   // (Deployment, StatefulSet, ReplicaSet) via the /scale subresource.
-  rpc Scale(ScaleRequest) returns (ScaleResponse) {
-    option (otterscale.api.feature) = {name: "runtime-enabled"};
-  }
+  rpc Scale(ScaleRequest) returns (ScaleResponse) {}
 
   // Restart triggers a rolling restart of a workload by patching the
   // pod template annotation, equivalent to `kubectl rollout restart`.
-  rpc Restart(RestartRequest) returns (google.protobuf.Empty) {
-    option (otterscale.api.feature) = {name: "runtime-enabled"};
-  }
+  rpc Restart(RestartRequest) returns (google.protobuf.Empty) {}
 
   // SubResourceAction performs a generic action on a Kubernetes
   // subresource, such as KubeVirt VM start/stop/restart. The request
   // is forwarded to kube-apiserver via impersonation, so RBAC is
   // enforced automatically. Only PUT and POST methods are allowed.
-  rpc SubResourceAction(SubResourceActionRequest) returns (SubResourceActionResponse) {
-    option (otterscale.api.feature) = {name: "runtime-enabled"};
-  }
+  rpc SubResourceAction(SubResourceActionRequest) returns (SubResourceActionResponse) {}
 
   // VNC opens a VNC session to a KubeVirt VirtualMachineInstance and
   // streams raw VNC protocol data back. Due to browser limitations,
   // bidirectional streaming cannot be used; data to the VMI is sent
   // via the separate WriteVNC RPC.
-  rpc VNC(VNCRequest) returns (stream VNCResponse) {
-    option (otterscale.api.feature) = {name: "runtime-enabled"};
-  }
+  rpc VNC(VNCRequest) returns (stream VNCResponse) {}
 
   // WriteVNC sends VNC data to an active VNC session.
-  rpc WriteVNC(WriteVNCRequest) returns (google.protobuf.Empty) {
-    option (otterscale.api.feature) = {name: "runtime-enabled"};
-  }
+  rpc WriteVNC(WriteVNCRequest) returns (google.protobuf.Empty) {}
 
   // ShowChart retrieves the default values.yaml and README.md from
   // a Helm chart in a remote repository (HTTP or OCI). This executes
   // server-side and does not require a cluster connection.
   rpc ShowChart(ShowChartRequest) returns (ShowChartResponse) {
     option idempotency_level = NO_SIDE_EFFECTS;
-    option (otterscale.api.feature) = {name: "runtime-enabled"};
   }
 }
 

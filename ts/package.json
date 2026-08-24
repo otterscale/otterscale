@@ -3,10 +3,6 @@
   "version": "0.0.1",
   "type": "module",
   "exports": {
-    "./feature": {
-      "types": "./src/feature_pb.d.ts",
-      "import": "./src/feature_pb.js"
-    },
     "./link/v1": {
       "types": "./src/link/v1/link_pb.d.ts",
       "import": "./src/link/v1/link_pb.js"

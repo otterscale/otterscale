@@ -2,7 +2,6 @@ edition = "2023";
 
 package otterscale.resource.v1;
 
-import "feature.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/struct.proto";
 
@@ -12,62 +11,42 @@ option go_package = "github.com/otterscale/otterscale/api/resource/v1;resourcev1
 // including native objects (Pods, Deployments) and Custom Resource Definitions (CRDs).
 service ResourceService {
   // Discovery retrieves the available API resources in the specified cluster.
-  rpc Discovery(DiscoveryRequest) returns (DiscoveryResponse) {
-    option (otterscale.api.feature) = {name: "resource-enabled"};
-  }
+  rpc Discovery(DiscoveryRequest) returns (DiscoveryResponse) {}
 
   // Schema retrieves the structural definition (JSON Schema) for a specific resource type.
   // It supports both native Kubernetes resources and installed CRDs.
   // The raw JSON Schema (Draft 4/7 or 2020-12) describing the resource structure.
   // This is typically derived from Kubernetes OpenAPIV3Schema.
-  rpc Schema(SchemaRequest) returns (SchemaResponse) {
-    option (otterscale.api.feature) = {name: "resource-enabled"};
-  }
+  rpc Schema(SchemaRequest) returns (SchemaResponse) {}
 
   // List retrieves a collection of resources based on the provided GVR and filters.
-  rpc List(ListRequest) returns (ListResponse) {
-    option (otterscale.api.feature) = {name: "resource-enabled"};
-  }
+  rpc List(ListRequest) returns (ListResponse) {}
 
   // Get retrieves a single resource by its name within a namespace.
-  rpc Get(GetRequest) returns (Resource) {
-    option (otterscale.api.feature) = {name: "resource-enabled"};
-  }
+  rpc Get(GetRequest) returns (Resource) {}
 
   // Describe retrieves a resource along with its related Kubernetes events,
   // equivalent to `kubectl describe`.
-  rpc Describe(DescribeRequest) returns (DescribeResponse) {
-    option (otterscale.api.feature) = {name: "resource-enabled"};
-  }
+  rpc Describe(DescribeRequest) returns (DescribeResponse) {}
 
   // Create creates a new resource in the cluster using the provided manifest.
-  rpc Create(CreateRequest) returns (Resource) {
-    option (otterscale.api.feature) = {name: "resource-enabled"};
-  }
+  rpc Create(CreateRequest) returns (Resource) {}
 
   // Apply performs a Server-Side Apply (SSA) to update or create a resource.
   // This is the recommended way to perform partial updates.
-  rpc Apply(ApplyRequest) returns (Resource) {
-    option (otterscale.api.feature) = {name: "resource-enabled"};
-  }
+  rpc Apply(ApplyRequest) returns (Resource) {}
 
   // Update performs a full replacement (PUT) of an existing resource using
   // the provided manifest. The caller is responsible for supplying any
   // server-required fields (such as metadata.resourceVersion) inside the
   // manifest.
-  rpc Update(UpdateRequest) returns (Resource) {
-    option (otterscale.api.feature) = {name: "resource-enabled"};
-  }
+  rpc Update(UpdateRequest) returns (Resource) {}
 
   // Delete removes a resource from the cluster by its name.
-  rpc Delete(DeleteRequest) returns (google.protobuf.Empty) {
-    option (otterscale.api.feature) = {name: "resource-enabled"};
-  }
+  rpc Delete(DeleteRequest) returns (google.protobuf.Empty) {}
 
   // Watch initiates a server-side stream to monitor resource changes in real-time.
-  rpc Watch(WatchRequest) returns (stream WatchEvent) {
-    option (otterscale.api.feature) = {name: "resource-enabled"};
-  }
+  rpc Watch(WatchRequest) returns (stream WatchEvent) {}
 }
 
 // ---------------------------------------------------------------------------

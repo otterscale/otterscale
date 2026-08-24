@@ -93,5 +93,5 @@ jobs:
       - name: Verify the generated code is up to date
         run: |
           make proto
-          git diff --exit-code -- api openapi ts/src \
+          git diff --exit-code -- api openapi.yaml ts/src \
             || { echo "::error::Generated code is stale. Run 'make proto' and commit the result."; exit 1; }
