@@ -53,18 +53,6 @@ OtterScale provides a single, authenticated entry point to many Kubernetes clust
 
 Installation, configuration, and operational guides will be published in the project documentation. In the meantime, `otterscale server --help` and `otterscale agent --help` describe the available options.
 
-## Ecosystem
-
-OtterScale's open-source components live across these repositories:
-
-| Repository                                                       | Description                                      |
-| ---------------------------------------------------------------- | ------------------------------------------------ |
-| [otterscale](https://github.com/otterscale/otterscale)           | Multi-cluster Kubernetes API gateway (this repo) |
-| [dashboard](https://github.com/otterscale/dashboard)             | Web management UI                                |
-| [api](https://github.com/otterscale/api)                         | Shared API contract — CRDs + ConnectRPC services |
-| [types](https://github.com/otterscale/types)                     | Generated TypeScript type definitions            |
-| [tenant-operator](https://github.com/otterscale/tenant-operator) | Workspace / multi-tenancy operator               |
-
 ## Contributing
 
 Contributions are welcome. A contribution guide (`CONTRIBUTING.md`) will follow; until then, please open an issue or a pull request to get involved.

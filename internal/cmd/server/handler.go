@@ -14,9 +14,9 @@ import (
 
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 
-	linkv1 "github.com/otterscale/api/link/v1"
-	resourcev1 "github.com/otterscale/api/resource/v1"
-	runtimev1 "github.com/otterscale/api/runtime/v1"
+	linkv1 "github.com/otterscale/otterscale/api/link/v1"
+	resourcev1 "github.com/otterscale/otterscale/api/resource/v1"
+	runtimev1 "github.com/otterscale/otterscale/api/runtime/v1"
 
 	"github.com/otterscale/otterscale/internal/handler"
 )

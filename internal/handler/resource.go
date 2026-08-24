@@ -16,7 +16,7 @@ import (
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/kube-openapi/pkg/validation/spec"
 
-	pb "github.com/otterscale/api/resource/v1"
+	pb "github.com/otterscale/otterscale/api/resource/v1"
 
 	"github.com/otterscale/otterscale/internal/core"
 )

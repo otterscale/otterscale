@@ -1,0 +1,38 @@
+{
+  "name": "@otterscale/api",
+  "version": "0.0.1",
+  "type": "module",
+  "exports": {
+    "./feature": {
+      "types": "./src/feature_pb.d.ts",
+      "import": "./src/feature_pb.js"
+    },
+    "./link/v1": {
+      "types": "./src/link/v1/link_pb.d.ts",
+      "import": "./src/link/v1/link_pb.js"
+    },
+    "./runtime/v1": {
+      "types": "./src/runtime/v1/runtime_pb.d.ts",
+      "import": "./src/runtime/v1/runtime_pb.js"
+    },
+    "./resource/v1": {
+      "types": "./src/resource/v1/resource_pb.d.ts",
+      "import": "./src/resource/v1/resource_pb.js"
+    }
+  },
+  "files": [
+    "src"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/otterscale/otterscale.git",
+    "directory": "ts"
+  },
+  "dependencies": {
+    "@bufbuild/protobuf": "^2.14.0"
+  },
+  "devDependencies": {
+    "@bufbuild/buf": "^1.72.0",
+    "@bufbuild/protoc-gen-es": "^2.14.0"
+  }
+}

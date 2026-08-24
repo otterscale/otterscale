@@ -8,7 +8,7 @@ import (
 	"net"
 	"net/url"
 
-	linkv1 "github.com/otterscale/api/link/v1"
+	linkv1 "github.com/otterscale/otterscale/api/link/v1"
 
 	"github.com/otterscale/otterscale/internal/transport"
 	"github.com/otterscale/otterscale/internal/transport/http"

@@ -1,0 +1,22 @@
+version: v2
+inputs:
+  - directory: proto
+    exclude_paths:
+      - proto/openapi.proto
+plugins:
+  - remote: buf.build/protocolbuffers/go:v1.36.11
+    out: api
+    opt:
+      - paths=source_relative
+      - default_api_level=API_OPAQUE
+  - remote: buf.build/connectrpc/go:v1.20.0
+    out: api
+    opt:
+      - paths=source_relative
+      - package_suffix
+      - simple
+  - remote: buf.build/bufbuild/es:v2.12.1
+    out: ts/src
+    opt:
+      - target=js+dts
+      - import_extension=.js

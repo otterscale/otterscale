@@ -12,7 +12,7 @@ import (
 	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/structpb"
 
-	pb "github.com/otterscale/api/runtime/v1"
+	pb "github.com/otterscale/otterscale/api/runtime/v1"
 
 	"github.com/otterscale/otterscale/internal/core"
 )

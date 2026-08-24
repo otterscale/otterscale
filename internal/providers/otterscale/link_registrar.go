@@ -10,7 +10,7 @@ import (
 	"os"
 	"time"
 
-	linkv1 "github.com/otterscale/api/link/v1"
+	linkv1 "github.com/otterscale/otterscale/api/link/v1"
 
 	"github.com/otterscale/otterscale/internal/core"
 	"github.com/otterscale/otterscale/internal/pki"

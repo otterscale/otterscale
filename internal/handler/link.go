@@ -8,7 +8,7 @@ import (
 	"context"
 	"slices"
 
-	pb "github.com/otterscale/api/link/v1"
+	pb "github.com/otterscale/otterscale/api/link/v1"
 
 	"github.com/otterscale/otterscale/internal/core"
 )
