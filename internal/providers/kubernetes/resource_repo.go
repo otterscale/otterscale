@@ -223,6 +223,10 @@ func (r *resourceRepo) Watch(
 		ResourceVersion:     opts.ResourceVersion,
 	}
 
+	// The API server accepts sendInitialEvents only together with
+	// resourceVersionMatch=NotOlderThan, and only when the resource
+	// version is unset or "0" — the use case is what guarantees the
+	// latter before setting this option.
 	if opts.SendInitialEvents {
 		listOpts.ResourceVersionMatch = metav1.ResourceVersionMatchNotOlderThan
 		listOpts.SendInitialEvents = &opts.SendInitialEvents

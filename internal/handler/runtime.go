@@ -72,23 +72,20 @@ func (s *RuntimeService) PodLog(ctx context.Context, req *pb.PodLogRequest, stre
 	}
 	defer reader.Close()
 
-	buf := make([]byte, streamChunkSize)
-	for {
-		n, readErr := reader.Read(buf)
-		if n > 0 {
-			msg := &pb.PodLogResponse{}
-			msg.SetData(append([]byte(nil), buf[:n]...))
-			if err := stream.Send(msg); err != nil {
-				return err
-			}
+	for c := range readChunks(ctx, reader) {
+		if c.err != nil {
+			return domainErrorToConnectError(c.err)
 		}
-		if readErr != nil {
-			if errors.Is(readErr, io.EOF) {
-				return nil
-			}
-			return domainErrorToConnectError(readErr)
+		if len(c.data) == 0 {
+			continue
+		}
+		msg := &pb.PodLogResponse{}
+		msg.SetData(c.data)
+		if err := stream.Send(msg); err != nil {
+			return err
 		}
 	}
+	return nil
 }
 
 // ---------------------------------------------------------------------------
@@ -273,23 +270,20 @@ func (s *RuntimeService) PortForward(ctx context.Context, req *pb.PortForwardReq
 	}
 
 	// Stream data from the pod.
-	buf := make([]byte, streamChunkSize)
-	for {
-		n, readErr := dataOutR.Read(buf)
-		if n > 0 {
-			msg := &pb.PortForwardResponse{}
-			msg.SetData(append([]byte(nil), buf[:n]...))
-			if err := stream.Send(msg); err != nil {
-				return err
-			}
+	for c := range readChunks(ctx, dataOutR) {
+		if c.err != nil {
+			return domainErrorToConnectError(c.err)
 		}
-		if readErr != nil {
-			if errors.Is(readErr, io.EOF) {
-				return nil
-			}
-			return domainErrorToConnectError(readErr)
+		if len(c.data) == 0 {
+			continue
+		}
+		msg := &pb.PortForwardResponse{}
+		msg.SetData(c.data)
+		if err := stream.Send(msg); err != nil {
+			return err
 		}
 	}
+	return nil
 }
 
 // WritePortForward sends data to an active port-forward session.
@@ -376,23 +370,66 @@ func (s *RuntimeService) VNC(ctx context.Context, req *pb.VNCRequest, stream *co
 	}
 
 	// Stream VNC data from the VMI.
-	buf := make([]byte, streamChunkSize)
-	for {
-		n, readErr := dataOutR.Read(buf)
-		if n > 0 {
-			msg := &pb.VNCResponse{}
-			msg.SetData(append([]byte(nil), buf[:n]...))
-			if err := stream.Send(msg); err != nil {
-				return err
-			}
+	for c := range readChunks(ctx, dataOutR) {
+		if c.err != nil {
+			return domainErrorToConnectError(c.err)
 		}
-		if readErr != nil {
-			if errors.Is(readErr, io.EOF) {
-				return nil
-			}
-			return domainErrorToConnectError(readErr)
+		if len(c.data) == 0 {
+			continue
+		}
+		msg := &pb.VNCResponse{}
+		msg.SetData(c.data)
+		if err := stream.Send(msg); err != nil {
+			return err
 		}
 	}
+	return nil
+}
+
+// chunk carries one streamed payload, or the terminal read error once
+// the reader is exhausted. A clean EOF is reported as a chunk with no
+// data and no error.
+type chunk struct {
+	data []byte
+	err  error
+}
+
+// readChunks streams r in fixed-size chunks on the returned channel and
+// closes it once the reader is exhausted or ctx is canceled. Reading in
+// a goroutine is what makes cancellation observable: Read on an
+// io.Pipe blocks until the writer side is closed, so a handler that
+// called it directly would keep running after its client vanished —
+// and never run the cleanup that releases the session.
+func readChunks(ctx context.Context, r io.Reader) <-chan chunk {
+	ch := make(chan chunk, 1)
+
+	go func() {
+		defer close(ch)
+
+		buf := make([]byte, streamChunkSize)
+		for {
+			n, readErr := r.Read(buf)
+			if n > 0 {
+				select {
+				case ch <- chunk{data: append([]byte(nil), buf[:n]...)}:
+				case <-ctx.Done():
+					return
+				}
+			}
+			if readErr != nil {
+				if errors.Is(readErr, io.EOF) {
+					readErr = nil
+				}
+				select {
+				case ch <- chunk{err: readErr}:
+				case <-ctx.Done():
+				}
+				return
+			}
+		}
+	}()
+
+	return ch
 }
 
 // WriteVNC sends VNC data to an active VNC session.

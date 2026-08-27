@@ -186,6 +186,11 @@ func (uc *RuntimeUseCase) StartExec(ctx context.Context, params *StartExecParams
 	}
 
 	go func() {
+		// Closing Done after the result is sent keeps the "finished"
+		// signal readable by every observer. A plain buffered send is
+		// consumed by whoever reads first, which would hide the
+		// finished state from the reaper.
+		defer close(errCh)
 		defer stdinR.Close()
 		defer stdoutW.Close()
 		defer stderrW.Close()
@@ -300,7 +305,16 @@ func (uc *RuntimeUseCase) StartPortForward(ctx context.Context, cluster, namespa
 		return nil, nil, err
 	}
 
+	// Close the read end as soon as ctx is canceled. Without this the
+	// adapter's "client → pod" copy loop stays blocked reading a pipe
+	// that only the goroutine below would close, and that goroutine is
+	// itself waiting for the copy loop to finish.
+	closeStdinOnCancel(ctx, dataInR)
+
 	go func() {
+		// See StartExec: close Done so the finished state stays visible
+		// to the reaper even after another caller has read the error.
+		defer close(errCh)
 		defer dataInR.Close()
 		defer dataOutW.Close()
 		errCh <- uc.runtime.PortForward(ctx, cluster, namespace, name, PortForwardOptions{
@@ -311,6 +325,20 @@ func (uc *RuntimeUseCase) StartPortForward(ctx context.Context, cluster, namespa
 	}()
 
 	return sess, dataOutR, nil
+}
+
+// closeStdinOnCancel closes r once ctx is done, unblocking any read in
+// flight. Pipe reads are not interruptible, so a session whose client
+// sends nothing would otherwise keep its adapter goroutine alive after
+// cancellation — and with it the session entry, which the reaper can
+// only collect once the session's Done channel fires.
+func closeStdinOnCancel(ctx context.Context, r io.Closer) {
+	go func() {
+		<-ctx.Done()
+		if err := r.Close(); err != nil {
+			slog.Debug("failed to close session stdin after cancellation", "error", err)
+		}
+	}()
 }
 
 // WritePortForward writes data to an active port-forward session. The
@@ -387,6 +415,11 @@ func (uc *RuntimeUseCase) StartVNC(ctx context.Context, cluster, namespace, name
 		dataOutW.Close()
 		return nil, nil, err
 	}
+
+	// See StartPortForward: the adapter's "client → VMI" copy loop must
+	// not be left blocked on a pipe this goroutine can only close after
+	// the loop has finished.
+	closeStdinOnCancel(ctx, dataInR)
 
 	go func() {
 		defer close(done)

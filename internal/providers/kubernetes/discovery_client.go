@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"strings"
+	"sync"
+	"time"
 
 	"github.com/Masterminds/semver/v3"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
@@ -32,11 +34,27 @@ const refPrefix = "#/components/schemas/"
 // the WatchList streaming feature (beta, default-on since 1.34).
 var minWatchListVersion = semver.MustParse("v1.34.0")
 
+// watchListTTL is how long a cluster's watch-list capability is reused
+// before it is probed again. The answer only changes when the cluster
+// is upgraded, and every Watch call needs it, so a short TTL keeps a
+// /version round-trip off the critical path of each new stream.
+const watchListTTL = 10 * time.Minute
+
+// watchListSupport is a cached capability answer with its expiry.
+type watchListSupport struct {
+	supported bool
+	expiresAt time.Time
+}
+
 // discoveryClient implements core.DiscoveryClient by delegating to the
 // Kubernetes discovery API of the target cluster, accessed through the
 // tunnel.
 type discoveryClient struct {
 	kubernetes *Kubernetes
+	now        func() time.Time
+
+	mu        sync.RWMutex
+	watchList map[string]watchListSupport // keyed by cluster name
 }
 
 // NewDiscoveryClient returns a core.DiscoveryClient backed by the
@@ -44,6 +62,8 @@ type discoveryClient struct {
 func NewDiscoveryClient(kubernetes *Kubernetes) core.DiscoveryClient {
 	return &discoveryClient{
 		kubernetes: kubernetes,
+		now:        time.Now,
+		watchList:  make(map[string]watchListSupport),
 	}
 }
 
@@ -176,20 +196,55 @@ func (d *discoveryClient) ServerVersion(ctx context.Context, cluster string) (*v
 }
 
 // SupportsWatchList reports whether the target cluster supports the
-// WatchList streaming feature (Kubernetes >= 1.34).
+// WatchList streaming feature (Kubernetes >= 1.34). The answer is
+// cached per cluster for watchListTTL.
 // See https://kubernetes.io/docs/reference/using-api/api-concepts/#streaming-lists
 func (d *discoveryClient) SupportsWatchList(ctx context.Context, cluster string) (bool, error) {
+	if supported, ok := d.cachedWatchList(cluster); ok {
+		return supported, nil
+	}
+
 	info, err := d.ServerVersion(ctx, cluster)
 	if err != nil {
 		return false, err
 	}
 
+	// Distributions decorate the version with build metadata
+	// (v1.34.1+k3s1, v1.34.1-gke.100), which semver parses as
+	// prerelease or build identifiers rather than rejecting.
 	kubeVersion, err := semver.NewVersion(info.String())
 	if err != nil {
-		return false, err
+		return false, fmt.Errorf("parse cluster version %q: %w", info.String(), err)
 	}
 
-	return kubeVersion.GreaterThanEqual(minWatchListVersion), nil
+	supported := kubeVersion.GreaterThanEqual(minWatchListVersion)
+	d.cacheWatchList(cluster, supported)
+	return supported, nil
+}
+
+// cachedWatchList returns the cached capability for cluster, if it has
+// not expired.
+func (d *discoveryClient) cachedWatchList(cluster string) (supported, ok bool) {
+	d.mu.RLock()
+	defer d.mu.RUnlock()
+
+	entry, found := d.watchList[cluster]
+	if !found || !d.now().Before(entry.expiresAt) {
+		return false, false
+	}
+	return entry.supported, true
+}
+
+// cacheWatchList stores the capability for cluster until watchListTTL
+// has elapsed.
+func (d *discoveryClient) cacheWatchList(cluster string, supported bool) {
+	d.mu.Lock()
+	defer d.mu.Unlock()
+
+	d.watchList[cluster] = watchListSupport{
+		supported: supported,
+		expiresAt: d.now().Add(watchListTTL),
+	}
 }
 
 // client returns a fresh discovery client for the given cluster with

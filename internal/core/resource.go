@@ -21,6 +21,7 @@ package core
 import (
 	"context"
 	"fmt"
+	"log/slog"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
@@ -266,7 +267,15 @@ func (uc *ResourceUseCase) DescribeResource(
 	})
 	if err != nil {
 		// Events are supplementary; return the resource even if event
-		// listing fails (e.g. RBAC restrictions on events).
+		// listing fails (e.g. RBAC restrictions on events). Log it, or
+		// a permission problem is indistinguishable from a resource
+		// that genuinely has no events.
+		slog.Warn("failed to list events for describe",
+			"cluster", id.Cluster,
+			"namespace", id.Namespace,
+			"name", id.Name,
+			"error", err,
+		)
 		return obj, &unstructured.UnstructuredList{}, nil
 	}
 
@@ -335,8 +344,10 @@ func (uc *ResourceUseCase) DeleteResource(
 }
 
 // WatchResource validates the GVR and opens a long-lived watch stream.
-// If the cluster supports the WatchList feature (Kubernetes >= 1.34),
-// initial events are streamed before switching to change notifications.
+// A fresh watch on a cluster that supports the WatchList feature
+// (Kubernetes >= 1.34) streams the current state before switching to
+// change notifications; see wantsInitialEvents for why a resumed watch
+// does not.
 func (uc *ResourceUseCase) WatchResource(
 	ctx context.Context,
 	id *ResourceIdentifier,
@@ -347,11 +358,37 @@ func (uc *ResourceUseCase) WatchResource(
 		return nil, err
 	}
 
-	watchList, err := uc.discovery.SupportsWatchList(ctx, id.Cluster)
-	if err != nil {
-		return nil, err
+	opts.SendInitialEvents = uc.wantsInitialEvents(ctx, id.Cluster, opts.ResourceVersion)
+
+	return uc.resource.Watch(ctx, id.Cluster, gvr, id.Namespace, opts)
+}
+
+// wantsInitialEvents reports whether the watch should ask the API
+// server to stream the current state before change notifications.
+//
+// A caller that supplies a resource version is resuming an earlier
+// watch — typically from the version carried by a BOOKMARK event — and
+// wants only what changed since. Asking for initial events there is not
+// merely redundant: the API server rejects sendInitialEvents unless the
+// resource version is unset or "0", so forcing the flag on would fail
+// every resumed watch.
+//
+// Discovery failures degrade to a plain watch instead of failing the
+// call. Starting from "now" is still correct, and it keeps watches
+// working when the version endpoint is briefly unavailable or the
+// cluster reports a version this build cannot parse.
+func (uc *ResourceUseCase) wantsInitialEvents(ctx context.Context, cluster, resourceVersion string) bool {
+	if resourceVersion != "" && resourceVersion != "0" {
+		return false
 	}
 
-	opts.SendInitialEvents = watchList
-	return uc.resource.Watch(ctx, id.Cluster, gvr, id.Namespace, opts)
+	supported, err := uc.discovery.SupportsWatchList(ctx, cluster)
+	if err != nil {
+		slog.Warn("watch-list support unknown, falling back to a plain watch",
+			"cluster", cluster,
+			"error", err,
+		)
+		return false
+	}
+	return supported
 }

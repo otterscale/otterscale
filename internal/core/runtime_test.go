@@ -5,6 +5,7 @@ import (
 	"errors"
 	"io"
 	"testing"
+	"time"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime/schema"
@@ -12,10 +13,20 @@ import (
 	"k8s.io/kube-openapi/pkg/validation/spec"
 )
 
+// sessionTimeout bounds the session lifecycle assertions: the bugs
+// they guard against are deadlocks, so a stuck session must fail the
+// test instead of hanging the suite.
+const sessionTimeout = 2 * time.Second
+
 // mockRuntimeRepo implements RuntimeRepo for SubResourceAction testing.
 type mockRuntimeRepo struct {
 	subResourceResult map[string]any
 	subResourceErr    error
+
+	// drainStdin makes PortForward and VNC behave like the real
+	// adapters: they only return once the session's stdin pipe is
+	// closed, which is what makes cancellation handling observable.
+	drainStdin bool
 }
 
 func (m *mockRuntimeRepo) PodLogs(context.Context, string, string, string, PodLogOptions) (io.ReadCloser, error) {
@@ -34,7 +45,11 @@ func (m *mockRuntimeRepo) Restart(context.Context, string, schema.GroupVersionRe
 	return nil
 }
 
-func (m *mockRuntimeRepo) PortForward(context.Context, string, string, string, PortForwardOptions) error {
+func (m *mockRuntimeRepo) PortForward(_ context.Context, _, _, _ string, opts PortForwardOptions) error {
+	if m.drainStdin {
+		_, err := io.Copy(io.Discard, opts.Stdin)
+		return err
+	}
 	return nil
 }
 
@@ -44,36 +59,42 @@ func (m *mockRuntimeRepo) SubResourceAction(_ context.Context, _ string, _ schem
 	return m.subResourceResult, m.subResourceErr
 }
 
-func (m *mockRuntimeRepo) VNC(context.Context, string, string, string, VNCOptions) error {
+func (m *mockRuntimeRepo) VNC(_ context.Context, _, _, _ string, opts VNCOptions) error {
+	if m.drainStdin {
+		_, err := io.Copy(io.Discard, opts.Stdin)
+		return err
+	}
 	return nil
 }
 
-// mockDiscoveryForRuntime implements DiscoveryClient for runtime tests.
-type mockDiscoveryForRuntime struct {
-	lookupErr error
+// mockDiscovery implements DiscoveryClient for use-case tests.
+type mockDiscovery struct {
+	lookupErr    error
+	watchList    bool
+	watchListErr error
 }
 
-func (m *mockDiscoveryForRuntime) LookupResource(_ context.Context, _, group, ver, resource, _ string) (schema.GroupVersionResource, error) {
+func (m *mockDiscovery) LookupResource(_ context.Context, _, group, ver, resource, _ string) (schema.GroupVersionResource, error) {
 	if m.lookupErr != nil {
 		return schema.GroupVersionResource{}, m.lookupErr
 	}
 	return schema.GroupVersionResource{Group: group, Version: ver, Resource: resource}, nil
 }
 
-func (m *mockDiscoveryForRuntime) ServerResources(context.Context, string) ([]*metav1.APIResourceList, error) {
+func (m *mockDiscovery) ServerResources(context.Context, string) ([]*metav1.APIResourceList, error) {
 	return nil, nil
 }
 
-func (m *mockDiscoveryForRuntime) ResolveGroupVersionSchemas(context.Context, string, string, string) (map[string]*spec.Schema, error) {
+func (m *mockDiscovery) ResolveGroupVersionSchemas(context.Context, string, string, string) (map[string]*spec.Schema, error) {
 	return nil, nil
 }
 
-func (m *mockDiscoveryForRuntime) ServerVersion(context.Context, string) (*version.Info, error) {
+func (m *mockDiscovery) ServerVersion(context.Context, string) (*version.Info, error) {
 	return nil, nil
 }
 
-func (m *mockDiscoveryForRuntime) SupportsWatchList(context.Context, string) (bool, error) {
-	return false, nil
+func (m *mockDiscovery) SupportsWatchList(context.Context, string) (bool, error) {
+	return m.watchList, m.watchListErr
 }
 
 // mockHelmRepoForRuntime implements HelmRepo for runtime tests.
@@ -88,7 +109,7 @@ func newTestRuntimeUseCase(discovery DiscoveryClient, runtime RuntimeRepo) *Runt
 }
 
 func TestRuntimeUseCase_SubResourceAction_Validation(t *testing.T) {
-	disco := &mockDiscoveryForRuntime{}
+	disco := &mockDiscovery{}
 	repo := &mockRuntimeRepo{}
 	uc := newTestRuntimeUseCase(disco, repo)
 
@@ -155,7 +176,7 @@ func TestRuntimeUseCase_SubResourceAction_Validation(t *testing.T) {
 }
 
 func TestRuntimeUseCase_SubResourceAction_Success(t *testing.T) {
-	disco := &mockDiscoveryForRuntime{}
+	disco := &mockDiscovery{}
 	repo := &mockRuntimeRepo{
 		subResourceResult: map[string]any{"status": "started"},
 	}
@@ -184,7 +205,7 @@ func TestRuntimeUseCase_SubResourceAction_Success(t *testing.T) {
 }
 
 func TestRuntimeUseCase_SubResourceAction_POST(t *testing.T) {
-	disco := &mockDiscoveryForRuntime{}
+	disco := &mockDiscovery{}
 	repo := &mockRuntimeRepo{
 		subResourceResult: map[string]any{"ok": true},
 	}
@@ -213,7 +234,7 @@ func TestRuntimeUseCase_SubResourceAction_POST(t *testing.T) {
 }
 
 func TestRuntimeUseCase_SubResourceAction_LookupError(t *testing.T) {
-	disco := &mockDiscoveryForRuntime{lookupErr: errors.New("resource not found")}
+	disco := &mockDiscovery{lookupErr: errors.New("resource not found")}
 	repo := &mockRuntimeRepo{}
 	uc := newTestRuntimeUseCase(disco, repo)
 
@@ -233,5 +254,91 @@ func TestRuntimeUseCase_SubResourceAction_LookupError(t *testing.T) {
 	)
 	if err == nil {
 		t.Fatal("expected error, got nil")
+	}
+}
+
+// TestStartPortForward_CancellationReleasesSession is the regression
+// test for the leaked port-forward session: the adapter is blocked
+// reading the session's stdin pipe, so nothing but cancellation can
+// release it, and the session must become reapable afterwards.
+func TestStartPortForward_CancellationReleasesSession(t *testing.T) {
+	store := NewSessionStore()
+	uc := NewRuntimeUseCase(&mockDiscovery{}, &mockRuntimeRepo{drainStdin: true}, &mockHelmRepoForRuntime{}, store)
+
+	ctx, cancel := context.WithCancel(t.Context())
+	sess, out, err := uc.StartPortForward(ctx, "prod", "default", "my-pod", 8080)
+	if err != nil {
+		t.Fatalf("StartPortForward: %v", err)
+	}
+	defer out.Close()
+
+	cancel()
+
+	select {
+	case <-sess.Done:
+	case <-time.After(sessionTimeout):
+		t.Fatalf("port-forward adapter still running %s after cancellation", sessionTimeout)
+	}
+
+	// Done must stay signaled after being read, or the reaper can no
+	// longer tell that the session has finished.
+	if n := store.ReapStaleSessions(); n != 1 {
+		t.Fatalf("ReapStaleSessions() = %d, want 1", n)
+	}
+}
+
+// TestStartVNC_CancellationReleasesSession is the same regression test
+// for VNC sessions.
+func TestStartVNC_CancellationReleasesSession(t *testing.T) {
+	store := NewSessionStore()
+	uc := NewRuntimeUseCase(&mockDiscovery{}, &mockRuntimeRepo{drainStdin: true}, &mockHelmRepoForRuntime{}, store)
+
+	ctx, cancel := context.WithCancel(t.Context())
+	sess, out, err := uc.StartVNC(ctx, "prod", "default", "my-vmi")
+	if err != nil {
+		t.Fatalf("StartVNC: %v", err)
+	}
+	defer out.Close()
+
+	cancel()
+
+	select {
+	case <-sess.Done:
+	case <-time.After(sessionTimeout):
+		t.Fatalf("VNC adapter still running %s after cancellation", sessionTimeout)
+	}
+
+	if n := store.ReapStaleSessions(); n != 1 {
+		t.Fatalf("ReapStaleSessions() = %d, want 1", n)
+	}
+}
+
+// TestStartExec_DoneStaysSignaled guards the reaper against a Done
+// channel whose single buffered value has already been consumed by
+// another caller (for example WriteExec's fast path).
+func TestStartExec_DoneStaysSignaled(t *testing.T) {
+	store := NewSessionStore()
+	uc := NewRuntimeUseCase(&mockDiscovery{}, &mockRuntimeRepo{}, &mockHelmRepoForRuntime{}, store)
+
+	sess, stdout, stderr, err := uc.StartExec(t.Context(), &StartExecParams{
+		Cluster:   "prod",
+		Namespace: "default",
+		Name:      "my-pod",
+		Command:   []string{"sh"},
+	})
+	if err != nil {
+		t.Fatalf("StartExec: %v", err)
+	}
+	defer stdout.Close()
+	defer stderr.Close()
+
+	select {
+	case <-sess.Done:
+	case <-time.After(sessionTimeout):
+		t.Fatalf("exec session did not finish within %s", sessionTimeout)
+	}
+
+	if n := store.ReapStaleSessions(); n != 1 {
+		t.Fatalf("ReapStaleSessions() = %d, want 1", n)
 	}
 }

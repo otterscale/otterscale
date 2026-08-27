@@ -3,6 +3,7 @@ package kubernetes
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"log/slog"
@@ -10,7 +11,6 @@ import (
 	"net/http"
 	"net/url"
 	"strconv"
-	"sync"
 	"time"
 
 	"github.com/gorilla/websocket"
@@ -258,8 +258,15 @@ func (r *runtimeRepo) PortForward(ctx context.Context, cluster, namespace, name 
 }
 
 // runPortForwardStreams creates SPDY streams for the port-forward
-// session and copies data bidirectionally. It is extracted from
-// PortForward to reduce function length.
+// session and copies data bidirectionally. It returns as soon as one
+// direction finishes or ctx is canceled, closing the connection so the
+// other direction unwinds too.
+//
+// As in copyVNCBidirectional, the copy goroutines are not joined: the
+// "client → pod" direction blocks on the session's stdin pipe, which
+// core.StartPortForward only closes after this function has returned.
+// Each goroutine reports at most one result on the buffered channel, so
+// none of them can block on a send.
 func (r *runtimeRepo) runPortForwardStreams(ctx context.Context, streamConn httpstream.Connection, opts core.PortForwardOptions) error {
 	portStr := strconv.FormatInt(int64(opts.Port), 10)
 	requestID := "0"
@@ -288,10 +295,9 @@ func (r *runtimeRepo) runPortForwardStreams(ctx context.Context, streamConn http
 	}
 	defer dataStream.Close()
 
-	var wg sync.WaitGroup
-
-	// Check for immediate errors from kubelet.
-	wg.Go(func() {
+	// Check for immediate errors from kubelet: tearing down the data
+	// stream makes the copy loops below report the failure.
+	go func() {
 		const errorBufSize = 1024
 		buf := make([]byte, errorBufSize)
 		n, _ := errorStream.Read(buf)
@@ -300,40 +306,25 @@ func (r *runtimeRepo) runPortForwardStreams(ctx context.Context, streamConn http
 				slog.Warn("failed to close data stream after kubelet error", "error", err)
 			}
 		}
-	})
-
-	// Bidirectional copy — wait for BOTH directions to complete.
-	errCh := make(chan error, 2)
-
-	wg.Add(2)
-	go func() {
-		defer wg.Done()
-		_, err := io.Copy(dataStream, opts.Stdin)
-		errCh <- err
 	}()
 
+	errCh := make(chan error, 2)
 	go func() {
-		defer wg.Done()
-		_, err := io.Copy(opts.Stdout, dataStream)
+		_, err := io.Copy(dataStream, opts.Stdin) // client → pod
+		errCh <- err
+	}()
+	go func() {
+		_, err := io.Copy(opts.Stdout, dataStream) // pod → client
 		errCh <- err
 	}()
 
 	var firstErr error
-	for range 2 {
-		select {
-		case <-ctx.Done():
-			streamConn.Close()
-			wg.Wait()
-			return ctx.Err()
-		case err := <-errCh:
-			if err != nil && firstErr == nil {
-				firstErr = err
-				streamConn.Close()
-			}
-		}
+	select {
+	case <-ctx.Done():
+		firstErr = ctx.Err()
+	case firstErr = <-errCh:
 	}
-
-	wg.Wait()
+	streamConn.Close()
 	return firstErr
 }
 
@@ -485,21 +476,34 @@ func (r *runtimeRepo) dialVNCWebSocket(ctx context.Context, config *rest.Config,
 	return conn, nil
 }
 
+// vncConn is the subset of *websocket.Conn used by the VNC copy loop.
+// Depending on an interface keeps the copy logic testable without a
+// live WebSocket server.
+type vncConn interface {
+	ReadMessage() (messageType int, p []byte, err error)
+	WriteMessage(messageType int, data []byte) error
+	Close() error
+}
+
 // copyVNCBidirectional copies data between the WebSocket connection
-// and the VNC session's stdin/stdout pipes.
-func (r *runtimeRepo) copyVNCBidirectional(ctx context.Context, wsConn *websocket.Conn, opts core.VNCOptions) error {
-	var wg sync.WaitGroup
+// and the VNC session's stdin/stdout pipes. It returns as soon as one
+// direction finishes or ctx is canceled, closing the connection so the
+// other direction unwinds too.
+//
+// Each direction reports at most one result on the buffered channel, so
+// neither goroutine can block on a send. They are deliberately not
+// joined: the stdin direction blocks on the session's pipe, which
+// core.StartVNC only closes after this function has returned, so
+// waiting for it here would deadlock.
+func (r *runtimeRepo) copyVNCBidirectional(ctx context.Context, wsConn vncConn, opts core.VNCOptions) error {
 	errCh := make(chan error, 2)
 
 	// WebSocket → Stdout (VMI to client).
-	wg.Go(func() {
+	go func() {
 		for {
 			_, message, err := wsConn.ReadMessage()
 			if err != nil {
-				if !websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
-					errCh <- nil
-				}
-				errCh <- err
+				errCh <- vncCloseError(err)
 				return
 			}
 			if _, err := opts.Stdout.Write(message); err != nil {
@@ -507,10 +511,10 @@ func (r *runtimeRepo) copyVNCBidirectional(ctx context.Context, wsConn *websocke
 				return
 			}
 		}
-	})
+	}()
 
 	// Stdin → WebSocket (client to VMI).
-	wg.Go(func() {
+	go func() {
 		buf := make([]byte, vncChunkSize)
 		for {
 			n, err := opts.Stdin.Read(buf)
@@ -521,32 +525,32 @@ func (r *runtimeRepo) copyVNCBidirectional(ctx context.Context, wsConn *websocke
 				}
 			}
 			if err != nil {
-				if err == io.EOF {
-					errCh <- nil
+				if errors.Is(err, io.EOF) {
+					err = nil
 				}
 				errCh <- err
 				return
 			}
 		}
-	})
+	}()
 
 	var firstErr error
-	for range 2 {
-		select {
-		case <-ctx.Done():
-			wsConn.Close()
-			wg.Wait()
-			return ctx.Err()
-		case err := <-errCh:
-			if err != nil && firstErr == nil {
-				firstErr = err
-				wsConn.Close()
-			}
-		}
+	select {
+	case <-ctx.Done():
+		firstErr = ctx.Err()
+	case firstErr = <-errCh:
 	}
-
-	wg.Wait()
+	wsConn.Close()
 	return firstErr
+}
+
+// vncCloseError maps a WebSocket read error to the result reported for
+// that direction: a graceful close by the peer is not a failure.
+func vncCloseError(err error) error {
+	if websocket.IsCloseError(err, websocket.CloseNormalClosure, websocket.CloseGoingAway) {
+		return nil
+	}
+	return err
 }
 
 // ---------------------------------------------------------------------------
