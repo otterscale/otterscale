@@ -259,8 +259,9 @@ func (d *discoveryClient) client(ctx context.Context, cluster string) (*discover
 		return nil, err
 	}
 
-	// Build a discovery client that reuses the cached transport but
-	// applies per-request impersonation via a WrapTransport layer.
+	// The config already carries this request's impersonation headers
+	// and the cluster's cached transport; it is copied so the discovery
+	// client cannot mutate the caller's copy.
 	dc, err := discovery.NewDiscoveryClientForConfig(rest.CopyConfig(config))
 	if err != nil {
 		return nil, wrapK8sError(err)

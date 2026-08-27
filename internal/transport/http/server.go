@@ -24,6 +24,19 @@ type MountFunc func(mux *http.ServeMux) error
 // ServerOption configures a Server.
 type ServerOption func(*Server)
 
+// Request timeouts. ReadHeaderTimeout always applies; the read and
+// write timeouts bound a single request/response exchange and are
+// therefore lifted per-request for long-running paths (see
+// WithLongRunningPaths) and disabled entirely by WithoutRequestTimeouts.
+// IdleTimeout is set explicitly rather than inherited from ReadTimeout
+// so that disabling the latter does not leave keep-alive connections
+// without any bound at all.
+const (
+	readHeaderTimeout = 5 * time.Second
+	requestTimeout    = 5 * time.Minute
+	idleTimeout       = 5 * time.Minute
+)
+
 // Server is an HTTP/H2C server with optional CORS and authentication
 // middleware. It implements transport.Listener.
 type Server struct {
@@ -34,6 +47,8 @@ type Server struct {
 	authMiddleware     *authn.Middleware
 	publicPaths        map[string]struct{}
 	publicPathPrefixes []string
+	longRunningPaths   map[string]struct{}
+	noRequestTimeouts  bool
 	allowedOrigins     []string
 	log                *slog.Logger
 }
@@ -100,6 +115,40 @@ func WithPublicPathPrefixes(prefixes []string) ServerOption {
 	}
 }
 
+// WithLongRunningPaths marks request paths whose response is a
+// long-lived stream (server-streaming RPCs such as watch, log follow,
+// exec, port-forward and VNC). Requests to those paths have their
+// connection deadlines cleared, because the request timeouts bound a
+// whole exchange: over HTTP/1.1 they would otherwise cut every such
+// stream off after requestTimeout.
+func WithLongRunningPaths(paths []string) ServerOption {
+	return func(s *Server) {
+		if s.longRunningPaths == nil {
+			s.longRunningPaths = make(map[string]struct{}, len(paths))
+		}
+		for _, p := range paths {
+			if p == "" {
+				continue
+			}
+			if p[0] != '/' {
+				p = "/" + p
+			}
+			s.longRunningPaths[p] = struct{}{}
+		}
+	}
+}
+
+// WithoutRequestTimeouts disables the read and write timeouts. It is
+// meant for the agent, which proxies arbitrary kube-apiserver traffic
+// (exec, attach, port-forward, log follow, watch) whose duration is
+// unbounded and whose upgraded connections keep the deadlines that were
+// set before the connection was hijacked. The agent serves exclusively
+// on an in-memory pipe behind the tunnel, so there is no untrusted
+// network peer these timeouts would protect it from.
+func WithoutRequestTimeouts() ServerOption {
+	return func(s *Server) { s.noRequestTimeouts = true }
+}
+
 // WithAllowedOrigins configures the allowed origins for CORS.
 func WithAllowedOrigins(origins []string) ServerOption {
 	return func(s *Server) { s.allowedOrigins = origins }
@@ -147,12 +196,18 @@ func NewServer(ctx context.Context, opts ...ServerOption) (*Server, error) {
 	protocols.SetHTTP1(true)
 	protocols.SetUnencryptedHTTP2(true)
 
+	read, write := requestTimeout, requestTimeout
+	if s.noRequestTimeouts {
+		read, write = 0, 0
+	}
+
 	s.inner = &http.Server{
 		Addr:              s.address,
 		Handler:           handler,
-		ReadHeaderTimeout: 5 * time.Second,
-		ReadTimeout:       5 * time.Minute,
-		WriteTimeout:      5 * time.Minute,
+		ReadHeaderTimeout: readHeaderTimeout,
+		ReadTimeout:       read,
+		WriteTimeout:      write,
+		IdleTimeout:       idleTimeout,
 		MaxHeaderBytes:    8 * 1024, // 8 KiB
 		Protocols:         protocols,
 	}
@@ -203,7 +258,7 @@ func (s *Server) Stop(ctx context.Context) error {
 // ---------------------------------------------------------------------------
 
 // buildHandler assembles the middleware stack.
-// Order: H2C -> CORS -> Auth -> Mux
+// Order: H2C -> CORS -> Auth -> Deadlines -> Mux
 func (s *Server) buildHandler() (http.Handler, error) {
 	mux := http.NewServeMux()
 	if s.mount != nil {
@@ -212,11 +267,14 @@ func (s *Server) buildHandler() (http.Handler, error) {
 		}
 	}
 
-	var handler http.Handler = mux
+	// Deadlines are lifted closest to the mux so that the decision is
+	// made once per request, after routing information is available and
+	// before any handler starts writing.
+	handler := s.wrapDeadlines(mux)
 
 	// Authentication
 	if s.authMiddleware != nil {
-		handler = s.wrapAuth(mux, handler)
+		handler = s.wrapAuth(handler)
 	}
 
 	// CORS
@@ -225,21 +283,52 @@ func (s *Server) buildHandler() (http.Handler, error) {
 	return handler, nil
 }
 
+// wrapDeadlines clears the connection deadlines for long-running paths
+// so that a streaming response is not cut off mid-flight.
+//
+// Over HTTP/1.1 the write timeout is a hard deadline on the entire
+// response, so a watch or log-follow stream would end after
+// requestTimeout. Over HTTP/2 the timeouts are progress-based and this
+// is a no-op; SetWriteDeadline reporting ErrNotSupported is therefore
+// not an error worth surfacing.
+func (s *Server) wrapDeadlines(next http.Handler) http.Handler {
+	if len(s.longRunningPaths) == 0 {
+		return next
+	}
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if _, ok := s.longRunningPaths[r.URL.Path]; ok {
+			clearDeadlines(w, s.log)
+		}
+		next.ServeHTTP(w, r)
+	})
+}
+
+// clearDeadlines removes the read and write deadlines from the
+// underlying connection. A zero time means "no deadline".
+func clearDeadlines(w http.ResponseWriter, log *slog.Logger) {
+	rc := http.NewResponseController(w)
+	if err := rc.SetReadDeadline(time.Time{}); err != nil && !errors.Is(err, http.ErrNotSupported) {
+		log.Warn("failed to clear read deadline for long-running request", "error", err)
+	}
+	if err := rc.SetWriteDeadline(time.Time{}); err != nil && !errors.Is(err, http.ErrNotSupported) {
+		log.Warn("failed to clear write deadline for long-running request", "error", err)
+	}
+}
+
 // wrapAuth applies the authn middleware, skipping public paths.
 // Public paths are checked by exact match first, then by prefix.
 // After authn sets the transport-level auth info, bridgeUserInfo
 // copies it into the domain-level core.UserInfo context key so that
 // infrastructure adapters can access the user identity without
 // depending on the connectrpc/authn package.
-func (s *Server) wrapAuth(mux *http.ServeMux, next http.Handler) http.Handler {
-	bridged := bridgeUserInfo(next)
-	protected := s.authMiddleware.Wrap(bridged)
+func (s *Server) wrapAuth(next http.Handler) http.Handler {
+	protected := s.authMiddleware.Wrap(bridgeUserInfo(next))
 	if len(s.publicPaths) == 0 && len(s.publicPathPrefixes) == 0 {
 		return protected
 	}
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if s.isPublicPath(r.URL.Path) {
-			mux.ServeHTTP(w, r)
+			next.ServeHTTP(w, r)
 			return
 		}
 		protected.ServeHTTP(w, r)

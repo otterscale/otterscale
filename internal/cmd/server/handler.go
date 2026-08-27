@@ -42,6 +42,19 @@ func NewHandler(link *handler.LinkService, resource *handler.ResourceService, ru
 	}
 }
 
+// LongRunningPaths returns the procedures whose response is a
+// long-lived stream. The transport lifts its request timeouts for
+// these so that a watch or an exec session is not cut off mid-flight.
+func (h *Handler) LongRunningPaths() []string {
+	return []string{
+		resourcev1.ResourceServiceWatchProcedure,
+		runtimev1.RuntimeServicePodLogProcedure,
+		runtimev1.RuntimeServiceExecuteTTYProcedure,
+		runtimev1.RuntimeServicePortForwardProcedure,
+		runtimev1.RuntimeServiceVNCProcedure,
+	}
+}
+
 // Mount registers all gRPC service handlers, OTel interceptors, and
 // operational endpoints onto the provided mux.
 func (h *Handler) Mount(mux *http.ServeMux) error {

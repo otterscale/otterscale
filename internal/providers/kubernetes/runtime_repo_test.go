@@ -237,3 +237,39 @@ func TestCopyVNCBidirectional_CopiesBothDirections(t *testing.T) {
 		t.Fatalf("copyVNCBidirectional did not return within %s of cancellation", copyTimeout)
 	}
 }
+
+func TestVNCURL(t *testing.T) {
+	tests := []struct {
+		name      string
+		namespace string
+		vmi       string
+		want      string
+	}{
+		{
+			name:      "plain names",
+			namespace: "default",
+			vmi:       "my-vmi",
+			want:      "https://127.1.1.1:16598/apis/subresources.kubevirt.io/v1/namespaces/default/virtualmachineinstances/my-vmi/vnc",
+		},
+		{
+			name:      "a name carrying path separators cannot escape its segment",
+			namespace: "default",
+			vmi:       "../../../api/v1/nodes",
+			want:      "https://127.1.1.1:16598/apis/subresources.kubevirt.io/v1/namespaces/default/virtualmachineinstances/..%2F..%2F..%2Fapi%2Fv1%2Fnodes/vnc",
+		},
+		{
+			name:      "a namespace carrying a query cannot append parameters",
+			namespace: "ns?watch=true",
+			vmi:       "my-vmi",
+			want:      "https://127.1.1.1:16598/apis/subresources.kubevirt.io/v1/namespaces/ns%3Fwatch=true/virtualmachineinstances/my-vmi/vnc",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := vncURL("https://127.1.1.1:16598", tt.namespace, tt.vmi); got != tt.want {
+				t.Errorf("vncURL() =\n\t%q\nwant\n\t%q", got, tt.want)
+			}
+		})
+	}
+}

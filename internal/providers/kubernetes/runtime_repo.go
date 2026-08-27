@@ -416,19 +416,25 @@ func (r *runtimeRepo) VNC(ctx context.Context, cluster, namespace, name string, 
 		return err
 	}
 
-	// KubeVirt exposes VNC at:
-	//   /apis/subresources.kubevirt.io/v1/namespaces/{ns}/virtualmachineinstances/{name}/vnc
-	host := config.Host
-	vncURL := fmt.Sprintf("%s/apis/subresources.kubevirt.io/v1/namespaces/%s/virtualmachineinstances/%s/vnc",
-		host, namespace, name)
-
-	wsConn, err := r.dialVNCWebSocket(ctx, config, vncURL)
+	wsConn, err := r.dialVNCWebSocket(ctx, config, vncURL(config.Host, namespace, name))
 	if err != nil {
 		return err
 	}
 	defer wsConn.Close()
 
 	return r.copyVNCBidirectional(ctx, wsConn, opts)
+}
+
+// vncURL builds the KubeVirt VNC endpoint:
+//
+//	/apis/subresources.kubevirt.io/v1/namespaces/{ns}/virtualmachineinstances/{name}/vnc
+//
+// The namespace and name are escaped rather than interpolated raw: they
+// arrive from the request, and a value carrying "/" or ".." would
+// otherwise reshape the path into a different API endpoint.
+func vncURL(host, namespace, name string) string {
+	return fmt.Sprintf("%s/apis/subresources.kubevirt.io/v1/namespaces/%s/virtualmachineinstances/%s/vnc",
+		host, url.PathEscape(namespace), url.PathEscape(name))
 }
 
 // dialVNCWebSocket dials the KubeVirt VNC WebSocket endpoint with

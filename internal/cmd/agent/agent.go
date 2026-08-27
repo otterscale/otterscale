@@ -50,6 +50,10 @@ func (a *Agent) Run(ctx context.Context, cfg *Config) error {
 	httpSrv, err := http.NewServer(
 		ctx,
 		http.WithListener(pl),
+		// Every request here is proxied to kube-apiserver, including
+		// exec, attach, port-forward, log follow and watch, whose
+		// duration is unbounded.
+		http.WithoutRequestTimeouts(),
 		http.WithMount(a.handler.Mount),
 	)
 	if err != nil {

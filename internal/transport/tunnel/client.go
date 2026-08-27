@@ -14,6 +14,10 @@ import (
 	chclient "github.com/jpillora/chisel/client"
 )
 
+// healthySession is how long a tunnel session must last before it
+// counts as a successful connection, resetting the reconnect backoff.
+const healthySession = 30 * time.Second
+
 // Sentinel errors for well-known failure modes.
 var (
 	ErrLocalPortRequired = errors.New("tunnel: local port is required")
@@ -170,26 +174,33 @@ func (c *Client) Start(ctx context.Context) error {
 			}
 			continue
 		}
-		bo.Reset()
 		c.mu.Lock()
 		c.inner = inner
 		c.mu.Unlock()
 
+		start := time.Now()
 		err = c.runSession(ctx, inner)
 		if ctx.Err() != nil {
 			return nil
 		}
-		if err == nil || isAuthErr(err) {
-			if err != nil {
-				c.log.Warn("authentication failed, re-registering", "error", err)
-			} else {
-				c.log.Warn("session ended, re-registering")
-			}
+
+		// Only a session that stayed up is evidence the server is
+		// healthy. Resetting on every outcome turns a server that
+		// accepts and immediately drops connections — or rejects the
+		// credentials — into an unthrottled registration loop.
+		if time.Since(start) >= healthySession {
 			bo.Reset()
-			continue
 		}
 
-		c.log.Warn("connection lost, retrying", "error", err, "retry_in", bo.current)
+		switch {
+		case err == nil:
+			c.log.Warn("session ended, re-registering", "retry_in", bo.current)
+		case isAuthErr(err):
+			c.log.Warn("authentication failed, re-registering", "error", err, "retry_in", bo.current)
+		default:
+			c.log.Warn("connection lost, retrying", "error", err, "retry_in", bo.current)
+		}
+
 		if !sleepCtx(ctx, bo.Next()) {
 			return nil
 		}

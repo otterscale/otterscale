@@ -94,8 +94,10 @@ func (s *Service) ListLinks() map[string]core.Link {
 // tunnel endpoint and the PEM-encoded signed certificate.
 //
 // If the cluster was previously registered, the old host allocation
-// is released first so that re-registration always moves the cluster
-// to a fresh address.
+// and chisel user are released first so that stale credentials do not
+// accumulate. The replacement address is normally the same one: the
+// allocator derives its starting probe from a hash of the cluster
+// name, so a released host is handed straight back to it.
 func (s *Service) RegisterLink(_ context.Context, cluster, agentID, agentVersion string, csrPEM []byte) (endpoint string, certPEM []byte, err error) {
 	// Sign the agent's CSR with the internal CA.
 	certPEM, err = s.ca.SignCSR(csrPEM)
