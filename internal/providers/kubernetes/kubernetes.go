@@ -11,12 +11,10 @@ package kubernetes
 import (
 	"context"
 	"net/http"
-	"os"
 	"sync"
 	"time"
 
 	"k8s.io/client-go/rest"
-	"k8s.io/client-go/tools/clientcmd"
 
 	"github.com/otterscale/otterscale/internal/core"
 )
@@ -66,11 +64,6 @@ func (k *Kubernetes) impersonationConfig(ctx context.Context, cluster string) (*
 			Code:    core.ErrorCodeUnauthenticated,
 			Message: "user info not found in context",
 		}
-	}
-
-	// use local kubeconfig for debugging if OTTERSCALE_DEBUG is set.
-	if os.Getenv("OTTERSCALE_DEBUG") != "" {
-		return clientcmd.BuildConfigFromFlags("", clientcmd.RecommendedHomeFile)
 	}
 
 	address, err := k.tunnel.ResolveAddress(ctx, cluster)

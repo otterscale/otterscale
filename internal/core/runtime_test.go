@@ -18,6 +18,13 @@ import (
 // test instead of hanging the suite.
 const sessionTimeout = 2 * time.Second
 
+// userContext returns a context carrying an authenticated subject, as
+// the auth middleware provides for every session RPC.
+func userContext(t *testing.T, subject string) context.Context {
+	t.Helper()
+	return WithUserInfo(t.Context(), UserInfo{Subject: subject, Groups: []string{"system:authenticated"}})
+}
+
 // mockRuntimeRepo implements RuntimeRepo for SubResourceAction testing.
 type mockRuntimeRepo struct {
 	subResourceResult map[string]any
@@ -265,7 +272,7 @@ func TestStartPortForward_CancellationReleasesSession(t *testing.T) {
 	store := NewSessionStore()
 	uc := NewRuntimeUseCase(&mockDiscovery{}, &mockRuntimeRepo{drainStdin: true}, &mockHelmRepoForRuntime{}, store)
 
-	ctx, cancel := context.WithCancel(t.Context())
+	ctx, cancel := context.WithCancel(userContext(t, "alice"))
 	sess, out, err := uc.StartPortForward(ctx, "prod", "default", "my-pod", 8080)
 	if err != nil {
 		t.Fatalf("StartPortForward: %v", err)
@@ -293,7 +300,7 @@ func TestStartVNC_CancellationReleasesSession(t *testing.T) {
 	store := NewSessionStore()
 	uc := NewRuntimeUseCase(&mockDiscovery{}, &mockRuntimeRepo{drainStdin: true}, &mockHelmRepoForRuntime{}, store)
 
-	ctx, cancel := context.WithCancel(t.Context())
+	ctx, cancel := context.WithCancel(userContext(t, "alice"))
 	sess, out, err := uc.StartVNC(ctx, "prod", "default", "my-vmi")
 	if err != nil {
 		t.Fatalf("StartVNC: %v", err)
@@ -320,7 +327,7 @@ func TestStartExec_DoneStaysSignaled(t *testing.T) {
 	store := NewSessionStore()
 	uc := NewRuntimeUseCase(&mockDiscovery{}, &mockRuntimeRepo{}, &mockHelmRepoForRuntime{}, store)
 
-	sess, stdout, stderr, err := uc.StartExec(t.Context(), &StartExecParams{
+	sess, stdout, stderr, err := uc.StartExec(userContext(t, "alice"), &StartExecParams{
 		Cluster:   "prod",
 		Namespace: "default",
 		Name:      "my-pod",
@@ -341,4 +348,121 @@ func TestStartExec_DoneStaysSignaled(t *testing.T) {
 	if n := store.ReapStaleSessions(); n != 1 {
 		t.Fatalf("ReapStaleSessions() = %d, want 1", n)
 	}
+}
+
+// TestStartSession_RequiresAuthenticatedUser checks that a session
+// cannot be opened without an identity to bind it to.
+func TestStartSession_RequiresAuthenticatedUser(t *testing.T) {
+	uc := NewRuntimeUseCase(&mockDiscovery{}, &mockRuntimeRepo{}, &mockHelmRepoForRuntime{}, NewSessionStore())
+
+	tests := map[string]func(context.Context) error{
+		"exec": func(ctx context.Context) error {
+			_, _, _, err := uc.StartExec(ctx, &StartExecParams{Name: "my-pod", Command: []string{"sh"}})
+			return err
+		},
+		"port-forward": func(ctx context.Context) error {
+			_, _, err := uc.StartPortForward(ctx, "prod", "default", "my-pod", 8080)
+			return err
+		},
+		"vnc": func(ctx context.Context) error {
+			_, _, err := uc.StartVNC(ctx, "prod", "default", "my-vmi")
+			return err
+		},
+	}
+
+	for name, start := range tests {
+		t.Run(name, func(t *testing.T) {
+			err := start(t.Context()) // no user info
+			if err == nil {
+				t.Fatal("expected an error, got nil")
+			}
+			if code, ok := DomainErrorCode(err); !ok || code != ErrorCodeUnauthenticated {
+				t.Errorf("code = %v (domain=%v), want ErrorCodeUnauthenticated", code, ok)
+			}
+		})
+	}
+}
+
+// TestSessionsAreBoundToTheirOwner is the regression test for session
+// identifiers being the only thing protecting an open shell: a second
+// authenticated user must not be able to drive somebody else's session
+// even when they know its identifier.
+func TestSessionsAreBoundToTheirOwner(t *testing.T) {
+	store := NewSessionStore()
+	uc := NewRuntimeUseCase(&mockDiscovery{}, &mockRuntimeRepo{drainStdin: true}, &mockHelmRepoForRuntime{}, store)
+
+	alice := userContext(t, "alice")
+	mallory := userContext(t, "mallory")
+
+	execSess, stdout, stderr, err := uc.StartExec(alice, &StartExecParams{Name: "my-pod", Command: []string{"sh"}})
+	if err != nil {
+		t.Fatalf("StartExec: %v", err)
+	}
+	defer stdout.Close()
+	defer stderr.Close()
+
+	pfSess, pfOut, err := uc.StartPortForward(alice, "prod", "default", "my-pod", 8080)
+	if err != nil {
+		t.Fatalf("StartPortForward: %v", err)
+	}
+	defer pfOut.Close()
+
+	vncSess, vncOut, err := uc.StartVNC(alice, "prod", "default", "my-vmi")
+	if err != nil {
+		t.Fatalf("StartVNC: %v", err)
+	}
+	defer vncOut.Close()
+
+	denied := map[string]func() error{
+		"write exec":         func() error { return uc.WriteExec(mallory, execSess.ID, []byte("id\n")) },
+		"resize exec":        func() error { return uc.ResizeExec(mallory, execSess.ID, 40, 120) },
+		"write port-forward": func() error { return uc.WritePortForward(mallory, pfSess.ID, []byte("GET /")) },
+		"write vnc":          func() error { return uc.WriteVNC(mallory, vncSess.ID, []byte{0x01}) },
+	}
+
+	for name, call := range denied {
+		t.Run(name, func(t *testing.T) {
+			err := call()
+			var notFound *ErrSessionNotFound
+			if !errors.As(err, &notFound) {
+				t.Fatalf("got %v (%T), want ErrSessionNotFound", err, err)
+			}
+		})
+	}
+
+	t.Run("cleanup by another user leaves the session running", func(t *testing.T) {
+		uc.CleanupExec(mallory, execSess.ID)
+		uc.CleanupPortForward(mallory, pfSess.ID)
+		uc.CleanupVNC(mallory, vncSess.ID)
+
+		if _, ok := store.GetExec(execSess.ID); !ok {
+			t.Error("exec session was removed by a caller that does not own it")
+		}
+		if _, ok := store.GetPortForward(pfSess.ID); !ok {
+			t.Error("port-forward session was removed by a caller that does not own it")
+		}
+		if _, ok := store.GetVNC(vncSess.ID); !ok {
+			t.Error("VNC session was removed by a caller that does not own it")
+		}
+	})
+
+	t.Run("the owner can still resize and clean up", func(t *testing.T) {
+		if err := uc.ResizeExec(alice, execSess.ID, 40, 120); err != nil {
+			t.Errorf("ResizeExec by the owner: %v", err)
+		}
+
+		uc.CleanupExec(alice, execSess.ID)
+		uc.CleanupPortForward(alice, pfSess.ID)
+		uc.CleanupVNC(alice, vncSess.ID)
+
+		if _, ok := store.GetExec(execSess.ID); ok {
+			t.Error("exec session survived cleanup by its owner")
+		}
+		if _, ok := store.GetPortForward(pfSess.ID); ok {
+			t.Error("port-forward session survived cleanup by its owner")
+		}
+		if _, ok := store.GetVNC(vncSess.ID); ok {
+			t.Error("VNC session survived cleanup by its owner")
+		}
+	})
 }

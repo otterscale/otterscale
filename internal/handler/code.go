@@ -22,6 +22,7 @@ var domainCodeToConnectCode = map[core.ErrorCode]connect.Code{
 	core.ErrorCodeResourceExhausted:  connect.CodeResourceExhausted,
 	core.ErrorCodeUnimplemented:      connect.CodeUnimplemented,
 	core.ErrorCodeUnavailable:        connect.CodeUnavailable,
+	core.ErrorCodeCanceled:           connect.CodeCanceled,
 }
 
 // domainErrorToConnectError converts a domain error into a ConnectRPC

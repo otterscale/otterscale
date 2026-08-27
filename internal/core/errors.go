@@ -23,6 +23,7 @@ const (
 	ErrorCodeResourceExhausted                   // rate-limit / quota
 	ErrorCodeUnimplemented                       // method not allowed
 	ErrorCodeUnavailable                         // service unavailable
+	ErrorCodeCanceled                            // caller gave up
 )
 
 // DomainError is a generic domain error carrying an ErrorCode and an

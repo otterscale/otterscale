@@ -133,6 +133,63 @@ func NewRuntimeUseCase(discovery DiscoveryClient, runtime RuntimeRepo, helm Helm
 	}
 }
 
+// ---------------------------------------------------------------------------
+// Session ownership
+// ---------------------------------------------------------------------------
+
+// sessionOwner returns the authenticated subject a new session belongs
+// to. Sessions are addressed by an identifier the client is handed back
+// and later replays, so they are bound to their creator at birth.
+func sessionOwner(ctx context.Context) (string, error) {
+	user, ok := UserInfoFromContext(ctx)
+	if !ok || user.Subject == "" {
+		return "", &DomainError{
+			Code:    ErrorCodeUnauthenticated,
+			Message: "user info not found in context",
+		}
+	}
+	return user.Subject, nil
+}
+
+// ownedBy reports whether the caller in ctx is the subject that opened
+// the session.
+func ownedBy(ctx context.Context, owner string) bool {
+	user, ok := UserInfoFromContext(ctx)
+	return ok && user.Subject != "" && user.Subject == owner
+}
+
+// execSession looks up an exec session the caller is allowed to use. A
+// session belonging to somebody else is reported as missing rather than
+// forbidden, so a leaked identifier cannot be used to probe for other
+// users' sessions.
+func (uc *RuntimeUseCase) execSession(ctx context.Context, sessionID string) (*ExecSession, error) {
+	sess, ok := uc.sessions.GetExec(sessionID)
+	if !ok || !ownedBy(ctx, sess.Owner) {
+		return nil, &ErrSessionNotFound{Resource: "exec-session", ID: sessionID}
+	}
+	return sess, nil
+}
+
+// portForwardSession looks up a port-forward session the caller is
+// allowed to use. See execSession.
+func (uc *RuntimeUseCase) portForwardSession(ctx context.Context, sessionID string) (*PortForwardSession, error) {
+	sess, ok := uc.sessions.GetPortForward(sessionID)
+	if !ok || !ownedBy(ctx, sess.Owner) {
+		return nil, &ErrSessionNotFound{Resource: "portforward-session", ID: sessionID}
+	}
+	return sess, nil
+}
+
+// vncSession looks up a VNC session the caller is allowed to use.
+// See execSession.
+func (uc *RuntimeUseCase) vncSession(ctx context.Context, sessionID string) (*VNCSession, error) {
+	sess, ok := uc.sessions.GetVNC(sessionID)
+	if !ok || !ownedBy(ctx, sess.Owner) {
+		return nil, &ErrSessionNotFound{Resource: "vnc-session", ID: sessionID}
+	}
+	return sess, nil
+}
+
 // StartPodLogs validates the request and opens a streaming log reader.
 func (uc *RuntimeUseCase) StartPodLogs(ctx context.Context, cluster, namespace, name string, opts PodLogOptions) (io.ReadCloser, error) {
 	if name == "" {
@@ -152,6 +209,11 @@ func (uc *RuntimeUseCase) StartExec(ctx context.Context, params *StartExecParams
 		return nil, nil, nil, &ErrInvalidInput{Field: "command", Message: "command is required"}
 	}
 
+	owner, err := sessionOwner(ctx)
+	if err != nil {
+		return nil, nil, nil, err
+	}
+
 	stdinR, stdinW := io.Pipe()
 	stdoutR, stdoutW := io.Pipe()
 	stderrR, stderrW := io.Pipe()
@@ -167,6 +229,7 @@ func (uc *RuntimeUseCase) StartExec(ctx context.Context, params *StartExecParams
 
 	session = &ExecSession{
 		ID:        uuid.New().String(),
+		Owner:     owner,
 		Stdin:     stdinW,
 		SizeQueue: sizeQueue,
 		Cancel:    cancel,
@@ -220,9 +283,9 @@ func (uc *RuntimeUseCase) StartExec(ctx context.Context, params *StartExecParams
 // cancel a blocking pipe write during graceful shutdown or if the exec
 // session has already finished.
 func (uc *RuntimeUseCase) WriteExec(ctx context.Context, sessionID string, data []byte) error {
-	sess, ok := uc.sessions.GetExec(sessionID)
-	if !ok {
-		return &ErrSessionNotFound{Resource: "exec-session", ID: sessionID}
+	sess, err := uc.execSession(ctx, sessionID)
+	if err != nil {
+		return err
 	}
 
 	// Fast-path: if the session goroutine has already exited, the
@@ -249,10 +312,10 @@ func (uc *RuntimeUseCase) WriteExec(ctx context.Context, sessionID string, data 
 }
 
 // ResizeExec sends a terminal resize event to an active exec session.
-func (uc *RuntimeUseCase) ResizeExec(_ context.Context, sessionID string, rows, cols uint16) error {
-	sess, ok := uc.sessions.GetExec(sessionID)
-	if !ok {
-		return &ErrSessionNotFound{Resource: "exec-session", ID: sessionID}
+func (uc *RuntimeUseCase) ResizeExec(ctx context.Context, sessionID string, rows, cols uint16) error {
+	sess, err := uc.execSession(ctx, sessionID)
+	if err != nil {
+		return err
 	}
 	sess.SizeQueue.Set(cols, rows)
 	return nil
@@ -262,7 +325,10 @@ func (uc *RuntimeUseCase) ResizeExec(_ context.Context, sessionID string, rows, 
 // RemoveExec is used instead of separate Get+Delete to atomically
 // claim ownership, preventing a double-close race with
 // ReapStaleSessions.
-func (uc *RuntimeUseCase) CleanupExec(_ context.Context, sessionID string) {
+func (uc *RuntimeUseCase) CleanupExec(ctx context.Context, sessionID string) {
+	if _, err := uc.execSession(ctx, sessionID); err != nil {
+		return
+	}
 	sess := uc.sessions.RemoveExec(sessionID)
 	if sess == nil {
 		return
@@ -282,6 +348,11 @@ func (uc *RuntimeUseCase) StartPortForward(ctx context.Context, cluster, namespa
 		return nil, nil, &ErrInvalidInput{Field: "port", Message: "must be between 1 and 65535"}
 	}
 
+	owner, err := sessionOwner(ctx)
+	if err != nil {
+		return nil, nil, err
+	}
+
 	dataInR, dataInW := io.Pipe()
 	dataOutR, dataOutW := io.Pipe()
 
@@ -290,6 +361,7 @@ func (uc *RuntimeUseCase) StartPortForward(ctx context.Context, cluster, namespa
 
 	sess := &PortForwardSession{
 		ID:     uuid.New().String(),
+		Owner:  owner,
 		Writer: dataInW,
 		Cancel: cancel,
 		Done:   errCh,
@@ -345,9 +417,9 @@ func closeStdinOnCancel(ctx context.Context, r io.Closer) {
 // write is performed in a background goroutine so that the caller's
 // context can cancel a blocking pipe write during graceful shutdown.
 func (uc *RuntimeUseCase) WritePortForward(ctx context.Context, sessionID string, data []byte) error {
-	sess, ok := uc.sessions.GetPortForward(sessionID)
-	if !ok {
-		return &ErrSessionNotFound{Resource: "portforward-session", ID: sessionID}
+	sess, err := uc.portForwardSession(ctx, sessionID)
+	if err != nil {
+		return err
 	}
 
 	// Fast-path: if the session goroutine has already exited, the
@@ -377,7 +449,10 @@ func (uc *RuntimeUseCase) WritePortForward(ctx context.Context, sessionID string
 // the store. RemovePortForward is used instead of separate Get+Delete
 // to atomically claim ownership, preventing a double-close race with
 // ReapStaleSessions.
-func (uc *RuntimeUseCase) CleanupPortForward(_ context.Context, sessionID string) {
+func (uc *RuntimeUseCase) CleanupPortForward(ctx context.Context, sessionID string) {
+	if _, err := uc.portForwardSession(ctx, sessionID); err != nil {
+		return
+	}
 	sess := uc.sessions.RemovePortForward(sessionID)
 	if sess == nil {
 		return
@@ -394,6 +469,11 @@ func (uc *RuntimeUseCase) StartVNC(ctx context.Context, cluster, namespace, name
 		return nil, nil, &ErrInvalidInput{Field: "name", Message: "VMI name is required"}
 	}
 
+	owner, err := sessionOwner(ctx)
+	if err != nil {
+		return nil, nil, err
+	}
+
 	dataInR, dataInW := io.Pipe()
 	dataOutR, dataOutW := io.Pipe()
 
@@ -402,6 +482,7 @@ func (uc *RuntimeUseCase) StartVNC(ctx context.Context, cluster, namespace, name
 
 	sess := &VNCSession{
 		ID:     uuid.New().String(),
+		Owner:  owner,
 		Writer: dataInW,
 		Cancel: cancel,
 		Done:   done,
@@ -436,9 +517,9 @@ func (uc *RuntimeUseCase) StartVNC(ctx context.Context, cluster, namespace, name
 
 // WriteVNC writes data to an active VNC session.
 func (uc *RuntimeUseCase) WriteVNC(ctx context.Context, sessionID string, data []byte) error {
-	sess, ok := uc.sessions.GetVNC(sessionID)
-	if !ok {
-		return &ErrSessionNotFound{Resource: "vnc-session", ID: sessionID}
+	sess, err := uc.vncSession(ctx, sessionID)
+	if err != nil {
+		return err
 	}
 
 	select {
@@ -465,7 +546,10 @@ func (uc *RuntimeUseCase) WriteVNC(ctx context.Context, sessionID string, data [
 }
 
 // CleanupVNC stops a VNC session and removes it from the store.
-func (uc *RuntimeUseCase) CleanupVNC(_ context.Context, sessionID string) {
+func (uc *RuntimeUseCase) CleanupVNC(ctx context.Context, sessionID string) {
+	if _, err := uc.vncSession(ctx, sessionID); err != nil {
+		return
+	}
 	sess := uc.sessions.RemoveVNC(sessionID)
 	if sess == nil {
 		return

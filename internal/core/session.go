@@ -97,6 +97,9 @@ func (q *TerminalSizeQueue) Close() {
 type ExecSession struct {
 	// ID is the unique session identifier.
 	ID string
+	// Owner is the authenticated subject that opened the session.
+	// Only that subject may write to, resize, or close it.
+	Owner string
 	// Stdin is the writer side of the stdin pipe. WriteTTY writes here.
 	Stdin io.WriteCloser
 	// SizeQueue receives terminal resize events from ResizeTTY.
@@ -111,6 +114,8 @@ type ExecSession struct {
 type PortForwardSession struct {
 	// ID is the unique session identifier.
 	ID string
+	// Owner is the authenticated subject that opened the session.
+	Owner string
 	// Writer is the writer side of the data pipe. WritePortForward writes here.
 	Writer io.WriteCloser
 	// Cancel stops the port-forward session.
@@ -123,6 +128,8 @@ type PortForwardSession struct {
 type VNCSession struct {
 	// ID is the unique session identifier.
 	ID string
+	// Owner is the authenticated subject that opened the session.
+	Owner string
 	// Writer is the writer side of the data pipe. WriteVNC writes here.
 	Writer io.WriteCloser
 	// Cancel stops the VNC session.
