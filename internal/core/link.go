@@ -106,18 +106,35 @@ type Link struct {
 // LinkUseCase orchestrates cluster registration on the server side.
 // It delegates CSR signing and tunnel setup to the TunnelProvider.
 type LinkUseCase struct {
-	tunnel  TunnelProvider
-	version Version
+	tunnel    TunnelProvider
+	version   Version
+	enrolment *Enrolment
 }
 
 // NewLinkUseCase returns a LinkUseCase backed by the given
 // TunnelProvider. version is the server binary version, included in
-// registration responses.
-func NewLinkUseCase(tunnel TunnelProvider, version Version) *LinkUseCase {
+// registration responses. enrolment authorizes the agents allowed to
+// claim a cluster.
+func NewLinkUseCase(tunnel TunnelProvider, version Version, enrolment *Enrolment) *LinkUseCase {
 	return &LinkUseCase{
-		tunnel:  tunnel,
-		version: version,
+		tunnel:    tunnel,
+		version:   version,
+		enrolment: enrolment,
 	}
+}
+
+// RegistrationRequest is what an agent presents when it registers.
+type RegistrationRequest struct {
+	// Cluster is the name the agent claims.
+	Cluster string
+	// AgentID identifies the agent process (its hostname).
+	AgentID string
+	// AgentVersion is the agent binary version, kept for diagnostics.
+	AgentVersion string
+	// EnrolmentToken authorizes claiming Cluster.
+	EnrolmentToken string
+	// CSRPEM is the PEM-encoded PKCS#10 request to be signed.
+	CSRPEM []byte
 }
 
 // ListLinks returns the names of all currently registered clusters.
@@ -125,21 +142,29 @@ func (uc *LinkUseCase) ListLinks(_ context.Context) map[string]Link {
 	return uc.tunnel.ListLinks()
 }
 
-// RegisterCluster validates the inputs, forwards the agent's CSR to
+// RegisterCluster authorizes the request, forwards the agent's CSR to
 // the tunnel provider for signing, and returns the signed certificate,
 // CA certificate, tunnel endpoint, and the server's version.
-func (uc *LinkUseCase) RegisterCluster(ctx context.Context, cluster, agentID, agentVersion string, csrPEM []byte) (Registration, error) {
-	if err := ValidateClusterName(cluster); err != nil {
+//
+// The enrolment token is checked before anything else happens, because
+// registering a cluster replaces whatever was registered under that
+// name: an unauthorized request must not be able to disturb the agent
+// currently serving it.
+func (uc *LinkUseCase) RegisterCluster(ctx context.Context, req *RegistrationRequest) (Registration, error) {
+	if err := ValidateClusterName(req.Cluster); err != nil {
 		return Registration{}, err
 	}
-	if agentID == "" {
+	if err := uc.enrolment.Verify(req.Cluster, req.EnrolmentToken); err != nil {
+		return Registration{}, err
+	}
+	if req.AgentID == "" {
 		return Registration{}, &ErrInvalidInput{Field: "agent_id", Message: "must not be empty"}
 	}
-	if len(csrPEM) == 0 {
+	if len(req.CSRPEM) == 0 {
 		return Registration{}, &ErrInvalidInput{Field: "csr", Message: "must not be empty"}
 	}
 
-	endpoint, certPEM, err := uc.tunnel.RegisterLink(ctx, cluster, agentID, agentVersion, csrPEM)
+	endpoint, certPEM, err := uc.tunnel.RegisterLink(ctx, req.Cluster, req.AgentID, req.AgentVersion, req.CSRPEM)
 	if err != nil {
 		return Registration{}, err
 	}

@@ -4,8 +4,13 @@ package agent
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"log/slog"
+	"net"
+	"net/url"
 
+	"github.com/otterscale/otterscale/internal/config"
 	"github.com/otterscale/otterscale/internal/core"
 	"github.com/otterscale/otterscale/internal/pki"
 	"github.com/otterscale/otterscale/internal/transport"
@@ -40,6 +45,8 @@ func NewAgent(handler *Handler, tunnel core.TunnelConsumer) *Agent {
 // HTTP server, a TCP bridge for chisel to forward to, and a tunnel
 // client, then blocks until ctx is canceled.
 func (a *Agent) Run(ctx context.Context, cfg *Config) error {
+	warnInsecureServerURL(cfg.ServerURL)
+
 	pl := pipe.NewListener()
 
 	bridge, err := tunnel.NewBridge(ctx, pl)
@@ -98,4 +105,52 @@ func (a *Agent) register() tunnel.RegisterFunc {
 			KeyPEM:    reg.PrivateKeyPEM,
 		}, nil
 	}
+}
+
+// ProvideEnrolmentToken reads the token this agent presents when it
+// registers. It fails when none is configured: without one the server
+// rejects every registration, and failing here says why instead of
+// leaving the agent to retry an unauthenticated call forever.
+func ProvideEnrolmentToken(conf *config.Config) (core.EnrolmentToken, error) {
+	token, err := conf.AgentEnrolmentToken()
+	if err != nil {
+		return "", err
+	}
+	if token == "" {
+		return "", errors.New(
+			"enrolment token is required but not configured; " +
+				"set --enrolment-token, --enrolment-token-file or OTTERSCALE_AGENT_ENROLMENT_TOKEN " +
+				"to the value of `otterscale enrolment-token --cluster <name>`",
+		)
+	}
+	return core.EnrolmentToken(token), nil
+}
+
+// warnInsecureServerURL warns when registration would send the
+// enrolment token over plaintext HTTP to a remote host. Anything on
+// that path can read the token and register clusters of its own.
+//
+// This warns rather than refuses: a service mesh may terminate TLS
+// outside this process, which makes plain HTTP on the wire legitimate,
+// and only the operator knows whether that is the case.
+func warnInsecureServerURL(serverURL string) {
+	u, err := url.Parse(serverURL)
+	if err != nil || u.Scheme != "http" || isLoopback(u.Hostname()) {
+		return
+	}
+
+	slog.Warn("registering over plaintext HTTP: the enrolment token is exposed to anything on the network path",
+		"server_url", serverURL,
+		"advice", "use https, unless TLS is terminated for this process by a service mesh",
+	)
+}
+
+// isLoopback reports whether host addresses this machine, in which case
+// the request never reaches a network.
+func isLoopback(host string) bool {
+	if host == "localhost" {
+		return true
+	}
+	ip := net.ParseIP(host)
+	return ip != nil && ip.IsLoopback()
 }

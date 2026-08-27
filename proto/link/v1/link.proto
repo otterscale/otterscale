@@ -50,6 +50,11 @@ message RegisterRequest {
 
   // The version of the agent binary (e.g. "v1.2.3"), set at build time.
   string agent_version = 4;
+
+  // The enrolment token for this cluster, issued by the operator with
+  // `otterscale enrolment-token --cluster <name>`. Registration is
+  // rejected without a token that matches the cluster being claimed.
+  string enrolment_token = 5;
 }
 
 // RegisterResponse contains a CA-signed certificate and the CA

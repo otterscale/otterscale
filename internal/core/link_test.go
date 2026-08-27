@@ -14,6 +14,10 @@ type mockTunnelProvider struct {
 	regEndpoint string
 	regCertPEM  []byte
 	regErr      error
+
+	// registered records every RegisterLink call, so a test can assert
+	// that a rejected request never reached the tunnel provider.
+	registered []string
 }
 
 func (m *mockTunnelProvider) CACertPEM() []byte { return m.caCertPEM }
@@ -24,7 +28,8 @@ func (m *mockTunnelProvider) ListLinks() map[string]Link {
 	return m.links
 }
 
-func (m *mockTunnelProvider) RegisterLink(_ context.Context, _, _, _ string, _ []byte) (endpoint string, certPEM []byte, err error) {
+func (m *mockTunnelProvider) RegisterLink(_ context.Context, cluster, _, _ string, _ []byte) (endpoint string, certPEM []byte, err error) {
+	m.registered = append(m.registered, cluster)
 	return m.regEndpoint, m.regCertPEM, m.regErr
 }
 
@@ -32,9 +37,25 @@ func (m *mockTunnelProvider) ResolveAddress(_ context.Context, _ string) (string
 	return "", nil
 }
 
+// testEnrolmentSecret backs the tokens used by the link tests.
+const testEnrolmentSecret = "test-root-secret"
+
 func newTestLinkUseCase(t *testing.T, tp TunnelProvider) *LinkUseCase {
 	t.Helper()
-	return NewLinkUseCase(tp, "v1.0.0")
+	return NewLinkUseCase(tp, "v1.0.0", newTestEnrolment(t, testEnrolmentSecret))
+}
+
+// validRegistration returns a request that passes every check, so a
+// test can vary the one field it is about.
+func validRegistration(t *testing.T, cluster string) *RegistrationRequest {
+	t.Helper()
+	return &RegistrationRequest{
+		Cluster:        cluster,
+		AgentID:        "agent-1",
+		AgentVersion:   "v1",
+		EnrolmentToken: newTestEnrolment(t, testEnrolmentSecret).Token(cluster),
+		CSRPEM:         []byte("csr-data"),
+	}
 }
 
 func TestLinkUseCase_ListLinks(t *testing.T) {
@@ -71,7 +92,11 @@ func TestLinkUseCase_RegisterCluster_Validation(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, err := uc.RegisterCluster(t.Context(), tt.cluster, tt.agentID, "v1", tt.csr)
+			req := validRegistration(t, tt.cluster)
+			req.AgentID = tt.agentID
+			req.CSRPEM = tt.csr
+
+			_, err := uc.RegisterCluster(t.Context(), req)
 			if err == nil {
 				t.Fatal("expected error, got nil")
 			}
@@ -94,7 +119,7 @@ func TestLinkUseCase_RegisterCluster_Success(t *testing.T) {
 	}
 	uc := newTestLinkUseCase(t, tp)
 
-	reg, err := uc.RegisterCluster(t.Context(), "my-cluster", "agent-1", "v1", []byte("csr-data"))
+	reg, err := uc.RegisterCluster(t.Context(), validRegistration(t, "my-cluster"))
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -116,4 +141,61 @@ func TestLinkUseCase_RegisterCluster_Success(t *testing.T) {
 // standard errors.As mechanism.
 func isErrInvalidInput(err error, target **ErrInvalidInput) bool {
 	return errors.As(err, target)
+}
+
+// TestLinkUseCase_RegisterCluster_RejectsBadToken is the regression
+// test for unauthenticated registration. Registering replaces whatever
+// holds the cluster name, so the important assertion is not just that
+// the call fails, but that it fails before the tunnel provider is
+// touched: a rejected request must not disturb the agent currently
+// serving that cluster.
+func TestLinkUseCase_RegisterCluster_RejectsBadToken(t *testing.T) {
+	tests := []struct {
+		name  string
+		token func(t *testing.T) string
+	}{
+		{
+			name:  "no token",
+			token: func(*testing.T) string { return "" },
+		},
+		{
+			name:  "made-up token",
+			token: func(*testing.T) string { return "bm90LWEtcmVhbC10b2tlbi1idXQtdmFsaWQtYmFzZTY0LWhlcmU" },
+		},
+		{
+			name: "another cluster's token",
+			token: func(t *testing.T) string {
+				t.Helper()
+				return newTestEnrolment(t, testEnrolmentSecret).Token("staging")
+			},
+		},
+		{
+			name: "token from a rotated secret",
+			token: func(t *testing.T) string {
+				t.Helper()
+				return newTestEnrolment(t, "some-other-secret").Token("my-cluster")
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tp := &mockTunnelProvider{regEndpoint: "127.0.0.1:8080", regCertPEM: []byte("signed-cert")}
+			uc := newTestLinkUseCase(t, tp)
+
+			req := validRegistration(t, "my-cluster")
+			req.EnrolmentToken = tt.token(t)
+
+			_, err := uc.RegisterCluster(t.Context(), req)
+			if err == nil {
+				t.Fatal("expected an error, got nil")
+			}
+			if code, ok := DomainErrorCode(err); !ok || code != ErrorCodeUnauthenticated {
+				t.Errorf("code = %v (domain=%v), want ErrorCodeUnauthenticated", code, ok)
+			}
+			if len(tp.registered) != 0 {
+				t.Errorf("the tunnel provider was called for %v; a rejected registration must not change any state", tp.registered)
+			}
+		})
+	}
 }

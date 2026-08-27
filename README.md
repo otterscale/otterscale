@@ -49,6 +49,33 @@ OtterScale provides a single, authenticated entry point to many Kubernetes clust
 - **Discovery** — API resource discovery and OpenAPI schema resolution with a TTL cache.
 - **Security** — FIPS 140-3, OIDC (Keycloak), per-tunnel mTLS, and user impersonation for RBAC.
 
+## Enrolling a cluster
+
+Registration is the one endpoint agents reach before they have any credentials, so it is authorised by an **enrolment token** instead. The server holds a single root secret (`--enrolment-secret`, `--enrolment-secret-file`, or `OTTERSCALE_SERVER_ENROLMENT_SECRET`) and refuses to start without one; each cluster's token is derived from that secret and the cluster's name.
+
+Issue a token wherever the root secret is available — most conveniently inside the server itself, so the secret never leaves the pod:
+
+```console
+$ kubectl exec deploy/otterscale-server -- /otterscale enrolment-token --cluster prod
+xlbQpGep3w9ZJpaDyUzKpHXVTcw_5pO5mNgT3qnf3Ss
+```
+
+Then install the agent with it:
+
+```console
+$ helm install otterscale-agent otterscale/otterscale-agent \
+    --set cluster=prod \
+    --set enrolmentToken=xlbQpGep3w9ZJpaDyUzKpHXVTcw_5pO5mNgT3qnf3Ss
+```
+
+What this does and does not give you:
+
+- A token authorises **one cluster**. An agent holding `prod`'s token cannot register as `staging`, so a compromised agent cannot take over another cluster's traffic.
+- A rejected token changes nothing. The check runs before any state is touched, so a bad registration cannot displace the agent currently serving that cluster.
+- Tokens **do not expire** and cannot be revoked one by one. Rotating the root secret invalidates every token at once, after which each agent needs its new token.
+- The token is sent in the registration request, so `--server-url` should be `https://`. The agent warns at startup when it is plain HTTP to a remote host — legitimate only when something else (a service mesh, for instance) provides the transport security.
+- With `--set`, the token is stored in the Helm release's values and is readable by anyone who can read Secrets in that namespace.
+
 ## Operating the server
 
 The server keeps its tunnel state in memory, which shapes how it is deployed:

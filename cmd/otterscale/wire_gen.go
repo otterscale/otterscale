@@ -45,7 +45,11 @@ func wireServer(v core.Version, conf *config.Config) (*server.Server, func(), er
 		return nil, nil, err
 	}
 	service := chisel.NewService(ca)
-	linkUseCase := core.NewLinkUseCase(service, v)
+	enrolment, err := server.ProvideEnrolment(conf)
+	if err != nil {
+		return nil, nil, err
+	}
+	linkUseCase := core.NewLinkUseCase(service, v, enrolment)
 	linkService := handler.NewLinkService(linkUseCase)
 	kubernetesKubernetes := kubernetes.New(service)
 	discoveryClient := kubernetes.NewDiscoveryClient(kubernetesKubernetes)
@@ -78,7 +82,11 @@ func wireAgent(v core.Version, conf *config.Config) (*agent.Agent, func(), error
 		return nil, nil, err
 	}
 	agentHandler := agent.NewHandler(restConfig, conf)
-	tunnelConsumer, err := otterscale.NewLinkRegistrar(v)
+	enrolmentToken, err := agent.ProvideEnrolmentToken(conf)
+	if err != nil {
+		return nil, nil, err
+	}
+	tunnelConsumer, err := otterscale.NewLinkRegistrar(v, enrolmentToken)
 	if err != nil {
 		return nil, nil, err
 	}

@@ -241,15 +241,16 @@ func (b0 ListLinksResponse_builder) Build() *ListLinksResponse {
 // RegisterRequest contains the agent's cluster identity and a CSR for
 // mTLS certificate issuance.
 type RegisterRequest struct {
-	state                   protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Cluster      *string                `protobuf:"bytes,1,opt,name=cluster"`
-	xxx_hidden_Csr          []byte                 `protobuf:"bytes,2,opt,name=csr"`
-	xxx_hidden_AgentId      *string                `protobuf:"bytes,3,opt,name=agent_id,json=agentId"`
-	xxx_hidden_AgentVersion *string                `protobuf:"bytes,4,opt,name=agent_version,json=agentVersion"`
-	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
-	XXX_presence            [1]uint32
-	unknownFields           protoimpl.UnknownFields
-	sizeCache               protoimpl.SizeCache
+	state                     protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Cluster        *string                `protobuf:"bytes,1,opt,name=cluster"`
+	xxx_hidden_Csr            []byte                 `protobuf:"bytes,2,opt,name=csr"`
+	xxx_hidden_AgentId        *string                `protobuf:"bytes,3,opt,name=agent_id,json=agentId"`
+	xxx_hidden_AgentVersion   *string                `protobuf:"bytes,4,opt,name=agent_version,json=agentVersion"`
+	xxx_hidden_EnrolmentToken *string                `protobuf:"bytes,5,opt,name=enrolment_token,json=enrolmentToken"`
+	XXX_raceDetectHookData    protoimpl.RaceDetectHookData
+	XXX_presence              [1]uint32
+	unknownFields             protoimpl.UnknownFields
+	sizeCache                 protoimpl.SizeCache
 }
 
 func (x *RegisterRequest) Reset() {
@@ -314,9 +315,19 @@ func (x *RegisterRequest) GetAgentVersion() string {
 	return ""
 }
 
+func (x *RegisterRequest) GetEnrolmentToken() string {
+	if x != nil {
+		if x.xxx_hidden_EnrolmentToken != nil {
+			return *x.xxx_hidden_EnrolmentToken
+		}
+		return ""
+	}
+	return ""
+}
+
 func (x *RegisterRequest) SetCluster(v string) {
 	x.xxx_hidden_Cluster = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
 }
 
 func (x *RegisterRequest) SetCsr(v []byte) {
@@ -324,17 +335,22 @@ func (x *RegisterRequest) SetCsr(v []byte) {
 		v = []byte{}
 	}
 	x.xxx_hidden_Csr = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
 }
 
 func (x *RegisterRequest) SetAgentId(v string) {
 	x.xxx_hidden_AgentId = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
 }
 
 func (x *RegisterRequest) SetAgentVersion(v string) {
 	x.xxx_hidden_AgentVersion = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
+}
+
+func (x *RegisterRequest) SetEnrolmentToken(v string) {
+	x.xxx_hidden_EnrolmentToken = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 5)
 }
 
 func (x *RegisterRequest) HasCluster() bool {
@@ -365,6 +381,13 @@ func (x *RegisterRequest) HasAgentVersion() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
+func (x *RegisterRequest) HasEnrolmentToken() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
+}
+
 func (x *RegisterRequest) ClearCluster() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_Cluster = nil
@@ -385,6 +408,11 @@ func (x *RegisterRequest) ClearAgentVersion() {
 	x.xxx_hidden_AgentVersion = nil
 }
 
+func (x *RegisterRequest) ClearEnrolmentToken() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	x.xxx_hidden_EnrolmentToken = nil
+}
+
 type RegisterRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
@@ -397,6 +425,10 @@ type RegisterRequest_builder struct {
 	AgentId *string
 	// The version of the agent binary (e.g. "v1.2.3"), set at build time.
 	AgentVersion *string
+	// The enrolment token for this cluster, issued by the operator with
+	// `otterscale enrolment-token --cluster <name>`. Registration is
+	// rejected without a token that matches the cluster being claimed.
+	EnrolmentToken *string
 }
 
 func (b0 RegisterRequest_builder) Build() *RegisterRequest {
@@ -404,20 +436,24 @@ func (b0 RegisterRequest_builder) Build() *RegisterRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Cluster != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
 		x.xxx_hidden_Cluster = b.Cluster
 	}
 	if b.Csr != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
 		x.xxx_hidden_Csr = b.Csr
 	}
 	if b.AgentId != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
 		x.xxx_hidden_AgentId = b.AgentId
 	}
 	if b.AgentVersion != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
 		x.xxx_hidden_AgentVersion = b.AgentVersion
+	}
+	if b.EnrolmentToken != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 5)
+		x.xxx_hidden_EnrolmentToken = b.EnrolmentToken
 	}
 	return m0
 }
@@ -617,12 +653,13 @@ const file_link_v1_link_proto_rawDesc = "" +
 	"\ragent_version\x18\x02 \x01(\tR\fagentVersion\"\x12\n" +
 	"\x10ListLinksRequest\"C\n" +
 	"\x11ListLinksResponse\x12.\n" +
-	"\x05links\x18\x01 \x03(\v2\x18.otterscale.link.v1.LinkR\x05links\"}\n" +
+	"\x05links\x18\x01 \x03(\v2\x18.otterscale.link.v1.LinkR\x05links\"\xa6\x01\n" +
 	"\x0fRegisterRequest\x12\x18\n" +
 	"\acluster\x18\x01 \x01(\tR\acluster\x12\x10\n" +
 	"\x03csr\x18\x02 \x01(\fR\x03csr\x12\x19\n" +
 	"\bagent_id\x18\x03 \x01(\tR\aagentId\x12#\n" +
-	"\ragent_version\x18\x04 \x01(\tR\fagentVersion\"\x9e\x01\n" +
+	"\ragent_version\x18\x04 \x01(\tR\fagentVersion\x12'\n" +
+	"\x0fenrolment_token\x18\x05 \x01(\tR\x0eenrolmentToken\"\x9e\x01\n" +
 	"\x10RegisterResponse\x12\x1a\n" +
 	"\bendpoint\x18\x01 \x01(\tR\bendpoint\x12 \n" +
 	"\vcertificate\x18\x02 \x01(\fR\vcertificate\x12%\n" +

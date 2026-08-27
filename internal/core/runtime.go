@@ -225,7 +225,7 @@ func (uc *RuntimeUseCase) StartExec(ctx context.Context, params *StartExecParams
 	}
 
 	ctx, cancel := context.WithCancel(ctx)
-	errCh := make(chan error, 1)
+	done := make(chan struct{})
 
 	session = &ExecSession{
 		ID:        uuid.New().String(),
@@ -233,7 +233,7 @@ func (uc *RuntimeUseCase) StartExec(ctx context.Context, params *StartExecParams
 		Stdin:     stdinW,
 		SizeQueue: sizeQueue,
 		Cancel:    cancel,
-		Done:      errCh,
+		Done:      done,
 	}
 
 	// Register the session BEFORE launching the goroutine to avoid
@@ -249,11 +249,7 @@ func (uc *RuntimeUseCase) StartExec(ctx context.Context, params *StartExecParams
 	}
 
 	go func() {
-		// Closing Done after the result is sent keeps the "finished"
-		// signal readable by every observer. A plain buffered send is
-		// consumed by whoever reads first, which would hide the
-		// finished state from the reaper.
-		defer close(errCh)
+		defer close(done)
 		defer stdinR.Close()
 		defer stdoutW.Close()
 		defer stderrW.Close()
@@ -264,7 +260,7 @@ func (uc *RuntimeUseCase) StartExec(ctx context.Context, params *StartExecParams
 			stderr = stderrW
 		}
 
-		errCh <- uc.runtime.Exec(ctx, params.Cluster, params.Namespace, params.Name, &ExecOptions{
+		session.Err = uc.runtime.Exec(ctx, params.Cluster, params.Namespace, params.Name, &ExecOptions{
 			Container: params.Container,
 			Command:   params.Command,
 			TTY:       params.TTY,
@@ -357,14 +353,14 @@ func (uc *RuntimeUseCase) StartPortForward(ctx context.Context, cluster, namespa
 	dataOutR, dataOutW := io.Pipe()
 
 	ctx, cancel := context.WithCancel(ctx)
-	errCh := make(chan error, 1)
+	done := make(chan struct{})
 
 	sess := &PortForwardSession{
 		ID:     uuid.New().String(),
 		Owner:  owner,
 		Writer: dataInW,
 		Cancel: cancel,
-		Done:   errCh,
+		Done:   done,
 	}
 
 	// Register the session BEFORE launching the goroutine to avoid
@@ -384,12 +380,10 @@ func (uc *RuntimeUseCase) StartPortForward(ctx context.Context, cluster, namespa
 	closeStdinOnCancel(ctx, dataInR)
 
 	go func() {
-		// See StartExec: close Done so the finished state stays visible
-		// to the reaper even after another caller has read the error.
-		defer close(errCh)
+		defer close(done)
 		defer dataInR.Close()
 		defer dataOutW.Close()
-		errCh <- uc.runtime.PortForward(ctx, cluster, namespace, name, PortForwardOptions{
+		sess.Err = uc.runtime.PortForward(ctx, cluster, namespace, name, PortForwardOptions{
 			Port:   port,
 			Stdin:  dataInR,
 			Stdout: dataOutW,

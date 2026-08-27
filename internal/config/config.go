@@ -120,6 +120,13 @@ func (c *Config) ServerExternalTunnelURL() string {
 	return c.v.GetString(keyServerExternalTunnelURL)
 }
 
+// ServerEnrolmentSecret returns the root secret used to issue and
+// verify agent enrolment tokens, read from the configured file when
+// one is set.
+func (c *Config) ServerEnrolmentSecret() (string, error) {
+	return c.secret(keyServerEnrolmentSecretFile, keyServerEnrolmentSecret)
+}
+
 // ---------------------------------------------------------------------------
 // Agent-mode accessors
 // ---------------------------------------------------------------------------
@@ -145,4 +152,35 @@ func (c *Config) AgentTunnelServerURL() string {
 // agent-side metrics proxy. An empty string disables the proxy.
 func (c *Config) AgentProxyPrometheusURL() string {
 	return c.v.GetString(keyAgentProxyPrometheusURL)
+}
+
+// AgentEnrolmentToken returns the token this agent presents when it
+// registers, read from the configured file when one is set.
+func (c *Config) AgentEnrolmentToken() (string, error) {
+	return c.secret(keyAgentEnrolmentTokenFile, keyAgentEnrolmentToken)
+}
+
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+// secret reads a credential from the file named by fileKey, falling
+// back to the inline value at valueKey.
+//
+// The file form exists because an inline secret reaches the process as
+// a flag or an environment variable, where it is visible in the
+// container spec and in /proc/<pid>/environ; a mounted file is not.
+// Surrounding whitespace is trimmed so that a file written with a
+// trailing newline works.
+func (c *Config) secret(fileKey, valueKey string) (string, error) {
+	path := c.v.GetString(fileKey)
+	if path == "" {
+		return c.v.GetString(valueKey), nil
+	}
+
+	content, err := os.ReadFile(path)
+	if err != nil {
+		return "", fmt.Errorf("failed to read %s from %q: %w", valueKey, path, err)
+	}
+	return strings.TrimSpace(string(content)), nil
 }

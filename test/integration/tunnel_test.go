@@ -12,19 +12,46 @@ import (
 	tunneltransport "github.com/otterscale/otterscale/internal/transport/tunnel"
 )
 
+// integrationSecret backs the enrolment tokens these tests present.
+const integrationSecret = "integration-root-secret"
+
+// newTestLink builds a LinkUseCase with enrolment configured, and a
+// helper that mints the token for a cluster.
+func newTestLink(t *testing.T, tunnel core.TunnelProvider) (link *core.LinkUseCase, tokenFor func(cluster string) string) {
+	t.Helper()
+
+	enrolment, err := core.NewEnrolment(integrationSecret)
+	if err != nil {
+		t.Fatalf("NewEnrolment: %v", err)
+	}
+	return core.NewLinkUseCase(tunnel, "test", enrolment), enrolment.Token
+}
+
 func TestLinkRegisterClusterUsesSingleSharedTunnelPort(t *testing.T) {
 	tunnel := newTestTunnel(t)
 	initTunnelServer(t, tunnel)
-	link := core.NewLinkUseCase(tunnel, "test")
+	link, tokenFor := newTestLink(t, tunnel)
 
 	csrA := generateCSR(t, "agent-a")
 	csrB := generateCSR(t, "agent-b")
 
-	regA, err := link.RegisterCluster(t.Context(), "cluster-a", "agent-a", "test", csrA)
+	regA, err := link.RegisterCluster(t.Context(), &core.RegistrationRequest{
+		Cluster:        "cluster-a",
+		AgentID:        "agent-a",
+		AgentVersion:   "test",
+		EnrolmentToken: tokenFor("cluster-a"),
+		CSRPEM:         csrA,
+	})
 	if err != nil {
 		t.Fatalf("register cluster-a: %v", err)
 	}
-	regB, err := link.RegisterCluster(t.Context(), "cluster-b", "agent-b", "test", csrB)
+	regB, err := link.RegisterCluster(t.Context(), &core.RegistrationRequest{
+		Cluster:        "cluster-b",
+		AgentID:        "agent-b",
+		AgentVersion:   "test",
+		EnrolmentToken: tokenFor("cluster-b"),
+		CSRPEM:         csrB,
+	})
 	if err != nil {
 		t.Fatalf("register cluster-b: %v", err)
 	}
@@ -60,16 +87,28 @@ func TestLinkRegisterClusterUsesSingleSharedTunnelPort(t *testing.T) {
 func TestLinkRegisterClusterLatestAgentWinsForSameCluster(t *testing.T) {
 	tunnel := newTestTunnel(t)
 	initTunnelServer(t, tunnel)
-	link := core.NewLinkUseCase(tunnel, "test")
+	link, tokenFor := newTestLink(t, tunnel)
 
 	csr1 := generateCSR(t, "agent-r-1")
 	csr2 := generateCSR(t, "agent-r-2")
 
-	_, err := link.RegisterCluster(t.Context(), "cluster-r", "agent-r-1", "test", csr1)
+	_, err := link.RegisterCluster(t.Context(), &core.RegistrationRequest{
+		Cluster:        "cluster-r",
+		AgentID:        "agent-r-1",
+		AgentVersion:   "test",
+		EnrolmentToken: tokenFor("cluster-r"),
+		CSRPEM:         csr1,
+	})
 	if err != nil {
 		t.Fatalf("register agent-r-1: %v", err)
 	}
-	reg2, err := link.RegisterCluster(t.Context(), "cluster-r", "agent-r-2", "test", csr2)
+	reg2, err := link.RegisterCluster(t.Context(), &core.RegistrationRequest{
+		Cluster:        "cluster-r",
+		AgentID:        "agent-r-2",
+		AgentVersion:   "test",
+		EnrolmentToken: tokenFor("cluster-r"),
+		CSRPEM:         csr2,
+	})
 	if err != nil {
 		t.Fatalf("register agent-r-2: %v", err)
 	}
@@ -94,17 +133,29 @@ func TestLinkRegisterClusterLatestAgentWinsForSameCluster(t *testing.T) {
 func TestLinkRegisterClusterReregisterAndReplaceAcrossAgents(t *testing.T) {
 	tunnel := newTestTunnel(t)
 	initTunnelServer(t, tunnel)
-	link := core.NewLinkUseCase(tunnel, "test")
+	link, tokenFor := newTestLink(t, tunnel)
 
 	csrA := generateCSR(t, "agent-a")
 	csrB := generateCSR(t, "agent-b")
 
-	regA1, err := link.RegisterCluster(t.Context(), "cluster-z", "agent-a", "test", csrA)
+	regA1, err := link.RegisterCluster(t.Context(), &core.RegistrationRequest{
+		Cluster:        "cluster-z",
+		AgentID:        "agent-a",
+		AgentVersion:   "test",
+		EnrolmentToken: tokenFor("cluster-z"),
+		CSRPEM:         csrA,
+	})
 	if err != nil {
 		t.Fatalf("register agent-a #1: %v", err)
 	}
 
-	regB, err := link.RegisterCluster(t.Context(), "cluster-z", "agent-b", "test", csrB)
+	regB, err := link.RegisterCluster(t.Context(), &core.RegistrationRequest{
+		Cluster:        "cluster-z",
+		AgentID:        "agent-b",
+		AgentVersion:   "test",
+		EnrolmentToken: tokenFor("cluster-z"),
+		CSRPEM:         csrB,
+	})
 	if err != nil {
 		t.Fatalf("register agent-b: %v", err)
 	}
@@ -119,7 +170,13 @@ func TestLinkRegisterClusterReregisterAndReplaceAcrossAgents(t *testing.T) {
 		t.Fatalf("expected resolve to point to agent-b endpoint %q, got %q", regB.Endpoint, addrB)
 	}
 
-	regA2, err := link.RegisterCluster(t.Context(), "cluster-z", "agent-a", "test", csrA)
+	regA2, err := link.RegisterCluster(t.Context(), &core.RegistrationRequest{
+		Cluster:        "cluster-z",
+		AgentID:        "agent-a",
+		AgentVersion:   "test",
+		EnrolmentToken: tokenFor("cluster-z"),
+		CSRPEM:         csrA,
+	})
 	if err != nil {
 		t.Fatalf("register agent-a #2: %v", err)
 	}
@@ -187,4 +244,50 @@ func generateCSR(t *testing.T, cn string) []byte {
 		t.Fatalf("generate CSR: %v", err)
 	}
 	return csr
+}
+
+// TestLinkRegisterClusterRejectedTokenKeepsExistingAgent checks the
+// property end to end, against the real tunnel provider: a rejected
+// registration must leave the cluster pointing at the agent that is
+// already serving it. Re-registration deletes the previous chisel user
+// and releases its address, so a check that ran too late would let an
+// unauthorized caller knock a healthy cluster offline.
+func TestLinkRegisterClusterRejectedTokenKeepsExistingAgent(t *testing.T) {
+	tunnel := newTestTunnel(t)
+	initTunnelServer(t, tunnel)
+	link, tokenFor := newTestLink(t, tunnel)
+
+	if _, err := link.RegisterCluster(t.Context(), &core.RegistrationRequest{
+		Cluster:        "cluster-x",
+		AgentID:        "agent-x",
+		AgentVersion:   "test",
+		EnrolmentToken: tokenFor("cluster-x"),
+		CSRPEM:         generateCSR(t, "agent-x"),
+	}); err != nil {
+		t.Fatalf("register the legitimate agent: %v", err)
+	}
+
+	before, err := tunnel.ResolveAddress(t.Context(), "cluster-x")
+	if err != nil {
+		t.Fatalf("resolve cluster-x: %v", err)
+	}
+
+	_, err = link.RegisterCluster(t.Context(), &core.RegistrationRequest{
+		Cluster:        "cluster-x",
+		AgentID:        "impostor",
+		AgentVersion:   "test",
+		EnrolmentToken: tokenFor("some-other-cluster"),
+		CSRPEM:         generateCSR(t, "impostor"),
+	})
+	if err == nil {
+		t.Fatal("registration with another cluster's token succeeded")
+	}
+
+	after, err := tunnel.ResolveAddress(t.Context(), "cluster-x")
+	if err != nil {
+		t.Fatalf("cluster-x is no longer registered after a rejected attempt: %v", err)
+	}
+	if after != before {
+		t.Errorf("cluster-x moved from %q to %q after a rejected attempt", before, after)
+	}
 }

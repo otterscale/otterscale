@@ -45,7 +45,13 @@ func (s *LinkService) ListLinks(ctx context.Context, _ *pb.ListLinksRequest) (*p
 // certificate for mTLS. The response includes the server version for
 // diagnostics.
 func (s *LinkService) Register(ctx context.Context, req *pb.RegisterRequest) (*pb.RegisterResponse, error) {
-	reg, err := s.link.RegisterCluster(ctx, req.GetCluster(), req.GetAgentId(), req.GetAgentVersion(), req.GetCsr())
+	reg, err := s.link.RegisterCluster(ctx, &core.RegistrationRequest{
+		Cluster:        req.GetCluster(),
+		AgentID:        req.GetAgentId(),
+		AgentVersion:   req.GetAgentVersion(),
+		EnrolmentToken: req.GetEnrolmentToken(),
+		CSRPEM:         req.GetCsr(),
+	})
 	if err != nil {
 		return nil, domainErrorToConnectError(err)
 	}

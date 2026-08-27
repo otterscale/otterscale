@@ -106,8 +106,14 @@ type ExecSession struct {
 	SizeQueue *TerminalSizeQueue
 	// Cancel stops the exec session.
 	Cancel context.CancelFunc
-	// Done receives the error (or nil) when the exec goroutine finishes.
-	Done <-chan error
+	// Done is closed when the exec goroutine finishes. Closing, rather
+	// than sending, is what makes the signal permanent: a value would
+	// be consumed by whichever observer read it first, hiding the
+	// finished state from the reaper.
+	Done chan struct{}
+	// Err holds the error returned by the exec goroutine, if any.
+	// It is safe to read after Done is closed.
+	Err error
 }
 
 // PortForwardSession represents an active port-forward session.
@@ -120,8 +126,12 @@ type PortForwardSession struct {
 	Writer io.WriteCloser
 	// Cancel stops the port-forward session.
 	Cancel context.CancelFunc
-	// Done receives the error (or nil) when the port-forward goroutine finishes.
-	Done <-chan error
+	// Done is closed when the port-forward goroutine finishes. See
+	// ExecSession.Done for why it is closed rather than sent to.
+	Done chan struct{}
+	// Err holds the error returned by the port-forward goroutine, if
+	// any. It is safe to read after Done is closed.
+	Err error
 }
 
 // VNCSession represents an active VNC session to a KubeVirt VMI.

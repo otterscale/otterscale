@@ -22,6 +22,7 @@ import (
 type linkRegistrar struct {
 	agentID      string
 	agentVersion string // agent binary version, sent during registration
+	token        string // enrolment token authorizing this cluster
 	client       *http.Client
 }
 
@@ -30,7 +31,7 @@ type linkRegistrar struct {
 // A fresh ECDSA P-256 key pair and CSR are generated on every
 // Register call to ensure forward secrecy — a compromised key from a
 // previous session cannot decrypt traffic from a new session.
-func NewLinkRegistrar(version core.Version) (core.TunnelConsumer, error) {
+func NewLinkRegistrar(version core.Version, token core.EnrolmentToken) (core.TunnelConsumer, error) {
 	agentID, err := os.Hostname()
 	if err != nil {
 		return nil, fmt.Errorf("failed to get hostname: %w", err)
@@ -39,6 +40,7 @@ func NewLinkRegistrar(version core.Version) (core.TunnelConsumer, error) {
 	return &linkRegistrar{
 		agentID:      agentID,
 		agentVersion: string(version),
+		token:        string(token),
 		client: &http.Client{
 			Timeout: 10 * time.Second,
 		},
@@ -71,6 +73,7 @@ func (f *linkRegistrar) Register(ctx context.Context, serverURL, cluster string)
 	req.SetAgentId(f.agentID)
 	req.SetCsr(csrPEM)
 	req.SetAgentVersion(f.agentVersion)
+	req.SetEnrolmentToken(f.token)
 
 	resp, err := client.Register(ctx, req)
 	if err != nil {

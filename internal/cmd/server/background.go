@@ -2,8 +2,10 @@ package server
 
 import (
 	"context"
+	"errors"
 	"time"
 
+	"github.com/otterscale/otterscale/internal/config"
 	"github.com/otterscale/otterscale/internal/core"
 )
 
@@ -57,4 +59,22 @@ func (l *cacheEvictorListener) Start(ctx context.Context) error {
 
 func (l *cacheEvictorListener) Stop(_ context.Context) error {
 	return nil // evictor stops when its context is canceled
+}
+
+// ProvideEnrolment builds the enrolment verifier from configuration.
+// It fails when no secret is configured: the registration endpoint is
+// reachable without authentication, so a server without a secret would
+// let any caller claim, and take over, any cluster.
+func ProvideEnrolment(conf *config.Config) (*core.Enrolment, error) {
+	secret, err := conf.ServerEnrolmentSecret()
+	if err != nil {
+		return nil, err
+	}
+	if secret == "" {
+		return nil, errors.New(
+			"enrolment secret is required but not configured; " +
+				"set --enrolment-secret, --enrolment-secret-file or OTTERSCALE_SERVER_ENROLMENT_SECRET",
+		)
+	}
+	return core.NewEnrolment(secret)
 }

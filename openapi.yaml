@@ -1600,6 +1600,13 @@ components:
           type: string
           title: agent_version
           description: The version of the agent binary (e.g. "v1.2.3"), set at build time.
+        enrolmentToken:
+          type: string
+          title: enrolment_token
+          description: |-
+            The enrolment token for this cluster, issued by the operator with
+             `otterscale enrolment-token --cluster <name>`. Registration is
+             rejected without a token that matches the cluster being claimed.
       title: RegisterRequest
       additionalProperties: false
       description: |-
