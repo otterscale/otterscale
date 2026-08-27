@@ -49,6 +49,14 @@ OtterScale provides a single, authenticated entry point to many Kubernetes clust
 - **Discovery** — API resource discovery and OpenAPI schema resolution with a TTL cache.
 - **Security** — FIPS 140-3, OIDC (Keycloak), per-tunnel mTLS, and user impersonation for RBAC.
 
+## Operating the server
+
+The server keeps its tunnel state in memory, which shapes how it is deployed:
+
+- **Run a single replica.** Cluster registrations, allocated loopback addresses, and live tunnel sessions live in the process that accepted them. A second replica would have its own registry and its own CA, so agents registered against one replica cannot be reached through the other, and requests routed to the wrong replica fail with "cluster not registered". Horizontal scaling needs shared state and tunnel affinity, which the current design does not provide.
+- **Restarts re-key every agent.** The tunnel CA is generated at startup and never persisted, so agent certificates issued before a restart stop being trusted. Agents detect the dropped session and re-register automatically with exponential backoff, but their clusters are unreachable until they do — expect a short interruption after every restart or redeploy.
+- **Agent certificates are short-lived** (24 hours) by design. Renewal happens through the same re-registration path, so no manual rotation is required.
+
 ## Documentation
 
 Installation, configuration, and operational guides will be published in the project documentation. In the meantime, `otterscale server --help` and `otterscale agent --help` describe the available options.

@@ -46,7 +46,15 @@ func (s *Service) BuildTunnelListener(address, host string) (transport.Listener,
 		return nil, fmt.Errorf("write server key: %w", err)
 	}
 
-	slog.Info("tunnel CA initialized", "subject", "otterscale-ca")
+	// The CA is created per process and never persisted, so a restart
+	// invalidates every certificate handed out so far. Say so at
+	// startup: the resulting re-registration storm is expected
+	// behavior, not a fault to chase.
+	slog.Info("tunnel CA initialized",
+		"subject", "otterscale-ca",
+		"ephemeral", true,
+		"detail", "agents re-register after a server restart",
+	)
 
 	tunnelSrv, err := tunnel.NewServer(
 		tunnel.WithAddress(address),
