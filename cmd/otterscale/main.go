@@ -25,20 +25,17 @@ import (
 	"github.com/otterscale/otterscale/internal/pki"
 )
 
-// version is injected at build time via -ldflags
-// (e.g. -ldflags "-X main.version=v1.2.3").
+// version is injected at build time via -ldflags "-X main.version=v1.2.3".
 var version = "devel"
 
 func main() {
 	if err := run(); err != nil {
-		// Cobra is configured with SilenceErrors: true, so we
-		// print the error here for consistent formatting.
+		// Cobra runs with SilenceErrors, so the printing happens here.
 		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 		os.Exit(1)
 	}
 }
 
-// run wires all dependencies and executes the root Cobra command.
 func run() error {
 	rootCmd, cleanup, err := wireCmd()
 	if err != nil {
@@ -46,17 +43,14 @@ func run() error {
 	}
 	defer cleanup()
 
-	// Cancel on SIGINT (Ctrl+C) or SIGTERM (container runtime).
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
 
 	return rootCmd.ExecuteContext(ctx)
 }
 
-// newCmd is a Wire provider that constructs the root Cobra command and
-// registers the server and agent subcommands. The version is captured
-// by closures passed to the Wire injectors so that the Injector type
-// signatures remain unchanged.
+// newCmd is a Wire provider for the root command. Closures capture the version
+// on its way to the injectors, leaving the Injector signatures unchanged.
 func newCmd(conf *config.Config) (*cobra.Command, error) {
 	c := &cobra.Command{
 		Use:           "otterscale",
@@ -82,14 +76,19 @@ func newCmd(conf *config.Config) (*cobra.Command, error) {
 		return nil, err
 	}
 
-	c.AddCommand(serverCmd, agentCmd)
+	enrolmentCmd, err := cmd.NewEnrolmentTokenCommand(conf)
+	if err != nil {
+		return nil, err
+	}
+
+	c.AddCommand(serverCmd, agentCmd, enrolmentCmd)
 
 	return c, nil
 }
 
-// provideCA is a Wire provider that generates a fresh ephemeral CA on
-// every server start. The CA is not persisted; agents re-register
-// automatically via the public Register API when the server restarts.
+// provideCA generates a fresh ephemeral CA per server start. It is never
+// persisted; agents re-register through the public Register API after a
+// restart.
 func provideCA() (*pki.CA, error) {
 	return pki.NewCA()
 }

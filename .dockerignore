@@ -22,6 +22,15 @@ README.md
 # CI/CD and tooling
 .golangci.yml
 
+# Code generation inputs and non-Go outputs (the generated Go in api/ is needed)
+proto/
+ts/
+openapi.yaml
+buf.yaml
+buf.lock
+buf.gen.yaml
+buf.gen.openapi.yaml
+
 # Environment files
 .env
 .env.*

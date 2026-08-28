@@ -2,6 +2,7 @@ package core
 
 import (
 	"testing"
+	"time"
 )
 
 func TestTerminalSizeQueue_SetAndNext(t *testing.T) {
@@ -17,24 +18,76 @@ func TestTerminalSizeQueue_SetAndNext(t *testing.T) {
 	}
 }
 
-func TestTerminalSizeQueue_OverflowDropsOldest(t *testing.T) {
+// TestTerminalSizeQueue_KeepsOnlyLatest pins the coalescing rule: a
+// terminal has one size, so a size the consumer has not taken yet is
+// stale the moment a newer one arrives.
+func TestTerminalSizeQueue_KeepsOnlyLatest(t *testing.T) {
 	q := NewTerminalSizeQueue()
 
-	// Fill the buffer (capacity 4).
-	for i := range uint16(4) {
+	for i := range uint16(5) {
 		q.Set(i, i)
 	}
-
-	// Push one more, which should drop the oldest (0x0).
 	q.Set(99, 99)
 
-	// The first dequeued element should be 1x1 (0x0 was dropped).
 	size := q.Next()
 	if size == nil {
 		t.Fatal("expected non-nil size")
 	}
-	if size.Width != 1 || size.Height != 1 {
-		t.Errorf("got %dx%d, want 1x1", size.Width, size.Height)
+	if size.Width != 99 || size.Height != 99 {
+		t.Errorf("got %dx%d, want 99x99", size.Width, size.Height)
+	}
+}
+
+// TestTerminalSizeQueue_SetNeverBlocks is the regression test for the deadlock.
+// Set runs under the lock Close needs, so a Set that blocks takes Close with it
+// — and Close is the first deferred call in the exec goroutine, wedging the
+// whole session: pipes stay open, Done never fires, the reaper cannot collect.
+//
+// The old implementation dropped the oldest entry with a blocking receive,
+// which parked whenever a consumer emptied the channel between the failed send
+// and that receive. Driving Set and Next concurrently hits that interleaving.
+func TestTerminalSizeQueue_SetNeverBlocks(t *testing.T) {
+	q := NewTerminalSizeQueue()
+
+	const rounds = 2000
+
+	consumerDone := make(chan struct{})
+	go func() {
+		defer close(consumerDone)
+		for q.Next() != nil { //nolint:revive // draining until the queue closes is the point
+		}
+	}()
+
+	producerDone := make(chan struct{})
+	go func() {
+		defer close(producerDone)
+		for i := range uint16(rounds) {
+			q.Set(i, i)
+		}
+	}()
+
+	select {
+	case <-producerDone:
+	case <-time.After(sessionTimeout):
+		t.Fatal("Set blocked: a resize parked while holding the queue lock")
+	}
+
+	closed := make(chan struct{})
+	go func() {
+		defer close(closed)
+		q.Close()
+	}()
+
+	select {
+	case <-closed:
+	case <-time.After(sessionTimeout):
+		t.Fatal("Close blocked: Set is still holding the queue lock")
+	}
+
+	select {
+	case <-consumerDone:
+	case <-time.After(sessionTimeout):
+		t.Fatal("Next did not return nil after Close")
 	}
 }
 
@@ -43,13 +96,11 @@ func TestTerminalSizeQueue_Close(t *testing.T) {
 
 	q.Close()
 
-	// Next should return nil after close.
 	size := q.Next()
 	if size != nil {
 		t.Errorf("expected nil after close, got %v", size)
 	}
 
-	// Double close should not panic.
 	q.Close()
 }
 
@@ -57,14 +108,13 @@ func TestTerminalSizeQueue_SetAfterClose(_ *testing.T) {
 	q := NewTerminalSizeQueue()
 	q.Close()
 
-	// Should not panic.
 	q.Set(80, 24)
 }
 
 func TestSessionStore_ExecCRUD(t *testing.T) {
 	store := NewSessionStore()
-	done := make(chan error, 1)
-	done <- nil
+	done := make(chan struct{})
+	close(done)
 
 	sess := &ExecSession{
 		ID:   "exec-1",
@@ -97,7 +147,6 @@ func TestSessionStore_ExecCRUD(t *testing.T) {
 		t.Error("expected session to be removed")
 	}
 
-	// RemoveExec on a non-existent session should return nil.
 	if store.RemoveExec("exec-1") != nil {
 		t.Error("expected nil for already-removed session")
 	}
@@ -105,8 +154,8 @@ func TestSessionStore_ExecCRUD(t *testing.T) {
 
 func TestSessionStore_PortForwardCRUD(t *testing.T) {
 	store := NewSessionStore()
-	done := make(chan error, 1)
-	done <- nil
+	done := make(chan struct{})
+	close(done)
 
 	sess := &PortForwardSession{
 		ID:   "pf-1",
@@ -134,7 +183,6 @@ func TestSessionStore_PortForwardCRUD(t *testing.T) {
 		t.Error("expected session to be removed")
 	}
 
-	// RemovePortForward on a non-existent session should return nil.
 	if store.RemovePortForward("pf-1") != nil {
 		t.Error("expected nil for already-removed session")
 	}
@@ -143,9 +191,8 @@ func TestSessionStore_PortForwardCRUD(t *testing.T) {
 func TestSessionStore_ReapStaleSessions(t *testing.T) {
 	store := NewSessionStore()
 
-	// Create a "stale" exec session (Done already received a value).
-	execDone := make(chan error, 1)
-	execDone <- nil
+	// Stale: Done already closed.
+	execDone := make(chan struct{})
 	close(execDone)
 
 	if err := store.PutExec(&ExecSession{
@@ -157,8 +204,8 @@ func TestSessionStore_ReapStaleSessions(t *testing.T) {
 		t.Fatalf("PutExec stale: %v", err)
 	}
 
-	// Create a "live" exec session (Done has no value yet).
-	liveDone := make(chan error, 1)
+	// Live: Done still open.
+	liveDone := make(chan struct{})
 	if err := store.PutExec(&ExecSession{
 		ID:     "live-exec",
 		Done:   liveDone,
@@ -168,9 +215,7 @@ func TestSessionStore_ReapStaleSessions(t *testing.T) {
 		t.Fatalf("PutExec live: %v", err)
 	}
 
-	// Create a "stale" port-forward session.
-	pfDone := make(chan error, 1)
-	pfDone <- nil
+	pfDone := make(chan struct{})
 	close(pfDone)
 
 	if err := store.PutPortForward(&PortForwardSession{
@@ -187,7 +232,6 @@ func TestSessionStore_ReapStaleSessions(t *testing.T) {
 		t.Errorf("expected 2 reaped sessions, got %d", reaped)
 	}
 
-	// Stale sessions should be gone.
 	if _, ok := store.GetExec("stale-exec"); ok {
 		t.Error("stale exec session should have been reaped")
 	}
@@ -195,13 +239,11 @@ func TestSessionStore_ReapStaleSessions(t *testing.T) {
 		t.Error("stale port-forward session should have been reaped")
 	}
 
-	// Live session should remain.
 	if _, ok := store.GetExec("live-exec"); !ok {
 		t.Error("live exec session should still exist")
 	}
 }
 
-// nopCloser is a no-op io.WriteCloser for tests.
 type nopCloser struct{}
 
 func (n *nopCloser) Write(p []byte) (int, error) { return len(p), nil }

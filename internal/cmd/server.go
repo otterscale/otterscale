@@ -9,18 +9,22 @@ import (
 	"github.com/otterscale/otterscale/internal/config"
 )
 
-// ServerInjector is a Wire-generated factory that creates a fully
-// wired Server together with a cleanup function.
+// ServerInjector is the Wire-generated Server factory, with its cleanup.
 type ServerInjector func() (*server.Server, func(), error)
 
-// NewServerCommand returns the "server" Cobra subcommand. The injector
-// is called lazily inside RunE so that expensive initialisation (OIDC
-// provider discovery, etc.) only happens when the command actually
-// executes.
+// NewServerCommand calls the injector lazily inside RunE, so expensive setup
+// such as OIDC provider discovery only happens when the command runs.
 func NewServerCommand(conf *config.Config, newServer ServerInjector) (*cobra.Command, error) {
 	cmd := &cobra.Command{
-		Use:     "server",
-		Short:   "Start server that provides gRPC and HTTP endpoints for the core services",
+		Use:   "server",
+		Short: "Start server that provides gRPC and HTTP endpoints for the core services",
+		Long: "Start server that provides gRPC and HTTP endpoints for the core services.\n\n" +
+			"Tunnel state is held in memory, so run exactly one replica: a second one would " +
+			"keep its own registry and its own CA, and agents registered against one replica " +
+			"are unreachable through the other.\n\n" +
+			"The tunnel CA is generated at startup and never persisted. Agent certificates " +
+			"issued before a restart stop being trusted; agents re-register automatically, so " +
+			"expect their clusters to be briefly unreachable after every restart.",
 		Example: "otterscale server --address=:8299 --tunnel-address=127.0.0.1:8300",
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			srv, cleanup, err := newServer()

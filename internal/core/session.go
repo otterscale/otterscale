@@ -8,46 +8,41 @@ import (
 	"sync"
 )
 
-// ---------------------------------------------------------------------------
-// Terminal size types
-// ---------------------------------------------------------------------------
-
-// TerminalSize holds terminal dimensions. This is a domain-level type
-// that decouples the core layer from k8s.io/client-go/tools/remotecommand.
-// The adapter layer is responsible for converting this to the
-// remotecommand.TerminalSize type required by SPDY executors.
+// TerminalSize is the domain-level terminal dimension type, keeping core free
+// of k8s.io/client-go/tools/remotecommand. The adapter layer converts it to
+// remotecommand.TerminalSize for SPDY executors.
 type TerminalSize struct {
 	Width  uint16
 	Height uint16
 }
 
-// TerminalSizer provides the next terminal size event. Implementations
-// block until an event is available or return nil when no more events
-// will be produced (e.g. the queue is closed).
+// TerminalSizer provides the next terminal size event. Implementations block
+// until one is available, or return nil once no more will be produced.
 type TerminalSizer interface {
 	Next() *TerminalSize
 }
 
-// TerminalSizeQueue is a buffered, concurrency-safe queue that
-// implements TerminalSizer. Resize events are enqueued via Set and
-// dequeued via Next.
+// TerminalSizeQueue is a concurrency-safe, single-slot mailbox implementing
+// TerminalSizer: Set publishes, Next consumes.
+//
+// It holds one size because a terminal has one size: anything still waiting
+// when a newer size arrives is already stale, and delivering it first would
+// only make the consumer apply a dimension the terminal no longer has.
 type TerminalSizeQueue struct {
 	mu     sync.Mutex
 	ch     chan TerminalSize
 	closed bool
 }
 
-// terminalSizeQueueBuf is the buffer capacity for terminal resize events.
-const terminalSizeQueueBuf = 4
+// terminalSizeQueueBuf is the mailbox capacity: the latest size only.
+const terminalSizeQueueBuf = 1
 
-// NewTerminalSizeQueue returns a TerminalSizeQueue with a small buffer
-// so resize events can be sent without blocking.
 func NewTerminalSizeQueue() *TerminalSizeQueue {
 	return &TerminalSizeQueue{ch: make(chan TerminalSize, terminalSizeQueueBuf)}
 }
 
-// Next returns the next terminal size event. It blocks until an event
-// is available or the channel is closed (returns nil).
+// Next blocks until an event is available, and returns nil once the channel is
+// closed.
 func (q *TerminalSizeQueue) Next() *TerminalSize {
 	size, ok := <-q.ch
 	if !ok {
@@ -56,10 +51,16 @@ func (q *TerminalSizeQueue) Next() *TerminalSize {
 	return &size
 }
 
-// Set enqueues a resize event. If the queue is full, the oldest event
-// is dropped to make room. A mutex prevents concurrent callers from
-// racing on the drain-then-push sequence. Calls after Close are
-// silently ignored to prevent a send-on-closed-channel panic.
+// Set publishes a resize event, replacing any size the consumer has not taken
+// yet. Calls after Close are ignored, to prevent a send-on-closed-channel panic.
+//
+// Every channel operation here is non-blocking, and that is the point. Set runs
+// under q.mu, which Close also needs; an earlier version used a blocking
+// receive to drop the oldest of a four-deep buffer, and a consumer that drained
+// the channel in between left Set parked on that receive holding the lock. Close
+// then blocked forever, and because it is the first deferred call in the exec
+// goroutine, so did every close after it — the session's pipes stayed open, its
+// Done channel never fired, and the reaper could not collect it.
 func (q *TerminalSizeQueue) Set(width, height uint16) {
 	q.mu.Lock()
 	defer q.mu.Unlock()
@@ -68,17 +69,20 @@ func (q *TerminalSizeQueue) Set(width, height uint16) {
 		return
 	}
 
+	// Discard a stale pending size, then publish. The send cannot fail: only
+	// Set fills the slot and it holds the lock, so nothing can refill what was
+	// just drained. The default guards the invariant, not a reachable case.
+	select {
+	case <-q.ch:
+	default:
+	}
 	select {
 	case q.ch <- TerminalSize{Width: width, Height: height}:
 	default:
-		// Drop the oldest and push the new size.
-		<-q.ch
-		q.ch <- TerminalSize{Width: width, Height: height}
 	}
 }
 
-// Close closes the underlying channel, causing Next to return nil.
-// It is safe to call Close multiple times.
+// Close makes Next return nil. It is safe to call more than once.
 func (q *TerminalSizeQueue) Close() {
 	q.mu.Lock()
 	defer q.mu.Unlock()
@@ -89,66 +93,50 @@ func (q *TerminalSizeQueue) Close() {
 	}
 }
 
-// ---------------------------------------------------------------------------
-// Session types
-// ---------------------------------------------------------------------------
-
-// ExecSession represents an active exec session.
 type ExecSession struct {
-	// ID is the unique session identifier.
 	ID string
-	// Stdin is the writer side of the stdin pipe. WriteTTY writes here.
-	Stdin io.WriteCloser
-	// SizeQueue receives terminal resize events from ResizeTTY.
+	// Owner is the authenticated subject that opened the session, and the only
+	// one that may write to, resize, or close it.
+	Owner     string
+	Stdin     io.WriteCloser
 	SizeQueue *TerminalSizeQueue
-	// Cancel stops the exec session.
-	Cancel context.CancelFunc
-	// Done receives the error (or nil) when the exec goroutine finishes.
-	Done <-chan error
-}
-
-// PortForwardSession represents an active port-forward session.
-type PortForwardSession struct {
-	// ID is the unique session identifier.
-	ID string
-	// Writer is the writer side of the data pipe. WritePortForward writes here.
-	Writer io.WriteCloser
-	// Cancel stops the port-forward session.
-	Cancel context.CancelFunc
-	// Done receives the error (or nil) when the port-forward goroutine finishes.
-	Done <-chan error
-}
-
-// VNCSession represents an active VNC session to a KubeVirt VMI.
-type VNCSession struct {
-	// ID is the unique session identifier.
-	ID string
-	// Writer is the writer side of the data pipe. WriteVNC writes here.
-	Writer io.WriteCloser
-	// Cancel stops the VNC session.
-	Cancel context.CancelFunc
-	// Done is closed when the VNC goroutine finishes.
+	Cancel    context.CancelFunc
+	// Done is closed when the exec goroutine finishes. Closing, rather than
+	// sending, is what makes the signal permanent: a value would be consumed by
+	// whichever observer read it first, hiding the finished state from the reaper.
 	Done chan struct{}
-	// Err holds the error returned by the VNC goroutine, if any.
-	// It is safe to read after Done is closed.
+	// Err is safe to read once Done is closed.
 	Err error
 }
 
-// ---------------------------------------------------------------------------
-// Session store
-// ---------------------------------------------------------------------------
+type PortForwardSession struct {
+	ID     string
+	Owner  string
+	Writer io.WriteCloser
+	Cancel context.CancelFunc
+	// Done: see ExecSession.Done for why it is closed rather than sent to.
+	Done chan struct{}
+	// Err is safe to read once Done is closed.
+	Err error
+}
 
-// maxExecSessions is the maximum number of concurrent exec sessions
-// allowed. This prevents resource exhaustion from misbehaving or
-// malicious clients that create sessions without cleaning them up.
+// VNCSession is an active VNC session to a KubeVirt VMI.
+type VNCSession struct {
+	ID     string
+	Owner  string
+	Writer io.WriteCloser
+	Cancel context.CancelFunc
+	Done   chan struct{}
+	// Err is safe to read once Done is closed.
+	Err error
+}
+
+// Session caps prevent resource exhaustion from clients that create sessions
+// without cleaning them up.
 const maxExecSessions = 100
 
-// maxPortForwardSessions is the maximum number of concurrent
-// port-forward sessions allowed.
 const maxPortForwardSessions = 100
 
-// maxVNCSessions is the maximum number of concurrent VNC sessions
-// allowed.
 const maxVNCSessions = 100
 
 // SessionStore manages active exec, port-forward, and VNC sessions.
@@ -159,7 +147,6 @@ type SessionStore struct {
 	vncSess  map[string]*VNCSession
 }
 
-// NewSessionStore returns an initialized SessionStore.
 func NewSessionStore() *SessionStore {
 	return &SessionStore{
 		execSess: make(map[string]*ExecSession),
@@ -168,8 +155,6 @@ func NewSessionStore() *SessionStore {
 	}
 }
 
-// PutExec stores an exec session. It returns an error if the maximum
-// number of concurrent exec sessions has been reached.
 func (s *SessionStore) PutExec(sess *ExecSession) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
@@ -183,7 +168,6 @@ func (s *SessionStore) PutExec(sess *ExecSession) error {
 	return nil
 }
 
-// GetExec retrieves an exec session by ID.
 func (s *SessionStore) GetExec(id string) (*ExecSession, bool) {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
@@ -191,10 +175,9 @@ func (s *SessionStore) GetExec(id string) (*ExecSession, bool) {
 	return sess, ok
 }
 
-// RemoveExec atomically retrieves and removes an exec session. It
-// returns nil if the session does not exist. This prevents the
-// double-close race between CleanupExec and ReapStaleSessions by
-// ensuring only one caller can claim ownership of a session.
+// RemoveExec atomically gets and removes a session, returning nil if it does
+// not exist. Claiming ownership in one step is what prevents the double-close
+// race between CleanupExec and ReapStaleSessions.
 func (s *SessionStore) RemoveExec(id string) *ExecSession {
 	s.mu.Lock()
 	defer s.mu.Unlock()
@@ -206,9 +189,6 @@ func (s *SessionStore) RemoveExec(id string) *ExecSession {
 	return sess
 }
 
-// PutPortForward stores a port-forward session. It returns an error
-// if the maximum number of concurrent port-forward sessions has been
-// reached.
 func (s *SessionStore) PutPortForward(sess *PortForwardSession) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
@@ -222,7 +202,6 @@ func (s *SessionStore) PutPortForward(sess *PortForwardSession) error {
 	return nil
 }
 
-// GetPortForward retrieves a port-forward session by ID.
 func (s *SessionStore) GetPortForward(id string) (*PortForwardSession, bool) {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
@@ -230,10 +209,7 @@ func (s *SessionStore) GetPortForward(id string) (*PortForwardSession, bool) {
 	return sess, ok
 }
 
-// RemovePortForward atomically retrieves and removes a port-forward
-// session. It returns nil if the session does not exist. This prevents
-// the double-close race between CleanupPortForward and
-// ReapStaleSessions by ensuring only one caller can claim ownership.
+// RemovePortForward: see RemoveExec.
 func (s *SessionStore) RemovePortForward(id string) *PortForwardSession {
 	s.mu.Lock()
 	defer s.mu.Unlock()
@@ -245,8 +221,6 @@ func (s *SessionStore) RemovePortForward(id string) *PortForwardSession {
 	return sess
 }
 
-// PutVNC stores a VNC session. It returns an error if the maximum
-// number of concurrent VNC sessions has been reached.
 func (s *SessionStore) PutVNC(sess *VNCSession) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
@@ -260,7 +234,6 @@ func (s *SessionStore) PutVNC(sess *VNCSession) error {
 	return nil
 }
 
-// GetVNC retrieves a VNC session by ID.
 func (s *SessionStore) GetVNC(id string) (*VNCSession, bool) {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
@@ -268,8 +241,7 @@ func (s *SessionStore) GetVNC(id string) (*VNCSession, bool) {
 	return sess, ok
 }
 
-// RemoveVNC atomically retrieves and removes a VNC session. It
-// returns nil if the session does not exist.
+// RemoveVNC: see RemoveExec.
 func (s *SessionStore) RemoveVNC(id string) *VNCSession {
 	s.mu.Lock()
 	defer s.mu.Unlock()
@@ -281,17 +253,14 @@ func (s *SessionStore) RemoveVNC(id string) *VNCSession {
 	return sess
 }
 
-// ReapStaleSessions scans all sessions and removes those whose Done
-// channel has already been closed (goroutine finished). This prevents
-// session leaks when clients disconnect without calling Cleanup.
+// ReapStaleSessions removes sessions whose goroutine has already finished,
+// which is what keeps clients that disconnect without calling Cleanup from
+// leaking sessions.
 //
-// The cleanup is split into two phases: the map mutations happen under
-// the write lock, but the potentially blocking Cancel/Close calls
-// happen after the lock is released. This avoids deadlocking with
-// goroutines that hold a pipe write and are waiting for a session
-// store read lock.
+// Map mutations happen under the write lock, but the potentially blocking
+// Cancel/Close calls happen after it is released — otherwise a goroutine
+// holding a pipe write and waiting for a read lock would deadlock the reaper.
 func (s *SessionStore) ReapStaleSessions() int {
-	// Phase 1: identify and remove stale sessions under the lock.
 	s.mu.Lock()
 
 	var staleExec []*ExecSession
@@ -326,7 +295,6 @@ func (s *SessionStore) ReapStaleSessions() int {
 
 	s.mu.Unlock()
 
-	// Phase 2: cancel and close resources outside the lock.
 	for _, sess := range staleExec {
 		sess.Cancel()
 		if err := sess.Stdin.Close(); err != nil {

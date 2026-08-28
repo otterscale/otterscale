@@ -56,3 +56,42 @@ jobs:
       - uses: golangci/golangci-lint-action@ba0d7d2ec06a0ea1cb5fa41b2e4a3ab91d21278a # v9.3.0
         with:
           version: v2.11.4
+
+  # The proto files are the wire contract for the Go server, the agent and the
+  # @otterscale/api TypeScript package, so they are linted and checked for
+  # breaking changes on every pull request.
+  proto:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@05e31511f85b41b11d1cf0ef85d0992719546e2c # v2.21.0
+        with:
+          egress-policy: audit
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # Needed to tell whether the base branch already carries the protos.
+          fetch-depth: 0
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version: "1.26.x"
+
+      - run: make proto-lint
+
+      - name: Check for breaking changes
+        if: github.event_name == 'pull_request'
+        env:
+          CLONE_URL: ${{ github.event.repository.clone_url }}
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          if git ls-tree -r --name-only "origin/${BASE_REF}" -- proto | grep -q .; then
+            make proto-breaking PROTO_BREAKING_AGAINST="${CLONE_URL}#branch=${BASE_REF}"
+          else
+            echo "::notice::${BASE_REF} carries no proto files yet; skipping the breaking-change check."
+          fi
+
+      - name: Verify the generated code is up to date
+        run: |
+          make proto
+          git diff --exit-code -- api openapi.yaml ts/src \
+            || { echo "::error::Generated code is stale. Run 'make proto' and commit the result."; exit 1; }

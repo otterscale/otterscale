@@ -9,17 +9,15 @@ import (
 	"sync"
 )
 
-// Listener implements net.Listener using in-memory net.Pipe
-// connections. It has no network presence; the only way to create a
-// connection is to call Dial, which returns the client side of a
-// net.Pipe pair while handing the server side to Accept.
+// Listener has no network presence: the only way to create a connection is
+// Dial, which returns the client side of a net.Pipe pair and hands the server
+// side to Accept.
 type Listener struct {
 	connCh chan net.Conn
 	once   sync.Once
 	done   chan struct{}
 }
 
-// NewListener returns a ready-to-use Listener.
 func NewListener() *Listener {
 	return &Listener{
 		connCh: make(chan net.Conn),
@@ -27,8 +25,7 @@ func NewListener() *Listener {
 	}
 }
 
-// Accept blocks until a new connection is available (created by Dial)
-// or the listener is closed.
+// Accept blocks until Dial creates a connection or the listener closes.
 func (l *Listener) Accept() (net.Conn, error) {
 	select {
 	case conn := <-l.connCh:
@@ -38,22 +35,20 @@ func (l *Listener) Accept() (net.Conn, error) {
 	}
 }
 
-// Close shuts down the listener. Any blocked Accept calls will
-// return net.ErrClosed. Close is safe to call multiple times.
+// Close unblocks any pending Accept with net.ErrClosed. Safe to call more than
+// once.
 func (l *Listener) Close() error {
 	l.once.Do(func() { close(l.done) })
 	return nil
 }
 
-// Addr returns a synthetic address identifying this as a pipe listener.
 func (l *Listener) Addr() net.Addr {
 	return pipeAddr{}
 }
 
-// Dial creates a new in-memory connection pair via net.Pipe and
-// hands the server side to Accept. It returns the client side to
-// the caller. If the listener has been closed, both ends are
-// cleaned up and net.ErrClosed is returned.
+// Dial hands the server side of a net.Pipe pair to Accept and returns the
+// client side. Once the listener is closed, both ends are cleaned up and
+// net.ErrClosed returned.
 func (l *Listener) Dial() (net.Conn, error) {
 	server, client := net.Pipe()
 	select {
@@ -66,7 +61,6 @@ func (l *Listener) Dial() (net.Conn, error) {
 	}
 }
 
-// pipeAddr is the net.Addr returned by Listener.Addr.
 type pipeAddr struct{}
 
 func (pipeAddr) Network() string { return "pipe" }

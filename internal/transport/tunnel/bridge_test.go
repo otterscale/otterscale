@@ -2,6 +2,7 @@ package tunnel
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"net"
@@ -12,8 +13,7 @@ import (
 	"github.com/otterscale/otterscale/internal/transport/pipe"
 )
 
-// TestBridge_RelaysData verifies that a TCP client can exchange data
-// with a server behind the pipe listener through the bridge.
+// TestBridge_RelaysData exchanges data with a server behind the pipe listener.
 func TestBridge_RelaysData(t *testing.T) {
 	t.Parallel()
 
@@ -34,7 +34,7 @@ func TestBridge_RelaysData(t *testing.T) {
 	const request = "hello"
 	const response = "world"
 
-	// Server side: read a fixed-size request, send a response, close.
+	// Server: read a fixed-size request, respond, close.
 	go func() {
 		conn, err := pl.Accept()
 		if err != nil {
@@ -51,7 +51,7 @@ func TestBridge_RelaysData(t *testing.T) {
 		}
 	}()
 
-	// Client side: connect to the bridge TCP port, send request, read response.
+	// Client: connect to the bridge TCP port and round-trip.
 	var d net.Dialer
 	tcpConn, err := d.DialContext(t.Context(), "tcp", fmt.Sprintf("127.0.0.1:%d", bridge.Port()))
 	if err != nil {
@@ -72,8 +72,8 @@ func TestBridge_RelaysData(t *testing.T) {
 	}
 }
 
-// TestBridge_MultipleConnections verifies that the bridge can handle
-// several concurrent connections, each independently relaying data.
+// TestBridge_MultipleConnections relays several concurrent connections
+// independently.
 func TestBridge_MultipleConnections(t *testing.T) {
 	t.Parallel()
 
@@ -94,14 +94,14 @@ func TestBridge_MultipleConnections(t *testing.T) {
 	const n = 5
 	var wg sync.WaitGroup
 
-	// Server side: accept n connections and echo back.
+	// Server: accept n connections and echo back.
 	for i := range n {
 		wg.Go(func() {
 			echoConnection(t, pl, i)
 		})
 	}
 
-	// Client side: dial n connections concurrently.
+	// Client: dial n connections concurrently.
 	addr := fmt.Sprintf("127.0.0.1:%d", bridge.Port())
 	for i := range n {
 		wg.Go(func() {
@@ -112,8 +112,7 @@ func TestBridge_MultipleConnections(t *testing.T) {
 	wg.Wait()
 }
 
-// echoConnection accepts a pipe connection, reads a message, and
-// sends it back unchanged. Used by TestBridge_MultipleConnections.
+// echoConnection reads one message off a pipe connection and sends it back.
 func echoConnection(t *testing.T, pl *pipe.Listener, i int) {
 	t.Helper()
 	conn, err := pl.Accept()
@@ -134,8 +133,7 @@ func echoConnection(t *testing.T, pl *pipe.Listener, i int) {
 	}
 }
 
-// verifyRoundTrip dials a TCP address, sends a message, reads it
-// back, and verifies it matches. Used by TestBridge_MultipleConnections.
+// verifyRoundTrip dials addr, sends a message, and checks what comes back.
 func verifyRoundTrip(ctx context.Context, t *testing.T, addr string, i int) {
 	t.Helper()
 	var d net.Dialer
@@ -200,7 +198,6 @@ func TestBridge_StopClosesListener(t *testing.T) {
 		done <- bridge.Start(ctx)
 	}()
 
-	// Give Start time to begin accepting.
 	time.Sleep(20 * time.Millisecond)
 
 	cancel()
@@ -213,4 +210,105 @@ func TestBridge_StopClosesListener(t *testing.T) {
 	case <-time.After(2 * time.Second):
 		t.Fatal("Start did not return after cancel")
 	}
+}
+
+// TestBridge_StopHonoursDeadline is the regression test for a shutdown
+// that could not be bounded. A relay copies until its connection
+// closes, and a request still streaming through the tunnel — a watch, a
+// log follow, an exec — holds one open indefinitely. Stop used to wait
+// on those unconditionally, ignoring the budget transport.Serve allots
+// each listener and hanging the process on a client that never hangs up.
+func TestBridge_StopHonoursDeadline(t *testing.T) {
+	t.Parallel()
+
+	pl := pipe.NewListener()
+	defer pl.Close()
+
+	bridge, err := NewBridge(t.Context(), pl)
+	if err != nil {
+		t.Fatalf("NewBridge: %v", err)
+	}
+
+	startBridge(t, bridge)
+
+	// A server behind the pipe that accepts and then never says
+	// anything, standing in for a long-lived stream.
+	serverHolds := make(chan struct{})
+	go func() {
+		conn, acceptErr := pl.Accept()
+		if acceptErr != nil {
+			return
+		}
+		defer conn.Close()
+		<-serverHolds
+	}()
+	defer close(serverHolds)
+
+	var dialer net.Dialer
+	conn, err := dialer.DialContext(t.Context(), "tcp", fmt.Sprintf("127.0.0.1:%d", bridge.Port()))
+	if err != nil {
+		t.Fatalf("dial bridge: %v", err)
+	}
+	defer conn.Close()
+
+	time.Sleep(50 * time.Millisecond)
+
+	ctx, cancel := context.WithTimeout(t.Context(), 100*time.Millisecond)
+	defer cancel()
+
+	stopped := make(chan error, 1)
+	go func() { stopped <- bridge.Stop(ctx) }()
+
+	select {
+	case err := <-stopped:
+		if err == nil {
+			t.Fatal("Stop reported success while a relay was still in flight")
+		}
+		if !errors.Is(err, context.DeadlineExceeded) {
+			t.Errorf("Stop error = %v, want it to wrap context.DeadlineExceeded", err)
+		}
+	case <-time.After(2 * time.Second):
+		t.Fatal("Stop ignored its deadline and blocked on an in-flight relay")
+	}
+}
+
+// TestBridge_StopWaitsForIdleRelays checks the other half: when nothing
+// is in flight, Stop still returns cleanly rather than reporting the
+// deadline it never needed.
+func TestBridge_StopWaitsForIdleRelays(t *testing.T) {
+	t.Parallel()
+
+	pl := pipe.NewListener()
+	bridge, err := NewBridge(t.Context(), pl)
+	if err != nil {
+		t.Fatalf("NewBridge: %v", err)
+	}
+
+	startBridge(t, bridge)
+	time.Sleep(20 * time.Millisecond)
+
+	ctx, cancel := context.WithTimeout(t.Context(), 2*time.Second)
+	defer cancel()
+
+	if err := bridge.Stop(ctx); err != nil {
+		t.Fatalf("Stop on an idle bridge: %v", err)
+	}
+}
+
+// startBridge runs Start in the background and makes the test wait for it on
+// the way out. Start outlives Stop — which closes the listener without
+// canceling Start's context — so a test that left it behind would log from a
+// goroutine after finishing.
+func startBridge(t *testing.T, bridge *Bridge) {
+	t.Helper()
+
+	ctx, cancel := context.WithCancel(t.Context())
+	stopped := make(chan error, 1)
+
+	go func() { stopped <- bridge.Start(ctx) }()
+
+	t.Cleanup(func() {
+		cancel()
+		<-stopped
+	})
 }

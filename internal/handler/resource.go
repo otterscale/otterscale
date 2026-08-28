@@ -16,22 +16,19 @@ import (
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/kube-openapi/pkg/validation/spec"
 
-	pb "github.com/otterscale/api/resource/v1"
+	pb "github.com/otterscale/otterscale/api/resource/v1"
 
 	"github.com/otterscale/otterscale/internal/core"
 )
 
-// ResourceService implements the Resource gRPC service. It proxies
-// Kubernetes CRUD and watch operations through the tunnel, translating
-// between protobuf and unstructured Kubernetes objects.
+// ResourceService proxies Kubernetes CRUD and watch operations through the
+// tunnel, translating between protobuf and unstructured Kubernetes objects.
 type ResourceService struct {
 	pb.UnimplementedResourceServiceHandler
 
 	resource *core.ResourceUseCase
 }
 
-// NewResourceService returns a ResourceService backed by the given
-// use-case.
 func NewResourceService(resource *core.ResourceUseCase) *ResourceService {
 	return &ResourceService{
 		resource: resource,
@@ -40,12 +37,6 @@ func NewResourceService(resource *core.ResourceUseCase) *ResourceService {
 
 var _ pb.ResourceServiceHandler = (*ResourceService)(nil)
 
-// ---------------------------------------------------------------------------
-// Discovery / Schema
-// ---------------------------------------------------------------------------
-
-// Discovery returns the full list of API resources available on the
-// target cluster.
 func (s *ResourceService) Discovery(ctx context.Context, req *pb.DiscoveryRequest) (*pb.DiscoveryResponse, error) {
 	apiResources, err := s.resource.ServerResources(ctx, req.GetCluster())
 	if err != nil {
@@ -62,8 +53,7 @@ func (s *ResourceService) Discovery(ctx context.Context, req *pb.DiscoveryReques
 	return resp, nil
 }
 
-// Schema returns the OpenAPI schema for the given GVK, serialized as
-// a protobuf Struct.
+// Schema returns the OpenAPI schema for the given GVK as a protobuf Struct.
 func (s *ResourceService) Schema(ctx context.Context, req *pb.SchemaRequest) (*pb.SchemaResponse, error) {
 	resolved, err := s.resource.ResolveSchema(
 		ctx,
@@ -84,11 +74,6 @@ func (s *ResourceService) Schema(ctx context.Context, req *pb.SchemaRequest) (*p
 	return resp, nil
 }
 
-// ---------------------------------------------------------------------------
-// CRUD
-// ---------------------------------------------------------------------------
-
-// List returns a paged list of resources matching the request filters.
 func (s *ResourceService) List(ctx context.Context, req *pb.ListRequest) (*pb.ListResponse, error) {
 	resources, err := s.resource.ListResources(
 		ctx,
@@ -123,7 +108,6 @@ func (s *ResourceService) List(ctx context.Context, req *pb.ListRequest) (*pb.Li
 	return resp, nil
 }
 
-// Get returns a single resource by name.
 func (s *ResourceService) Get(ctx context.Context, req *pb.GetRequest) (*pb.Resource, error) {
 	resource, err := s.resource.GetResource(
 		ctx,
@@ -146,7 +130,7 @@ func (s *ResourceService) Get(ctx context.Context, req *pb.GetRequest) (*pb.Reso
 	return result, nil
 }
 
-// Create creates a new resource from the YAML manifest in the request.
+// Create builds the resource from the YAML manifest in the request.
 func (s *ResourceService) Create(ctx context.Context, req *pb.CreateRequest) (*pb.Resource, error) {
 	resource, err := s.resource.CreateResource(
 		ctx,
@@ -169,7 +153,6 @@ func (s *ResourceService) Create(ctx context.Context, req *pb.CreateRequest) (*p
 	return result, nil
 }
 
-// Apply performs a server-side apply for the given resource.
 func (s *ResourceService) Apply(ctx context.Context, req *pb.ApplyRequest) (*pb.Resource, error) {
 	resource, err := s.resource.ApplyResource(
 		ctx,
@@ -197,7 +180,7 @@ func (s *ResourceService) Apply(ctx context.Context, req *pb.ApplyRequest) (*pb.
 	return result, nil
 }
 
-// Update performs a full replacement update for the given resource.
+// Update fully replaces the resource.
 func (s *ResourceService) Update(ctx context.Context, req *pb.UpdateRequest) (*pb.Resource, error) {
 	resource, err := s.resource.UpdateResource(
 		ctx,
@@ -224,8 +207,6 @@ func (s *ResourceService) Update(ctx context.Context, req *pb.UpdateRequest) (*p
 	return result, nil
 }
 
-// Delete removes the named resource. An optional grace period may be
-// specified in the request.
 func (s *ResourceService) Delete(ctx context.Context, req *pb.DeleteRequest) (*emptypb.Empty, error) {
 	var opts core.DeleteOptions
 	if req.HasGracePeriodSeconds() {
@@ -250,12 +231,8 @@ func (s *ResourceService) Delete(ctx context.Context, req *pb.DeleteRequest) (*e
 	return &emptypb.Empty{}, nil
 }
 
-// ---------------------------------------------------------------------------
-// Describe
-// ---------------------------------------------------------------------------
-
-// Describe returns a resource together with its related Kubernetes
-// events, equivalent to `kubectl describe`.
+// Describe returns a resource with its related events, the equivalent of
+// `kubectl describe`.
 func (s *ResourceService) Describe(ctx context.Context, req *pb.DescribeRequest) (*pb.DescribeResponse, error) {
 	obj, events, err := s.resource.DescribeResource(
 		ctx,
@@ -288,13 +265,8 @@ func (s *ResourceService) Describe(ctx context.Context, req *pb.DescribeRequest)
 	return resp, nil
 }
 
-// ---------------------------------------------------------------------------
-// Watch
-// ---------------------------------------------------------------------------
-
-// Watch opens a server-streaming RPC that forwards Kubernetes watch
-// events to the client. The stream ends when the client cancels the
-// context or the upstream watcher closes.
+// Watch forwards Kubernetes watch events until the client cancels the context
+// or the upstream watcher closes.
 func (s *ResourceService) Watch(ctx context.Context, req *pb.WatchRequest, stream *connect.ServerStream[pb.WatchEvent]) error {
 	watcher, err := s.resource.WatchResource(
 		ctx,
@@ -339,14 +311,9 @@ func (s *ResourceService) Watch(ctx context.Context, req *pb.WatchRequest, strea
 	}
 }
 
-// ---------------------------------------------------------------------------
-// Internal helpers
-// ---------------------------------------------------------------------------
-
-// processEvent converts a domain core.WatchEvent into a protobuf
-// WatchEvent. Returns an error if the event should be skipped; the
-// caller is responsible for logging. This keeps the function free of
-// side effects so it can be unit-tested without producing log output.
+// processEvent returns an error for an event the caller should skip and log.
+// Leaving the logging to the caller keeps this function side-effect free, and
+// so unit-testable without producing log output.
 func processEvent(event core.WatchEvent) (*pb.WatchEvent, error) {
 	switch event.Type {
 	case core.WatchEventAdded, core.WatchEventModified, core.WatchEventDeleted:
@@ -367,7 +334,6 @@ func processEvent(event core.WatchEvent) (*pb.WatchEvent, error) {
 	case core.WatchEventBookmark:
 		ret := &pb.WatchEvent{}
 		ret.SetType(pb.WatchEvent_TYPE_BOOKMARK)
-		// Extract resourceVersion from the bookmark object.
 		if event.Object != nil {
 			if metadata, ok := event.Object["metadata"].(map[string]any); ok {
 				if rv, ok := metadata["resourceVersion"].(string); ok {
@@ -392,11 +358,9 @@ func processEvent(event core.WatchEvent) (*pb.WatchEvent, error) {
 	}
 }
 
-// toProtoAPIResources flattens the Kubernetes APIResourceList slice
-// into a single []*pb.APIResource list, embedding the parsed
-// group/version into each entry.
+// toProtoAPIResources flattens the APIResourceList slice into one list,
+// embedding the parsed group/version into each entry.
 func toProtoAPIResources(list []*metav1.APIResourceList) ([]*pb.APIResource, error) {
-	// Estimate total capacity to avoid repeated allocations.
 	total := 0
 	for i := range list {
 		total += len(list[i].APIResources)
@@ -417,8 +381,6 @@ func toProtoAPIResources(list []*metav1.APIResourceList) ([]*pb.APIResource, err
 	return ret, nil
 }
 
-// toProtoAPIResource converts a single Kubernetes APIResource into its
-// protobuf representation.
 func toProtoAPIResource(gv schema.GroupVersion, r *metav1.APIResource) *pb.APIResource {
 	ret := &pb.APIResource{}
 	ret.SetGroup(gv.Group)
@@ -431,9 +393,8 @@ func toProtoAPIResource(gv schema.GroupVersion, r *metav1.APIResource) *pb.APIRe
 	return ret
 }
 
-// toProtoStructFromJSONSchema serializes an OpenAPI spec.Schema to
-// JSON and re-parses it into a protobuf Struct so it can be returned
-// as a generic structured response.
+// toProtoStructFromJSONSchema round-trips through JSON so the schema can be
+// returned as a generic structured response.
 func toProtoStructFromJSONSchema(js *spec.Schema) (*structpb.Struct, error) {
 	jsBytes, err := json.Marshal(js)
 	if err != nil {
@@ -448,8 +409,6 @@ func toProtoStructFromJSONSchema(js *spec.Schema) (*structpb.Struct, error) {
 	return ret, nil
 }
 
-// toProtoResources converts a slice of Unstructured objects into
-// protobuf Resource messages.
 func toProtoResources(list []unstructured.Unstructured) ([]*pb.Resource, error) {
 	ret := make([]*pb.Resource, 0, len(list))
 
@@ -465,14 +424,11 @@ func toProtoResources(list []unstructured.Unstructured) ([]*pb.Resource, error) 
 	return ret, nil
 }
 
-// toProtoResource wraps a raw Kubernetes object map in a protobuf
-// Resource message. It strips noisy metadata (managedFields,
-// last-applied-configuration) before serializing to ensure a
-// consistent presentation across all endpoints.
+// toProtoResource strips noisy metadata (managedFields,
+// last-applied-configuration) so every endpoint presents resources the same
+// way. Cleaning in place is safe: client-go hands out fresh objects for each
+// API call and watch event.
 func toProtoResource(obj map[string]any) (*pb.Resource, error) {
-	// Clean the object in-place before conversion. This is safe
-	// because Kubernetes client-go provides fresh objects for each
-	// API call and watch event.
 	cleanObject(obj)
 
 	object, err := structpb.NewStruct(obj)
@@ -485,8 +441,6 @@ func toProtoResource(obj map[string]any) (*pb.Resource, error) {
 	return ret, nil
 }
 
-// toProtoWatchEventType maps a domain WatchEventType to the protobuf
-// WatchEvent_Type enum.
 func toProtoWatchEventType(t core.WatchEventType) pb.WatchEvent_Type {
 	switch t {
 	case core.WatchEventAdded:

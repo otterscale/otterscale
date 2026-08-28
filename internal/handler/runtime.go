@@ -5,14 +5,16 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log/slog"
 	"math"
 	"sync"
+	"time"
 
 	"connectrpc.com/connect"
 	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/structpb"
 
-	pb "github.com/otterscale/api/runtime/v1"
+	pb "github.com/otterscale/otterscale/api/runtime/v1"
 
 	"github.com/otterscale/otterscale/internal/core"
 )
@@ -20,28 +22,52 @@ import (
 // streamChunkSize is the maximum bytes sent per streaming message.
 const streamChunkSize = 32 * 1024
 
-// RuntimeService implements the Runtime gRPC service. It proxies
-// Kubernetes runtime operations (logs, exec, port-forward, scale,
-// restart) through the tunnel.
+// sessionOutcomeTimeout bounds the wait for a finished session to publish its
+// result. Once the output pipes are drained the goroutine behind the session
+// has only a few deferred closes left, so this is a backstop against a wedged
+// adapter — without it, a session that never signals completion would hold its
+// RPC open until the client gave up.
+const sessionOutcomeTimeout = 5 * time.Second
+
+// sessionOutcome converts the error a finished session ended with into the
+// error its RPC should report.
+//
+// Two endings are not RPC failures. A caller whose context was canceled is
+// already gone, and the session was torn down on its behalf. And a command that
+// ran and exited non-zero delivered exactly what was asked for: its output has
+// already been streamed, so reporting the exit status as a transport failure
+// would make every unsuccessful shell command look like a server error. The
+// status has no field in the current response schema, so it is logged instead.
+func sessionOutcome(kind, id string, err error) error {
+	if err == nil || errors.Is(err, context.Canceled) || errors.Is(err, context.DeadlineExceeded) {
+		return nil
+	}
+
+	var exited *core.ErrCommandExited
+	if errors.As(err, &exited) {
+		slog.Debug("exec command exited non-zero", "session", id, "exit_code", exited.Code)
+		return nil
+	}
+
+	// Log as well as return: before this, a session that failed to even start
+	// left no trace on either side.
+	slog.Warn("session ended with an error", "kind", kind, "session", id, "error", err)
+	return domainErrorToConnectError(err)
+}
+
+// RuntimeService proxies Kubernetes runtime operations through the tunnel.
 type RuntimeService struct {
 	pb.UnimplementedRuntimeServiceHandler
 
 	runtime *core.RuntimeUseCase
 }
 
-// NewRuntimeService returns a RuntimeService backed by the given
-// use-case.
 func NewRuntimeService(runtime *core.RuntimeUseCase) *RuntimeService {
 	return &RuntimeService{runtime: runtime}
 }
 
 var _ pb.RuntimeServiceHandler = (*RuntimeService)(nil)
 
-// ---------------------------------------------------------------------------
-// PodLog
-// ---------------------------------------------------------------------------
-
-// PodLog streams container log output to the client.
 func (s *RuntimeService) PodLog(ctx context.Context, req *pb.PodLogRequest, stream *connect.ServerStream[pb.PodLogResponse]) error {
 	opts := core.PodLogOptions{
 		Container:  req.GetContainer(),
@@ -72,33 +98,24 @@ func (s *RuntimeService) PodLog(ctx context.Context, req *pb.PodLogRequest, stre
 	}
 	defer reader.Close()
 
-	buf := make([]byte, streamChunkSize)
-	for {
-		n, readErr := reader.Read(buf)
-		if n > 0 {
-			msg := &pb.PodLogResponse{}
-			msg.SetData(append([]byte(nil), buf[:n]...))
-			if err := stream.Send(msg); err != nil {
-				return err
-			}
+	for c := range readChunks(ctx, reader) {
+		if c.err != nil {
+			return domainErrorToConnectError(c.err)
 		}
-		if readErr != nil {
-			if errors.Is(readErr, io.EOF) {
-				return nil
-			}
-			return domainErrorToConnectError(readErr)
+		if len(c.data) == 0 {
+			continue
+		}
+		msg := &pb.PodLogResponse{}
+		msg.SetData(c.data)
+		if err := stream.Send(msg); err != nil {
+			return err
 		}
 	}
+	return nil
 }
 
-// ---------------------------------------------------------------------------
-// ExecuteTTY / WriteTTY / ResizeTTY
-// ---------------------------------------------------------------------------
-
-// ExecuteTTY starts an interactive exec session and streams
-// stdout/stderr back to the client. The first response message
-// contains the session_id that the client must use for WriteTTY
-// and ResizeTTY calls.
+// ExecuteTTY streams stdout/stderr back to the client. The first response
+// message carries the session_id the client must use for WriteTTY and ResizeTTY.
 func (s *RuntimeService) ExecuteTTY(ctx context.Context, req *pb.ExecuteTTYRequest, stream *connect.ServerStream[pb.ExecuteTTYResponse]) error {
 	rows := req.GetRows()
 	cols := req.GetCols()
@@ -122,7 +139,6 @@ func (s *RuntimeService) ExecuteTTY(ctx context.Context, req *pb.ExecuteTTYReque
 	}
 	defer s.runtime.CleanupExec(ctx, sess.ID)
 
-	// Send the session ID as the first message.
 	first := &pb.ExecuteTTYResponse{}
 	first.SetSessionId(sess.ID)
 	if err := stream.Send(first); err != nil {
@@ -131,12 +147,9 @@ func (s *RuntimeService) ExecuteTTY(ctx context.Context, req *pb.ExecuteTTYReque
 
 	ch := mergeExecOutputs(ctx, stdoutR, stderrR)
 
-	// Stream chunks to the client until all output is consumed.
-	// The channel is closed by the readerWg goroutine once both
-	// stdout and stderr readers exit (triggered by pipe closure
-	// when the exec session ends or CleanupExec runs). This
-	// guarantees all buffered data is delivered without relying on
-	// a time-based heuristic.
+	// The channel closes once both readers exit, which pipe closure triggers
+	// when the session ends or CleanupExec runs. That is what delivers all
+	// buffered data without a time-based heuristic.
 	for {
 		select {
 		case <-ctx.Done():
@@ -144,7 +157,10 @@ func (s *RuntimeService) ExecuteTTY(ctx context.Context, req *pb.ExecuteTTYReque
 
 		case c, ok := <-ch:
 			if !ok {
-				return nil
+				// Output exhausted; the session's own result is what says
+				// whether it ever ran. Without this, a session that failed to
+				// start looks identical to one that produced no output.
+				return s.execOutcome(ctx, sess)
 			}
 			msg := &pb.ExecuteTTYResponse{}
 			if len(c.stdout) > 0 {
@@ -160,18 +176,21 @@ func (s *RuntimeService) ExecuteTTY(ctx context.Context, req *pb.ExecuteTTYReque
 	}
 }
 
-// execChunk holds a piece of stdout or stderr data from an exec session.
+func (s *RuntimeService) execOutcome(ctx context.Context, sess *core.ExecSession) error {
+	waitCtx, cancel := context.WithTimeout(ctx, sessionOutcomeTimeout)
+	defer cancel()
+	return sessionOutcome("exec", sess.ID, s.runtime.WaitExec(waitCtx, sess))
+}
+
 type execChunk struct {
 	stdout []byte
 	stderr []byte
 }
 
-// execChunkBufSize is the channel buffer size for merged exec output.
 const execChunkBufSize = 8
 
-// mergeExecOutputs reads stdout and stderr concurrently and merges
-// them into a single channel. The returned channel is closed once
-// both readers finish.
+// mergeExecOutputs reads stdout and stderr concurrently onto one channel,
+// closed once both readers finish.
 func mergeExecOutputs(ctx context.Context, stdoutR, stderrR io.ReadCloser) <-chan execChunk {
 	ch := make(chan execChunk, execChunkBufSize)
 	var readerWg sync.WaitGroup
@@ -223,7 +242,6 @@ func mergeExecOutputs(ctx context.Context, stdoutR, stderrR io.ReadCloser) <-cha
 	return ch
 }
 
-// WriteTTY sends stdin data to an active exec session.
 func (s *RuntimeService) WriteTTY(ctx context.Context, req *pb.WriteTTYRequest) (*emptypb.Empty, error) {
 	if err := s.runtime.WriteExec(ctx, req.GetSessionId(), req.GetStdin()); err != nil {
 		return nil, domainErrorToConnectError(err)
@@ -231,7 +249,6 @@ func (s *RuntimeService) WriteTTY(ctx context.Context, req *pb.WriteTTYRequest) 
 	return &emptypb.Empty{}, nil
 }
 
-// ResizeTTY updates the terminal dimensions of an active exec session.
 func (s *RuntimeService) ResizeTTY(ctx context.Context, req *pb.ResizeTTYRequest) (*emptypb.Empty, error) {
 	rows := req.GetRows()
 	cols := req.GetCols()
@@ -245,13 +262,8 @@ func (s *RuntimeService) ResizeTTY(ctx context.Context, req *pb.ResizeTTYRequest
 	return &emptypb.Empty{}, nil
 }
 
-// ---------------------------------------------------------------------------
-// PortForward / WritePortForward
-// ---------------------------------------------------------------------------
-
-// PortForward opens a port-forward session and streams data from the
-// pod back to the client. The first response message contains the
-// session_id that the client must use for WritePortForward calls.
+// PortForward streams data from the pod back to the client. The first response
+// message carries the session_id the client must use for WritePortForward.
 func (s *RuntimeService) PortForward(ctx context.Context, req *pb.PortForwardRequest, stream *connect.ServerStream[pb.PortForwardResponse]) error {
 	sess, dataOutR, err := s.runtime.StartPortForward(
 		ctx,
@@ -265,34 +277,33 @@ func (s *RuntimeService) PortForward(ctx context.Context, req *pb.PortForwardReq
 	}
 	defer s.runtime.CleanupPortForward(ctx, sess.ID)
 
-	// Send the session ID as the first message.
 	first := &pb.PortForwardResponse{}
 	first.SetSessionId(sess.ID)
 	if err := stream.Send(first); err != nil {
 		return err
 	}
 
-	// Stream data from the pod.
-	buf := make([]byte, streamChunkSize)
-	for {
-		n, readErr := dataOutR.Read(buf)
-		if n > 0 {
-			msg := &pb.PortForwardResponse{}
-			msg.SetData(append([]byte(nil), buf[:n]...))
-			if err := stream.Send(msg); err != nil {
-				return err
-			}
+	for c := range readChunks(ctx, dataOutR) {
+		if c.err != nil {
+			return domainErrorToConnectError(c.err)
 		}
-		if readErr != nil {
-			if errors.Is(readErr, io.EOF) {
-				return nil
-			}
-			return domainErrorToConnectError(readErr)
+		if len(c.data) == 0 {
+			continue
+		}
+		msg := &pb.PortForwardResponse{}
+		msg.SetData(c.data)
+		if err := stream.Send(msg); err != nil {
+			return err
 		}
 	}
+
+	// The pipe reaching EOF says the session is over, not that it succeeded —
+	// a forward kubelet refused outright ends the same way.
+	waitCtx, cancel := context.WithTimeout(ctx, sessionOutcomeTimeout)
+	defer cancel()
+	return sessionOutcome("port-forward", sess.ID, s.runtime.WaitPortForward(waitCtx, sess))
 }
 
-// WritePortForward sends data to an active port-forward session.
 func (s *RuntimeService) WritePortForward(ctx context.Context, req *pb.WritePortForwardRequest) (*emptypb.Empty, error) {
 	if err := s.runtime.WritePortForward(ctx, req.GetSessionId(), req.GetData()); err != nil {
 		return nil, domainErrorToConnectError(err)
@@ -300,11 +311,6 @@ func (s *RuntimeService) WritePortForward(ctx context.Context, req *pb.WritePort
 	return &emptypb.Empty{}, nil
 }
 
-// ---------------------------------------------------------------------------
-// Scale
-// ---------------------------------------------------------------------------
-
-// Scale updates the replica count and returns the new value.
 func (s *RuntimeService) Scale(ctx context.Context, req *pb.ScaleRequest) (*pb.ScaleResponse, error) {
 	replicas, err := s.runtime.Scale(
 		ctx,
@@ -327,11 +333,6 @@ func (s *RuntimeService) Scale(ctx context.Context, req *pb.ScaleRequest) (*pb.S
 	return resp, nil
 }
 
-// ---------------------------------------------------------------------------
-// Restart
-// ---------------------------------------------------------------------------
-
-// Restart triggers a rolling restart of a workload.
 func (s *RuntimeService) Restart(ctx context.Context, req *pb.RestartRequest) (*emptypb.Empty, error) {
 	if err := s.runtime.Restart(
 		ctx,
@@ -349,13 +350,8 @@ func (s *RuntimeService) Restart(ctx context.Context, req *pb.RestartRequest) (*
 	return &emptypb.Empty{}, nil
 }
 
-// ---------------------------------------------------------------------------
-// VNC / WriteVNC
-// ---------------------------------------------------------------------------
-
-// VNC opens a VNC session to a KubeVirt VMI and streams raw VNC
-// protocol data back to the client. The first response message
-// contains the session_id that the client must use for WriteVNC calls.
+// VNC streams raw VNC protocol data from a KubeVirt VMI. The first response
+// message carries the session_id the client must use for WriteVNC.
 func (s *RuntimeService) VNC(ctx context.Context, req *pb.VNCRequest, stream *connect.ServerStream[pb.VNCResponse]) error {
 	sess, dataOutR, err := s.runtime.StartVNC(
 		ctx,
@@ -368,34 +364,76 @@ func (s *RuntimeService) VNC(ctx context.Context, req *pb.VNCRequest, stream *co
 	}
 	defer s.runtime.CleanupVNC(ctx, sess.ID)
 
-	// Send the session ID as the first message.
 	first := &pb.VNCResponse{}
 	first.SetSessionId(sess.ID)
 	if err := stream.Send(first); err != nil {
 		return err
 	}
 
-	// Stream VNC data from the VMI.
-	buf := make([]byte, streamChunkSize)
-	for {
-		n, readErr := dataOutR.Read(buf)
-		if n > 0 {
-			msg := &pb.VNCResponse{}
-			msg.SetData(append([]byte(nil), buf[:n]...))
-			if err := stream.Send(msg); err != nil {
-				return err
-			}
+	for c := range readChunks(ctx, dataOutR) {
+		if c.err != nil {
+			return domainErrorToConnectError(c.err)
 		}
-		if readErr != nil {
-			if errors.Is(readErr, io.EOF) {
-				return nil
-			}
-			return domainErrorToConnectError(readErr)
+		if len(c.data) == 0 {
+			continue
+		}
+		msg := &pb.VNCResponse{}
+		msg.SetData(c.data)
+		if err := stream.Send(msg); err != nil {
+			return err
 		}
 	}
+
+	waitCtx, cancel := context.WithTimeout(ctx, sessionOutcomeTimeout)
+	defer cancel()
+	return sessionOutcome("vnc", sess.ID, s.runtime.WaitVNC(waitCtx, sess))
 }
 
-// WriteVNC sends VNC data to an active VNC session.
+// chunk carries one streamed payload, or the terminal read error once the
+// reader is exhausted. A clean EOF is reported as a chunk with no data and no
+// error.
+type chunk struct {
+	data []byte
+	err  error
+}
+
+// readChunks streams r in fixed-size chunks and closes the channel once the
+// reader is exhausted or ctx is canceled. Reading in a goroutine is what makes
+// cancellation observable: Read on an io.Pipe blocks until the writer side is
+// closed, so a handler calling it directly would keep running after its client
+// vanished — and never run the cleanup that releases the session.
+func readChunks(ctx context.Context, r io.Reader) <-chan chunk {
+	ch := make(chan chunk, 1)
+
+	go func() {
+		defer close(ch)
+
+		buf := make([]byte, streamChunkSize)
+		for {
+			n, readErr := r.Read(buf)
+			if n > 0 {
+				select {
+				case ch <- chunk{data: append([]byte(nil), buf[:n]...)}:
+				case <-ctx.Done():
+					return
+				}
+			}
+			if readErr != nil {
+				if errors.Is(readErr, io.EOF) {
+					readErr = nil
+				}
+				select {
+				case ch <- chunk{err: readErr}:
+				case <-ctx.Done():
+				}
+				return
+			}
+		}
+	}()
+
+	return ch
+}
+
 func (s *RuntimeService) WriteVNC(ctx context.Context, req *pb.WriteVNCRequest) (*emptypb.Empty, error) {
 	if err := s.runtime.WriteVNC(ctx, req.GetSessionId(), req.GetData()); err != nil {
 		return nil, domainErrorToConnectError(err)
@@ -403,13 +441,8 @@ func (s *RuntimeService) WriteVNC(ctx context.Context, req *pb.WriteVNCRequest) 
 	return &emptypb.Empty{}, nil
 }
 
-// ---------------------------------------------------------------------------
-// SubResourceAction
-// ---------------------------------------------------------------------------
-
-// SubResourceAction performs a generic subresource action (e.g.
-// KubeVirt VM start/stop/restart). The request is forwarded to
-// kube-apiserver via impersonation, so Kubernetes RBAC is enforced.
+// SubResourceAction forwards to kube-apiserver via impersonation, so Kubernetes
+// RBAC is enforced.
 func (s *RuntimeService) SubResourceAction(ctx context.Context, req *pb.SubResourceActionRequest) (*pb.SubResourceActionResponse, error) {
 	result, err := s.runtime.SubResourceAction(
 		ctx,
@@ -440,12 +473,6 @@ func (s *RuntimeService) SubResourceAction(ctx context.Context, req *pb.SubResou
 	return resp, nil
 }
 
-// ---------------------------------------------------------------------------
-// ShowChart
-// ---------------------------------------------------------------------------
-
-// ShowChart retrieves chart values and readme from a remote
-// Helm repository.
 func (s *RuntimeService) ShowChart(ctx context.Context, req *pb.ShowChartRequest) (*pb.ShowChartResponse, error) {
 	values, readme, err := s.runtime.ShowChart(ctx, req.GetRepoUrl(), req.GetChartName(), req.GetVersion())
 	if err != nil {

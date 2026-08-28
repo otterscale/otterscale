@@ -1,0 +1,91 @@
+edition = "2023";
+
+package otterscale.link.v1;
+
+option go_package = "github.com/otterscale/otterscale/api/link/v1;linkv1";
+
+// LinkService manages the lifecycle of agent-to-server tunnel connections,
+// including registration and health checking.
+service LinkService {
+  // ListLinks returns all cluster identifiers that the current agent
+  // is registered to. This is used to discover which clusters are available
+  // for tunnel connections.
+  rpc ListLinks(ListLinksRequest) returns (ListLinksResponse) {}
+
+  // Register allows an agent to register itself with the tunnel server.
+  // The agent sends its cluster identity and tunnel port; the server responds
+  // with its fingerprint so the agent can verify the tunnel connection.
+  rpc Register(RegisterRequest) returns (RegisterResponse) {}
+}
+
+message Link {
+  // The cluster name.
+  string cluster = 1;
+
+  // The version of the agent binary (e.g. "v1.2.3"), set at build time.
+  string agent_version = 2;
+}
+
+// ListLinksRequest is an empty request message for listing links.
+message ListLinksRequest {}
+
+// ListLinksResponse contains the list of links the agent is registered to.
+message ListLinksResponse {
+  // The list of links.
+  repeated Link links = 1;
+}
+
+// RegisterRequest contains the agent's cluster identity and a CSR for
+// mTLS certificate issuance.
+message RegisterRequest {
+  // The cluster identifier this agent belongs to.
+  string cluster = 1;
+
+  // PEM-encoded PKCS#10 certificate signing request. The server signs
+  // this with its internal CA and returns the issued certificate.
+  bytes csr = 2;
+
+  // The agent identifier this agent uses to register with the server.
+  string agent_id = 3;
+
+  // The version of the agent binary (e.g. "v1.2.3"), set at build time.
+  string agent_version = 4;
+
+  // The enrolment token for this cluster, issued by the operator with
+  // `otterscale enrolment-token --cluster <name>`. Registration is
+  // rejected without a token that matches the cluster being claimed.
+  string enrolment_token = 5;
+}
+
+// RegisterResponse contains a CA-signed certificate and the CA
+// certificate so the agent can establish an mTLS tunnel connection.
+message RegisterResponse {
+  // The loopback endpoint reserved for this cluster tunnel.
+  string endpoint = 1;
+
+  // PEM-encoded X.509 certificate signed by the server's CA.
+  bytes certificate = 2;
+
+  // PEM-encoded CA certificate for verifying the tunnel server.
+  bytes ca_certificate = 3;
+
+  // The version of the server binary (e.g. "v1.2.3"), set at build time.
+  // Agents compare this against their own version to decide whether a
+  // self-update is needed.
+  string server_version = 4;
+
+  // The tunnel user name assigned to this registration.
+  //
+  // The server assigns it rather than deriving it from anything the
+  // agent sent. Agents identify themselves by hostname, and two
+  // clusters running the same deployment produce the same hostname, so
+  // a name taken from the request would let one cluster's registration
+  // silently replace another's tunnel credentials.
+  string tunnel_user = 5;
+
+  // The password for tunnel_user, generated fresh on every
+  // registration. It is issued here rather than derived from the
+  // certificate above, so that a value the agent already holds is
+  // never also the secret that authenticates it.
+  string tunnel_password = 6;
+}

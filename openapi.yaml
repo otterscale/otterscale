@@ -1,0 +1,2618 @@
+openapi: 3.1.0
+info:
+  title: OtterScale API
+  description: 'OtterScale: A unified platform for simplified compute, storage, and networking.'
+  contact:
+    name: Chung-Hsuan Tsai
+    url: https://iasthc.github.io
+    email: paul_tsai@phison.com
+  license:
+    name: Apache 2.0
+    url: https://opensource.org/license/apache-2-0
+  version: v1
+paths:
+  /otterscale.link.v1.LinkService/ListLinks:
+    post:
+      tags:
+        - LinkService
+      summary: ListLinks
+      description: |-
+        ListLinks returns all cluster identifiers that the current agent
+         is registered to. This is used to discover which clusters are available
+         for tunnel connections.
+      operationId: LinkService_ListLinks
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.link.v1.ListLinksRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/otterscale.link.v1.ListLinksResponse'
+  /otterscale.link.v1.LinkService/Register:
+    post:
+      tags:
+        - LinkService
+      summary: Register
+      description: |-
+        Register allows an agent to register itself with the tunnel server.
+         The agent sends its cluster identity and tunnel port; the server responds
+         with its fingerprint so the agent can verify the tunnel connection.
+      operationId: LinkService_Register
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.link.v1.RegisterRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/otterscale.link.v1.RegisterResponse'
+  /otterscale.resource.v1.ResourceService/Apply:
+    post:
+      tags:
+        - ResourceService
+      summary: Apply
+      description: |-
+        Apply performs a Server-Side Apply (SSA) to update or create a resource.
+         This is the recommended way to perform partial updates.
+      operationId: ResourceService_Apply
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.resource.v1.ApplyRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/otterscale.resource.v1.Resource'
+  /otterscale.resource.v1.ResourceService/Create:
+    post:
+      tags:
+        - ResourceService
+      summary: Create
+      description: Create creates a new resource in the cluster using the provided manifest.
+      operationId: ResourceService_Create
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.resource.v1.CreateRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/otterscale.resource.v1.Resource'
+  /otterscale.resource.v1.ResourceService/Delete:
+    post:
+      tags:
+        - ResourceService
+      summary: Delete
+      description: Delete removes a resource from the cluster by its name.
+      operationId: ResourceService_Delete
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.resource.v1.DeleteRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/google.protobuf.Empty'
+  /otterscale.resource.v1.ResourceService/Describe:
+    post:
+      tags:
+        - ResourceService
+      summary: Describe
+      description: |-
+        Describe retrieves a resource along with its related Kubernetes events,
+         equivalent to `kubectl describe`.
+      operationId: ResourceService_Describe
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.resource.v1.DescribeRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/otterscale.resource.v1.DescribeResponse'
+  /otterscale.resource.v1.ResourceService/Discovery:
+    post:
+      tags:
+        - ResourceService
+      summary: Discovery
+      description: Discovery retrieves the available API resources in the specified cluster.
+      operationId: ResourceService_Discovery
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.resource.v1.DiscoveryRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/otterscale.resource.v1.DiscoveryResponse'
+  /otterscale.resource.v1.ResourceService/Get:
+    post:
+      tags:
+        - ResourceService
+      summary: Get
+      description: Get retrieves a single resource by its name within a namespace.
+      operationId: ResourceService_Get
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.resource.v1.GetRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/otterscale.resource.v1.Resource'
+  /otterscale.resource.v1.ResourceService/List:
+    post:
+      tags:
+        - ResourceService
+      summary: List
+      description: List retrieves a collection of resources based on the provided GVR and filters.
+      operationId: ResourceService_List
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.resource.v1.ListRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/otterscale.resource.v1.ListResponse'
+  /otterscale.resource.v1.ResourceService/Schema:
+    post:
+      tags:
+        - ResourceService
+      summary: Schema
+      description: |-
+        Schema retrieves the structural definition (JSON Schema) for a specific resource type.
+         It supports both native Kubernetes resources and installed CRDs.
+         The raw JSON Schema (Draft 4/7 or 2020-12) describing the resource structure.
+         This is typically derived from Kubernetes OpenAPIV3Schema.
+      operationId: ResourceService_Schema
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.resource.v1.SchemaRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/otterscale.resource.v1.SchemaResponse'
+  /otterscale.resource.v1.ResourceService/Update:
+    post:
+      tags:
+        - ResourceService
+      summary: Update
+      description: |-
+        Update performs a full replacement (PUT) of an existing resource using
+         the provided manifest. The caller is responsible for supplying any
+         server-required fields (such as metadata.resourceVersion) inside the
+         manifest.
+      operationId: ResourceService_Update
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.resource.v1.UpdateRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/otterscale.resource.v1.Resource'
+  /otterscale.resource.v1.ResourceService/Watch:
+    post:
+      tags:
+        - ResourceService
+      summary: Watch
+      description: Watch initiates a server-side stream to monitor resource changes in real-time.
+      operationId: ResourceService_Watch
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/connect+json:
+            schema:
+              $ref: '#/components/schemas/otterscale.resource.v1.WatchRequest'
+          application/connect+proto:
+            schema:
+              $ref: '#/components/schemas/otterscale.resource.v1.WatchRequest'
+          application/grpc:
+            schema:
+              $ref: '#/components/schemas/otterscale.resource.v1.WatchRequest'
+          application/grpc+proto:
+            schema:
+              $ref: '#/components/schemas/otterscale.resource.v1.WatchRequest'
+          application/grpc+json:
+            schema:
+              $ref: '#/components/schemas/otterscale.resource.v1.WatchRequest'
+          application/grpc-web:
+            schema:
+              $ref: '#/components/schemas/otterscale.resource.v1.WatchRequest'
+          application/grpc-web+proto:
+            schema:
+              $ref: '#/components/schemas/otterscale.resource.v1.WatchRequest'
+          application/grpc-web+json:
+            schema:
+              $ref: '#/components/schemas/otterscale.resource.v1.WatchRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/connect+json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+            application/connect+proto:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+            application/grpc:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+            application/grpc+proto:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+            application/grpc+json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+            application/grpc-web:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+            application/grpc-web+proto:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+            application/grpc-web+json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/connect+json:
+              schema:
+                $ref: '#/components/schemas/otterscale.resource.v1.WatchEvent'
+            application/connect+proto:
+              schema:
+                $ref: '#/components/schemas/otterscale.resource.v1.WatchEvent'
+            application/grpc:
+              schema:
+                $ref: '#/components/schemas/otterscale.resource.v1.WatchEvent'
+            application/grpc+proto:
+              schema:
+                $ref: '#/components/schemas/otterscale.resource.v1.WatchEvent'
+            application/grpc+json:
+              schema:
+                $ref: '#/components/schemas/otterscale.resource.v1.WatchEvent'
+            application/grpc-web:
+              schema:
+                $ref: '#/components/schemas/otterscale.resource.v1.WatchEvent'
+            application/grpc-web+proto:
+              schema:
+                $ref: '#/components/schemas/otterscale.resource.v1.WatchEvent'
+            application/grpc-web+json:
+              schema:
+                $ref: '#/components/schemas/otterscale.resource.v1.WatchEvent'
+  /otterscale.runtime.v1.RuntimeService/ExecuteTTY:
+    post:
+      tags:
+        - RuntimeService
+      summary: ExecuteTTY
+      description: |-
+        ExecuteTTY starts an interactive exec session in a container and streams
+         stdout/stderr back. Due to browser limitations, bidirectional streaming
+         cannot be used; stdin is sent via the separate WriteTTY RPC.
+      operationId: RuntimeService_ExecuteTTY
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/connect+json:
+            schema:
+              $ref: '#/components/schemas/otterscale.runtime.v1.ExecuteTTYRequest'
+          application/connect+proto:
+            schema:
+              $ref: '#/components/schemas/otterscale.runtime.v1.ExecuteTTYRequest'
+          application/grpc:
+            schema:
+              $ref: '#/components/schemas/otterscale.runtime.v1.ExecuteTTYRequest'
+          application/grpc+proto:
+            schema:
+              $ref: '#/components/schemas/otterscale.runtime.v1.ExecuteTTYRequest'
+          application/grpc+json:
+            schema:
+              $ref: '#/components/schemas/otterscale.runtime.v1.ExecuteTTYRequest'
+          application/grpc-web:
+            schema:
+              $ref: '#/components/schemas/otterscale.runtime.v1.ExecuteTTYRequest'
+          application/grpc-web+proto:
+            schema:
+              $ref: '#/components/schemas/otterscale.runtime.v1.ExecuteTTYRequest'
+          application/grpc-web+json:
+            schema:
+              $ref: '#/components/schemas/otterscale.runtime.v1.ExecuteTTYRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/connect+json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+            application/connect+proto:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+            application/grpc:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+            application/grpc+proto:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+            application/grpc+json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+            application/grpc-web:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+            application/grpc-web+proto:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+            application/grpc-web+json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/connect+json:
+              schema:
+                $ref: '#/components/schemas/otterscale.runtime.v1.ExecuteTTYResponse'
+            application/connect+proto:
+              schema:
+                $ref: '#/components/schemas/otterscale.runtime.v1.ExecuteTTYResponse'
+            application/grpc:
+              schema:
+                $ref: '#/components/schemas/otterscale.runtime.v1.ExecuteTTYResponse'
+            application/grpc+proto:
+              schema:
+                $ref: '#/components/schemas/otterscale.runtime.v1.ExecuteTTYResponse'
+            application/grpc+json:
+              schema:
+                $ref: '#/components/schemas/otterscale.runtime.v1.ExecuteTTYResponse'
+            application/grpc-web:
+              schema:
+                $ref: '#/components/schemas/otterscale.runtime.v1.ExecuteTTYResponse'
+            application/grpc-web+proto:
+              schema:
+                $ref: '#/components/schemas/otterscale.runtime.v1.ExecuteTTYResponse'
+            application/grpc-web+json:
+              schema:
+                $ref: '#/components/schemas/otterscale.runtime.v1.ExecuteTTYResponse'
+  /otterscale.runtime.v1.RuntimeService/PodLog:
+    post:
+      tags:
+        - RuntimeService
+      summary: PodLog
+      description: PodLog streams log output from a container, similar to `kubectl logs -f`.
+      operationId: RuntimeService_PodLog
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/connect+json:
+            schema:
+              $ref: '#/components/schemas/otterscale.runtime.v1.PodLogRequest'
+          application/connect+proto:
+            schema:
+              $ref: '#/components/schemas/otterscale.runtime.v1.PodLogRequest'
+          application/grpc:
+            schema:
+              $ref: '#/components/schemas/otterscale.runtime.v1.PodLogRequest'
+          application/grpc+proto:
+            schema:
+              $ref: '#/components/schemas/otterscale.runtime.v1.PodLogRequest'
+          application/grpc+json:
+            schema:
+              $ref: '#/components/schemas/otterscale.runtime.v1.PodLogRequest'
+          application/grpc-web:
+            schema:
+              $ref: '#/components/schemas/otterscale.runtime.v1.PodLogRequest'
+          application/grpc-web+proto:
+            schema:
+              $ref: '#/components/schemas/otterscale.runtime.v1.PodLogRequest'
+          application/grpc-web+json:
+            schema:
+              $ref: '#/components/schemas/otterscale.runtime.v1.PodLogRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/connect+json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+            application/connect+proto:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+            application/grpc:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+            application/grpc+proto:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+            application/grpc+json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+            application/grpc-web:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+            application/grpc-web+proto:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+            application/grpc-web+json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/connect+json:
+              schema:
+                $ref: '#/components/schemas/otterscale.runtime.v1.PodLogResponse'
+            application/connect+proto:
+              schema:
+                $ref: '#/components/schemas/otterscale.runtime.v1.PodLogResponse'
+            application/grpc:
+              schema:
+                $ref: '#/components/schemas/otterscale.runtime.v1.PodLogResponse'
+            application/grpc+proto:
+              schema:
+                $ref: '#/components/schemas/otterscale.runtime.v1.PodLogResponse'
+            application/grpc+json:
+              schema:
+                $ref: '#/components/schemas/otterscale.runtime.v1.PodLogResponse'
+            application/grpc-web:
+              schema:
+                $ref: '#/components/schemas/otterscale.runtime.v1.PodLogResponse'
+            application/grpc-web+proto:
+              schema:
+                $ref: '#/components/schemas/otterscale.runtime.v1.PodLogResponse'
+            application/grpc-web+json:
+              schema:
+                $ref: '#/components/schemas/otterscale.runtime.v1.PodLogResponse'
+  /otterscale.runtime.v1.RuntimeService/PortForward:
+    post:
+      tags:
+        - RuntimeService
+      summary: PortForward
+      description: |-
+        PortForward opens a port-forward session to a pod and streams data back.
+         Due to browser limitations, bidirectional streaming cannot be used;
+         data to the pod is sent via the separate WritePortForward RPC.
+      operationId: RuntimeService_PortForward
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/connect+json:
+            schema:
+              $ref: '#/components/schemas/otterscale.runtime.v1.PortForwardRequest'
+          application/connect+proto:
+            schema:
+              $ref: '#/components/schemas/otterscale.runtime.v1.PortForwardRequest'
+          application/grpc:
+            schema:
+              $ref: '#/components/schemas/otterscale.runtime.v1.PortForwardRequest'
+          application/grpc+proto:
+            schema:
+              $ref: '#/components/schemas/otterscale.runtime.v1.PortForwardRequest'
+          application/grpc+json:
+            schema:
+              $ref: '#/components/schemas/otterscale.runtime.v1.PortForwardRequest'
+          application/grpc-web:
+            schema:
+              $ref: '#/components/schemas/otterscale.runtime.v1.PortForwardRequest'
+          application/grpc-web+proto:
+            schema:
+              $ref: '#/components/schemas/otterscale.runtime.v1.PortForwardRequest'
+          application/grpc-web+json:
+            schema:
+              $ref: '#/components/schemas/otterscale.runtime.v1.PortForwardRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/connect+json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+            application/connect+proto:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+            application/grpc:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+            application/grpc+proto:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+            application/grpc+json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+            application/grpc-web:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+            application/grpc-web+proto:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+            application/grpc-web+json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/connect+json:
+              schema:
+                $ref: '#/components/schemas/otterscale.runtime.v1.PortForwardResponse'
+            application/connect+proto:
+              schema:
+                $ref: '#/components/schemas/otterscale.runtime.v1.PortForwardResponse'
+            application/grpc:
+              schema:
+                $ref: '#/components/schemas/otterscale.runtime.v1.PortForwardResponse'
+            application/grpc+proto:
+              schema:
+                $ref: '#/components/schemas/otterscale.runtime.v1.PortForwardResponse'
+            application/grpc+json:
+              schema:
+                $ref: '#/components/schemas/otterscale.runtime.v1.PortForwardResponse'
+            application/grpc-web:
+              schema:
+                $ref: '#/components/schemas/otterscale.runtime.v1.PortForwardResponse'
+            application/grpc-web+proto:
+              schema:
+                $ref: '#/components/schemas/otterscale.runtime.v1.PortForwardResponse'
+            application/grpc-web+json:
+              schema:
+                $ref: '#/components/schemas/otterscale.runtime.v1.PortForwardResponse'
+  /otterscale.runtime.v1.RuntimeService/ResizeTTY:
+    post:
+      tags:
+        - RuntimeService
+      summary: ResizeTTY
+      description: ResizeTTY updates the terminal dimensions of an active exec session.
+      operationId: RuntimeService_ResizeTTY
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.runtime.v1.ResizeTTYRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/google.protobuf.Empty'
+  /otterscale.runtime.v1.RuntimeService/Restart:
+    post:
+      tags:
+        - RuntimeService
+      summary: Restart
+      description: |-
+        Restart triggers a rolling restart of a workload by patching the
+         pod template annotation, equivalent to `kubectl rollout restart`.
+      operationId: RuntimeService_Restart
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.runtime.v1.RestartRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/google.protobuf.Empty'
+  /otterscale.runtime.v1.RuntimeService/Scale:
+    post:
+      tags:
+        - RuntimeService
+      summary: Scale
+      description: |-
+        Scale updates the replica count of a scalable workload
+         (Deployment, StatefulSet, ReplicaSet) via the /scale subresource.
+      operationId: RuntimeService_Scale
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.runtime.v1.ScaleRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/otterscale.runtime.v1.ScaleResponse'
+  /otterscale.runtime.v1.RuntimeService/ShowChart:
+    get:
+      tags:
+        - RuntimeService
+      summary: ShowChart
+      description: |-
+        ShowChart retrieves the default values.yaml and README.md from
+         a Helm chart in a remote repository (HTTP or OCI). This executes
+         server-side and does not require a cluster connection.
+      operationId: RuntimeService_ShowChart.get
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+        - name: message
+          in: query
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/otterscale.runtime.v1.ShowChartRequest'
+        - name: encoding
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/encoding'
+        - name: base64
+          in: query
+          schema:
+            $ref: '#/components/schemas/base64'
+        - name: compression
+          in: query
+          schema:
+            $ref: '#/components/schemas/compression'
+        - name: connect
+          in: query
+          schema:
+            $ref: '#/components/schemas/connect'
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/otterscale.runtime.v1.ShowChartResponse'
+    post:
+      tags:
+        - RuntimeService
+      summary: ShowChart
+      description: |-
+        ShowChart retrieves the default values.yaml and README.md from
+         a Helm chart in a remote repository (HTTP or OCI). This executes
+         server-side and does not require a cluster connection.
+      operationId: RuntimeService_ShowChart
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.runtime.v1.ShowChartRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/otterscale.runtime.v1.ShowChartResponse'
+  /otterscale.runtime.v1.RuntimeService/SubResourceAction:
+    post:
+      tags:
+        - RuntimeService
+      summary: SubResourceAction
+      description: |-
+        SubResourceAction performs a generic action on a Kubernetes
+         subresource, such as KubeVirt VM start/stop/restart. The request
+         is forwarded to kube-apiserver via impersonation, so RBAC is
+         enforced automatically. Only PUT and POST methods are allowed.
+      operationId: RuntimeService_SubResourceAction
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.runtime.v1.SubResourceActionRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/otterscale.runtime.v1.SubResourceActionResponse'
+  /otterscale.runtime.v1.RuntimeService/VNC:
+    post:
+      tags:
+        - RuntimeService
+      summary: VNC
+      description: |-
+        VNC opens a VNC session to a KubeVirt VirtualMachineInstance and
+         streams raw VNC protocol data back. Due to browser limitations,
+         bidirectional streaming cannot be used; data to the VMI is sent
+         via the separate WriteVNC RPC.
+      operationId: RuntimeService_VNC
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/connect+json:
+            schema:
+              $ref: '#/components/schemas/otterscale.runtime.v1.VNCRequest'
+          application/connect+proto:
+            schema:
+              $ref: '#/components/schemas/otterscale.runtime.v1.VNCRequest'
+          application/grpc:
+            schema:
+              $ref: '#/components/schemas/otterscale.runtime.v1.VNCRequest'
+          application/grpc+proto:
+            schema:
+              $ref: '#/components/schemas/otterscale.runtime.v1.VNCRequest'
+          application/grpc+json:
+            schema:
+              $ref: '#/components/schemas/otterscale.runtime.v1.VNCRequest'
+          application/grpc-web:
+            schema:
+              $ref: '#/components/schemas/otterscale.runtime.v1.VNCRequest'
+          application/grpc-web+proto:
+            schema:
+              $ref: '#/components/schemas/otterscale.runtime.v1.VNCRequest'
+          application/grpc-web+json:
+            schema:
+              $ref: '#/components/schemas/otterscale.runtime.v1.VNCRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/connect+json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+            application/connect+proto:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+            application/grpc:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+            application/grpc+proto:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+            application/grpc+json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+            application/grpc-web:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+            application/grpc-web+proto:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+            application/grpc-web+json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/connect+json:
+              schema:
+                $ref: '#/components/schemas/otterscale.runtime.v1.VNCResponse'
+            application/connect+proto:
+              schema:
+                $ref: '#/components/schemas/otterscale.runtime.v1.VNCResponse'
+            application/grpc:
+              schema:
+                $ref: '#/components/schemas/otterscale.runtime.v1.VNCResponse'
+            application/grpc+proto:
+              schema:
+                $ref: '#/components/schemas/otterscale.runtime.v1.VNCResponse'
+            application/grpc+json:
+              schema:
+                $ref: '#/components/schemas/otterscale.runtime.v1.VNCResponse'
+            application/grpc-web:
+              schema:
+                $ref: '#/components/schemas/otterscale.runtime.v1.VNCResponse'
+            application/grpc-web+proto:
+              schema:
+                $ref: '#/components/schemas/otterscale.runtime.v1.VNCResponse'
+            application/grpc-web+json:
+              schema:
+                $ref: '#/components/schemas/otterscale.runtime.v1.VNCResponse'
+  /otterscale.runtime.v1.RuntimeService/WritePortForward:
+    post:
+      tags:
+        - RuntimeService
+      summary: WritePortForward
+      description: WritePortForward sends data to an active port-forward session.
+      operationId: RuntimeService_WritePortForward
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.runtime.v1.WritePortForwardRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/google.protobuf.Empty'
+  /otterscale.runtime.v1.RuntimeService/WriteTTY:
+    post:
+      tags:
+        - RuntimeService
+      summary: WriteTTY
+      description: WriteTTY sends stdin data to an active exec session identified by session_id.
+      operationId: RuntimeService_WriteTTY
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.runtime.v1.WriteTTYRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/google.protobuf.Empty'
+  /otterscale.runtime.v1.RuntimeService/WriteVNC:
+    post:
+      tags:
+        - RuntimeService
+      summary: WriteVNC
+      description: WriteVNC sends VNC data to an active VNC session.
+      operationId: RuntimeService_WriteVNC
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/otterscale.runtime.v1.WriteVNCRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/google.protobuf.Empty'
+components:
+  schemas:
+    base64:
+      type: boolean
+      title: base64
+      description: Specifies if the message query param is base64 encoded, which may be required for binary data
+    compression:
+      title: compression
+      enum:
+        - identity
+        - gzip
+        - br
+      description: Which compression algorithm to use for this request
+    connect:
+      title: connect
+      enum:
+        - v1
+      description: Define the version of the Connect protocol
+    connect-protocol-version:
+      type: number
+      title: Connect-Protocol-Version
+      enum:
+        - 1
+      description: Define the version of the Connect protocol
+      const: 1
+    connect-timeout-header:
+      type: number
+      title: Connect-Timeout-Ms
+      description: Define the timeout, in ms
+    connect.error:
+      type: object
+      properties:
+        code:
+          type: string
+          examples:
+            - not_found
+          enum:
+            - canceled
+            - unknown
+            - invalid_argument
+            - deadline_exceeded
+            - not_found
+            - already_exists
+            - permission_denied
+            - resource_exhausted
+            - failed_precondition
+            - aborted
+            - out_of_range
+            - unimplemented
+            - internal
+            - unavailable
+            - data_loss
+            - unauthenticated
+          description: The status code, which should be an enum value of [google.rpc.Code][google.rpc.Code].
+        message:
+          type: string
+          description: A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the [google.rpc.Status.details][google.rpc.Status.details] field, or localized by the client.
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/connect.error_details.Any'
+          description: A list of messages that carry the error details. There is no limit on the number of messages.
+      title: Connect Error
+      additionalProperties: true
+      description: 'Error type returned by Connect: https://connectrpc.com/docs/go/errors/#http-representation'
+    connect.error_details.Any:
+      type: object
+      properties:
+        type:
+          type: string
+          description: 'A URL that acts as a globally unique identifier for the type of the serialized message. For example: `type.googleapis.com/google.rpc.ErrorInfo`. This is used to determine the schema of the data in the `value` field and is the discriminator for the `debug` field.'
+        value:
+          type: string
+          format: binary
+          description: The Protobuf message, serialized as bytes and base64-encoded. The specific message type is identified by the `type` field.
+        debug:
+          oneOf:
+            - type: object
+              title: Any
+              additionalProperties: true
+              description: Detailed error information.
+          discriminator:
+            propertyName: type
+          title: Debug
+          description: Deserialized error detail payload. The 'type' field indicates the schema. This field is for easier debugging and should not be relied upon for application logic.
+      additionalProperties: true
+      description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message, with an additional debug field for ConnectRPC error details.
+    encoding:
+      title: encoding
+      enum:
+        - proto
+        - json
+      description: Define which encoding or 'Message-Codec' to use
+    google.protobuf.Empty:
+      type: object
+      description: |-
+        A generic empty message that you can re-use to avoid defining duplicated
+         empty messages in your APIs. A typical example is to use it as the request
+         or the response type of an API method. For instance:
+
+             service Foo {
+               rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty);
+             }
+    google.protobuf.ListValue:
+      type: object
+      properties:
+        values:
+          type: array
+          items:
+            $ref: '#/components/schemas/google.protobuf.Value'
+          title: values
+          description: Repeated field of dynamically typed values.
+      title: ListValue
+      additionalProperties: false
+      description: |-
+        `ListValue` is a wrapper around a repeated field of values.
+
+         The JSON representation for `ListValue` is JSON array.
+    google.protobuf.NullValue:
+      type: string
+      title: NullValue
+      enum:
+        - NULL_VALUE
+      description: |-
+        `NullValue` is a singleton enumeration to represent the null value for the
+         `Value` type union.
+
+         The JSON representation for `NullValue` is JSON `null`.
+    google.protobuf.Struct:
+      type: object
+      additionalProperties:
+        $ref: '#/components/schemas/google.protobuf.Value'
+      description: |-
+        `Struct` represents a structured data value, consisting of fields
+         which map to dynamically typed values. In some languages, `Struct`
+         might be supported by a native representation. For example, in
+         scripting languages like JS a struct is represented as an
+         object. The details of that representation are described together
+         with the proto support for the language.
+
+         The JSON representation for `Struct` is JSON object.
+    google.protobuf.Struct.FieldsEntry:
+      type: object
+      properties:
+        key:
+          type: string
+          title: key
+        value:
+          title: value
+          $ref: '#/components/schemas/google.protobuf.Value'
+      title: FieldsEntry
+      additionalProperties: false
+    google.protobuf.Timestamp:
+      type: string
+      examples:
+        - "2023-01-15T01:30:15.01Z"
+        - "2024-12-25T12:00:00Z"
+      format: date-time
+      description: |-
+        A Timestamp represents a point in time independent of any time zone or local
+         calendar, encoded as a count of seconds and fractions of seconds at
+         nanosecond resolution. The count is relative to an epoch at UTC midnight on
+         January 1, 1970, in the proleptic Gregorian calendar which extends the
+         Gregorian calendar backwards to year one.
+
+         All minutes are 60 seconds long. Leap seconds are "smeared" so that no leap
+         second table is needed for interpretation, using a [24-hour linear
+         smear](https://developers.google.com/time/smear).
+
+         The range is from 0001-01-01T00:00:00Z to 9999-12-31T23:59:59.999999999Z. By
+         restricting to that range, we ensure that we can convert to and from [RFC
+         3339](https://www.ietf.org/rfc/rfc3339.txt) date strings.
+
+         # Examples
+
+         Example 1: Compute Timestamp from POSIX `time()`.
+
+             Timestamp timestamp;
+             timestamp.set_seconds(time(NULL));
+             timestamp.set_nanos(0);
+
+         Example 2: Compute Timestamp from POSIX `gettimeofday()`.
+
+             struct timeval tv;
+             gettimeofday(&tv, NULL);
+
+             Timestamp timestamp;
+             timestamp.set_seconds(tv.tv_sec);
+             timestamp.set_nanos(tv.tv_usec * 1000);
+
+         Example 3: Compute Timestamp from Win32 `GetSystemTimeAsFileTime()`.
+
+             FILETIME ft;
+             GetSystemTimeAsFileTime(&ft);
+             UINT64 ticks = (((UINT64)ft.dwHighDateTime) << 32) | ft.dwLowDateTime;
+
+             // A Windows tick is 100 nanoseconds. Windows epoch 1601-01-01T00:00:00Z
+             // is 11644473600 seconds before Unix epoch 1970-01-01T00:00:00Z.
+             Timestamp timestamp;
+             timestamp.set_seconds((INT64) ((ticks / 10000000) - 11644473600LL));
+             timestamp.set_nanos((INT32) ((ticks % 10000000) * 100));
+
+         Example 4: Compute Timestamp from Java `System.currentTimeMillis()`.
+
+             long millis = System.currentTimeMillis();
+
+             Timestamp timestamp = Timestamp.newBuilder().setSeconds(millis / 1000)
+                 .setNanos((int) ((millis % 1000) * 1000000)).build();
+
+         Example 5: Compute Timestamp from Java `Instant.now()`.
+
+             Instant now = Instant.now();
+
+             Timestamp timestamp =
+                 Timestamp.newBuilder().setSeconds(now.getEpochSecond())
+                     .setNanos(now.getNano()).build();
+
+         Example 6: Compute Timestamp from current time in Python.
+
+             timestamp = Timestamp()
+             timestamp.GetCurrentTime()
+
+         # JSON Mapping
+
+         In JSON format, the Timestamp type is encoded as a string in the
+         [RFC 3339](https://www.ietf.org/rfc/rfc3339.txt) format. That is, the
+         format is "{year}-{month}-{day}T{hour}:{min}:{sec}[.{frac_sec}]Z"
+         where {year} is always expressed using four digits while {month}, {day},
+         {hour}, {min}, and {sec} are zero-padded to two digits each. The fractional
+         seconds, which can go up to 9 digits (i.e. up to 1 nanosecond resolution),
+         are optional. The "Z" suffix indicates the timezone ("UTC"); the timezone
+         is required. A proto3 JSON serializer should always use UTC (as indicated by
+         "Z") when printing the Timestamp type and a proto3 JSON parser should be
+         able to accept both UTC and other timezones (as indicated by an offset).
+
+         For example, "2017-01-15T01:30:15.01Z" encodes 15.01 seconds past
+         01:30 UTC on January 15, 2017.
+
+         In JavaScript, one can convert a Date object to this format using the
+         standard
+         [toISOString()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString)
+         method. In Python, a standard `datetime.datetime` object can be converted
+         to this format using
+         [`strftime`](https://docs.python.org/2/library/time.html#time.strftime) with
+         the time format spec '%Y-%m-%dT%H:%M:%S.%fZ'. Likewise, in Java, one can use
+         the Joda Time's [`ISODateTimeFormat.dateTime()`](
+         http://joda-time.sourceforge.net/apidocs/org/joda/time/format/ISODateTimeFormat.html#dateTime()
+         ) to obtain a formatter capable of generating timestamps in this format.
+    google.protobuf.Value:
+      oneOf:
+        - type: "null"
+        - type: number
+        - type: string
+        - type: boolean
+        - type: array
+        - type: object
+          additionalProperties: true
+      description: |-
+        `Value` represents a dynamically typed value which can be either
+         null, a number, a string, a boolean, a recursive struct value, or a
+         list of values. A producer of value is expected to set one of these
+         variants. Absence of any variant indicates an error.
+
+         The JSON representation for `Value` is JSON value.
+    otterscale.link.v1.Link:
+      type: object
+      properties:
+        cluster:
+          type: string
+          title: cluster
+          description: The cluster name.
+        agentVersion:
+          type: string
+          title: agent_version
+          description: The version of the agent binary (e.g. "v1.2.3"), set at build time.
+      title: Link
+      additionalProperties: false
+    otterscale.link.v1.ListLinksRequest:
+      type: object
+      title: ListLinksRequest
+      additionalProperties: false
+      description: ListLinksRequest is an empty request message for listing links.
+    otterscale.link.v1.ListLinksResponse:
+      type: object
+      properties:
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/otterscale.link.v1.Link'
+          title: links
+          description: The list of links.
+      title: ListLinksResponse
+      additionalProperties: false
+      description: ListLinksResponse contains the list of links the agent is registered to.
+    otterscale.link.v1.RegisterRequest:
+      type: object
+      properties:
+        cluster:
+          type: string
+          title: cluster
+          description: The cluster identifier this agent belongs to.
+        csr:
+          type: string
+          title: csr
+          format: byte
+          description: |-
+            PEM-encoded PKCS#10 certificate signing request. The server signs
+             this with its internal CA and returns the issued certificate.
+        agentId:
+          type: string
+          title: agent_id
+          description: The agent identifier this agent uses to register with the server.
+        agentVersion:
+          type: string
+          title: agent_version
+          description: The version of the agent binary (e.g. "v1.2.3"), set at build time.
+        enrolmentToken:
+          type: string
+          title: enrolment_token
+          description: |-
+            The enrolment token for this cluster, issued by the operator with
+             `otterscale enrolment-token --cluster <name>`. Registration is
+             rejected without a token that matches the cluster being claimed.
+      title: RegisterRequest
+      additionalProperties: false
+      description: |-
+        RegisterRequest contains the agent's cluster identity and a CSR for
+         mTLS certificate issuance.
+    otterscale.link.v1.RegisterResponse:
+      type: object
+      properties:
+        endpoint:
+          type: string
+          title: endpoint
+          description: The loopback endpoint reserved for this cluster tunnel.
+        certificate:
+          type: string
+          title: certificate
+          format: byte
+          description: PEM-encoded X.509 certificate signed by the server's CA.
+        caCertificate:
+          type: string
+          title: ca_certificate
+          format: byte
+          description: PEM-encoded CA certificate for verifying the tunnel server.
+        serverVersion:
+          type: string
+          title: server_version
+          description: |-
+            The version of the server binary (e.g. "v1.2.3"), set at build time.
+             Agents compare this against their own version to decide whether a
+             self-update is needed.
+        tunnelUser:
+          type: string
+          title: tunnel_user
+          description: |-
+            The tunnel user name assigned to this registration.
+
+             The server assigns it rather than deriving it from anything the
+             agent sent. Agents identify themselves by hostname, and two
+             clusters running the same deployment produce the same hostname, so
+             a name taken from the request would let one cluster's registration
+             silently replace another's tunnel credentials.
+        tunnelPassword:
+          type: string
+          title: tunnel_password
+          description: |-
+            The password for tunnel_user, generated fresh on every
+             registration. It is issued here rather than derived from the
+             certificate above, so that a value the agent already holds is
+             never also the secret that authenticates it.
+      title: RegisterResponse
+      additionalProperties: false
+      description: |-
+        RegisterResponse contains a CA-signed certificate and the CA
+         certificate so the agent can establish an mTLS tunnel connection.
+    otterscale.resource.v1.APIResource:
+      type: object
+      properties:
+        group:
+          type: string
+          title: group
+          description: Kubernetes API Group (e.g., "apps" for Deployments, "" for core resources).
+        version:
+          type: string
+          title: version
+          description: Kubernetes API Version (e.g., "v1").
+        resource:
+          type: string
+          title: resource
+          description: Resource name in plural (e.g., "pods", "deployments").
+        kind:
+          type: string
+          title: kind
+          description: The kind of the resource (e.g., "Pod", "Deployment").
+        namespaced:
+          type: boolean
+          title: namespaced
+          description: Whether this resource is namespace-scoped.
+        verbs:
+          type: array
+          items:
+            type: string
+          title: verbs
+          description: The list of supported verbs (e.g., "get", "list", "create", "delete").
+        shortNames:
+          type: array
+          items:
+            type: string
+          title: short_names
+          description: Abbreviated aliases for the resource (e.g., "deploy" for deployments).
+      title: APIResource
+      additionalProperties: false
+      description: APIResource represents a Kubernetes API resource with its metadata.
+    otterscale.resource.v1.ApplyRequest:
+      type: object
+      properties:
+        cluster:
+          type: string
+          title: cluster
+          description: The target Kubernetes cluster identifier.
+        group:
+          type: string
+          title: group
+          description: Kubernetes API Group (e.g., "apps" for Deployments, "" for core resources like Pods).
+        version:
+          type: string
+          title: version
+          description: Kubernetes API Version (e.g., "v1").
+        resource:
+          type: string
+          title: resource
+          description: Kubernetes API Resource name in plural (e.g., "pods", "deployments").
+        namespace:
+          type: string
+          title: namespace
+          description: The namespace of the resource.
+        name:
+          type: string
+          title: name
+          description: The name of the resource.
+        manifest:
+          type: string
+          title: manifest
+          format: byte
+          description: |-
+            A partial or complete manifest (YAML or JSON) to be merged by the
+             API server via Server-Side Apply.
+        force:
+          type: boolean
+          title: force
+          description: If true, conflicts are resolved in favour of the caller's field manager.
+        fieldManager:
+          type: string
+          title: field_manager
+          description: Identifies the entity managing the fields (e.g., "otterscale-web-ui"). Required for SSA.
+      title: ApplyRequest
+      additionalProperties: false
+      description: ApplyRequest defines the parameters for Server-Side Apply (SSA).
+    otterscale.resource.v1.CreateRequest:
+      type: object
+      properties:
+        cluster:
+          type: string
+          title: cluster
+          description: The target Kubernetes cluster identifier.
+        group:
+          type: string
+          title: group
+          description: Kubernetes API Group (e.g., "apps" for Deployments, "" for core resources like Pods).
+        version:
+          type: string
+          title: version
+          description: Kubernetes API Version (e.g., "v1").
+        resource:
+          type: string
+          title: resource
+          description: Kubernetes API Resource name in plural (e.g., "pods", "deployments").
+        namespace:
+          type: string
+          title: namespace
+          description: The namespace of the resource.
+        manifest:
+          type: string
+          title: manifest
+          format: byte
+          description: The manifest (YAML or JSON) describing the object to be created.
+      title: CreateRequest
+      additionalProperties: false
+      description: CreateRequest defines the parameters for creating a new object.
+    otterscale.resource.v1.DeleteRequest:
+      type: object
+      properties:
+        cluster:
+          type: string
+          title: cluster
+          description: The target Kubernetes cluster identifier.
+        group:
+          type: string
+          title: group
+          description: Kubernetes API Group (e.g., "apps" for Deployments, "" for core resources like Pods).
+        version:
+          type: string
+          title: version
+          description: Kubernetes API Version (e.g., "v1").
+        resource:
+          type: string
+          title: resource
+          description: Kubernetes API Resource name in plural (e.g., "pods", "deployments").
+        namespace:
+          type: string
+          title: namespace
+          description: The namespace of the resource.
+        name:
+          type: string
+          title: name
+          description: The name of the resource.
+        gracePeriodSeconds:
+          type:
+            - integer
+            - string
+          title: grace_period_seconds
+          format: int64
+          description: |-
+            The duration in seconds before the object should be deleted. Overrides the default grace period.
+             When absent, the API server uses the resource's default grace period.
+             Set to 0 explicitly for immediate (force) deletion.
+      title: DeleteRequest
+      additionalProperties: false
+      description: DeleteRequest defines the parameters to remove an object.
+    otterscale.resource.v1.DescribeRequest:
+      type: object
+      properties:
+        cluster:
+          type: string
+          title: cluster
+          description: The target Kubernetes cluster identifier.
+        group:
+          type: string
+          title: group
+          description: Kubernetes API Group (e.g., "apps" for Deployments, "" for core resources like Pods).
+        version:
+          type: string
+          title: version
+          description: Kubernetes API Version (e.g., "v1").
+        resource:
+          type: string
+          title: resource
+          description: Kubernetes API Resource name in plural (e.g., "pods", "deployments").
+        namespace:
+          type: string
+          title: namespace
+          description: The namespace of the resource.
+        name:
+          type: string
+          title: name
+          description: The name of the resource.
+      title: DescribeRequest
+      additionalProperties: false
+      description: |-
+        DescribeRequest defines the parameters to describe a resource, retrieving
+         it along with its related Kubernetes events. Equivalent to `kubectl describe`.
+    otterscale.resource.v1.DescribeResponse:
+      type: object
+      properties:
+        resource:
+          title: resource
+          description: The full resource object.
+          $ref: '#/components/schemas/otterscale.resource.v1.Resource'
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/otterscale.resource.v1.Resource'
+          title: events
+          description: Kubernetes events related to this resource, filtered by involvedObject.uid.
+      title: DescribeResponse
+      additionalProperties: false
+      description: DescribeResponse contains the resource and its related Kubernetes events.
+    otterscale.resource.v1.DiscoveryRequest:
+      type: object
+      properties:
+        cluster:
+          type: string
+          title: cluster
+          description: The target Kubernetes cluster identifier.
+      title: DiscoveryRequest
+      additionalProperties: false
+      description: DiscoveryRequest defines the parameters for discovering API resources.
+    otterscale.resource.v1.DiscoveryResponse:
+      type: object
+      properties:
+        apiResources:
+          type: array
+          items:
+            $ref: '#/components/schemas/otterscale.resource.v1.APIResource'
+          title: api_resources
+          description: The list of available API resources in the cluster.
+      title: DiscoveryResponse
+      additionalProperties: false
+      description: DiscoveryResponse contains the list of available API resources in the cluster.
+    otterscale.resource.v1.GetRequest:
+      type: object
+      properties:
+        cluster:
+          type: string
+          title: cluster
+          description: The target Kubernetes cluster identifier.
+        group:
+          type: string
+          title: group
+          description: Kubernetes API Group (e.g., "apps" for Deployments, "" for core resources like Pods).
+        version:
+          type: string
+          title: version
+          description: Kubernetes API Version (e.g., "v1").
+        resource:
+          type: string
+          title: resource
+          description: Kubernetes API Resource name in plural (e.g., "pods", "deployments").
+        namespace:
+          type: string
+          title: namespace
+          description: The namespace of the resource.
+        name:
+          type: string
+          title: name
+          description: The name of the resource.
+      title: GetRequest
+      additionalProperties: false
+      description: GetRequest defines the parameters to fetch a single object.
+    otterscale.resource.v1.ListRequest:
+      type: object
+      properties:
+        cluster:
+          type: string
+          title: cluster
+          description: The target Kubernetes cluster identifier.
+        group:
+          type: string
+          title: group
+          description: Kubernetes API Group (e.g., "apps" for Deployments, "" for core resources like Pods).
+        version:
+          type: string
+          title: version
+          description: Kubernetes API Version (e.g., "v1").
+        resource:
+          type: string
+          title: resource
+          description: Kubernetes API Resource name in plural (e.g., "pods", "deployments").
+        namespace:
+          type: string
+          title: namespace
+          description: The namespace to query. If empty, the request may target all namespaces depending on cluster permissions.
+        labelSelector:
+          type: string
+          title: label_selector
+          description: A selector to restrict the list of returned objects by their labels.
+        fieldSelector:
+          type: string
+          title: field_selector
+          description: A selector to restrict the list of returned objects by their fields (e.g., "status.phase=Running").
+        limit:
+          type:
+            - integer
+            - string
+          title: limit
+          format: int64
+          description: The maximum number of items to return in a single page.
+        continue:
+          type: string
+          title: continue
+          description: The continue token for pagination, retrieved from a previous ListResponse.
+      title: ListRequest
+      additionalProperties: false
+      description: ListRequest defines the parameters for querying multiple resources.
+    otterscale.resource.v1.ListResponse:
+      type: object
+      properties:
+        resourceVersion:
+          type: string
+          title: resource_version
+          description: The resourceVersion of the list, used to initiate a Watch from a specific point in time.
+        continue:
+          type: string
+          title: continue
+          description: A token used to retrieve the next page of results. Empty if no more pages exist.
+        remainingItemCount:
+          type:
+            - integer
+            - string
+          title: remaining_item_count
+          format: int64
+          description: The estimated number of items remaining if pagination is used.
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/otterscale.resource.v1.Resource'
+          title: items
+          description: The list of resources found.
+      title: ListResponse
+      additionalProperties: false
+      description: ListResponse contains the requested list of resources and pagination metadata.
+    otterscale.resource.v1.Resource:
+      type: object
+      properties:
+        object:
+          title: object
+          description: |-
+            The full JSON representation of the Kubernetes object.
+             Note: Backend may strip managedFields to reduce payload size.
+          $ref: '#/components/schemas/google.protobuf.Struct'
+      title: Resource
+      additionalProperties: false
+      description: Resource represents a single Kubernetes object serialized as a JSON string.
+    otterscale.resource.v1.SchemaRequest:
+      type: object
+      properties:
+        cluster:
+          type: string
+          title: cluster
+          description: The target Kubernetes cluster identifier.
+        group:
+          type: string
+          title: group
+          description: Kubernetes API Group (e.g., "apps" for Deployments, "" for core resources like Pods).
+        version:
+          type: string
+          title: version
+          description: Kubernetes API Version (e.g., "v1").
+        kind:
+          type: string
+          title: kind
+          description: Kubernetes API Kind (e.g., "Pod").
+      title: SchemaRequest
+      additionalProperties: false
+      description: SchemaRequest defines the parameters to retrieve the schema of a specific GVK.
+    otterscale.resource.v1.SchemaResponse:
+      type: object
+      properties:
+        schema:
+          title: schema
+          description: The raw JSON Schema describing the resource structure.
+          $ref: '#/components/schemas/google.protobuf.Struct'
+      title: SchemaResponse
+      additionalProperties: false
+      description: SchemaResponse contains the JSON Schema for a Kubernetes resource type.
+    otterscale.resource.v1.UpdateRequest:
+      type: object
+      properties:
+        cluster:
+          type: string
+          title: cluster
+          description: The target Kubernetes cluster identifier.
+        group:
+          type: string
+          title: group
+          description: Kubernetes API Group (e.g., "apps" for Deployments, "" for core resources like Pods).
+        version:
+          type: string
+          title: version
+          description: Kubernetes API Version (e.g., "v1").
+        resource:
+          type: string
+          title: resource
+          description: Kubernetes API Resource name in plural (e.g., "pods", "deployments").
+        namespace:
+          type: string
+          title: namespace
+          description: The namespace of the resource.
+        name:
+          type: string
+          title: name
+          description: The name of the resource.
+        manifest:
+          type: string
+          title: manifest
+          format: byte
+          description: |-
+            The complete manifest (YAML or JSON) that will replace the stored object.
+             Server-required fields such as metadata.resourceVersion must be included.
+        fieldManager:
+          type: string
+          title: field_manager
+          description: Identifies the entity submitting the update (e.g., "otterscale-web-ui").
+      title: UpdateRequest
+      additionalProperties: false
+      description: UpdateRequest defines the parameters for a full-replacement update (PUT).
+    otterscale.resource.v1.WatchEvent:
+      type: object
+      properties:
+        type:
+          title: type
+          description: The type of the watch event.
+          $ref: '#/components/schemas/otterscale.resource.v1.WatchEvent.Type'
+        resource:
+          title: resource
+          description: The state of the resource associated with the event.
+          $ref: '#/components/schemas/otterscale.resource.v1.Resource'
+        resourceVersion:
+          type: string
+          title: resource_version
+          description: The resourceVersion of the watch event, used to initiate a Watch from a specific point in time.
+      title: WatchEvent
+      additionalProperties: false
+      description: WatchEvent represents a single change notification from the Kubernetes API.
+    otterscale.resource.v1.WatchEvent.Type:
+      type: string
+      title: Type
+      enum:
+        - TYPE_UNSPECIFIED
+        - TYPE_ADDED
+        - TYPE_MODIFIED
+        - TYPE_DELETED
+        - TYPE_BOOKMARK
+        - TYPE_ERROR
+      description: Type defines the possible types of events from Kubernetes watch.
+    otterscale.resource.v1.WatchRequest:
+      type: object
+      properties:
+        cluster:
+          type: string
+          title: cluster
+          description: The target Kubernetes cluster identifier.
+        group:
+          type: string
+          title: group
+          description: Kubernetes API Group (e.g., "apps" for Deployments, "" for core resources like Pods).
+        version:
+          type: string
+          title: version
+          description: Kubernetes API Version (e.g., "v1").
+        resource:
+          type: string
+          title: resource
+          description: Kubernetes API Resource name in plural (e.g., "pods", "deployments").
+        namespace:
+          type: string
+          title: namespace
+          description: The namespace to watch.
+        labelSelector:
+          type: string
+          title: label_selector
+          description: A selector to restrict watched objects by their labels.
+        fieldSelector:
+          type: string
+          title: field_selector
+          description: A selector to restrict watched objects by their fields.
+        resourceVersion:
+          type: string
+          title: resource_version
+          description: Start the watch from this specific resource version.
+      title: WatchRequest
+      additionalProperties: false
+      description: WatchRequest defines the parameters to start a streaming watch.
+    otterscale.runtime.v1.ExecuteTTYRequest:
+      type: object
+      properties:
+        cluster:
+          type: string
+          title: cluster
+          description: The target Kubernetes cluster identifier.
+        namespace:
+          type: string
+          title: namespace
+          description: The namespace of the pod.
+        name:
+          type: string
+          title: name
+          description: The name of the pod.
+        container:
+          type: string
+          title: container
+          description: The container to exec into. If omitted, the first container is used.
+        command:
+          type: array
+          items:
+            type: string
+          title: command
+          description: The command to execute (e.g. ["/bin/sh"]).
+        tty:
+          type: boolean
+          title: tty
+          description: If true, allocate a TTY for the exec session.
+        rows:
+          type: integer
+          title: rows
+          description: Initial terminal height in rows.
+        cols:
+          type: integer
+          title: cols
+          description: Initial terminal width in columns.
+      title: ExecuteTTYRequest
+      additionalProperties: false
+      description: |-
+        ExecuteTTYRequest defines the parameters for starting an interactive
+         exec session in a container. Fields align with corev1.PodExecOptions.
+    otterscale.runtime.v1.ExecuteTTYResponse:
+      type: object
+      properties:
+        sessionId:
+          type: string
+          title: session_id
+          description: |-
+            The session identifier, set only in the first response message.
+             Subsequent WriteTTY / ResizeTTY calls must reference this ID.
+        stdout:
+          type: string
+          title: stdout
+          format: byte
+          description: Stdout data from the exec session.
+        stderr:
+          type: string
+          title: stderr
+          format: byte
+          description: Stderr data from the exec session (only when tty is false).
+      title: ExecuteTTYResponse
+      additionalProperties: false
+      description: ExecuteTTYResponse streams output from the exec session.
+    otterscale.runtime.v1.PodLogRequest:
+      type: object
+      properties:
+        cluster:
+          type: string
+          title: cluster
+          description: The target Kubernetes cluster identifier.
+        namespace:
+          type: string
+          title: namespace
+          description: The namespace of the pod.
+        name:
+          type: string
+          title: name
+          description: The name of the pod.
+        container:
+          type: string
+          title: container
+          description: The container name. If omitted, the first container in the pod is used.
+        follow:
+          type: boolean
+          title: follow
+          description: If true, stream logs as they are produced (like `kubectl logs -f`).
+        tailLines:
+          type:
+            - integer
+            - string
+          title: tail_lines
+          format: int64
+          description: Number of lines from the end of the logs to show. If not set, all logs are shown.
+        sinceSeconds:
+          type:
+            - integer
+            - string
+          title: since_seconds
+          format: int64
+          description: A relative time in seconds before the current time from which to show logs.
+        sinceTime:
+          title: since_time
+          description: An absolute time from which to show logs. Mutually exclusive with since_seconds.
+          $ref: '#/components/schemas/google.protobuf.Timestamp'
+        previous:
+          type: boolean
+          title: previous
+          description: If true, return the logs for the previous terminated container instance.
+        timestamps:
+          type: boolean
+          title: timestamps
+          description: If true, add an RFC3339 timestamp at the beginning of every line of log output.
+        limitBytes:
+          type:
+            - integer
+            - string
+          title: limit_bytes
+          format: int64
+          description: Limit the number of bytes returned from the server.
+      title: PodLogRequest
+      additionalProperties: false
+      description: |-
+        PodLogRequest defines the parameters for streaming container logs.
+         Fields align with corev1.PodLogOptions.
+    otterscale.runtime.v1.PodLogResponse:
+      type: object
+      properties:
+        data:
+          type: string
+          title: data
+          format: byte
+          description: Raw log data bytes.
+      title: PodLogResponse
+      additionalProperties: false
+      description: PodLogResponse contains a chunk of log data.
+    otterscale.runtime.v1.PortForwardRequest:
+      type: object
+      properties:
+        cluster:
+          type: string
+          title: cluster
+          description: The target Kubernetes cluster identifier.
+        namespace:
+          type: string
+          title: namespace
+          description: The namespace of the pod.
+        name:
+          type: string
+          title: name
+          description: The name of the pod.
+        port:
+          type: integer
+          title: port
+          format: int32
+          description: The container port to forward to.
+      title: PortForwardRequest
+      additionalProperties: false
+      description: PortForwardRequest defines the parameters for starting a port-forward session.
+    otterscale.runtime.v1.PortForwardResponse:
+      type: object
+      properties:
+        sessionId:
+          type: string
+          title: session_id
+          description: |-
+            The session identifier, set only in the first response message.
+             Subsequent WritePortForward calls must reference this ID.
+        data:
+          type: string
+          title: data
+          format: byte
+          description: Data received from the forwarded port on the pod.
+      title: PortForwardResponse
+      additionalProperties: false
+      description: PortForwardResponse streams data received from the forwarded port.
+    otterscale.runtime.v1.ResizeTTYRequest:
+      type: object
+      properties:
+        sessionId:
+          type: string
+          title: session_id
+          description: The session identifier returned in the first ExecuteTTYResponse.
+        rows:
+          type: integer
+          title: rows
+          description: New terminal height in rows.
+        cols:
+          type: integer
+          title: cols
+          description: New terminal width in columns.
+      title: ResizeTTYRequest
+      additionalProperties: false
+      description: ResizeTTYRequest updates the terminal dimensions of an exec session.
+    otterscale.runtime.v1.RestartRequest:
+      type: object
+      properties:
+        cluster:
+          type: string
+          title: cluster
+          description: The target Kubernetes cluster identifier.
+        group:
+          type: string
+          title: group
+          description: Kubernetes API Group (e.g., "apps").
+        version:
+          type: string
+          title: version
+          description: Kubernetes API Version (e.g., "v1").
+        resource:
+          type: string
+          title: resource
+          description: Kubernetes API Resource name in plural (e.g., "deployments").
+        namespace:
+          type: string
+          title: namespace
+          description: The namespace of the workload.
+        name:
+          type: string
+          title: name
+          description: The name of the workload.
+      title: RestartRequest
+      additionalProperties: false
+      description: |-
+        RestartRequest defines the parameters for triggering a rolling restart.
+         This patches the pod template annotation with kubectl.kubernetes.io/restartedAt,
+         equivalent to `kubectl rollout restart`.
+    otterscale.runtime.v1.ScaleRequest:
+      type: object
+      properties:
+        cluster:
+          type: string
+          title: cluster
+          description: The target Kubernetes cluster identifier.
+        group:
+          type: string
+          title: group
+          description: Kubernetes API Group (e.g., "apps").
+        version:
+          type: string
+          title: version
+          description: Kubernetes API Version (e.g., "v1").
+        resource:
+          type: string
+          title: resource
+          description: Kubernetes API Resource name in plural (e.g., "deployments").
+        namespace:
+          type: string
+          title: namespace
+          description: The namespace of the workload.
+        name:
+          type: string
+          title: name
+          description: The name of the workload.
+        replicas:
+          type: integer
+          title: replicas
+          format: int32
+          description: The desired number of replicas.
+      title: ScaleRequest
+      additionalProperties: false
+      description: |-
+        ScaleRequest defines the parameters for scaling a workload.
+         Uses the Kubernetes /scale subresource for correctness.
+    otterscale.runtime.v1.ScaleResponse:
+      type: object
+      properties:
+        replicas:
+          type: integer
+          title: replicas
+          format: int32
+          description: The current number of replicas after the scale operation.
+      title: ScaleResponse
+      additionalProperties: false
+      description: ScaleResponse contains the updated replica count after scaling.
+    otterscale.runtime.v1.ShowChartRequest:
+      type: object
+      properties:
+        repoUrl:
+          type: string
+          title: repo_url
+          description: The URL of the Helm chart repository (HTTP/HTTPS or OCI).
+        chartName:
+          type: string
+          title: chart_name
+          description: The name of the chart within the repository.
+        version:
+          type: string
+          title: version
+          description: The chart version to query. If empty, the latest version is used.
+      title: ShowChartRequest
+      additionalProperties: false
+      description: |-
+        ShowChartRequest defines parameters for retrieving chart metadata
+         from a remote Helm repository.
+    otterscale.runtime.v1.ShowChartResponse:
+      type: object
+      properties:
+        values:
+          type: string
+          title: values
+          format: byte
+          description: The raw content of the chart's values.yaml file.
+        readme:
+          type: string
+          title: readme
+          format: byte
+          description: The raw content of the chart's README.md file.
+      title: ShowChartResponse
+      additionalProperties: false
+      description: |-
+        ShowChartResponse contains the default values and README from
+         a Helm chart.
+    otterscale.runtime.v1.SubResourceActionRequest:
+      type: object
+      properties:
+        cluster:
+          type: string
+          title: cluster
+          description: The target Kubernetes cluster identifier.
+        group:
+          type: string
+          title: group
+          description: Kubernetes API Group (e.g., "kubevirt.io").
+        version:
+          type: string
+          title: version
+          description: Kubernetes API Version (e.g., "v1").
+        resource:
+          type: string
+          title: resource
+          description: Kubernetes API Resource name in plural (e.g., "virtualmachines").
+        namespace:
+          type: string
+          title: namespace
+          description: The namespace of the resource.
+        name:
+          type: string
+          title: name
+          description: The name of the resource.
+        subresource:
+          type: string
+          title: subresource
+          description: The subresource to invoke (e.g., "start", "stop", "restart").
+        method:
+          type: string
+          title: method
+          description: |-
+            The HTTP method for the subresource action. Only "PUT" and "POST"
+             are allowed; DELETE and PATCH have dedicated RPCs.
+        body:
+          type: string
+          title: body
+          format: byte
+          description: Optional JSON body (e.g., KubeVirt StopOptions with gracePeriod).
+      title: SubResourceActionRequest
+      additionalProperties: false
+      description: |-
+        SubResourceActionRequest defines the parameters for invoking a
+         subresource action on any Kubernetes resource. This is designed for
+         operations like KubeVirt VM start/stop/restart/migrate that use PUT
+         or POST on a named subresource path.
+    otterscale.runtime.v1.SubResourceActionResponse:
+      type: object
+      properties:
+        result:
+          title: result
+          description: The JSON response body returned by the API server, if any.
+          $ref: '#/components/schemas/google.protobuf.Struct'
+      title: SubResourceActionResponse
+      additionalProperties: false
+      description: |-
+        SubResourceActionResponse contains the optional response body from
+         the subresource action.
+    otterscale.runtime.v1.VNCRequest:
+      type: object
+      properties:
+        cluster:
+          type: string
+          title: cluster
+          description: The target Kubernetes cluster identifier.
+        namespace:
+          type: string
+          title: namespace
+          description: The namespace of the VirtualMachineInstance.
+        name:
+          type: string
+          title: name
+          description: The name of the VirtualMachineInstance.
+      title: VNCRequest
+      additionalProperties: false
+      description: |-
+        VNCRequest defines the parameters for starting a VNC session
+         to a KubeVirt VirtualMachineInstance.
+    otterscale.runtime.v1.VNCResponse:
+      type: object
+      properties:
+        sessionId:
+          type: string
+          title: session_id
+          description: |-
+            The session identifier, set only in the first response message.
+             Subsequent WriteVNC calls must reference this ID.
+        data:
+          type: string
+          title: data
+          format: byte
+          description: Raw VNC protocol data received from the VMI.
+      title: VNCResponse
+      additionalProperties: false
+      description: VNCResponse streams raw VNC protocol data from the VMI.
+    otterscale.runtime.v1.WritePortForwardRequest:
+      type: object
+      properties:
+        sessionId:
+          type: string
+          title: session_id
+          description: The session identifier returned in the first PortForwardResponse.
+        data:
+          type: string
+          title: data
+          format: byte
+          description: Data to send to the forwarded port on the pod.
+      title: WritePortForwardRequest
+      additionalProperties: false
+      description: WritePortForwardRequest sends data to an active port-forward session.
+    otterscale.runtime.v1.WriteTTYRequest:
+      type: object
+      properties:
+        sessionId:
+          type: string
+          title: session_id
+          description: The session identifier returned in the first ExecuteTTYResponse.
+        stdin:
+          type: string
+          title: stdin
+          format: byte
+          description: Stdin data to write.
+      title: WriteTTYRequest
+      additionalProperties: false
+      description: WriteTTYRequest sends stdin data to an active exec session.
+    otterscale.runtime.v1.WriteVNCRequest:
+      type: object
+      properties:
+        sessionId:
+          type: string
+          title: session_id
+          description: The session identifier returned in the first VNCResponse.
+        data:
+          type: string
+          title: data
+          format: byte
+          description: Raw VNC protocol data to send to the VMI.
+      title: WriteVNCRequest
+      additionalProperties: false
+      description: WriteVNCRequest sends data to an active VNC session.
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic
+security: []
+tags:
+  - name: LinkService
+    description: |-
+      LinkService manages the lifecycle of agent-to-server tunnel connections,
+       including registration and health checking.
+  - name: ResourceService
+    description: |-
+      ResourceService provides a generic interface to manage any Kubernetes resources,
+       including native objects (Pods, Deployments) and Custom Resource Definitions (CRDs).
+  - name: RuntimeService
+    description: |-
+      RuntimeService provides runtime operations for Kubernetes workloads,
+       including log streaming, interactive exec, port forwarding, scaling,
+       and rolling restarts.
+externalDocs:
+  description: Website
+  url: https://otterscale.github.io

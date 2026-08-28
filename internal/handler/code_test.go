@@ -1,10 +1,13 @@
 package handler
 
 import (
+	"context"
 	"errors"
+	"fmt"
 	"testing"
 
 	"connectrpc.com/connect"
+	"k8s.io/apiserver/pkg/cel/openapi/resolver"
 
 	"github.com/otterscale/otterscale/internal/core"
 )
@@ -97,8 +100,74 @@ func TestDomainErrorToConnectError_UnknownError(t *testing.T) {
 }
 
 func TestDomainCodeToConnectCode_Completeness(t *testing.T) {
-	// Verify the map has entries for all defined error codes.
 	if len(domainCodeToConnectCode) < 11 {
 		t.Errorf("expected at least 11 domain code mappings, got %d", len(domainCodeToConnectCode))
+	}
+}
+
+// TestDomainErrorToConnectError_ContextErrors covers the codes a client
+// that hangs up should produce. Before these cases existed, a bare
+// ctx.Err() traveling up from a use-case was reported as an internal
+// fault, so every abandoned request looked like a server bug.
+func TestDomainErrorToConnectError_ContextErrors(t *testing.T) {
+	tests := []struct {
+		name     string
+		err      error
+		wantCode connect.Code
+	}{
+		{
+			name:     "canceled",
+			err:      context.Canceled,
+			wantCode: connect.CodeCanceled,
+		},
+		{
+			name:     "deadline exceeded",
+			err:      context.DeadlineExceeded,
+			wantCode: connect.CodeDeadlineExceeded,
+		},
+		{
+			name:     "wrapped cancellation",
+			err:      fmt.Errorf("read pod logs: %w", context.Canceled),
+			wantCode: connect.CodeCanceled,
+		},
+		{
+			// An adapter that classified the cancellation itself keeps
+			// the code it chose: the context check runs after the domain
+			// types precisely so explicit intent wins.
+			name: "domain code wins over context cause",
+			err: &core.DomainError{
+				Code:    core.ErrorCodeDeadlineExceeded,
+				Message: "gave up fetching chart",
+				Cause:   context.Canceled,
+			},
+			wantCode: connect.CodeDeadlineExceeded,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := connect.CodeOf(domainErrorToConnectError(tt.err)); got != tt.wantCode {
+				t.Errorf("code = %v, want %v", got, tt.wantCode)
+			}
+		})
+	}
+}
+
+// TestDomainErrorToConnectError_SchemaNotFound pins the mapping for a
+// kind the cluster does not define. Asking for an unknown kind is a bad
+// request; it used to surface as an internal error because the adapter
+// returned the upstream sentinel without a domain code.
+func TestDomainErrorToConnectError_SchemaNotFound(t *testing.T) {
+	err := &core.DomainError{
+		Code:    core.ErrorCodeNotFound,
+		Message: `cannot resolve group version kind "apps/v1/Nonexistent"`,
+		Cause:   resolver.ErrSchemaNotFound,
+	}
+
+	if got := connect.CodeOf(domainErrorToConnectError(err)); got != connect.CodeNotFound {
+		t.Errorf("code = %v, want %v", got, connect.CodeNotFound)
+	}
+	if !errors.Is(err, resolver.ErrSchemaNotFound) {
+		t.Error("the upstream sentinel must stay in the chain for errors.Is")
 	}
 }

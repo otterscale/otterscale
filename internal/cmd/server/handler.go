@@ -14,16 +14,15 @@ import (
 
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 
-	linkv1 "github.com/otterscale/api/link/v1"
-	resourcev1 "github.com/otterscale/api/resource/v1"
-	runtimev1 "github.com/otterscale/api/runtime/v1"
+	linkv1 "github.com/otterscale/otterscale/api/link/v1"
+	resourcev1 "github.com/otterscale/otterscale/api/resource/v1"
+	runtimev1 "github.com/otterscale/otterscale/api/runtime/v1"
 
 	"github.com/otterscale/otterscale/internal/handler"
 )
 
-// Handler is responsible for mounting all gRPC service handlers,
-// interceptors, and operational endpoints (health, reflection,
-// metrics) onto an HTTP mux.
+// Handler mounts the gRPC service handlers, interceptors, and operational
+// endpoints (health, reflection, metrics) onto an HTTP mux.
 type Handler struct {
 	link     *handler.LinkService
 	resource *handler.ResourceService
@@ -31,8 +30,6 @@ type Handler struct {
 	proxy    *handler.ProxyHandler
 }
 
-// NewHandler returns a Handler for the given gRPC services and the
-// Prometheus reverse proxy handler.
 func NewHandler(link *handler.LinkService, resource *handler.ResourceService, runtime *handler.RuntimeService, proxy *handler.ProxyHandler) *Handler {
 	return &Handler{
 		link:     link,
@@ -42,10 +39,20 @@ func NewHandler(link *handler.LinkService, resource *handler.ResourceService, ru
 	}
 }
 
-// Mount registers all gRPC service handlers, OTel interceptors, and
-// operational endpoints onto the provided mux.
+// LongRunningPaths names the procedures whose response is a long-lived stream.
+// The transport lifts its request timeouts for these, so a watch or an exec
+// session is not cut off mid-flight.
+func (h *Handler) LongRunningPaths() []string {
+	return []string{
+		resourcev1.ResourceServiceWatchProcedure,
+		runtimev1.RuntimeServicePodLogProcedure,
+		runtimev1.RuntimeServiceExecuteTTYProcedure,
+		runtimev1.RuntimeServicePortForwardProcedure,
+		runtimev1.RuntimeServiceVNCProcedure,
+	}
+}
+
 func (h *Handler) Mount(mux *http.ServeMux) error {
-	// OpenTelemetry interceptor for automatic tracing and metrics.
 	otelInterceptor, err := otelconnect.NewInterceptor()
 	if err != nil {
 		return err
@@ -55,7 +62,6 @@ func (h *Handler) Mount(mux *http.ServeMux) error {
 		otelInterceptor,
 	)
 
-	// Operational endpoints: gRPC reflection, health checks, Prometheus.
 	services := []string{
 		linkv1.LinkServiceName,
 		resourcev1.ResourceServiceName,
@@ -66,26 +72,21 @@ func (h *Handler) Mount(mux *http.ServeMux) error {
 		return err
 	}
 
-	// Application service handlers.
-	// RPCs with idempotency_level = NO_SIDE_EFFECTS automatically
-	// accept HTTP GET requests via the generated
-	// connect.WithIdempotency(connect.IdempotencyNoSideEffects) option.
+	// RPCs with idempotency_level = NO_SIDE_EFFECTS accept HTTP GET through the
+	// generated connect.WithIdempotency option.
 	mux.Handle(linkv1.NewLinkServiceHandler(h.link, interceptors))
 	mux.Handle(resourcev1.NewResourceServiceHandler(h.resource, interceptors))
 	mux.Handle(runtimev1.NewRuntimeServiceHandler(h.runtime, interceptors))
 
-	// Prometheus reverse proxy. Requests arrive as
-	// /proxy/{cluster}/prometheus/api/v1/query?... and are
-	// forwarded through the tunnel to the agent's
-	// /__otterscale/proxy/ endpoint. OIDC middleware protects this
-	// path (it is not in the public paths list).
+	// Requests arrive as /proxy/{cluster}/prometheus/api/v1/query?... and are
+	// forwarded through the tunnel to the agent's /__otterscale/proxy/. The
+	// path is absent from the public paths list, so OIDC protects it.
 	mux.Handle("/proxy/{cluster}/prometheus/{path...}", h.proxy)
 
 	return nil
 }
 
-// registerOpsHandlers sets up gRPC reflection, health checks, and
-// Prometheus metrics scraping.
+// registerOpsHandlers sets up reflection, health checks, and metrics scraping.
 func (h *Handler) registerOpsHandlers(mux *http.ServeMux, serviceNames []string) error {
 	reflector := grpcreflect.NewStaticReflector(serviceNames...)
 	mux.Handle(grpcreflect.NewHandlerV1(reflector))
@@ -98,11 +99,19 @@ func (h *Handler) registerOpsHandlers(mux *http.ServeMux, serviceNames []string)
 	if err != nil {
 		return err
 	}
-	// NOTE: This intentionally sets the global OTel MeterProvider so
-	// that otelconnect interceptors and other libraries can discover
-	// it without explicit injection. Ideally this would be injected
-	// via Wire, but otelconnect relies on the global provider.
+	// Set globally, not injected via Wire: otelconnect and other libraries
+	// discover the MeterProvider only through the global.
 	otel.SetMeterProvider(metric.NewMeterProvider(metric.WithReader(exporter)))
+
+	// /metrics is absent from the public paths, so OIDC guards it like any
+	// other route: a scrape must present a bearer token, which Prometheus can
+	// do with an oauth2: section pointed at the same Keycloak client.
+	//
+	// Protected deliberately — these metrics carry cluster names and
+	// per-procedure call patterns across every managed cluster. A deployment
+	// needing open scraping should expose it on a separate listener, not add
+	// this path to WithPublicPaths, which would also open it on the
+	// internet-facing API port.
 	mux.Handle("/metrics", promhttp.Handler())
 
 	return nil

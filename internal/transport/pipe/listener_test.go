@@ -105,7 +105,6 @@ func TestListener_CloseUnblocksAccept(t *testing.T) {
 		done <- err
 	}()
 
-	// Give Accept time to block.
 	time.Sleep(20 * time.Millisecond)
 	ln.Close()
 
@@ -123,7 +122,7 @@ func TestListener_CloseUnblocksDial(t *testing.T) {
 	t.Parallel()
 
 	ln := NewListener()
-	// No goroutine calling Accept, so Dial should block.
+	// Nothing is calling Accept, so Dial must block.
 	ln.Close()
 
 	_, err := ln.Dial()
@@ -166,7 +165,6 @@ func TestListener_MultipleConcurrentDials(t *testing.T) {
 	const n = 10
 	var wg sync.WaitGroup
 
-	// Server: accept n connections.
 	wg.Go(func() {
 		for i := range n {
 			conn, err := ln.Accept()
@@ -178,7 +176,6 @@ func TestListener_MultipleConcurrentDials(t *testing.T) {
 		}
 	})
 
-	// Clients: dial n times concurrently.
 	for range n {
 		wg.Go(func() {
 			conn, err := ln.Dial()

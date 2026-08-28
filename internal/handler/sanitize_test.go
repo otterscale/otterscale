@@ -75,7 +75,6 @@ func TestCleanObject_NoOpWhenClean(t *testing.T) {
 		},
 	}
 
-	// Should not panic or modify anything.
 	cleanObject(obj)
 
 	metadata := obj["metadata"].(map[string]any)

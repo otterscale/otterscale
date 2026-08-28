@@ -1,13 +1,11 @@
 package handler
 
-// cleanObject strips noisy metadata from a raw Kubernetes object map:
-//   - metadata.managedFields (server-side apply bookkeeping)
-//   - the kubectl.kubernetes.io/last-applied-configuration annotation
+// cleanObject strips metadata.managedFields (server-side apply bookkeeping)
+// and the kubectl.kubernetes.io/last-applied-configuration annotation.
 //
-// This is a presentation concern: the domain layer returns raw
-// Kubernetes objects and the handler sanitizes them before serializing
-// to protobuf. Operating on map[string]any keeps the handler layer
-// free of k8s.io/apimachinery imports.
+// Sanitizing is a presentation concern, so it happens here rather than in the
+// domain layer. Working on map[string]any keeps the handler free of
+// k8s.io/apimachinery imports.
 func cleanObject(obj map[string]any) {
 	metadata, ok := obj["metadata"].(map[string]any)
 	if !ok {

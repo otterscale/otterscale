@@ -20,15 +20,13 @@ func wireCmd() (*cobra.Command, func(), error) {
 	panic(wire.Build(newCmd, config.ProviderSet))
 }
 
-// wireServer assembles a fully wired Server with all gRPC services,
-// use-cases, and infrastructure providers. The version parameter is
-// provided by the caller and flows through Wire to LinkUseCase.
+// wireServer assembles the Server with its gRPC services, use-cases, and
+// infrastructure providers. v flows through Wire to LinkUseCase.
 func wireServer(v core.Version, conf *config.Config) (*server.Server, func(), error) {
 	panic(wire.Build(cmd.ProviderSet, handler.ProviderSet, core.ProviderSet, providers.ProviderSet, provideCA))
 }
 
-// wireAgent assembles a fully wired Agent with its handler and link
-// registrar. The version parameter is provided by the caller and flows
+// wireAgent assembles the Agent with its handler and link registrar. v flows
 // through Wire to the LinkRegistrar.
 func wireAgent(v core.Version, conf *config.Config) (*agent.Agent, func(), error) {
 	panic(wire.Build(cmd.ProviderSet, providers.ProviderSet, kubernetes.ProvideInClusterConfig))

@@ -9,10 +9,8 @@ import (
 	"github.com/otterscale/otterscale/internal/core"
 )
 
-// statusReasonToDomainCode maps Kubernetes StatusReason values to
-// domain-level error codes. This keeps the K8s-specific mapping
-// inside the adapter layer, preventing it from leaking into the
-// handler or core layers.
+// statusReasonToDomainCode keeps the Kubernetes-specific mapping in the adapter
+// layer, out of the handler and core layers.
 var statusReasonToDomainCode = map[metav1.StatusReason]core.ErrorCode{
 	metav1.StatusReasonUnauthorized:          core.ErrorCodeUnauthenticated,
 	metav1.StatusReasonForbidden:             core.ErrorCodePermissionDenied,
@@ -35,9 +33,8 @@ var statusReasonToDomainCode = map[metav1.StatusReason]core.ErrorCode{
 	metav1.StatusReasonServiceUnavailable:    core.ErrorCodeUnavailable,
 }
 
-// wrapK8sError converts a Kubernetes API error into a core.DomainError
-// with the appropriate error code. Non-K8s errors are returned as-is;
-// callers should only pass errors originating from K8s API calls.
+// wrapK8sError returns non-Kubernetes errors as-is, so callers should only
+// pass errors originating from API calls.
 func wrapK8sError(err error) error {
 	if err == nil {
 		return nil

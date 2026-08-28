@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"context"
 	"errors"
 
 	"connectrpc.com/connect"
@@ -8,8 +9,7 @@ import (
 	"github.com/otterscale/otterscale/internal/core"
 )
 
-// domainCodeToConnectCode maps domain-level error codes to their
-// ConnectRPC equivalents.
+// domainCodeToConnectCode maps domain codes onto their ConnectRPC equivalents.
 var domainCodeToConnectCode = map[core.ErrorCode]connect.Code{
 	core.ErrorCodeInternal:           connect.CodeInternal,
 	core.ErrorCodeInvalidArgument:    connect.CodeInvalidArgument,
@@ -22,15 +22,12 @@ var domainCodeToConnectCode = map[core.ErrorCode]connect.Code{
 	core.ErrorCodeResourceExhausted:  connect.CodeResourceExhausted,
 	core.ErrorCodeUnimplemented:      connect.CodeUnimplemented,
 	core.ErrorCodeUnavailable:        connect.CodeUnavailable,
+	core.ErrorCodeCanceled:           connect.CodeCanceled,
 }
 
-// domainErrorToConnectError converts a domain error into a ConnectRPC
-// error with a semantically equivalent code. Domain-specific error
-// types (ErrInvalidInput, ErrClusterNotFound, etc.) are checked first,
-// then DomainError codes are mapped. Unrecognized errors fall back to
-// connect.CodeInternal.
+// domainErrorToConnectError checks the concrete domain error types first, then
+// DomainError codes. Anything unrecognized falls back to connect.CodeInternal.
 func domainErrorToConnectError(err error) error {
-	// Concrete domain error types.
 	var invalidInput *core.ErrInvalidInput
 	if errors.As(err, &invalidInput) {
 		return connect.NewError(connect.CodeInvalidArgument, err)
@@ -48,7 +45,6 @@ func domainErrorToConnectError(err error) error {
 		return connect.NewError(connect.CodeUnavailable, err)
 	}
 
-	// Generic domain error with error code.
 	var domainErr *core.DomainError
 	if errors.As(err, &domainErr) {
 		code, ok := domainCodeToConnectCode[domainErr.Code]
@@ -56,6 +52,18 @@ func domainErrorToConnectError(err error) error {
 			code = connect.CodeInternal
 		}
 		return connect.NewError(code, err)
+	}
+
+	// Checked after the domain types, so an adapter that deliberately
+	// classified a cancellation keeps the code it chose. What lands here is a
+	// bare ctx.Err() from a use-case or from client-go, which would otherwise
+	// be reported as an internal fault — every client that hangs up mid-request
+	// would look like a bug.
+	if errors.Is(err, context.Canceled) {
+		return connect.NewError(connect.CodeCanceled, err)
+	}
+	if errors.Is(err, context.DeadlineExceeded) {
+		return connect.NewError(connect.CodeDeadlineExceeded, err)
 	}
 
 	return connect.NewError(connect.CodeInternal, err)

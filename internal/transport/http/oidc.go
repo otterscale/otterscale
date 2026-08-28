@@ -12,11 +12,10 @@ import (
 	"github.com/otterscale/otterscale/internal/core"
 )
 
-// oidcGroupClaims holds the custom claims extracted from an OIDC ID
-// token. "groups" is a standard OIDC claim; "resource_access" is the
-// Keycloak-specific container for client-scoped roles, keyed by client
-// id. Both sources are merged and prefixed with "oidc:" by the
-// middleware so callers can treat roles and groups uniformly.
+// oidcGroupClaims covers both group sources: "groups" is the standard OIDC
+// claim, "resource_access" the Keycloak container for client-scoped roles. The
+// middleware merges them under an "oidc:" prefix, so callers treat roles and
+// groups uniformly.
 type oidcGroupClaims struct {
 	Groups         []string                      `json:"groups"`
 	ResourceAccess map[string]oidcResourceAccess `json:"resource_access"`
@@ -26,14 +25,10 @@ type oidcResourceAccess struct {
 	Roles []string `json:"roles"`
 }
 
-// NewOIDC creates a ConnectRPC authentication middleware that verifies
-// incoming Bearer tokens against the given OIDC issuer and client ID.
-//
-// On success, the authenticated user's subject and groups are stored
-// in the request context as core.UserInfo. OIDC groups are prefixed
-// with "oidc:" to keep them separate from Kubernetes-native groups and
-// avoid unintended privilege escalation via name collisions. The
-// "system:authenticated" group is always included.
+// NewOIDC verifies incoming Bearer tokens against the issuer and client ID,
+// storing the subject and groups in the request context as core.UserInfo.
+// Groups are prefixed with "oidc:" so a name collision with a Kubernetes-native
+// group cannot escalate privileges. "system:authenticated" is always included.
 func NewOIDC(issuer, clientID string) (*authn.Middleware, error) {
 	const oidcDiscoveryTimeout = 10 * time.Second
 	ctx, cancel := context.WithTimeout(context.Background(), oidcDiscoveryTimeout)
@@ -64,11 +59,10 @@ func NewOIDC(issuer, clientID string) (*authn.Middleware, error) {
 			return nil, authn.Errorf("parse token claims: %s", err)
 		}
 
-		// Prefix with "oidc:" to avoid collisions with Kubernetes
-		// built-in groups (e.g. "system:masters"). Roles attached to
-		// the verifier's client id in resource_access are merged with
-		// top-level groups so a Keycloak client role named "admin"
-		// and a realm group named "admin" both land on "oidc:admin".
+		// The "oidc:" prefix keeps these clear of built-in groups such as
+		// "system:masters". Client roles from resource_access merge with
+		// top-level groups, so a Keycloak client role "admin" and a realm
+		// group "admin" both land on "oidc:admin".
 		clientRoles := claims.ResourceAccess[clientID].Roles
 		groups := make([]string, 0, 1+len(claims.Groups)+len(clientRoles))
 		groups = append(groups, "system:authenticated")
