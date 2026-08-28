@@ -16,6 +16,7 @@ import (
 	"crypto/x509/pkix"
 	"encoding/base64"
 	"encoding/pem"
+	"errors"
 	"fmt"
 	"math/big"
 	"net"
@@ -85,22 +86,32 @@ func (ca *CA) CertPEM() []byte {
 	return ca.certPEM
 }
 
+// ErrInvalidCSR marks a signing failure caused by the request itself:
+// malformed PEM, an unparseable body, or a signature that does not
+// verify. It exists so callers can tell a bad request apart from a CA
+// that cannot sign — the first is the caller's fault and the second is
+// the server's, and they belong to different error codes.
+var ErrInvalidCSR = errors.New("pki: invalid CSR")
+
 // SignCSR validates a PEM-encoded PKCS#10 certificate signing request
 // and returns a PEM-encoded X.509 certificate signed by the CA. The
 // certificate is valid for the default certValidity period.
+//
+// Failures that the request caused wrap ErrInvalidCSR; anything else
+// means the CA itself could not produce a certificate.
 func (ca *CA) SignCSR(csrPEM []byte) ([]byte, error) {
 	block, _ := pem.Decode(csrPEM)
 	if block == nil || block.Type != "CERTIFICATE REQUEST" {
-		return nil, fmt.Errorf("pki: invalid CSR PEM")
+		return nil, fmt.Errorf("%w: expected a CERTIFICATE REQUEST PEM block", ErrInvalidCSR)
 	}
 
 	csr, err := x509.ParseCertificateRequest(block.Bytes)
 	if err != nil {
-		return nil, fmt.Errorf("pki: parse CSR: %w", err)
+		return nil, fmt.Errorf("%w: parse: %w", ErrInvalidCSR, err)
 	}
 
 	if err := csr.CheckSignature(); err != nil {
-		return nil, fmt.Errorf("pki: CSR signature invalid: %w", err)
+		return nil, fmt.Errorf("%w: signature does not verify: %w", ErrInvalidCSR, err)
 	}
 
 	serial, err := randomSerial()

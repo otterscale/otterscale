@@ -172,15 +172,20 @@ func (c *DiscoveryCache) ResolveSchema(
 }
 
 // lookupKind returns the schema for kind from the given GV map, or a
-// schema-not-found error wrapping resolver.ErrSchemaNotFound when the
-// kind is absent. The wrapped sentinel preserves the error semantics
-// of the upstream Kubernetes resolver.
+// not-found domain error when the kind is absent. Asking for a kind the
+// cluster does not define is a bad request, not a server fault, and
+// without a domain code it would surface as an internal error.
+// resolver.ErrSchemaNotFound stays in the chain so that errors.Is keeps
+// working for callers that check the upstream sentinel.
 func lookupKind(schemas map[string]*spec.Schema, group, version, kind string) (*spec.Schema, error) {
 	if s, ok := schemas[kind]; ok {
 		return s, nil
 	}
-	return nil, fmt.Errorf("cannot resolve group version kind %q: %w",
-		group+"/"+version+"/"+kind, resolver.ErrSchemaNotFound)
+	return nil, &core.DomainError{
+		Code:    core.ErrorCodeNotFound,
+		Message: fmt.Sprintf("cannot resolve group version kind %q", group+"/"+version+"/"+kind),
+		Cause:   resolver.ErrSchemaNotFound,
+	}
 }
 
 // gvCacheKey builds a cache key from the cluster/group/version tuple.

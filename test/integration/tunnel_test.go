@@ -392,3 +392,38 @@ func TestDeregisterClusterLeavesOtherClustersRegistered(t *testing.T) {
 		t.Errorf("cluster-a stopped resolving when cluster-b was deregistered: %v", err)
 	}
 }
+
+// TestLinkRegisterClusterRejectsMalformedCSR checks the code a caller
+// gets for a bad request. Signing failures used to be wrapped bare, so
+// a malformed CSR — which is request data — was reported as an internal
+// server fault, telling the caller to retry something that can only
+// fail.
+func TestLinkRegisterClusterRejectsMalformedCSR(t *testing.T) {
+	tunnel := newTestTunnel(t)
+	initTunnelServer(t, tunnel)
+	link, tokenFor := newTestLink(t, tunnel)
+
+	_, err := link.RegisterCluster(t.Context(), &core.RegistrationRequest{
+		Cluster:        "cluster-bad-csr",
+		AgentID:        "agent-a",
+		AgentVersion:   "test",
+		EnrolmentToken: tokenFor("cluster-bad-csr"),
+		CSRPEM:         []byte("-----BEGIN CERTIFICATE REQUEST-----\nbm90IGEgY3Ny\n-----END CERTIFICATE REQUEST-----\n"),
+	})
+	if err == nil {
+		t.Fatal("expected a malformed CSR to be rejected")
+	}
+
+	code, ok := core.DomainErrorCode(err)
+	if !ok {
+		t.Fatalf("error %v carries no domain code, so it maps to Internal", err)
+	}
+	if code != core.ErrorCodeInvalidArgument {
+		t.Errorf("code = %v, want ErrorCodeInvalidArgument", code)
+	}
+
+	// The rejected attempt must not have registered anything.
+	if _, err := tunnel.ResolveAddress(t.Context(), "cluster-bad-csr"); err == nil {
+		t.Error("a cluster was registered despite the CSR being rejected")
+	}
+}

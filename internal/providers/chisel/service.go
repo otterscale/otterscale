@@ -7,6 +7,7 @@ package chisel
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log/slog"
 	"maps"
@@ -98,10 +99,16 @@ func (s *Service) ListLinks() map[string]core.Link {
 // allocator derives its starting probe from a hash of the cluster
 // name, so a released host is handed straight back to it.
 func (s *Service) RegisterLink(_ context.Context, cluster, agentID, agentVersion string, csrPEM []byte) (core.TunnelGrant, error) {
-	// Sign the agent's CSR with the internal CA.
+	// Sign the agent's CSR with the internal CA. The CSR is request
+	// data, so a rejection is the caller's problem; a CA that cannot
+	// sign is ours, and the two must not report the same code.
 	certPEM, err := s.ca.SignCSR(csrPEM)
 	if err != nil {
-		return core.TunnelGrant{}, fmt.Errorf("sign CSR: %w", err)
+		code := core.ErrorCodeInternal
+		if errors.Is(err, pki.ErrInvalidCSR) {
+			code = core.ErrorCodeInvalidArgument
+		}
+		return core.TunnelGrant{}, &core.DomainError{Code: code, Message: "sign CSR", Cause: err}
 	}
 
 	// The tunnel user is the cluster, never the agent. Agents identify
@@ -145,7 +152,11 @@ func (s *Service) RegisterLink(_ context.Context, cluster, agentID, agentVersion
 	allowed := fmt.Sprintf("^R:%s:%d(:.*)?$", regexp.QuoteMeta(host), tunnelPort)
 	if err := srv.AddUser(user, pass, allowed); err != nil {
 		s.addrs.release(host)
-		return core.TunnelGrant{}, err
+		return core.TunnelGrant{}, &core.DomainError{
+			Code:    core.ErrorCodeInternal,
+			Message: "provision tunnel user",
+			Cause:   err,
+		}
 	}
 
 	s.links[cluster] = core.Link{

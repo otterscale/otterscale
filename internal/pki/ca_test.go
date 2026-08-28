@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"crypto/x509"
 	"encoding/pem"
+	"errors"
 	"strings"
 	"testing"
 )
@@ -231,5 +232,58 @@ func TestGenerateKey_And_CSR(t *testing.T) {
 
 	if csr.Subject.CommonName != "test-cn" {
 		t.Errorf("expected CN=test-cn, got %s", csr.Subject.CommonName)
+	}
+}
+
+// TestSignCSRClassifiesBadRequests pins the distinction callers rely on
+// to pick an error code: a CSR the caller sent badly is the caller's
+// fault, while anything else means this CA could not sign.
+func TestSignCSRClassifiesBadRequests(t *testing.T) {
+	ca, err := NewCA()
+	if err != nil {
+		t.Fatalf("NewCA: %v", err)
+	}
+
+	key, _, err := GenerateKey()
+	if err != nil {
+		t.Fatalf("GenerateKey: %v", err)
+	}
+	validCSR, err := GenerateCSR(key, "agent-1")
+	if err != nil {
+		t.Fatalf("GenerateCSR: %v", err)
+	}
+
+	// A body that parses as PEM but not as a certificate request.
+	notACSR := pem.EncodeToMemory(&pem.Block{
+		Type:  "CERTIFICATE REQUEST",
+		Bytes: []byte("not a pkcs#10 body"),
+	})
+
+	tests := []struct {
+		name string
+		csr  []byte
+	}{
+		{"not PEM at all", []byte("plainly not pem")},
+		{"empty", nil},
+		{"wrong PEM type", pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE", Bytes: []byte("x")})},
+		{"unparseable request", notACSR},
+		{"truncated request", validCSR[:len(validCSR)/2]},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			_, err := ca.SignCSR(tt.csr)
+			if err == nil {
+				t.Fatal("expected an error")
+			}
+			if !errors.Is(err, ErrInvalidCSR) {
+				t.Errorf("error %v does not wrap ErrInvalidCSR, so it would be reported as a server fault", err)
+			}
+		})
+	}
+
+	// A well-formed request must still sign cleanly.
+	if _, err := ca.SignCSR(validCSR); err != nil {
+		t.Fatalf("SignCSR on a valid request: %v", err)
 	}
 }

@@ -310,7 +310,14 @@ func (d *discoveryClient) ResolveGroupVersionSchemas(ctx context.Context, cluste
 	gv := schema.GroupVersion{Group: group, Version: version}
 	gvPath, ok := paths[resourcePathFromGV(gv)]
 	if !ok {
-		return nil, fmt.Errorf("cannot resolve group version %q: %w", gv, resolver.ErrSchemaNotFound)
+		// A group/version the cluster does not serve is a bad request,
+		// not a server fault. The sentinel stays in the chain so
+		// errors.Is keeps working for callers that check it.
+		return nil, &core.DomainError{
+			Code:    core.ErrorCodeNotFound,
+			Message: fmt.Sprintf("cannot resolve group version %q", gv),
+			Cause:   resolver.ErrSchemaNotFound,
+		}
 	}
 
 	raw, err := gvPath.Schema(runtime.ContentTypeJSON)
@@ -324,7 +331,11 @@ func (d *discoveryClient) ResolveGroupVersionSchemas(ctx context.Context, cluste
 		} `json:"components"`
 	}
 	if err := json.Unmarshal(raw, &doc); err != nil {
-		return nil, err
+		return nil, &core.DomainError{
+			Code:    core.ErrorCodeInternal,
+			Message: "decode OpenAPI document",
+			Cause:   err,
+		}
 	}
 
 	schemaOf := func(ref string) (*spec.Schema, bool) {
@@ -336,7 +347,11 @@ func (d *discoveryClient) ResolveGroupVersionSchemas(ctx context.Context, cluste
 	for ref, s := range doc.Components.Schemas {
 		var gvks []schema.GroupVersionKind
 		if err := s.Extensions.GetObject(extGVK, &gvks); err != nil {
-			return nil, err
+			return nil, &core.DomainError{
+				Code:    core.ErrorCodeInternal,
+				Message: fmt.Sprintf("read %s extension of %q", extGVK, ref),
+				Cause:   err,
+			}
 		}
 		for _, g := range gvks {
 			if g.Group != group || g.Version != version {
@@ -344,7 +359,11 @@ func (d *discoveryClient) ResolveGroupVersionSchemas(ctx context.Context, cluste
 			}
 			populated, err := resolver.PopulateRefs(schemaOf, refPrefix+ref)
 			if err != nil {
-				return nil, err
+				return nil, &core.DomainError{
+					Code:    core.ErrorCodeInternal,
+					Message: fmt.Sprintf("resolve schema refs for %q", ref),
+					Cause:   err,
+				}
 			}
 			result[g.Kind] = populated
 		}

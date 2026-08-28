@@ -3,6 +3,8 @@ package chisel
 import (
 	"fmt"
 	"hash/fnv"
+
+	"github.com/otterscale/otterscale/internal/core"
 )
 
 // addressAllocator manages a pool of unique loopback addresses in the
@@ -33,7 +35,10 @@ func (a *addressAllocator) allocate(cluster string) (string, error) {
 		a.usedHosts[candidate] = struct{}{}
 		return candidate, nil
 	}
-	return "", fmt.Errorf("exhausted loopback address space (%d hosts)", maxHosts)
+	return "", &core.DomainError{
+		Code:    core.ErrorCodeResourceExhausted,
+		Message: fmt.Sprintf("exhausted loopback address space (%d hosts)", maxHosts),
+	}
 }
 
 // release returns a previously allocated host to the pool.

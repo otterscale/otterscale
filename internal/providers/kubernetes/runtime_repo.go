@@ -230,7 +230,7 @@ func (r *runtimeRepo) Restart(ctx context.Context, cluster string, gvr schema.Gr
 	}
 	data, err := json.Marshal(patchData)
 	if err != nil {
-		return fmt.Errorf("marshal restart patch: %w", err)
+		return &core.DomainError{Code: core.ErrorCodeInternal, Message: "marshal restart patch", Cause: err}
 	}
 
 	_, err = client.Resource(gvr).Namespace(namespace).Patch(ctx, name, types.MergePatchType, data, metav1.PatchOptions{})
