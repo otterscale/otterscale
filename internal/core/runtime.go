@@ -274,6 +274,44 @@ func (uc *RuntimeUseCase) StartExec(ctx context.Context, params *StartExecParams
 	return session, stdoutR, stderrR, nil
 }
 
+// WaitExec blocks until the exec session has finished and returns the
+// error it ended with, or ctx.Err() if the caller gives up first.
+//
+// Reading sess.Err is only safe once Done is closed. The session
+// goroutine assigns it as its last act, and the deferred close of Done
+// is what publishes that write to observers — which is also why Done is
+// closed rather than sent to.
+func (uc *RuntimeUseCase) WaitExec(ctx context.Context, sess *ExecSession) error {
+	select {
+	case <-sess.Done:
+		return sess.Err
+	case <-ctx.Done():
+		return ctx.Err()
+	}
+}
+
+// WaitPortForward blocks until the port-forward session has finished
+// and returns the error it ended with. See WaitExec.
+func (uc *RuntimeUseCase) WaitPortForward(ctx context.Context, sess *PortForwardSession) error {
+	select {
+	case <-sess.Done:
+		return sess.Err
+	case <-ctx.Done():
+		return ctx.Err()
+	}
+}
+
+// WaitVNC blocks until the VNC session has finished and returns the
+// error it ended with. See WaitExec.
+func (uc *RuntimeUseCase) WaitVNC(ctx context.Context, sess *VNCSession) error {
+	select {
+	case <-sess.Done:
+		return sess.Err
+	case <-ctx.Done():
+		return ctx.Err()
+	}
+}
+
 // WriteExec writes stdin data to an active exec session. The write is
 // performed in a background goroutine so that the caller's context can
 // cancel a blocking pipe write during graceful shutdown or if the exec

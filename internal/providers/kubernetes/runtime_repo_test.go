@@ -3,12 +3,15 @@ package kubernetes
 import (
 	"context"
 	"errors"
+	"fmt"
 	"io"
 	"sync"
 	"testing"
 	"time"
 
 	"github.com/gorilla/websocket"
+	apierrors "k8s.io/apimachinery/pkg/api/errors"
+	"k8s.io/apimachinery/pkg/runtime/schema"
 
 	"github.com/otterscale/otterscale/internal/core"
 )
@@ -272,4 +275,71 @@ func TestVNCURL(t *testing.T) {
 			}
 		})
 	}
+}
+
+// ---------------------------------------------------------------------------
+// Exec error classification
+// ---------------------------------------------------------------------------
+
+// stubExitError implements utilexec.ExitError, which is what
+// remotecommand returns when a command runs and exits non-zero.
+type stubExitError struct {
+	code   int
+	exited bool
+}
+
+func (e stubExitError) Error() string {
+	return fmt.Sprintf("command terminated with exit code %d", e.code)
+}
+func (e stubExitError) String() string  { return e.Error() }
+func (e stubExitError) Exited() bool    { return e.exited }
+func (e stubExitError) ExitStatus() int { return e.code }
+
+// TestWrapExecError checks the distinction the handler layer depends
+// on: a command that ran and exited non-zero is not the same kind of
+// failure as a session that never started, and only the latter should
+// reach the caller as an RPC error.
+func TestWrapExecError(t *testing.T) {
+	t.Run("nil stays nil", func(t *testing.T) {
+		if err := wrapExecError(nil); err != nil {
+			t.Fatalf("wrapExecError(nil) = %v, want nil", err)
+		}
+	})
+
+	t.Run("non-zero exit becomes ErrCommandExited", func(t *testing.T) {
+		err := wrapExecError(stubExitError{code: 3, exited: true})
+
+		var exited *core.ErrCommandExited
+		if !errors.As(err, &exited) {
+			t.Fatalf("wrapExecError = %T (%v), want *core.ErrCommandExited", err, err)
+		}
+		if exited.Code != 3 {
+			t.Fatalf("exit code = %d, want 3", exited.Code)
+		}
+	})
+
+	t.Run("signaled command is not an exit status", func(t *testing.T) {
+		// Exited() reports false when the process was signaled rather
+		// than exiting on its own; that is a session failure, not a
+		// command result.
+		err := wrapExecError(stubExitError{code: -1, exited: false})
+
+		var exited *core.ErrCommandExited
+		if errors.As(err, &exited) {
+			t.Fatal("wrapExecError classified a signaled command as an exit status")
+		}
+	})
+
+	t.Run("api status maps to a domain code", func(t *testing.T) {
+		err := wrapExecError(apierrors.NewForbidden(
+			schema.GroupResource{Resource: "pods"}, "pod-a", errors.New("denied")))
+
+		code, ok := core.DomainErrorCode(err)
+		if !ok {
+			t.Fatalf("wrapExecError = %T (%v), want a *core.DomainError", err, err)
+		}
+		if code != core.ErrorCodePermissionDenied {
+			t.Fatalf("code = %v, want ErrorCodePermissionDenied", code)
+		}
+	})
 }

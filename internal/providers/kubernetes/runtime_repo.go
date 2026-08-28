@@ -1,6 +1,7 @@
 package kubernetes
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"errors"
@@ -25,6 +26,7 @@ import (
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/remotecommand"
 	"k8s.io/client-go/transport/spdy"
+	utilexec "k8s.io/client-go/util/exec"
 	"k8s.io/streaming/pkg/httpstream"
 
 	"github.com/otterscale/otterscale/internal/core"
@@ -137,7 +139,24 @@ func (r *runtimeRepo) Exec(ctx context.Context, cluster, namespace, name string,
 		streamOpts.TerminalSizeQueue = &sizeQueueAdapter{inner: opts.SizeQueue}
 	}
 
-	return wrapK8sError(executor.StreamWithContext(ctx, streamOpts))
+	return wrapExecError(executor.StreamWithContext(ctx, streamOpts))
+}
+
+// wrapExecError converts the result of a streaming exec into a domain
+// error. A non-zero exit status is reported as *core.ErrCommandExited
+// so that callers can tell "the command failed" apart from "the session
+// failed"; everything else goes through the usual Kubernetes mapping.
+func wrapExecError(err error) error {
+	if err == nil {
+		return nil
+	}
+
+	var exitErr utilexec.ExitError
+	if errors.As(err, &exitErr) && exitErr.Exited() {
+		return &core.ErrCommandExited{Code: exitErr.ExitStatus(), Reason: exitErr.Error()}
+	}
+
+	return wrapK8sError(err)
 }
 
 // ---------------------------------------------------------------------------
@@ -295,16 +314,27 @@ func (r *runtimeRepo) runPortForwardStreams(ctx context.Context, streamConn http
 	}
 	defer dataStream.Close()
 
-	// Check for immediate errors from kubelet: tearing down the data
-	// stream makes the copy loops below report the failure.
+	// kubelet refuses a forward ("unable to do port forwarding: socat
+	// not found") on the error stream and then says nothing more.
+	// Tearing down the data stream is what makes the copy loops below
+	// return, but the error they produce describes a closed stream, not
+	// the reason — so the message is captured here and preferred over
+	// theirs. The send happens before the teardown, so by the time a
+	// copy loop reports, this value is already buffered.
+	kubeletErr := make(chan error, 1)
 	go func() {
 		const errorBufSize = 1024
 		buf := make([]byte, errorBufSize)
 		n, _ := errorStream.Read(buf)
-		if n > 0 {
-			if err := dataStream.Close(); err != nil {
-				slog.Warn("failed to close data stream after kubelet error", "error", err)
-			}
+		if n == 0 {
+			return
+		}
+		kubeletErr <- &core.DomainError{
+			Code:    core.ErrorCodeFailedPrecondition,
+			Message: fmt.Sprintf("port-forward refused by kubelet: %s", bytes.TrimSpace(buf[:n])),
+		}
+		if err := dataStream.Close(); err != nil {
+			slog.Warn("failed to close data stream after kubelet error", "error", err)
 		}
 	}()
 
@@ -325,6 +355,14 @@ func (r *runtimeRepo) runPortForwardStreams(ctx context.Context, streamConn http
 	case firstErr = <-errCh:
 	}
 	streamConn.Close()
+
+	if firstErr != nil {
+		select {
+		case kerr := <-kubeletErr:
+			return kerr
+		default:
+		}
+	}
 	return firstErr
 }
 

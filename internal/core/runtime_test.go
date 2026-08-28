@@ -34,14 +34,30 @@ type mockRuntimeRepo struct {
 	// adapters: they only return once the session's stdin pipe is
 	// closed, which is what makes cancellation handling observable.
 	drainStdin bool
+
+	// execErr is what Exec fails with, standing in for a session that
+	// never starts (no such container, RBAC denial, upgrade failure).
+	execErr error
+
+	// blockExec makes Exec run until its context is canceled, so that a
+	// session that has not finished can be observed.
+	blockExec bool
+
+	// portForwardErr is what PortForward fails with, standing in for a
+	// forward the kubelet refused.
+	portForwardErr error
 }
 
 func (m *mockRuntimeRepo) PodLogs(context.Context, string, string, string, PodLogOptions) (io.ReadCloser, error) {
 	return nil, nil
 }
 
-func (m *mockRuntimeRepo) Exec(context.Context, string, string, string, *ExecOptions) error {
-	return nil
+func (m *mockRuntimeRepo) Exec(ctx context.Context, _, _, _ string, _ *ExecOptions) error {
+	if m.blockExec {
+		<-ctx.Done()
+		return ctx.Err()
+	}
+	return m.execErr
 }
 
 func (m *mockRuntimeRepo) UpdateScale(context.Context, string, schema.GroupVersionResource, string, string, int32) (int32, error) {
@@ -53,6 +69,9 @@ func (m *mockRuntimeRepo) Restart(context.Context, string, schema.GroupVersionRe
 }
 
 func (m *mockRuntimeRepo) PortForward(_ context.Context, _, _, _ string, opts PortForwardOptions) error {
+	if m.portForwardErr != nil {
+		return m.portForwardErr
+	}
 	if m.drainStdin {
 		_, err := io.Copy(io.Discard, opts.Stdin)
 		return err
@@ -465,4 +484,104 @@ func TestSessionsAreBoundToTheirOwner(t *testing.T) {
 			t.Error("VNC session survived cleanup by its owner")
 		}
 	})
+}
+
+// ---------------------------------------------------------------------------
+// Session outcomes
+// ---------------------------------------------------------------------------
+
+// TestWaitExecReportsSessionFailure is the regression test for exec
+// failures that never reached the caller. The session goroutine records
+// why the exec ended, but nothing ever read that field, so a session
+// that failed to start was indistinguishable from one that produced no
+// output.
+func TestWaitExecReportsSessionFailure(t *testing.T) {
+	wantErr := &DomainError{Code: ErrorCodeNotFound, Message: "container \"nope\" not found"}
+	uc := newTestRuntimeUseCase(&mockDiscovery{}, &mockRuntimeRepo{execErr: wantErr})
+
+	ctx := userContext(t, "alice")
+	sess, stdout, stderr, err := uc.StartExec(ctx, &StartExecParams{Name: "pod-a", Command: []string{"sh"}})
+	if err != nil {
+		t.Fatalf("StartExec: %v", err)
+	}
+	defer stdout.Close()
+	defer stderr.Close()
+
+	waitCtx, cancel := context.WithTimeout(ctx, sessionTimeout)
+	defer cancel()
+
+	got := uc.WaitExec(waitCtx, sess)
+	if !errors.Is(got, wantErr) {
+		t.Fatalf("WaitExec = %v, want %v", got, wantErr)
+	}
+}
+
+// TestWaitExecReportsCommandExit checks that a command which ran and
+// exited non-zero is reported as such, so callers can tell it apart
+// from a session that never started.
+func TestWaitExecReportsCommandExit(t *testing.T) {
+	uc := newTestRuntimeUseCase(&mockDiscovery{}, &mockRuntimeRepo{execErr: &ErrCommandExited{Code: 2}})
+
+	ctx := userContext(t, "alice")
+	sess, stdout, stderr, err := uc.StartExec(ctx, &StartExecParams{Name: "pod-a", Command: []string{"false"}})
+	if err != nil {
+		t.Fatalf("StartExec: %v", err)
+	}
+	defer stdout.Close()
+	defer stderr.Close()
+
+	waitCtx, cancel := context.WithTimeout(ctx, sessionTimeout)
+	defer cancel()
+
+	var exited *ErrCommandExited
+	if got := uc.WaitExec(waitCtx, sess); !errors.As(got, &exited) {
+		t.Fatalf("WaitExec = %v, want *ErrCommandExited", got)
+	}
+	if exited.Code != 2 {
+		t.Fatalf("exit code = %d, want 2", exited.Code)
+	}
+}
+
+// TestWaitExecGivesUpWithCaller checks that waiting for a session that
+// has not finished is bounded by the caller's context, so that a wedged
+// session cannot hold its RPC open indefinitely.
+func TestWaitExecGivesUpWithCaller(t *testing.T) {
+	uc := newTestRuntimeUseCase(&mockDiscovery{}, &mockRuntimeRepo{blockExec: true})
+
+	ctx := userContext(t, "alice")
+	sess, stdout, stderr, err := uc.StartExec(ctx, &StartExecParams{Name: "pod-a", Command: []string{"sleep"}})
+	if err != nil {
+		t.Fatalf("StartExec: %v", err)
+	}
+	defer stdout.Close()
+	defer stderr.Close()
+	defer uc.CleanupExec(ctx, sess.ID)
+
+	waitCtx, cancel := context.WithCancel(ctx)
+	cancel()
+
+	if got := uc.WaitExec(waitCtx, sess); !errors.Is(got, context.Canceled) {
+		t.Fatalf("WaitExec = %v, want context.Canceled", got)
+	}
+}
+
+// TestWaitPortForwardReportsSessionFailure covers the port-forward half
+// of the same bug.
+func TestWaitPortForwardReportsSessionFailure(t *testing.T) {
+	wantErr := &DomainError{Code: ErrorCodeFailedPrecondition, Message: "port-forward refused by kubelet: socat not found"}
+	uc := newTestRuntimeUseCase(&mockDiscovery{}, &mockRuntimeRepo{portForwardErr: wantErr})
+
+	ctx := userContext(t, "alice")
+	sess, out, err := uc.StartPortForward(ctx, "c1", "default", "pod-a", 8080)
+	if err != nil {
+		t.Fatalf("StartPortForward: %v", err)
+	}
+	defer out.Close()
+
+	waitCtx, cancel := context.WithTimeout(ctx, sessionTimeout)
+	defer cancel()
+
+	if got := uc.WaitPortForward(waitCtx, sess); !errors.Is(got, wantErr) {
+		t.Fatalf("WaitPortForward = %v, want %v", got, wantErr)
+	}
 }

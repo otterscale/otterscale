@@ -100,3 +100,25 @@ type ErrSessionNotFound struct {
 func (e *ErrSessionNotFound) Error() string {
 	return fmt.Sprintf("%s %q not found", e.Resource, e.ID)
 }
+
+// ErrCommandExited reports that an exec'd command ran to completion and
+// exited with a non-zero status.
+//
+// This is deliberately distinct from every other error an exec session
+// can end with. Failing to *start* a session — no such pod, no such
+// container, RBAC denial, a failed protocol upgrade — is a failure of
+// the RPC. A command that started, produced its output, and exited 1 is
+// not: the caller got exactly what it asked for, and reporting it as a
+// transport failure would turn every unsuccessful shell command into a
+// server error.
+type ErrCommandExited struct {
+	Code   int
+	Reason string
+}
+
+func (e *ErrCommandExited) Error() string {
+	if e.Reason != "" {
+		return fmt.Sprintf("command exited with status %d: %s", e.Code, e.Reason)
+	}
+	return fmt.Sprintf("command exited with status %d", e.Code)
+}

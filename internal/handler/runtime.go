@@ -5,8 +5,10 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log/slog"
 	"math"
 	"sync"
+	"time"
 
 	"connectrpc.com/connect"
 	"google.golang.org/protobuf/types/known/emptypb"
@@ -19,6 +21,41 @@ import (
 
 // streamChunkSize is the maximum bytes sent per streaming message.
 const streamChunkSize = 32 * 1024
+
+// sessionOutcomeTimeout bounds the wait for a finished session to
+// publish its result. Once a session's output pipes are drained the
+// goroutine behind it has only a few deferred closes left to run, so
+// this is a backstop against a wedged adapter rather than a normal
+// path — without it, a session that never signals completion would hold
+// its RPC open until the client gave up.
+const sessionOutcomeTimeout = 5 * time.Second
+
+// sessionOutcome converts the error a finished session ended with into
+// the error its RPC should report.
+//
+// Two endings are not RPC failures. A caller whose context was canceled
+// is already gone, and the session was torn down on its behalf. And a
+// command that ran and exited non-zero delivered exactly what was asked
+// for: its output has already been streamed, so reporting the exit
+// status as a transport failure would make every unsuccessful shell
+// command look like a server error. The status itself has no field in
+// the current response schema, so it is logged instead.
+func sessionOutcome(kind, id string, err error) error {
+	if err == nil || errors.Is(err, context.Canceled) || errors.Is(err, context.DeadlineExceeded) {
+		return nil
+	}
+
+	var exited *core.ErrCommandExited
+	if errors.As(err, &exited) {
+		slog.Debug("exec command exited non-zero", "session", id, "exit_code", exited.Code)
+		return nil
+	}
+
+	// Log as well as return: before this, a session that failed to even
+	// start left no trace on either side.
+	slog.Warn("session ended with an error", "kind", kind, "session", id, "error", err)
+	return domainErrorToConnectError(err)
+}
 
 // RuntimeService implements the Runtime gRPC service. It proxies
 // Kubernetes runtime operations (logs, exec, port-forward, scale,
@@ -141,7 +178,11 @@ func (s *RuntimeService) ExecuteTTY(ctx context.Context, req *pb.ExecuteTTYReque
 
 		case c, ok := <-ch:
 			if !ok {
-				return nil
+				// Output exhausted; the session's own result is what
+				// says whether it ever ran. Without this, a session
+				// that failed to start looks identical to one that
+				// produced no output.
+				return s.execOutcome(ctx, sess)
 			}
 			msg := &pb.ExecuteTTYResponse{}
 			if len(c.stdout) > 0 {
@@ -155,6 +196,14 @@ func (s *RuntimeService) ExecuteTTY(ctx context.Context, req *pb.ExecuteTTYReque
 			}
 		}
 	}
+}
+
+// execOutcome waits for the exec session to finish and reports why it
+// ended.
+func (s *RuntimeService) execOutcome(ctx context.Context, sess *core.ExecSession) error {
+	waitCtx, cancel := context.WithTimeout(ctx, sessionOutcomeTimeout)
+	defer cancel()
+	return sessionOutcome("exec", sess.ID, s.runtime.WaitExec(waitCtx, sess))
 }
 
 // execChunk holds a piece of stdout or stderr data from an exec session.
@@ -283,7 +332,12 @@ func (s *RuntimeService) PortForward(ctx context.Context, req *pb.PortForwardReq
 			return err
 		}
 	}
-	return nil
+
+	// The pipe reaching EOF says the session is over, not that it
+	// succeeded — a forward kubelet refused outright ends the same way.
+	waitCtx, cancel := context.WithTimeout(ctx, sessionOutcomeTimeout)
+	defer cancel()
+	return sessionOutcome("port-forward", sess.ID, s.runtime.WaitPortForward(waitCtx, sess))
 }
 
 // WritePortForward sends data to an active port-forward session.
@@ -383,7 +437,10 @@ func (s *RuntimeService) VNC(ctx context.Context, req *pb.VNCRequest, stream *co
 			return err
 		}
 	}
-	return nil
+
+	waitCtx, cancel := context.WithTimeout(ctx, sessionOutcomeTimeout)
+	defer cancel()
+	return sessionOutcome("vnc", sess.ID, s.runtime.WaitVNC(waitCtx, sess))
 }
 
 // chunk carries one streamed payload, or the terminal read error once
