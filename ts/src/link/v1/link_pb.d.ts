@@ -157,6 +157,29 @@ export declare type RegisterResponse = Message<"otterscale.link.v1.RegisterRespo
    * @generated from field: string server_version = 4;
    */
   serverVersion: string;
+
+  /**
+   * The tunnel user name assigned to this registration.
+   *
+   * The server assigns it rather than deriving it from anything the
+   * agent sent. Agents identify themselves by hostname, and two
+   * clusters running the same deployment produce the same hostname, so
+   * a name taken from the request would let one cluster's registration
+   * silently replace another's tunnel credentials.
+   *
+   * @generated from field: string tunnel_user = 5;
+   */
+  tunnelUser: string;
+
+  /**
+   * The password for tunnel_user, generated fresh on every
+   * registration. It is issued here rather than derived from the
+   * certificate above, so that a value the agent already holds is
+   * never also the secret that authenticates it.
+   *
+   * @generated from field: string tunnel_password = 6;
+   */
+  tunnelPassword: string;
 };
 
 /**

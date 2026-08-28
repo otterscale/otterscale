@@ -28,9 +28,17 @@ func (m *mockTunnelProvider) ListLinks() map[string]Link {
 	return m.links
 }
 
-func (m *mockTunnelProvider) RegisterLink(_ context.Context, cluster, _, _ string, _ []byte) (endpoint string, certPEM []byte, err error) {
+func (m *mockTunnelProvider) RegisterLink(_ context.Context, cluster, _, _ string, _ []byte) (TunnelGrant, error) {
 	m.registered = append(m.registered, cluster)
-	return m.regEndpoint, m.regCertPEM, m.regErr
+	if m.regErr != nil {
+		return TunnelGrant{}, m.regErr
+	}
+	return TunnelGrant{
+		Endpoint:    m.regEndpoint,
+		Certificate: m.regCertPEM,
+		User:        cluster,
+		Password:    "test-password",
+	}, nil
 }
 
 func (m *mockTunnelProvider) ResolveAddress(_ context.Context, _ string) (string, error) {

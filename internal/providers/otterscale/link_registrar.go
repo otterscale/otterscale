@@ -81,11 +81,12 @@ func (f *linkRegistrar) Register(ctx context.Context, serverURL, cluster string)
 	}
 
 	return core.Registration{
-		Endpoint:      resp.GetEndpoint(),
-		Certificate:   resp.GetCertificate(),
-		CACertificate: resp.GetCaCertificate(),
-		PrivateKeyPEM: keyPEM,
-		AgentID:       f.agentID,
-		ServerVersion: resp.GetServerVersion(),
+		Endpoint:       resp.GetEndpoint(),
+		Certificate:    resp.GetCertificate(),
+		CACertificate:  resp.GetCaCertificate(),
+		PrivateKeyPEM:  keyPEM,
+		TunnelUser:     resp.GetTunnelUser(),
+		TunnelPassword: resp.GetTunnelPassword(),
+		ServerVersion:  resp.GetServerVersion(),
 	}, nil
 }

@@ -52,11 +52,34 @@ type TunnelProvider interface {
 	// ListLinks returns the names of all registered clusters.
 	ListLinks() map[string]Link
 	// RegisterLink validates and signs the agent's CSR, creates
-	// a tunnel user, and returns the allocated endpoint together
-	// with the PEM-encoded signed certificate.
-	RegisterLink(ctx context.Context, cluster, agentID, agentVersion string, csrPEM []byte) (endpoint string, certPEM []byte, err error)
+	// a tunnel user, and returns the grant the agent needs to
+	// connect.
+	RegisterLink(ctx context.Context, cluster, agentID, agentVersion string, csrPEM []byte) (TunnelGrant, error)
 	// ResolveAddress returns the HTTP base URL for the given cluster.
 	ResolveAddress(ctx context.Context, cluster string) (string, error)
+}
+
+// TunnelGrant is what a TunnelProvider issues for one registration:
+// where to connect, the certificate that authenticates the agent at the
+// TLS layer, and the credential it presents to the tunnel itself.
+type TunnelGrant struct {
+	// Endpoint is the allocated tunnel endpoint (host:port).
+	Endpoint string
+	// Certificate is the PEM-encoded certificate signed from the
+	// agent's CSR.
+	Certificate []byte
+	// User is the tunnel user name for this registration.
+	//
+	// The provider assigns it: nothing the agent sent may decide it.
+	// Agents identify themselves by hostname, and two clusters running
+	// the same deployment report the same one, so a name taken from the
+	// request would let one cluster's registration silently replace
+	// another's credentials.
+	User string
+	// Password authenticates User, generated fresh per registration
+	// rather than derived from the certificate — a value the agent
+	// already holds must not also be the secret that authenticates it.
+	Password string
 }
 
 // TunnelConsumer is the agent-side abstraction for registering with
@@ -86,10 +109,12 @@ type Registration struct {
 	// Returned alongside the certificate to ensure the key/cert
 	// pair is always consistent (no TOCTOU race).
 	PrivateKeyPEM []byte
-	// AgentID is the identifier of the agent that registered. It is
-	// set by the TunnelConsumer so that callers can derive auth
-	// credentials without re-querying the hostname.
-	AgentID string
+	// TunnelUser and TunnelPassword are the credential the agent
+	// presents to the tunnel server. The server issues them, so an
+	// agent never has to reproduce a value the server computed — the
+	// two sides cannot disagree about what the credential is.
+	TunnelUser     string
+	TunnelPassword string
 	// ServerVersion is the version of the server binary, reported
 	// back to agents for diagnostics.
 	ServerVersion string
@@ -164,14 +189,16 @@ func (uc *LinkUseCase) RegisterCluster(ctx context.Context, req *RegistrationReq
 		return Registration{}, &ErrInvalidInput{Field: "csr", Message: "must not be empty"}
 	}
 
-	endpoint, certPEM, err := uc.tunnel.RegisterLink(ctx, req.Cluster, req.AgentID, req.AgentVersion, req.CSRPEM)
+	grant, err := uc.tunnel.RegisterLink(ctx, req.Cluster, req.AgentID, req.AgentVersion, req.CSRPEM)
 	if err != nil {
 		return Registration{}, err
 	}
 	return Registration{
-		Endpoint:      endpoint,
-		Certificate:   certPEM,
-		CACertificate: uc.tunnel.CACertPEM(),
-		ServerVersion: string(uc.version),
+		Endpoint:       grant.Endpoint,
+		Certificate:    grant.Certificate,
+		CACertificate:  uc.tunnel.CACertPEM(),
+		TunnelUser:     grant.User,
+		TunnelPassword: grant.Password,
+		ServerVersion:  string(uc.version),
 	}, nil
 }

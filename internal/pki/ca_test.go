@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"crypto/x509"
 	"encoding/pem"
+	"strings"
 	"testing"
 )
 
@@ -161,55 +162,42 @@ func TestGenerateServerCert(t *testing.T) {
 	}
 }
 
-func TestDeriveAuth(t *testing.T) {
-	ca, err := NewCA()
+func TestNewTunnelPassword(t *testing.T) {
+	pass, err := NewTunnelPassword()
 	if err != nil {
-		t.Fatalf("NewCA: %v", err)
+		t.Fatalf("NewTunnelPassword: %v", err)
 	}
 
-	key, _, err := GenerateKey()
-	if err != nil {
-		t.Fatalf("GenerateKey: %v", err)
+	// 24 random bytes in unpadded base64url.
+	if want := 32; len(pass) != want {
+		t.Errorf("password length = %d, want %d (%q)", len(pass), want, pass)
 	}
 
-	csrPEM, err := GenerateCSR(key, "agent-1")
-	if err != nil {
-		t.Fatalf("GenerateCSR: %v", err)
-	}
-
-	certPEM, err := ca.SignCSR(csrPEM)
-	if err != nil {
-		t.Fatalf("SignCSR: %v", err)
-	}
-
-	auth1, err := DeriveAuth("agent-1", certPEM)
-	if err != nil {
-		t.Fatalf("DeriveAuth: %v", err)
-	}
-
-	// Same inputs should produce the same auth.
-	auth2, err := DeriveAuth("agent-1", certPEM)
-	if err != nil {
-		t.Fatalf("DeriveAuth: %v", err)
-	}
-
-	if auth1 != auth2 {
-		t.Error("expected deterministic auth string, got different results")
-	}
-
-	// Should contain the agent ID.
-	if len(auth1) < len("agent-1:")+1 {
-		t.Errorf("auth string too short: %s", auth1)
-	}
-	if auth1[:len("agent-1:")] != "agent-1:" {
-		t.Errorf("expected auth to start with agent-1:, got %s", auth1)
+	// The password is the tunnel secret and is concatenated into a
+	// "user:password" auth string, so a colon would split in the wrong
+	// place. base64url never produces one, but the property is what
+	// callers rely on.
+	if strings.ContainsRune(pass, ':') {
+		t.Errorf("password contains a colon: %q", pass)
 	}
 }
 
-func TestDeriveAuth_InvalidPEM(t *testing.T) {
-	_, err := DeriveAuth("agent", []byte("not-a-pem"))
-	if err == nil {
-		t.Error("expected error for invalid PEM, got nil")
+// TestNewTunnelPasswordIsUnpredictable guards the property that
+// replaced the old certificate-derived scheme: the password must not be
+// reproducible from anything the agent already holds.
+func TestNewTunnelPasswordIsUnpredictable(t *testing.T) {
+	const samples = 64
+
+	seen := make(map[string]struct{}, samples)
+	for range samples {
+		pass, err := NewTunnelPassword()
+		if err != nil {
+			t.Fatalf("NewTunnelPassword: %v", err)
+		}
+		if _, dup := seen[pass]; dup {
+			t.Fatalf("NewTunnelPassword repeated a value: %q", pass)
+		}
+		seen[pass] = struct{}{}
 	}
 }
 

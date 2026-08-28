@@ -181,18 +181,20 @@ func TestLinkRegisterClusterReregisterAndReplaceAcrossAgents(t *testing.T) {
 		t.Fatalf("register agent-a #2: %v", err)
 	}
 
-	// Each registration produces a distinct certificate (different
-	// serial numbers) so the derived auth must differ.
-	authA1, err := pki.DeriveAuth("agent-a", regA1.Certificate)
-	if err != nil {
-		t.Fatalf("derive auth A1: %v", err)
+	// Every registration issues a fresh password, so re-registering
+	// invalidates whatever the previous session was using.
+	if regA1.TunnelPassword == "" || regA2.TunnelPassword == "" {
+		t.Fatal("expected a tunnel password on every registration")
 	}
-	authA2, err := pki.DeriveAuth("agent-a", regA2.Certificate)
-	if err != nil {
-		t.Fatalf("derive auth A2: %v", err)
+	if regA1.TunnelPassword == regA2.TunnelPassword {
+		t.Fatal("expected password rotation for same agent re-register")
 	}
-	if authA1 == authA2 {
-		t.Fatal("expected auth rotation for same agent re-register")
+
+	// The tunnel user is the cluster, not the agent: agent-a and
+	// agent-b claimed the same cluster under different agent ids and
+	// must have been issued the same user name.
+	if regA1.TunnelUser != "cluster-z" || regB.TunnelUser != "cluster-z" {
+		t.Fatalf("tunnel users = %q / %q, want both %q", regA1.TunnelUser, regB.TunnelUser, "cluster-z")
 	}
 
 	for i := range 3 {
@@ -289,5 +291,104 @@ func TestLinkRegisterClusterRejectedTokenKeepsExistingAgent(t *testing.T) {
 	}
 	if after != before {
 		t.Errorf("cluster-x moved from %q to %q after a rejected attempt", before, after)
+	}
+}
+
+// TestLinkRegisterClusterSharedAgentHostnameDoesNotCollide is the
+// regression test for cross-cluster credential clobbering.
+//
+// Agents identify themselves by hostname, and two clusters running the
+// same deployment report the same one — an `otterscale-agent-0` in each
+// is the ordinary case, not a contrived one. chisel keys its user index
+// by name, so while the tunnel user was named after the agent, the
+// second cluster's registration overwrote the first's credentials and
+// stranded a working tunnel: the first agent could no longer
+// authenticate, and the health checker eventually deregistered it.
+func TestLinkRegisterClusterSharedAgentHostnameDoesNotCollide(t *testing.T) {
+	tunnel := newTestTunnel(t)
+	initTunnelServer(t, tunnel)
+	link, tokenFor := newTestLink(t, tunnel)
+
+	// The hostname two identically-deployed agents both report.
+	const sharedAgentID = "otterscale-agent-0"
+
+	register := func(cluster string) core.Registration {
+		t.Helper()
+		reg, err := link.RegisterCluster(t.Context(), &core.RegistrationRequest{
+			Cluster:        cluster,
+			AgentID:        sharedAgentID,
+			AgentVersion:   "test",
+			EnrolmentToken: tokenFor(cluster),
+			CSRPEM:         generateCSR(t, sharedAgentID),
+		})
+		if err != nil {
+			t.Fatalf("register %s: %v", cluster, err)
+		}
+		return reg
+	}
+
+	regA := register("cluster-a")
+	regB := register("cluster-b")
+
+	if regA.TunnelUser == "" || regB.TunnelUser == "" {
+		t.Fatal("expected a tunnel user on every registration")
+	}
+	if regA.TunnelUser == regB.TunnelUser {
+		t.Fatalf("both clusters were issued tunnel user %q, so one registration overwrites the other", regA.TunnelUser)
+	}
+	if regA.TunnelPassword == regB.TunnelPassword {
+		t.Fatal("expected distinct tunnel passwords for distinct clusters")
+	}
+
+	// The first cluster must be untouched by the second's arrival.
+	links := tunnel.ListLinks()
+	if got := links["cluster-a"].User; got != regA.TunnelUser {
+		t.Errorf("registry records tunnel user %q for cluster-a, but the agent was issued %q", got, regA.TunnelUser)
+	}
+	if links["cluster-a"].Host == links["cluster-b"].Host {
+		t.Errorf("expected distinct loopback hosts, both got %q", links["cluster-a"].Host)
+	}
+	if _, err := tunnel.ResolveAddress(t.Context(), "cluster-a"); err != nil {
+		t.Errorf("cluster-a stopped resolving once cluster-b registered: %v", err)
+	}
+}
+
+// TestDeregisterClusterLeavesOtherClustersRegistered covers the second
+// half of the same bug. The registry records the tunnel user it issued,
+// and deregistration deletes that name from chisel — so while two
+// clusters could record the same name, deregistering one revoked the
+// other's credentials.
+func TestDeregisterClusterLeavesOtherClustersRegistered(t *testing.T) {
+	tunnel := newTestTunnel(t)
+	initTunnelServer(t, tunnel)
+	link, tokenFor := newTestLink(t, tunnel)
+
+	const sharedAgentID = "otterscale-agent-0"
+
+	for _, cluster := range []string{"cluster-a", "cluster-b"} {
+		if _, err := link.RegisterCluster(t.Context(), &core.RegistrationRequest{
+			Cluster:        cluster,
+			AgentID:        sharedAgentID,
+			AgentVersion:   "test",
+			EnrolmentToken: tokenFor(cluster),
+			CSRPEM:         generateCSR(t, sharedAgentID),
+		}); err != nil {
+			t.Fatalf("register %s: %v", cluster, err)
+		}
+	}
+
+	before := tunnel.ListLinks()["cluster-a"]
+
+	tunnel.DeregisterCluster("cluster-b")
+
+	links := tunnel.ListLinks()
+	if _, ok := links["cluster-b"]; ok {
+		t.Error("cluster-b is still registered after deregistration")
+	}
+	if links["cluster-a"] != before {
+		t.Errorf("cluster-a changed from %+v to %+v when cluster-b was deregistered", before, links["cluster-a"])
+	}
+	if _, err := tunnel.ResolveAddress(t.Context(), "cluster-a"); err != nil {
+		t.Errorf("cluster-a stopped resolving when cluster-b was deregistered: %v", err)
 	}
 }

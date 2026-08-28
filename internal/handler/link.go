@@ -60,6 +60,8 @@ func (s *LinkService) Register(ctx context.Context, req *pb.RegisterRequest) (*p
 	resp.SetEndpoint(reg.Endpoint)
 	resp.SetCertificate(reg.Certificate)
 	resp.SetCaCertificate(reg.CACertificate)
+	resp.SetTunnelUser(reg.TunnelUser)
+	resp.SetTunnelPassword(reg.TunnelPassword)
 	resp.SetServerVersion(reg.ServerVersion)
 	return resp, nil
 }

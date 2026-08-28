@@ -12,7 +12,6 @@ import (
 
 	"github.com/otterscale/otterscale/internal/config"
 	"github.com/otterscale/otterscale/internal/core"
-	"github.com/otterscale/otterscale/internal/pki"
 	"github.com/otterscale/otterscale/internal/transport"
 	"github.com/otterscale/otterscale/internal/transport/http"
 	"github.com/otterscale/otterscale/internal/transport/pipe"
@@ -89,17 +88,17 @@ func (a *Agent) register() tunnel.RegisterFunc {
 			return nil, err
 		}
 
-		// Derive the chisel auth string from the signed
-		// certificate. This must match the password the server
-		// computed when it signed the same certificate.
-		auth, err := pki.DeriveAuth(reg.AgentID, reg.Certificate)
-		if err != nil {
-			return nil, fmt.Errorf("derive auth: %w", err)
+		// The tunnel credential is issued by the server, not computed
+		// here. Deriving it locally used to require the agent to
+		// reproduce the server's scheme exactly, and keyed it on the
+		// agent's hostname — which is not unique across clusters.
+		if reg.TunnelUser == "" || reg.TunnelPassword == "" {
+			return nil, fmt.Errorf("server returned no tunnel credential; it is older than this agent")
 		}
 
 		return &tunnel.RegisterResult{
 			Endpoint:  reg.Endpoint,
-			Auth:      auth,
+			Auth:      reg.TunnelUser + ":" + reg.TunnelPassword,
 			CACertPEM: reg.CACertificate,
 			CertPEM:   reg.Certificate,
 			KeyPEM:    reg.PrivateKeyPEM,

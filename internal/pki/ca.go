@@ -12,7 +12,6 @@ import (
 	"crypto/ecdsa"
 	"crypto/elliptic"
 	"crypto/rand"
-	"crypto/sha256"
 	"crypto/x509"
 	"crypto/x509/pkix"
 	"encoding/base64"
@@ -212,18 +211,24 @@ func GenerateCSR(key *ecdsa.PrivateKey, cn string) ([]byte, error) {
 	return pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE REQUEST", Bytes: csrDER}), nil
 }
 
-// DeriveAuth deterministically computes a chisel auth string
-// ("user:password") from the agent ID and a signed certificate.
-// Both the server (which signed the cert) and the agent (which
-// received the cert) can independently compute this value.
-func DeriveAuth(agentID string, certPEM []byte) (string, error) {
-	block, _ := pem.Decode(certPEM)
-	if block == nil {
-		return "", fmt.Errorf("pki: failed to decode certificate PEM")
+// tunnelPasswordBytes is the entropy of a generated tunnel password.
+const tunnelPasswordBytes = 24
+
+// NewTunnelPassword returns a fresh random password for a tunnel user.
+//
+// It replaces an earlier scheme that derived the password from the
+// signed certificate so that both sides could compute it without
+// exchanging it. That coupled the two sides to an identical derivation
+// and, more importantly, made the secret a function of a value the
+// agent already holds and presents on the wire. The server now issues
+// the password in the registration response instead, so it can be
+// random and need not be reproducible.
+func NewTunnelPassword() (string, error) {
+	buf := make([]byte, tunnelPasswordBytes)
+	if _, err := rand.Read(buf); err != nil {
+		return "", fmt.Errorf("pki: generate tunnel password: %w", err)
 	}
-	h := sha256.Sum256(block.Bytes)
-	pass := base64.RawURLEncoding.EncodeToString(h[:24])
-	return agentID + ":" + pass, nil
+	return base64.RawURLEncoding.EncodeToString(buf), nil
 }
 
 // ---------------------------------------------------------------------------

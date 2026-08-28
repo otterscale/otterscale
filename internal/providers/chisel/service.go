@@ -11,7 +11,6 @@ import (
 	"log/slog"
 	"maps"
 	"regexp"
-	"strings"
 	"sync"
 	"sync/atomic"
 
@@ -90,35 +89,38 @@ func (s *Service) ListLinks() map[string]core.Link {
 
 // RegisterLink validates and signs the agent's CSR, associates a
 // cluster with a unique loopback host, creates a chisel user with a
-// password derived from the signed certificate, and returns the
-// tunnel endpoint and the PEM-encoded signed certificate.
+// freshly generated password, and returns the grant the agent needs to
+// connect: endpoint, signed certificate, and tunnel credential.
 //
 // If the cluster was previously registered, the old host allocation
 // and chisel user are released first so that stale credentials do not
 // accumulate. The replacement address is normally the same one: the
 // allocator derives its starting probe from a hash of the cluster
 // name, so a released host is handed straight back to it.
-func (s *Service) RegisterLink(_ context.Context, cluster, agentID, agentVersion string, csrPEM []byte) (endpoint string, certPEM []byte, err error) {
+func (s *Service) RegisterLink(_ context.Context, cluster, agentID, agentVersion string, csrPEM []byte) (core.TunnelGrant, error) {
 	// Sign the agent's CSR with the internal CA.
-	certPEM, err = s.ca.SignCSR(csrPEM)
+	certPEM, err := s.ca.SignCSR(csrPEM)
 	if err != nil {
-		return "", nil, fmt.Errorf("sign CSR: %w", err)
+		return core.TunnelGrant{}, fmt.Errorf("sign CSR: %w", err)
 	}
 
-	// Derive the chisel password from the signed certificate so
-	// that both server and agent can compute it independently.
-	auth, err := pki.DeriveAuth(agentID, certPEM)
+	// The tunnel user is the cluster, never the agent. Agents identify
+	// themselves by hostname, and two clusters running the same
+	// deployment report the same one — chisel's user index is keyed by
+	// name, so an agent-derived name lets one cluster's registration
+	// overwrite another's credentials and strand a working tunnel.
+	// Keying by cluster also keeps the index aligned with this
+	// registry, so deregistering a cluster cannot delete a user that
+	// now belongs to a different one.
+	user := cluster
+	pass, err := pki.NewTunnelPassword()
 	if err != nil {
-		return "", nil, fmt.Errorf("derive auth: %w", err)
-	}
-	_, pass, ok := parseAuth(auth)
-	if !ok {
-		return "", nil, fmt.Errorf("invalid auth format: expected user:pass, got %q", auth)
+		return core.TunnelGrant{}, err
 	}
 
 	srv := s.server.Load()
 	if srv == nil {
-		return "", nil, &core.ErrNotReady{Subsystem: "chisel server"}
+		return core.TunnelGrant{}, &core.ErrNotReady{Subsystem: "chisel server"}
 	}
 
 	s.mu.Lock()
@@ -134,25 +136,39 @@ func (s *Service) RegisterLink(_ context.Context, cluster, agentID, agentVersion
 
 	host, err := s.addrs.allocate(cluster)
 	if err != nil {
-		return "", nil, err
+		return core.TunnelGrant{}, err
 	}
 
 	// Restrict the user to reverse-tunneling only the allocated
 	// host:port combination. The regex anchors prevent the agent
 	// from binding arbitrary endpoints.
 	allowed := fmt.Sprintf("^R:%s:%d(:.*)?$", regexp.QuoteMeta(host), tunnelPort)
-	if err := srv.AddUser(agentID, pass, allowed); err != nil {
+	if err := srv.AddUser(user, pass, allowed); err != nil {
 		s.addrs.release(host)
-		return "", nil, err
+		return core.TunnelGrant{}, err
 	}
 
 	s.links[cluster] = core.Link{
 		Host:         host,
-		User:         agentID,
+		User:         user,
 		AgentVersion: agentVersion,
 	}
 
-	return fmt.Sprintf("%s:%d", host, tunnelPort), certPEM, nil
+	// agent_id no longer decides anything, but it is still the only
+	// record of which agent claimed the cluster.
+	s.log.Info("registered link",
+		"cluster", cluster,
+		"agent_id", agentID,
+		"agent_version", agentVersion,
+		"host", host,
+	)
+
+	return core.TunnelGrant{
+		Endpoint:    fmt.Sprintf("%s:%d", host, tunnelPort),
+		Certificate: certPEM,
+		User:        user,
+		Password:    pass,
+	}, nil
 }
 
 // DeregisterCluster removes a cluster's tunnel allocation, deleting
@@ -188,9 +204,4 @@ func (s *Service) ResolveAddress(_ context.Context, cluster string) (string, err
 	}
 
 	return fmt.Sprintf("http://%s:%d", entry.Host, tunnelPort), nil
-}
-
-// parseAuth splits a "user:pass" string into its components.
-func parseAuth(auth string) (user, pass string, ok bool) {
-	return strings.Cut(auth, ":")
 }

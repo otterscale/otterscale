@@ -461,15 +461,17 @@ func (b0 RegisterRequest_builder) Build() *RegisterRequest {
 // RegisterResponse contains a CA-signed certificate and the CA
 // certificate so the agent can establish an mTLS tunnel connection.
 type RegisterResponse struct {
-	state                    protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Endpoint      *string                `protobuf:"bytes,1,opt,name=endpoint"`
-	xxx_hidden_Certificate   []byte                 `protobuf:"bytes,2,opt,name=certificate"`
-	xxx_hidden_CaCertificate []byte                 `protobuf:"bytes,3,opt,name=ca_certificate,json=caCertificate"`
-	xxx_hidden_ServerVersion *string                `protobuf:"bytes,4,opt,name=server_version,json=serverVersion"`
-	XXX_raceDetectHookData   protoimpl.RaceDetectHookData
-	XXX_presence             [1]uint32
-	unknownFields            protoimpl.UnknownFields
-	sizeCache                protoimpl.SizeCache
+	state                     protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Endpoint       *string                `protobuf:"bytes,1,opt,name=endpoint"`
+	xxx_hidden_Certificate    []byte                 `protobuf:"bytes,2,opt,name=certificate"`
+	xxx_hidden_CaCertificate  []byte                 `protobuf:"bytes,3,opt,name=ca_certificate,json=caCertificate"`
+	xxx_hidden_ServerVersion  *string                `protobuf:"bytes,4,opt,name=server_version,json=serverVersion"`
+	xxx_hidden_TunnelUser     *string                `protobuf:"bytes,5,opt,name=tunnel_user,json=tunnelUser"`
+	xxx_hidden_TunnelPassword *string                `protobuf:"bytes,6,opt,name=tunnel_password,json=tunnelPassword"`
+	XXX_raceDetectHookData    protoimpl.RaceDetectHookData
+	XXX_presence              [1]uint32
+	unknownFields             protoimpl.UnknownFields
+	sizeCache                 protoimpl.SizeCache
 }
 
 func (x *RegisterResponse) Reset() {
@@ -531,9 +533,29 @@ func (x *RegisterResponse) GetServerVersion() string {
 	return ""
 }
 
+func (x *RegisterResponse) GetTunnelUser() string {
+	if x != nil {
+		if x.xxx_hidden_TunnelUser != nil {
+			return *x.xxx_hidden_TunnelUser
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *RegisterResponse) GetTunnelPassword() string {
+	if x != nil {
+		if x.xxx_hidden_TunnelPassword != nil {
+			return *x.xxx_hidden_TunnelPassword
+		}
+		return ""
+	}
+	return ""
+}
+
 func (x *RegisterResponse) SetEndpoint(v string) {
 	x.xxx_hidden_Endpoint = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 6)
 }
 
 func (x *RegisterResponse) SetCertificate(v []byte) {
@@ -541,7 +563,7 @@ func (x *RegisterResponse) SetCertificate(v []byte) {
 		v = []byte{}
 	}
 	x.xxx_hidden_Certificate = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 6)
 }
 
 func (x *RegisterResponse) SetCaCertificate(v []byte) {
@@ -549,12 +571,22 @@ func (x *RegisterResponse) SetCaCertificate(v []byte) {
 		v = []byte{}
 	}
 	x.xxx_hidden_CaCertificate = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 6)
 }
 
 func (x *RegisterResponse) SetServerVersion(v string) {
 	x.xxx_hidden_ServerVersion = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 6)
+}
+
+func (x *RegisterResponse) SetTunnelUser(v string) {
+	x.xxx_hidden_TunnelUser = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 6)
+}
+
+func (x *RegisterResponse) SetTunnelPassword(v string) {
+	x.xxx_hidden_TunnelPassword = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 6)
 }
 
 func (x *RegisterResponse) HasEndpoint() bool {
@@ -585,6 +617,20 @@ func (x *RegisterResponse) HasServerVersion() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
+func (x *RegisterResponse) HasTunnelUser() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
+}
+
+func (x *RegisterResponse) HasTunnelPassword() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 5)
+}
+
 func (x *RegisterResponse) ClearEndpoint() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_Endpoint = nil
@@ -605,6 +651,16 @@ func (x *RegisterResponse) ClearServerVersion() {
 	x.xxx_hidden_ServerVersion = nil
 }
 
+func (x *RegisterResponse) ClearTunnelUser() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	x.xxx_hidden_TunnelUser = nil
+}
+
+func (x *RegisterResponse) ClearTunnelPassword() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 5)
+	x.xxx_hidden_TunnelPassword = nil
+}
+
 type RegisterResponse_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
@@ -618,6 +674,19 @@ type RegisterResponse_builder struct {
 	// Agents compare this against their own version to decide whether a
 	// self-update is needed.
 	ServerVersion *string
+	// The tunnel user name assigned to this registration.
+	//
+	// The server assigns it rather than deriving it from anything the
+	// agent sent. Agents identify themselves by hostname, and two
+	// clusters running the same deployment produce the same hostname, so
+	// a name taken from the request would let one cluster's registration
+	// silently replace another's tunnel credentials.
+	TunnelUser *string
+	// The password for tunnel_user, generated fresh on every
+	// registration. It is issued here rather than derived from the
+	// certificate above, so that a value the agent already holds is
+	// never also the secret that authenticates it.
+	TunnelPassword *string
 }
 
 func (b0 RegisterResponse_builder) Build() *RegisterResponse {
@@ -625,20 +694,28 @@ func (b0 RegisterResponse_builder) Build() *RegisterResponse {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Endpoint != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 6)
 		x.xxx_hidden_Endpoint = b.Endpoint
 	}
 	if b.Certificate != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 6)
 		x.xxx_hidden_Certificate = b.Certificate
 	}
 	if b.CaCertificate != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 6)
 		x.xxx_hidden_CaCertificate = b.CaCertificate
 	}
 	if b.ServerVersion != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 6)
 		x.xxx_hidden_ServerVersion = b.ServerVersion
+	}
+	if b.TunnelUser != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 6)
+		x.xxx_hidden_TunnelUser = b.TunnelUser
+	}
+	if b.TunnelPassword != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 6)
+		x.xxx_hidden_TunnelPassword = b.TunnelPassword
 	}
 	return m0
 }
@@ -659,12 +736,15 @@ const file_link_v1_link_proto_rawDesc = "" +
 	"\x03csr\x18\x02 \x01(\fR\x03csr\x12\x19\n" +
 	"\bagent_id\x18\x03 \x01(\tR\aagentId\x12#\n" +
 	"\ragent_version\x18\x04 \x01(\tR\fagentVersion\x12'\n" +
-	"\x0fenrolment_token\x18\x05 \x01(\tR\x0eenrolmentToken\"\x9e\x01\n" +
+	"\x0fenrolment_token\x18\x05 \x01(\tR\x0eenrolmentToken\"\xe8\x01\n" +
 	"\x10RegisterResponse\x12\x1a\n" +
 	"\bendpoint\x18\x01 \x01(\tR\bendpoint\x12 \n" +
 	"\vcertificate\x18\x02 \x01(\fR\vcertificate\x12%\n" +
 	"\x0eca_certificate\x18\x03 \x01(\fR\rcaCertificate\x12%\n" +
-	"\x0eserver_version\x18\x04 \x01(\tR\rserverVersion2\xc2\x01\n" +
+	"\x0eserver_version\x18\x04 \x01(\tR\rserverVersion\x12\x1f\n" +
+	"\vtunnel_user\x18\x05 \x01(\tR\n" +
+	"tunnelUser\x12'\n" +
+	"\x0ftunnel_password\x18\x06 \x01(\tR\x0etunnelPassword2\xc2\x01\n" +
 	"\vLinkService\x12Z\n" +
 	"\tListLinks\x12$.otterscale.link.v1.ListLinksRequest\x1a%.otterscale.link.v1.ListLinksResponse\"\x00\x12W\n" +
 	"\bRegister\x12#.otterscale.link.v1.RegisterRequest\x1a$.otterscale.link.v1.RegisterResponse\"\x00B5Z3github.com/otterscale/otterscale/api/link/v1;linkv1b\beditionsp\xe8\a"
