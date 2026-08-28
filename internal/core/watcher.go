@@ -26,10 +26,19 @@ type WatchEvent struct {
 // k8s.io/apimachinery/pkg/watch.Interface in the domain layer,
 // keeping the core package free of client-go dependencies for watch
 // operations.
+//
+// Stop is the only signal an implementation gets that the consumer has
+// gone away, so it must be enough to release one that is mid-delivery.
+// A consumer stops receiving as soon as it gives up — a canceled
+// request context, a failed stream send — without draining what is
+// already in flight.
 type Watcher interface {
 	// ResultChan returns a channel that receives watch events.
 	// The channel is closed when the watch ends or Stop is called.
 	ResultChan() <-chan WatchEvent
 	// Stop terminates the watch and closes the result channel.
+	// Implementations must unblock a producer parked on a send that
+	// nobody will receive, and must tolerate being called more than
+	// once.
 	Stop()
 }
