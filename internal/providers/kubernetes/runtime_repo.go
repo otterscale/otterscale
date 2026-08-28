@@ -45,7 +45,7 @@ func NewRuntimeRepo(kubernetes *Kubernetes) core.RuntimeRepo {
 var _ core.RuntimeRepo = (*runtimeRepo)(nil)
 
 func (r *runtimeRepo) PodLogs(ctx context.Context, cluster, namespace, name string, opts core.PodLogOptions) (io.ReadCloser, error) {
-	clientset, err := r.clientset(ctx, cluster)
+	clientset, err := r.streamClientset(ctx, cluster)
 	if err != nil {
 		return nil, err
 	}
@@ -554,15 +554,17 @@ func (a *sizeQueueAdapter) Next() *remotecommand.TerminalSize {
 	return &remotecommand.TerminalSize{Width: s.Width, Height: s.Height}
 }
 
-// clientset builds a fresh impersonated typed clientset per request, because
-// each request may carry different impersonation credentials. The underlying
-// HTTP transport is cached per cluster in Kubernetes.roundTripper, so only the
-// Go-level wrapper is allocated — negligible against the API call latency.
-func (r *runtimeRepo) clientset(ctx context.Context, cluster string) (*kubernetes.Clientset, error) {
+// streamClientset builds a fresh impersonated typed Kubernetes
+// clientset with no HTTP timeout, for long-lived log streams
+// (follow=true). Every other request in this repo goes through
+// dynamicClient and keeps the default bound. Mirrors
+// resourceRepo.watchDynamicClient.
+func (r *runtimeRepo) streamClientset(ctx context.Context, cluster string) (*kubernetes.Clientset, error) {
 	config, err := r.kubernetes.impersonationConfig(ctx, cluster)
 	if err != nil {
 		return nil, err
 	}
+	config.Timeout = 0
 	cs, err := kubernetes.NewForConfig(config)
 	if err != nil {
 		return nil, &core.DomainError{Code: core.ErrorCodeInternal, Message: "create kubernetes clientset", Cause: err}
