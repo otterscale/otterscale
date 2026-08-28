@@ -28,20 +28,24 @@ type TerminalSizer interface {
 	Next() *TerminalSize
 }
 
-// TerminalSizeQueue is a buffered, concurrency-safe queue that
-// implements TerminalSizer. Resize events are enqueued via Set and
-// dequeued via Next.
+// TerminalSizeQueue is a concurrency-safe, single-slot mailbox that
+// implements TerminalSizer. Resize events are published via Set and
+// consumed via Next.
+//
+// It holds one size because a terminal has one size: anything still
+// waiting when a newer size arrives is already stale, and delivering it
+// first would only make the consumer apply a dimension the terminal no
+// longer has.
 type TerminalSizeQueue struct {
 	mu     sync.Mutex
 	ch     chan TerminalSize
 	closed bool
 }
 
-// terminalSizeQueueBuf is the buffer capacity for terminal resize events.
-const terminalSizeQueueBuf = 4
+// terminalSizeQueueBuf is the mailbox capacity: the latest size only.
+const terminalSizeQueueBuf = 1
 
-// NewTerminalSizeQueue returns a TerminalSizeQueue with a small buffer
-// so resize events can be sent without blocking.
+// NewTerminalSizeQueue returns an empty TerminalSizeQueue.
 func NewTerminalSizeQueue() *TerminalSizeQueue {
 	return &TerminalSizeQueue{ch: make(chan TerminalSize, terminalSizeQueueBuf)}
 }
@@ -56,10 +60,18 @@ func (q *TerminalSizeQueue) Next() *TerminalSize {
 	return &size
 }
 
-// Set enqueues a resize event. If the queue is full, the oldest event
-// is dropped to make room. A mutex prevents concurrent callers from
-// racing on the drain-then-push sequence. Calls after Close are
-// silently ignored to prevent a send-on-closed-channel panic.
+// Set publishes a resize event, replacing any size the consumer has not
+// taken yet. Calls after Close are silently ignored to prevent a
+// send-on-closed-channel panic.
+//
+// Every channel operation here is non-blocking, and that is the point.
+// Set runs under q.mu, which Close also needs; an earlier version used
+// a blocking receive to drop the oldest of a four-deep buffer, and a
+// consumer that drained the channel in between left Set parked on that
+// receive holding the lock. Close then blocked forever, and because it
+// is the first deferred call in the exec goroutine, so did every
+// close after it — the session's pipes stayed open, its Done channel
+// never fired, and the reaper could not collect it.
 func (q *TerminalSizeQueue) Set(width, height uint16) {
 	q.mu.Lock()
 	defer q.mu.Unlock()
@@ -68,12 +80,17 @@ func (q *TerminalSizeQueue) Set(width, height uint16) {
 		return
 	}
 
+	// Discard a stale pending size, if any, then publish. The send
+	// cannot fail: only Set fills the slot and it holds the lock, so
+	// nothing can refill what was just drained. The default guards the
+	// invariant rather than a reachable case.
+	select {
+	case <-q.ch:
+	default:
+	}
 	select {
 	case q.ch <- TerminalSize{Width: width, Height: height}:
 	default:
-		// Drop the oldest and push the new size.
-		<-q.ch
-		q.ch <- TerminalSize{Width: width, Height: height}
 	}
 }
 

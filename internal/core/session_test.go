@@ -2,6 +2,7 @@ package core
 
 import (
 	"testing"
+	"time"
 )
 
 func TestTerminalSizeQueue_SetAndNext(t *testing.T) {
@@ -17,24 +18,79 @@ func TestTerminalSizeQueue_SetAndNext(t *testing.T) {
 	}
 }
 
-func TestTerminalSizeQueue_OverflowDropsOldest(t *testing.T) {
+// TestTerminalSizeQueue_KeepsOnlyLatest pins the coalescing rule: a
+// terminal has one size, so a size the consumer has not taken yet is
+// stale the moment a newer one arrives.
+func TestTerminalSizeQueue_KeepsOnlyLatest(t *testing.T) {
 	q := NewTerminalSizeQueue()
 
-	// Fill the buffer (capacity 4).
-	for i := range uint16(4) {
+	for i := range uint16(5) {
 		q.Set(i, i)
 	}
-
-	// Push one more, which should drop the oldest (0x0).
 	q.Set(99, 99)
 
-	// The first dequeued element should be 1x1 (0x0 was dropped).
 	size := q.Next()
 	if size == nil {
 		t.Fatal("expected non-nil size")
 	}
-	if size.Width != 1 || size.Height != 1 {
-		t.Errorf("got %dx%d, want 1x1", size.Width, size.Height)
+	if size.Width != 99 || size.Height != 99 {
+		t.Errorf("got %dx%d, want 99x99", size.Width, size.Height)
+	}
+}
+
+// TestTerminalSizeQueue_SetNeverBlocks is the regression test for the
+// deadlock. Set runs under the same lock Close needs, so a Set that
+// blocks takes Close with it — and Close is the first deferred call in
+// the exec goroutine, so the whole session wedges: pipes stay open, Done
+// never fires, and the reaper cannot collect it.
+//
+// The old implementation dropped the oldest entry with a blocking
+// receive, which parked whenever a consumer emptied the channel between
+// the failed send and that receive. This drives Set and Next
+// concurrently to hit that interleaving, then checks that Close still
+// completes.
+func TestTerminalSizeQueue_SetNeverBlocks(t *testing.T) {
+	q := NewTerminalSizeQueue()
+
+	const rounds = 2000
+
+	consumerDone := make(chan struct{})
+	go func() {
+		defer close(consumerDone)
+		for q.Next() != nil { //nolint:revive // draining until the queue closes is the point
+		}
+	}()
+
+	producerDone := make(chan struct{})
+	go func() {
+		defer close(producerDone)
+		for i := range uint16(rounds) {
+			q.Set(i, i)
+		}
+	}()
+
+	select {
+	case <-producerDone:
+	case <-time.After(sessionTimeout):
+		t.Fatal("Set blocked: a resize parked while holding the queue lock")
+	}
+
+	closed := make(chan struct{})
+	go func() {
+		defer close(closed)
+		q.Close()
+	}()
+
+	select {
+	case <-closed:
+	case <-time.After(sessionTimeout):
+		t.Fatal("Close blocked: Set is still holding the queue lock")
+	}
+
+	select {
+	case <-consumerDone:
+	case <-time.After(sessionTimeout):
+		t.Fatal("Next did not return nil after Close")
 	}
 }
 
