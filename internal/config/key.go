@@ -18,9 +18,8 @@ const (
 	keyServerExternalTunnelURL = "server.external_tunnel_url"
 )
 
-// Viper keys for the enrolment secret. They are server-mode keys, but
-// live in their own group because the enrolment-token subcommand binds
-// them without the rest of the server flags.
+// Server-mode keys for the enrolment secret, grouped separately because the
+// enrolment-token subcommand binds them without the rest of the server flags.
 const (
 	keyServerEnrolmentSecret     = "server.enrolment_secret"      //nolint:gosec // configuration key name, not a credential
 	keyServerEnrolmentSecretFile = "server.enrolment_secret_file" //nolint:gosec // configuration key name, not a credential

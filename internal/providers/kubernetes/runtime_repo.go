@@ -32,25 +32,18 @@ import (
 	"github.com/otterscale/otterscale/internal/core"
 )
 
-// runtimeRepo implements core.RuntimeRepo by delegating to the
-// Kubernetes typed, dynamic, and streaming clients, accessed through
-// the tunnel.
+// runtimeRepo implements core.RuntimeRepo through the Kubernetes typed,
+// dynamic, and streaming clients, all reached through the tunnel.
 type runtimeRepo struct {
 	kubernetes *Kubernetes
 }
 
-// NewRuntimeRepo returns a core.RuntimeRepo backed by Kubernetes.
 func NewRuntimeRepo(kubernetes *Kubernetes) core.RuntimeRepo {
 	return &runtimeRepo{kubernetes: kubernetes}
 }
 
 var _ core.RuntimeRepo = (*runtimeRepo)(nil)
 
-// ---------------------------------------------------------------------------
-// PodLogs
-// ---------------------------------------------------------------------------
-
-// PodLogs opens a streaming log reader for a container.
 func (r *runtimeRepo) PodLogs(ctx context.Context, cluster, namespace, name string, opts core.PodLogOptions) (io.ReadCloser, error) {
 	clientset, err := r.clientset(ctx, cluster)
 	if err != nil {
@@ -80,11 +73,8 @@ func (r *runtimeRepo) PodLogs(ctx context.Context, cluster, namespace, name stri
 	return result, wrapK8sError(err)
 }
 
-// ---------------------------------------------------------------------------
-// Exec
-// ---------------------------------------------------------------------------
-
-// Exec starts an interactive exec session and blocks until it completes.
+// Exec blocks until the session completes, preferring WebSocket and falling
+// back to SPDY on an upgrade failure.
 func (r *runtimeRepo) Exec(ctx context.Context, cluster, namespace, name string, opts *core.ExecOptions) error {
 	config, err := r.kubernetes.streamConfig(ctx, cluster)
 	if err != nil {
@@ -142,10 +132,8 @@ func (r *runtimeRepo) Exec(ctx context.Context, cluster, namespace, name string,
 	return wrapExecError(executor.StreamWithContext(ctx, streamOpts))
 }
 
-// wrapExecError converts the result of a streaming exec into a domain
-// error. A non-zero exit status is reported as *core.ErrCommandExited
-// so that callers can tell "the command failed" apart from "the session
-// failed"; everything else goes through the usual Kubernetes mapping.
+// wrapExecError reports a non-zero exit status as *core.ErrCommandExited, so
+// callers can tell "the command failed" apart from "the session failed".
 func wrapExecError(err error) error {
 	if err == nil {
 		return nil
@@ -159,29 +147,21 @@ func wrapExecError(err error) error {
 	return wrapK8sError(err)
 }
 
-// ---------------------------------------------------------------------------
-// Scale
-// ---------------------------------------------------------------------------
-
-// UpdateScale sets the desired replica count via the /scale subresource.
 func (r *runtimeRepo) UpdateScale(ctx context.Context, cluster string, gvr schema.GroupVersionResource, namespace, name string, replicas int32) (int32, error) {
 	client, err := r.dynamicClient(ctx, cluster)
 	if err != nil {
 		return 0, err
 	}
 
-	// GET current scale
 	scaleObj, err := client.Resource(gvr).Namespace(namespace).Get(ctx, name, metav1.GetOptions{}, "scale")
 	if err != nil {
 		return 0, wrapK8sError(err)
 	}
 
-	// SET desired replicas
 	if err := unstructured.SetNestedField(scaleObj.Object, int64(replicas), "spec", "replicas"); err != nil {
 		return 0, &core.DomainError{Code: core.ErrorCodeInternal, Message: "set spec.replicas", Cause: err}
 	}
 
-	// UPDATE scale subresource
 	updated, err := client.Resource(gvr).Namespace(namespace).Update(ctx, scaleObj, metav1.UpdateOptions{}, "scale")
 	if err != nil {
 		return 0, wrapK8sError(err)
@@ -200,23 +180,16 @@ func (r *runtimeRepo) UpdateScale(ctx context.Context, cluster string, gvr schem
 	return int32(newReplicas), nil
 }
 
-// ---------------------------------------------------------------------------
-// Restart
-// ---------------------------------------------------------------------------
-
-// Restart triggers a rolling restart by patching the pod template
-// annotation with kubectl.kubernetes.io/restartedAt, equivalent to
-// `kubectl rollout restart`.
+// Restart patches the pod template's kubectl.kubernetes.io/restartedAt
+// annotation, the equivalent of `kubectl rollout restart`.
 func (r *runtimeRepo) Restart(ctx context.Context, cluster string, gvr schema.GroupVersionResource, namespace, name string) error {
 	client, err := r.dynamicClient(ctx, cluster)
 	if err != nil {
 		return err
 	}
 
-	// time.Now is used directly (not injected) because the annotation
-	// value only needs to differ from the previous value to trigger a
-	// rolling update — its exact timestamp is not significant for
-	// correctness or testability.
+	// time.Now is not injected: the annotation only has to differ from the
+	// previous value to trigger a rolling update.
 	patchData := map[string]any{
 		"spec": map[string]any{
 			"template": map[string]any{
@@ -237,13 +210,6 @@ func (r *runtimeRepo) Restart(ctx context.Context, cluster string, gvr schema.Gr
 	return wrapK8sError(err)
 }
 
-// ---------------------------------------------------------------------------
-// PortForward
-// ---------------------------------------------------------------------------
-
-// PortForward opens a port-forward session via SPDY and copies data
-// bidirectionally between the caller's stdin/stdout and the pod.
-// It waits for both copy directions to complete before returning.
 func (r *runtimeRepo) PortForward(ctx context.Context, cluster, namespace, name string, opts core.PortForwardOptions) error {
 	config, err := r.kubernetes.streamConfig(ctx, cluster)
 	if err != nil {
@@ -276,21 +242,19 @@ func (r *runtimeRepo) PortForward(ctx context.Context, cluster, namespace, name 
 	return r.runPortForwardStreams(ctx, streamConn, opts)
 }
 
-// runPortForwardStreams creates SPDY streams for the port-forward
-// session and copies data bidirectionally. It returns as soon as one
-// direction finishes or ctx is canceled, closing the connection so the
-// other direction unwinds too.
+// runPortForwardStreams copies bidirectionally over SPDY streams, returning as
+// soon as one direction finishes or ctx is canceled and closing the connection
+// so the other unwinds too.
 //
 // As in copyVNCBidirectional, the copy goroutines are not joined: the
 // "client → pod" direction blocks on the session's stdin pipe, which
-// core.StartPortForward only closes after this function has returned.
-// Each goroutine reports at most one result on the buffered channel, so
-// none of them can block on a send.
+// core.StartPortForward only closes after this function has returned. Each
+// goroutine reports at most one result on the buffered channel, so none can
+// block on a send.
 func (r *runtimeRepo) runPortForwardStreams(ctx context.Context, streamConn httpstream.Connection, opts core.PortForwardOptions) error {
 	portStr := strconv.FormatInt(int64(opts.Port), 10)
 	requestID := "0"
 
-	// Create error stream.
 	errorHeaders := http.Header{}
 	errorHeaders.Set(corev1.StreamType, corev1.StreamTypeError)
 	errorHeaders.Set(corev1.PortHeader, portStr)
@@ -302,7 +266,6 @@ func (r *runtimeRepo) runPortForwardStreams(ctx context.Context, streamConn http
 	}
 	defer errorStream.Close()
 
-	// Create data stream.
 	dataHeaders := http.Header{}
 	dataHeaders.Set(corev1.StreamType, corev1.StreamTypeData)
 	dataHeaders.Set(corev1.PortHeader, portStr)
@@ -314,13 +277,12 @@ func (r *runtimeRepo) runPortForwardStreams(ctx context.Context, streamConn http
 	}
 	defer dataStream.Close()
 
-	// kubelet refuses a forward ("unable to do port forwarding: socat
-	// not found") on the error stream and then says nothing more.
-	// Tearing down the data stream is what makes the copy loops below
-	// return, but the error they produce describes a closed stream, not
-	// the reason — so the message is captured here and preferred over
-	// theirs. The send happens before the teardown, so by the time a
-	// copy loop reports, this value is already buffered.
+	// kubelet refuses a forward ("unable to do port forwarding: socat not
+	// found") on the error stream and then says nothing more. Tearing down the
+	// data stream is what makes the copy loops below return, but the error they
+	// produce describes a closed stream, not the reason — so the message is
+	// captured here and preferred over theirs. The send happens before the
+	// teardown, so by the time a copy loop reports, this value is buffered.
 	kubeletErr := make(chan error, 1)
 	go func() {
 		const errorBufSize = 1024
@@ -366,18 +328,10 @@ func (r *runtimeRepo) runPortForwardStreams(ctx context.Context, streamConn http
 	return firstErr
 }
 
-// portForwardProtocolV1 is the subprotocol used for Kubernetes port
-// forwarding over SPDY.
 const portForwardProtocolV1 = "portforward.k8s.io"
 
-// ---------------------------------------------------------------------------
-// SubResourceAction
-// ---------------------------------------------------------------------------
-
-// SubResourceAction invokes a PUT or POST action on a named
-// subresource. This covers use-cases like KubeVirt VM
-// start/stop/restart/migrate where the API server exposes
-// state-transition endpoints as subresources.
+// SubResourceAction covers cases like KubeVirt VM start/stop/restart/migrate,
+// where the API server exposes state transitions as subresources.
 func (r *runtimeRepo) SubResourceAction(ctx context.Context, cluster string, gvr schema.GroupVersionResource,
 	namespace, name, subresource, method string, body []byte,
 ) (map[string]any, error) {
@@ -386,9 +340,9 @@ func (r *runtimeRepo) SubResourceAction(ctx context.Context, cluster string, gvr
 		return nil, err
 	}
 
-	// Use dynamic.ConfigFor to get the unstructured JSON serializer that
-	// CRD API servers (e.g. KubeVirt) require — scheme.Codecs only handles
-	// built-in types and breaks content negotiation for custom resources.
+	// dynamic.ConfigFor supplies the unstructured JSON serializer that CRD API
+	// servers (e.g. KubeVirt) require — scheme.Codecs only handles built-in
+	// types and breaks content negotiation for custom resources.
 	config = dynamic.ConfigFor(config)
 	config.AcceptContentTypes = "*/*"
 	config.GroupVersion = &schema.GroupVersion{Group: gvr.Group, Version: gvr.Version}
@@ -439,15 +393,9 @@ func (r *runtimeRepo) SubResourceAction(ctx context.Context, cluster string, gvr
 	return result, nil
 }
 
-// ---------------------------------------------------------------------------
-// VNC
-// ---------------------------------------------------------------------------
-
 // vncChunkSize is the read buffer size for VNC data from the client.
 const vncChunkSize = 32 * 1024
 
-// VNC opens a VNC WebSocket session to a KubeVirt VMI and copies data
-// bidirectionally until the context is canceled or the connection closes.
 func (r *runtimeRepo) VNC(ctx context.Context, cluster, namespace, name string, opts core.VNCOptions) error {
 	config, err := r.kubernetes.streamConfig(ctx, cluster)
 	if err != nil {
@@ -467,16 +415,15 @@ func (r *runtimeRepo) VNC(ctx context.Context, cluster, namespace, name string, 
 //
 //	/apis/subresources.kubevirt.io/v1/namespaces/{ns}/virtualmachineinstances/{name}/vnc
 //
-// The namespace and name are escaped rather than interpolated raw: they
-// arrive from the request, and a value carrying "/" or ".." would
-// otherwise reshape the path into a different API endpoint.
+// Namespace and name are escaped rather than interpolated raw: they arrive from
+// the request, and a value carrying "/" or ".." would otherwise reshape the
+// path into a different API endpoint.
 func vncURL(host, namespace, name string) string {
 	return fmt.Sprintf("%s/apis/subresources.kubevirt.io/v1/namespaces/%s/virtualmachineinstances/%s/vnc",
 		host, url.PathEscape(namespace), url.PathEscape(name))
 }
 
-// dialVNCWebSocket dials the KubeVirt VNC WebSocket endpoint with
-// impersonation headers derived from the rest.Config.
+// dialVNCWebSocket dials with impersonation headers derived from the rest.Config.
 func (r *runtimeRepo) dialVNCWebSocket(ctx context.Context, config *rest.Config, rawURL string) (*websocket.Conn, error) {
 	u, err := url.Parse(rawURL)
 	if err != nil {
@@ -520,25 +467,21 @@ func (r *runtimeRepo) dialVNCWebSocket(ctx context.Context, config *rest.Config,
 	return conn, nil
 }
 
-// vncConn is the subset of *websocket.Conn used by the VNC copy loop.
-// Depending on an interface keeps the copy logic testable without a
-// live WebSocket server.
+// vncConn is the subset of *websocket.Conn the copy loop uses, so the loop can
+// be tested without a live WebSocket server.
 type vncConn interface {
 	ReadMessage() (messageType int, p []byte, err error)
 	WriteMessage(messageType int, data []byte) error
 	Close() error
 }
 
-// copyVNCBidirectional copies data between the WebSocket connection
-// and the VNC session's stdin/stdout pipes. It returns as soon as one
-// direction finishes or ctx is canceled, closing the connection so the
-// other direction unwinds too.
+// copyVNCBidirectional returns as soon as one direction finishes or ctx is
+// canceled, closing the connection so the other unwinds too.
 //
-// Each direction reports at most one result on the buffered channel, so
-// neither goroutine can block on a send. They are deliberately not
-// joined: the stdin direction blocks on the session's pipe, which
-// core.StartVNC only closes after this function has returned, so
-// waiting for it here would deadlock.
+// Each direction reports at most one result on the buffered channel, so neither
+// goroutine can block on a send. They are deliberately not joined: the stdin
+// direction blocks on the session's pipe, which core.StartVNC only closes after
+// this function has returned, so waiting for it here would deadlock.
 func (r *runtimeRepo) copyVNCBidirectional(ctx context.Context, wsConn vncConn, opts core.VNCOptions) error {
 	errCh := make(chan error, 2)
 
@@ -588,8 +531,7 @@ func (r *runtimeRepo) copyVNCBidirectional(ctx context.Context, wsConn vncConn, 
 	return firstErr
 }
 
-// vncCloseError maps a WebSocket read error to the result reported for
-// that direction: a graceful close by the peer is not a failure.
+// vncCloseError treats a graceful close by the peer as success.
 func vncCloseError(err error) error {
 	if websocket.IsCloseError(err, websocket.CloseNormalClosure, websocket.CloseGoingAway) {
 		return nil
@@ -597,13 +539,9 @@ func vncCloseError(err error) error {
 	return err
 }
 
-// ---------------------------------------------------------------------------
-// Terminal size adapter
-// ---------------------------------------------------------------------------
-
-// sizeQueueAdapter bridges the domain core.TerminalSizer interface to
-// the remotecommand.TerminalSizeQueue interface required by streaming
-// executors. This keeps the domain layer free of client-go dependencies.
+// sizeQueueAdapter bridges core.TerminalSizer to the
+// remotecommand.TerminalSizeQueue the streaming executors need, keeping the
+// domain layer free of client-go.
 type sizeQueueAdapter struct {
 	inner core.TerminalSizer
 }
@@ -616,16 +554,10 @@ func (a *sizeQueueAdapter) Next() *remotecommand.TerminalSize {
 	return &remotecommand.TerminalSize{Width: s.Width, Height: s.Height}
 }
 
-// ---------------------------------------------------------------------------
-// Client helpers
-// ---------------------------------------------------------------------------
-
-// clientset builds a fresh impersonated typed Kubernetes clientset for
-// the given cluster. A new clientset is created per request because
-// each request may carry different impersonation credentials (user
-// subject + groups). The underlying HTTP transport is cached
-// per-cluster in Kubernetes.roundTripper, so only the Go-level wrapper
-// is allocated — negligible compared to the actual API call latency.
+// clientset builds a fresh impersonated typed clientset per request, because
+// each request may carry different impersonation credentials. The underlying
+// HTTP transport is cached per cluster in Kubernetes.roundTripper, so only the
+// Go-level wrapper is allocated — negligible against the API call latency.
 func (r *runtimeRepo) clientset(ctx context.Context, cluster string) (*kubernetes.Clientset, error) {
 	config, err := r.kubernetes.impersonationConfig(ctx, cluster)
 	if err != nil {
@@ -638,9 +570,7 @@ func (r *runtimeRepo) clientset(ctx context.Context, cluster string) (*kubernete
 	return cs, nil
 }
 
-// dynamicClient builds a fresh impersonated dynamic client for the
-// given cluster. See clientset for the rationale on per-request
-// client creation.
+// dynamicClient: see clientset for the per-request rationale.
 func (r *runtimeRepo) dynamicClient(ctx context.Context, cluster string) (*dynamic.DynamicClient, error) {
 	config, err := r.kubernetes.impersonationConfig(ctx, cluster)
 	if err != nil {

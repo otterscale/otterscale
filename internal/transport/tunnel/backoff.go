@@ -7,9 +7,8 @@ import (
 	"time"
 )
 
-// isAuthErr detects authentication-related errors from chisel by
-// inspecting the error message. This is necessary because chisel does
-// not expose typed errors for auth failures.
+// isAuthErr matches on the message because chisel exposes no typed auth
+// errors.
 func isAuthErr(err error) bool {
 	msg := strings.ToLower(err.Error())
 	return strings.Contains(msg, "unable to authenticate") ||
@@ -19,8 +18,7 @@ func isAuthErr(err error) bool {
 		strings.Contains(msg, "invalid auth")
 }
 
-// sleepCtx blocks for d or until ctx is done.
-// Returns true if the sleep completed (context still alive).
+// sleepCtx returns true if the full delay elapsed, false if ctx ended it.
 func sleepCtx(ctx context.Context, d time.Duration) bool {
 	t := time.NewTimer(d)
 	defer t.Stop()
@@ -33,7 +31,6 @@ func sleepCtx(ctx context.Context, d time.Duration) bool {
 	}
 }
 
-// backoff implements simple exponential backoff capped at a maximum.
 type backoff struct {
 	base    time.Duration
 	max     time.Duration
@@ -44,13 +41,11 @@ func newBackoff(base, maxInterval time.Duration) *backoff {
 	return &backoff{base: base, max: maxInterval, current: base}
 }
 
-// Next returns a jittered delay based on the current backoff interval,
-// then doubles the interval for the next call. Full jitter (uniform
-// random between 0 and current) prevents thundering-herd effects when
-// multiple agents reconnect simultaneously after a server restart.
+// Next returns a jittered delay, then doubles the interval. Full jitter —
+// uniform random in [0, current] — is what keeps agents from reconnecting in
+// lockstep after a server restart.
 func (b *backoff) Next() time.Duration {
 	d := b.current
-	// Full jitter: uniform random in [0, current].
 	jittered := time.Duration(rand.Int64N(int64(d) + 1)) //nolint:gosec // weak random is intentional for jitter
 	if next := b.current * 2; next > b.max {
 		b.current = b.max
@@ -60,7 +55,6 @@ func (b *backoff) Next() time.Duration {
 	return jittered
 }
 
-// Reset sets the delay back to the base value.
 func (b *backoff) Reset() {
 	b.current = b.base
 }

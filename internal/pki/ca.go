@@ -23,22 +23,20 @@ import (
 	"time"
 )
 
-// certValidity is the default validity period for agent certificates
-// signed by the CA. Short-lived certificates limit the blast radius
-// of a compromised key and avoid the need for explicit revocation.
+// certValidity is short so a compromised key has a small blast radius and no
+// revocation machinery is needed.
 const certValidity = 24 * time.Hour
 
-// CA holds a self-signed certificate authority key pair and provides
-// methods for signing CSRs and generating server certificates.
+// CA is a self-signed certificate authority that signs CSRs and issues server
+// certificates.
 type CA struct {
 	cert    *x509.Certificate
 	key     *ecdsa.PrivateKey
 	certPEM []byte
 }
 
-// NewCA generates a new ECDSA P-256 CA key pair and self-signed
-// certificate using crypto/rand.Reader. In FIPS 140-3 mode the
-// reader is backed by a NIST SP 800-90A DRBG.
+// NewCA generates an ECDSA P-256 key pair and self-signed certificate from
+// crypto/rand.Reader.
 func NewCA() (*CA, error) {
 	key, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
 	if err != nil {
@@ -80,8 +78,7 @@ func NewCA() (*CA, error) {
 	return &CA{cert: cert, key: key, certPEM: certPEM}, nil
 }
 
-// CertPEM returns the PEM-encoded CA certificate. Agents use this to
-// verify the tunnel server's identity and to be verified themselves.
+// CertPEM lets agents verify the tunnel server and be verified themselves.
 func (ca *CA) CertPEM() []byte {
 	return ca.certPEM
 }
@@ -93,11 +90,8 @@ func (ca *CA) CertPEM() []byte {
 // the server's, and they belong to different error codes.
 var ErrInvalidCSR = errors.New("pki: invalid CSR")
 
-// SignCSR validates a PEM-encoded PKCS#10 certificate signing request
-// and returns a PEM-encoded X.509 certificate signed by the CA. The
-// certificate is valid for the default certValidity period.
-//
-// Failures that the request caused wrap ErrInvalidCSR; anything else
+// SignCSR validates a PKCS#10 request and returns a certificate valid for
+// certValidity. Failures the request caused wrap ErrInvalidCSR; anything else
 // means the CA itself could not produce a certificate.
 func (ca *CA) SignCSR(csrPEM []byte) ([]byte, error) {
 	block, _ := pem.Decode(csrPEM)
@@ -137,9 +131,8 @@ func (ca *CA) SignCSR(csrPEM []byte) ([]byte, error) {
 	return pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE", Bytes: certDER}), nil
 }
 
-// GenerateServerCert creates a TLS server certificate signed by the
-// CA. The hosts parameter accepts IP addresses and DNS names that are
-// added as Subject Alternative Names.
+// GenerateServerCert adds each host — IP address or DNS name — as a Subject
+// Alternative Name.
 func (ca *CA) GenerateServerCert(hosts ...string) (certPEM, keyPEM []byte, err error) {
 	key, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
 	if err != nil {
@@ -187,8 +180,8 @@ func (ca *CA) GenerateServerCert(hosts ...string) (certPEM, keyPEM []byte, err e
 	return certPEM, keyPEM, nil
 }
 
-// GenerateKey creates a new ECDSA P-256 private key suitable for use
-// in a CSR. It returns the key and its PEM encoding.
+// GenerateKey returns an ECDSA P-256 private key and its PEM encoding, for use
+// in a CSR.
 func GenerateKey() (*ecdsa.PrivateKey, []byte, error) {
 	key, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
 	if err != nil {
@@ -204,8 +197,7 @@ func GenerateKey() (*ecdsa.PrivateKey, []byte, error) {
 	return key, keyPEM, nil
 }
 
-// GenerateCSR creates a PEM-encoded PKCS#10 certificate signing
-// request with the given common name.
+// GenerateCSR builds a PKCS#10 request with the given common name.
 func GenerateCSR(key *ecdsa.PrivateKey, cn string) ([]byte, error) {
 	tmpl := &x509.CertificateRequest{
 		Subject: pkix.Name{
@@ -227,13 +219,11 @@ const tunnelPasswordBytes = 24
 
 // NewTunnelPassword returns a fresh random password for a tunnel user.
 //
-// It replaces an earlier scheme that derived the password from the
-// signed certificate so that both sides could compute it without
-// exchanging it. That coupled the two sides to an identical derivation
-// and, more importantly, made the secret a function of a value the
-// agent already holds and presents on the wire. The server now issues
-// the password in the registration response instead, so it can be
-// random and need not be reproducible.
+// An earlier scheme derived it from the signed certificate so both sides could
+// compute it without exchanging it. That coupled them to an identical
+// derivation and, worse, made the secret a function of a value the agent
+// already holds and presents on the wire. The server now issues the password in
+// the registration response, so it need not be reproducible.
 func NewTunnelPassword() (string, error) {
 	buf := make([]byte, tunnelPasswordBytes)
 	if _, err := rand.Read(buf); err != nil {
@@ -242,11 +232,6 @@ func NewTunnelPassword() (string, error) {
 	return base64.RawURLEncoding.EncodeToString(buf), nil
 }
 
-// ---------------------------------------------------------------------------
-// Internal helpers
-// ---------------------------------------------------------------------------
-
-// randomSerial generates a cryptographically random serial number.
 func randomSerial() (*big.Int, error) {
 	const serialBits = 128 // 128-bit random serial number
 	serial, err := rand.Int(rand.Reader, new(big.Int).Lsh(big.NewInt(1), serialBits))

@@ -13,15 +13,13 @@ import (
 	"github.com/otterscale/otterscale/internal/core"
 )
 
-// LinkService implements the Link gRPC service. It handles cluster
-// listing and agent registration.
+// LinkService handles cluster listing and agent registration.
 type LinkService struct {
 	pb.UnimplementedLinkServiceHandler
 
 	link *core.LinkUseCase
 }
 
-// NewLinkService returns a LinkService backed by the given use-case.
 func NewLinkService(link *core.LinkUseCase) *LinkService {
 	return &LinkService{
 		link: link,
@@ -30,8 +28,7 @@ func NewLinkService(link *core.LinkUseCase) *LinkService {
 
 var _ pb.LinkServiceHandler = (*LinkService)(nil)
 
-// ListLinks returns the names of all clusters that have a
-// registered agent.
+// ListLinks returns every cluster with a registered agent.
 func (s *LinkService) ListLinks(ctx context.Context, _ *pb.ListLinksRequest) (*pb.ListLinksResponse, error) {
 	links := s.link.ListLinks(ctx)
 
@@ -40,9 +37,8 @@ func (s *LinkService) ListLinks(ctx context.Context, _ *pb.ListLinksRequest) (*p
 	return resp, nil
 }
 
-// Register validates and signs the agent's CSR, allocates a tunnel
-// endpoint, and returns the signed certificate together with the CA
-// certificate for mTLS. The response includes the server version for
+// Register signs the agent's CSR, allocates a tunnel endpoint, and returns the
+// certificate with the CA certificate for mTLS, plus the server version for
 // diagnostics.
 func (s *LinkService) Register(ctx context.Context, req *pb.RegisterRequest) (*pb.RegisterResponse, error) {
 	reg, err := s.link.RegisterCluster(ctx, &core.RegistrationRequest{
@@ -66,9 +62,7 @@ func (s *LinkService) Register(ctx context.Context, req *pb.RegisterRequest) (*p
 	return resp, nil
 }
 
-// toProtoLinks converts a map of cluster names to Link domain
-// objects into a sorted slice of protobuf Link messages. Results
-// are sorted by name to ensure deterministic ordering.
+// toProtoLinks sorts by cluster name, for deterministic ordering.
 func toProtoLinks(m map[string]core.Link) []*pb.Link {
 	ret := make([]*pb.Link, 0, len(m))
 	for cluster, link := range m {
@@ -80,8 +74,6 @@ func toProtoLinks(m map[string]core.Link) []*pb.Link {
 	return ret
 }
 
-// toProtoLink converts a cluster name and its domain object into a
-// protobuf Link message.
 func toProtoLink(cluster string, link core.Link) *pb.Link {
 	ret := &pb.Link{}
 	ret.SetCluster(cluster)

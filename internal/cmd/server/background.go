@@ -9,19 +9,15 @@ import (
 	"github.com/otterscale/otterscale/internal/core"
 )
 
-// sessionReapInterval is the interval at which the session reaper
-// scans for and removes stale sessions.
+// sessionReapInterval is how often stale sessions are swept.
 const sessionReapInterval = 30 * time.Second
 
-// cacheEvictionInterval is the interval at which the discovery cache
-// evictor removes expired schema and version entries.
+// cacheEvictionInterval is how often expired cache entries are removed.
 const cacheEvictionInterval = 5 * time.Minute
 
-// ProvideBackgroundListeners constructs the background transport
-// listeners (session reaper, cache evictor) that participate in the
-// server's managed lifecycle. The CacheEvictor interface decouples
-// this function from the concrete cache implementation, keeping the
-// application layer free of infrastructure dependencies.
+// ProvideBackgroundListeners builds the session reaper and cache evictor that
+// join the server's managed lifecycle. Taking evictor as an interface keeps the
+// application layer off the concrete cache implementation.
 func ProvideBackgroundListeners(runtime *core.RuntimeUseCase, evictor core.CacheEvictor) BackgroundListeners {
 	return BackgroundListeners{
 		&sessionReaperListener{runtime: runtime},
@@ -30,8 +26,7 @@ func ProvideBackgroundListeners(runtime *core.RuntimeUseCase, evictor core.Cache
 }
 
 // sessionReaperListener adapts RuntimeUseCase.StartSessionReaper to
-// the transport.Listener interface so it participates in the managed
-// lifecycle alongside other servers.
+// transport.Listener.
 type sessionReaperListener struct {
 	runtime *core.RuntimeUseCase
 }
@@ -45,9 +40,7 @@ func (l *sessionReaperListener) Stop(_ context.Context) error {
 	return nil // reaper stops when its context is canceled
 }
 
-// cacheEvictorListener adapts a CacheEvictor to the
-// transport.Listener interface so it participates in the managed
-// lifecycle alongside other servers.
+// cacheEvictorListener adapts a CacheEvictor to transport.Listener.
 type cacheEvictorListener struct {
 	cache core.CacheEvictor
 }
@@ -61,10 +54,9 @@ func (l *cacheEvictorListener) Stop(_ context.Context) error {
 	return nil // evictor stops when its context is canceled
 }
 
-// ProvideEnrolment builds the enrolment verifier from configuration.
-// It fails when no secret is configured: the registration endpoint is
-// reachable without authentication, so a server without a secret would
-// let any caller claim, and take over, any cluster.
+// ProvideEnrolment fails when no secret is configured: the registration
+// endpoint is reachable without authentication, so a server without one would
+// let any caller claim — and take over — any cluster.
 func ProvideEnrolment(conf *config.Config) (*core.Enrolment, error) {
 	secret, err := conf.ServerEnrolmentSecret()
 	if err != nil {

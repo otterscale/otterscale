@@ -8,47 +8,39 @@ import (
 )
 
 const (
-	// healthCheckInterval is how often the health check probes every
-	// registered cluster's tunnel endpoint.
+	// healthCheckInterval is how often every registered endpoint is probed.
 	healthCheckInterval = 15 * time.Second
 
-	// healthDialTimeout is the TCP dial timeout used when probing a
-	// cluster's tunnel endpoint.
+	// healthDialTimeout bounds a single TCP probe.
 	healthDialTimeout = 2 * time.Second
 
-	// healthFailThreshold is the number of consecutive probe failures
-	// required before a cluster is automatically deregistered.
+	// healthFailThreshold is how many consecutive failures deregister a cluster.
 	healthFailThreshold = 3
 )
 
-// HealthCheckListener wraps the Service's health check loop as a
-// transport.Listener so that it participates in the same errgroup
-// lifecycle as the HTTP and tunnel servers. This ensures panics are
-// caught and graceful shutdown is coordinated.
+// HealthCheckListener wraps the health check loop as a transport.Listener, so
+// it shares the errgroup lifecycle — and the panic handling and coordinated
+// shutdown that come with it — with the HTTP and tunnel servers.
 type HealthCheckListener struct {
 	service *Service
 }
 
-// NewHealthCheckListener returns a listener that runs periodic health
-// checks against registered tunnel endpoints.
 func NewHealthCheckListener(service *Service) *HealthCheckListener {
 	return &HealthCheckListener{service: service}
 }
 
-// Start runs the health check loop, blocking until ctx is canceled.
 func (h *HealthCheckListener) Start(ctx context.Context) error {
 	h.service.runHealthCheck(ctx)
 	return nil
 }
 
-// Stop is a no-op; the health check loop exits when its context is
-// canceled.
+// Stop is a no-op: the loop exits when its context is canceled.
 func (h *HealthCheckListener) Stop(_ context.Context) error {
 	return nil
 }
 
-// clusterSnapshot returns a copy of the cluster-to-host mapping so
-// that health checks can iterate without holding the lock.
+// clusterSnapshot copies the cluster-to-host mapping, so health checks can
+// iterate without holding the lock.
 func (s *Service) clusterSnapshot() map[string]string {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
@@ -60,11 +52,9 @@ func (s *Service) clusterSnapshot() map[string]string {
 	return snapshot
 }
 
-// runHealthCheck periodically probes every registered cluster's
-// tunnel endpoint via TCP dial. Clusters that fail healthFailThreshold
-// consecutive probes are automatically deregistered.
-//
-// The method blocks until ctx is canceled.
+// runHealthCheck TCP-dials every registered endpoint, deregistering clusters
+// that fail healthFailThreshold consecutive probes. It blocks until ctx is
+// canceled.
 func (s *Service) runHealthCheck(ctx context.Context) {
 	ticker := time.NewTicker(healthCheckInterval)
 	defer ticker.Stop()
@@ -82,13 +72,11 @@ func (s *Service) runHealthCheck(ctx context.Context) {
 	}
 }
 
-// checkClusters performs a single round of health checks across all
-// registered clusters. failCounts is mutated in place to track
-// consecutive failures per cluster.
+// checkClusters runs one round, mutating failCounts in place.
 func (s *Service) checkClusters(ctx context.Context, dialer *net.Dialer, failCounts map[string]int) {
 	snapshot := s.clusterSnapshot()
 
-	// Clean up failCounts for clusters that are no longer registered.
+	// Drop counts for clusters that are no longer registered.
 	for name := range failCounts {
 		if _, ok := snapshot[name]; !ok {
 			delete(failCounts, name)
@@ -109,7 +97,7 @@ func (s *Service) checkClusters(ctx context.Context, dialer *net.Dialer, failCou
 			continue
 		}
 
-		// Don't count context cancellation as a probe failure.
+		// Cancellation is not a probe failure.
 		if ctx.Err() != nil {
 			return
 		}
@@ -123,9 +111,8 @@ func (s *Service) checkClusters(ctx context.Context, dialer *net.Dialer, failCou
 		)
 
 		if failCounts[cluster] >= healthFailThreshold {
-			// Verify the host hasn't changed since the snapshot was
-			// taken. A concurrent re-registration would assign a new
-			// host; deregistering in that case would be incorrect.
+			// A concurrent re-registration would have assigned a new host,
+			// and deregistering that would be wrong.
 			s.mu.RLock()
 			current, exists := s.links[cluster]
 			s.mu.RUnlock()

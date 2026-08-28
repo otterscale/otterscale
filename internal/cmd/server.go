@@ -9,14 +9,11 @@ import (
 	"github.com/otterscale/otterscale/internal/config"
 )
 
-// ServerInjector is a Wire-generated factory that creates a fully
-// wired Server together with a cleanup function.
+// ServerInjector is the Wire-generated Server factory, with its cleanup.
 type ServerInjector func() (*server.Server, func(), error)
 
-// NewServerCommand returns the "server" Cobra subcommand. The injector
-// is called lazily inside RunE so that expensive initialisation (OIDC
-// provider discovery, etc.) only happens when the command actually
-// executes.
+// NewServerCommand calls the injector lazily inside RunE, so expensive setup
+// such as OIDC provider discovery only happens when the command runs.
 func NewServerCommand(conf *config.Config, newServer ServerInjector) (*cobra.Command, error) {
 	cmd := &cobra.Command{
 		Use:   "server",

@@ -100,7 +100,6 @@ func TestDomainErrorToConnectError_UnknownError(t *testing.T) {
 }
 
 func TestDomainCodeToConnectCode_Completeness(t *testing.T) {
-	// Verify the map has entries for all defined error codes.
 	if len(domainCodeToConnectCode) < 11 {
 		t.Errorf("expected at least 11 domain code mappings, got %d", len(domainCodeToConnectCode))
 	}

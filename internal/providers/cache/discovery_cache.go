@@ -1,7 +1,6 @@
-// Package cache provides TTL-based caching infrastructure for
-// Kubernetes discovery data. It lives in the providers layer because
-// caching is an infrastructure concern — the domain layer
-// (internal/core) only defines the SchemaResolver interface.
+// Package cache provides TTL-based caching for Kubernetes discovery data. It
+// lives in the providers layer because caching is an infrastructure concern —
+// internal/core only defines the SchemaResolver interface.
 package cache
 
 import (
@@ -20,35 +19,28 @@ import (
 	"github.com/otterscale/otterscale/internal/core"
 )
 
-// DefaultTTL is the default TTL for cached OpenAPI schemas.
-// Exported so that the DI layer can use it when constructing a
+// DefaultTTL is exported for the DI layer to use when constructing a
 // DiscoveryCache.
 const DefaultTTL = 10 * time.Minute
 
-// defaultMaxGVEntries is the upper bound on the number of cached
-// group/version entries. Each entry holds every kind in that
-// group/version, so the bound on actual kinds cached is much higher
+// defaultMaxGVEntries bounds cached group/version entries. Each entry holds
+// every kind in that group/version, so the bound on kinds cached is much higher
 // than this number suggests.
 const defaultMaxGVEntries = 1024
 
-// ttlJitterFraction is the maximum random jitter applied to an entry's
-// TTL, as a fraction of the configured TTL. Spreading expirations
-// prevents a thundering-herd cache stampede when many entries are
-// populated in the same burst.
+// ttlJitterFraction is the maximum random jitter applied to an entry's TTL, as
+// a fraction of it. Spreading expirations prevents a cache stampede when many
+// entries are populated in the same burst.
 const ttlJitterFraction = 0.2
 
-// DiscoveryCache provides TTL-based caching with singleflight
-// deduplication for OpenAPI schemas. It implements
-// core.SchemaResolver and core.CacheEvictor, and reduces redundant
-// discovery API calls when multiple concurrent requests target the
-// same cluster.
+// DiscoveryCache adds TTL caching and singleflight deduplication to OpenAPI
+// schema resolution, implementing core.SchemaResolver and core.CacheEvictor.
 //
-// Entries are keyed at group/version granularity because the
-// Kubernetes OpenAPI v3 endpoint returns one document per GV. Caching
-// per-GVK would re-download the same document for every kind; the GV
-// scheme amortizes a single fetch across all kinds in that GV and
-// lets singleflight deduplicate concurrent misses for different kinds
-// of the same GV.
+// Entries are keyed at group/version granularity because the Kubernetes OpenAPI
+// v3 endpoint returns one document per GV. Caching per GVK would re-download
+// the same document for every kind; the GV scheme amortizes one fetch across
+// all kinds in that GV and lets singleflight deduplicate concurrent misses for
+// different kinds of the same GV.
 type DiscoveryCache struct {
 	discovery     core.DiscoveryClient
 	ttl           time.Duration
@@ -61,31 +53,26 @@ type DiscoveryCache struct {
 	gvFlights singleflight.Group
 }
 
-// gvCacheEntry pairs the kind→schema map for a single group/version
-// with its (jittered) expiration time.
+// gvCacheEntry pairs one group/version's kind→schema map with its jittered
+// expiration.
 type gvCacheEntry struct {
 	schemas   map[string]*spec.Schema
 	expiresAt time.Time
 }
 
-// singleflightFetchTimeout is the maximum time a cache-miss fetch is
-// allowed to run. It uses context.WithoutCancel so that a single
-// caller's cancellation does not fail all singleflight waiters.
+// singleflightFetchTimeout bounds a cache-miss fetch, which runs under
+// context.WithoutCancel so one caller's cancellation does not fail all waiters.
 const singleflightFetchTimeout = 30 * time.Second
 
-// Option configures a DiscoveryCache at construction time.
 type Option func(*DiscoveryCache)
 
-// WithClock injects a custom time source for deterministic testing.
-// When not set, time.Now is used.
+// WithClock injects a time source for deterministic testing; time.Now otherwise.
 func WithClock(now func() time.Time) Option {
 	return func(c *DiscoveryCache) {
 		c.now = now
 	}
 }
 
-// WithMaxGVEntries overrides the default upper bound on cached
-// group/version entries.
 func WithMaxGVEntries(n int) Option {
 	return func(c *DiscoveryCache) {
 		if n > 0 {
@@ -94,17 +81,14 @@ func WithMaxGVEntries(n int) Option {
 	}
 }
 
-// WithJitterSampler injects a custom [0,1) sampler used to compute
-// TTL jitter. Intended for deterministic testing; production callers
-// can rely on the default math/rand/v2-backed sampler.
+// WithJitterSampler injects a [0,1) sampler for deterministic testing;
+// production relies on the math/rand/v2-backed default.
 func WithJitterSampler(sample func() float64) Option {
 	return func(c *DiscoveryCache) {
 		c.jitterSampler = sample
 	}
 }
 
-// NewDiscoveryCache returns a DiscoveryCache that wraps the given
-// DiscoveryClient and caches results for the specified TTL.
 func NewDiscoveryCache(discovery core.DiscoveryClient, ttl time.Duration, opts ...Option) *DiscoveryCache {
 	c := &DiscoveryCache{
 		discovery:     discovery,
@@ -120,10 +104,8 @@ func NewDiscoveryCache(discovery core.DiscoveryClient, ttl time.Duration, opts .
 	return c
 }
 
-// ResolveSchema fetches the OpenAPI schema for the given GVK. Results
-// are cached per group/version for the configured TTL and concurrent
-// requests for the same group/version are deduplicated via
-// singleflight.
+// ResolveSchema caches per group/version for the configured TTL and
+// deduplicates concurrent requests for the same group/version.
 func (c *DiscoveryCache) ResolveSchema(
 	ctx context.Context,
 	cluster, group, version, kind string,
@@ -139,9 +121,8 @@ func (c *DiscoveryCache) ResolveSchema(
 	}
 
 	v, err, _ := c.gvFlights.Do(key, func() (any, error) {
-		// Use a non-cancellable context with its own timeout so that
-		// a single caller's cancellation does not fail all waiters
-		// sharing this singleflight key.
+		// Non-cancellable with its own timeout, so one caller's cancellation
+		// does not fail all waiters sharing this singleflight key.
 		fetchCtx, cancel := context.WithTimeout(context.WithoutCancel(ctx), singleflightFetchTimeout)
 		defer cancel()
 
@@ -171,12 +152,11 @@ func (c *DiscoveryCache) ResolveSchema(
 	return lookupKind(v.(map[string]*spec.Schema), group, version, kind)
 }
 
-// lookupKind returns the schema for kind from the given GV map, or a
-// not-found domain error when the kind is absent. Asking for a kind the
-// cluster does not define is a bad request, not a server fault, and
+// lookupKind reports an absent kind as a domain not-found error: asking for a
+// kind the cluster does not define is a bad request, not a server fault, and
 // without a domain code it would surface as an internal error.
-// resolver.ErrSchemaNotFound stays in the chain so that errors.Is keeps
-// working for callers that check the upstream sentinel.
+// resolver.ErrSchemaNotFound stays in the chain so errors.Is keeps working for
+// callers that check the upstream sentinel.
 func lookupKind(schemas map[string]*spec.Schema, group, version, kind string) (*spec.Schema, error) {
 	if s, ok := schemas[kind]; ok {
 		return s, nil
@@ -188,24 +168,19 @@ func lookupKind(schemas map[string]*spec.Schema, group, version, kind string) (*
 	}
 }
 
-// gvCacheKey builds a cache key from the cluster/group/version tuple.
 func (c *DiscoveryCache) gvCacheKey(cluster, group, version string) string {
 	return strings.Join([]string{cluster, group, version}, "/")
 }
 
-// jitteredTTL returns the configured TTL with ±ttlJitterFraction
-// random jitter applied. Spreading expirations prevents the
-// thundering-herd stampede that occurs when a batch of entries
-// populated at the same instant all expire together.
+// jitteredTTL applies ±ttlJitterFraction, so a batch of entries populated at
+// the same instant does not expire together.
 func (c *DiscoveryCache) jitteredTTL() time.Duration {
 	jitter := (c.jitterSampler()*2 - 1) * ttlJitterFraction
 	return c.ttl + time.Duration(float64(c.ttl)*jitter)
 }
 
-// StartEvictionLoop launches a background goroutine that periodically
-// removes expired cache entries. This prevents memory leaks when
-// clusters go offline or schemas are no longer queried. It blocks
-// until ctx is canceled.
+// StartEvictionLoop periodically removes expired entries, which is what keeps
+// clusters going offline from leaking memory. It blocks until ctx is canceled.
 func (c *DiscoveryCache) StartEvictionLoop(ctx context.Context, interval time.Duration) {
 	log := slog.Default().With("component", "discovery-cache-evictor")
 	ticker := time.NewTicker(interval)
@@ -229,8 +204,7 @@ func (c *DiscoveryCache) StartEvictionLoop(ctx context.Context, interval time.Du
 	}
 }
 
-// evictExpiredGVs removes expired entries from the group/version
-// cache. Must be called with mu held for writing.
+// evictExpiredGVs must be called with mu held for writing.
 func (c *DiscoveryCache) evictExpiredGVs() {
 	now := c.now()
 	for key, entry := range c.gvCache {

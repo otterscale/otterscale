@@ -10,20 +10,18 @@ import (
 	"github.com/otterscale/otterscale/internal/core"
 )
 
-// NewEnrolmentTokenCommand returns the "enrolment-token" subcommand,
-// which prints the token an agent must present to register the given
-// cluster.
+// NewEnrolmentTokenCommand prints the token an agent must present to register
+// the given cluster.
 //
-// The token is derived from the server's root secret, so this runs
-// wherever that secret is available — most conveniently inside the
-// server itself, where the secret is already mounted:
+// The token is derived from the server's root secret, so this runs wherever
+// that secret is available — most conveniently inside the server, where it is
+// already mounted:
 //
 //	kubectl exec deploy/otterscale-server -- \
 //	    /otterscale enrolment-token --cluster prod
 //
-// Holding the root secret is what authorizes issuing a token; there is
-// no separate admin credential to manage, and nothing needs to be
-// running for this to work.
+// Holding the root secret is what authorizes issuing a token: no separate admin
+// credential, and nothing has to be running.
 func NewEnrolmentTokenCommand(conf *config.Config) (*cobra.Command, error) {
 	var cluster string
 
@@ -37,8 +35,8 @@ func NewEnrolmentTokenCommand(conf *config.Config) (*cobra.Command, error) {
 			"enrolment secret invalidates all of them.",
 		Example: "otterscale enrolment-token --cluster prod",
 		Args:    cobra.NoArgs,
-		// The token is the only output, so it can be piped straight
-		// into a helm invocation; usage noise would corrupt that.
+		// The token is the only output, so it pipes straight into a helm
+		// invocation; usage noise would corrupt that.
 		SilenceUsage: true,
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			if cluster == "" {
@@ -67,8 +65,7 @@ func NewEnrolmentTokenCommand(conf *config.Config) (*cobra.Command, error) {
 
 	cmd.Flags().StringVar(&cluster, "cluster", "", "Cluster the token authorizes")
 
-	// Only the enrolment flags are bound: the rest of the server
-	// configuration is irrelevant to deriving a token.
+	// Only the enrolment flags matter for deriving a token.
 	if err := conf.BindFlags(cmd.Flags(), config.EnrolmentOptions); err != nil {
 		return nil, err
 	}

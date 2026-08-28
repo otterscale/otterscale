@@ -11,12 +11,9 @@ import (
 	"github.com/otterscale/otterscale/internal/transport/tunnel"
 )
 
-// BuildTunnelListener generates a server TLS certificate for the
-// given host, writes the mTLS materials to a temporary directory,
-// and returns a fully configured tunnel transport.Listener. The
-// caller is responsible for starting the listener via transport.Serve.
-// The temporary certificate files are cleaned up when the listener
-// stops.
+// BuildTunnelListener issues a server certificate for host and writes the mTLS
+// materials to a temporary directory, cleaned up when the listener stops. The
+// caller starts the listener via transport.Serve.
 func (s *Service) BuildTunnelListener(address, host string) (transport.Listener, error) {
 	serverCert, serverKey, err := s.ca.GenerateServerCert(host)
 	if err != nil {
@@ -46,10 +43,9 @@ func (s *Service) BuildTunnelListener(address, host string) (transport.Listener,
 		return nil, fmt.Errorf("write server key: %w", err)
 	}
 
-	// The CA is created per process and never persisted, so a restart
-	// invalidates every certificate handed out so far. Say so at
-	// startup: the resulting re-registration storm is expected
-	// behavior, not a fault to chase.
+	// The CA is per process and never persisted, so a restart invalidates every
+	// certificate handed out so far. Say so at startup: the re-registration
+	// storm that follows is expected, not a fault to chase.
 	slog.Info("tunnel CA initialized",
 		"subject", "otterscale-ca",
 		"ephemeral", true,
@@ -74,8 +70,8 @@ func (s *Service) BuildTunnelListener(address, host string) (transport.Listener,
 	}, nil
 }
 
-// tunnelListenerWithCleanup wraps a transport.Listener and removes
-// the temporary TLS certificate directory when stopped.
+// tunnelListenerWithCleanup removes the temporary certificate directory on
+// Stop.
 type tunnelListenerWithCleanup struct {
 	transport.Listener
 	certDir string
@@ -87,9 +83,8 @@ func (l *tunnelListenerWithCleanup) Stop(ctx context.Context) error {
 	return err
 }
 
-// BuildHealthListener returns a transport.Listener that periodically
-// health-checks registered tunnel endpoints and deregisters
-// disconnected clusters.
+// BuildHealthListener probes registered endpoints and deregisters disconnected
+// clusters.
 func (s *Service) BuildHealthListener() transport.Listener {
 	return NewHealthCheckListener(s)
 }

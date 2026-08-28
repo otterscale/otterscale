@@ -13,8 +13,7 @@ import (
 	"github.com/otterscale/otterscale/internal/transport/pipe"
 )
 
-// TestBridge_RelaysData verifies that a TCP client can exchange data
-// with a server behind the pipe listener through the bridge.
+// TestBridge_RelaysData exchanges data with a server behind the pipe listener.
 func TestBridge_RelaysData(t *testing.T) {
 	t.Parallel()
 
@@ -35,7 +34,7 @@ func TestBridge_RelaysData(t *testing.T) {
 	const request = "hello"
 	const response = "world"
 
-	// Server side: read a fixed-size request, send a response, close.
+	// Server: read a fixed-size request, respond, close.
 	go func() {
 		conn, err := pl.Accept()
 		if err != nil {
@@ -52,7 +51,7 @@ func TestBridge_RelaysData(t *testing.T) {
 		}
 	}()
 
-	// Client side: connect to the bridge TCP port, send request, read response.
+	// Client: connect to the bridge TCP port and round-trip.
 	var d net.Dialer
 	tcpConn, err := d.DialContext(t.Context(), "tcp", fmt.Sprintf("127.0.0.1:%d", bridge.Port()))
 	if err != nil {
@@ -73,8 +72,8 @@ func TestBridge_RelaysData(t *testing.T) {
 	}
 }
 
-// TestBridge_MultipleConnections verifies that the bridge can handle
-// several concurrent connections, each independently relaying data.
+// TestBridge_MultipleConnections relays several concurrent connections
+// independently.
 func TestBridge_MultipleConnections(t *testing.T) {
 	t.Parallel()
 
@@ -95,14 +94,14 @@ func TestBridge_MultipleConnections(t *testing.T) {
 	const n = 5
 	var wg sync.WaitGroup
 
-	// Server side: accept n connections and echo back.
+	// Server: accept n connections and echo back.
 	for i := range n {
 		wg.Go(func() {
 			echoConnection(t, pl, i)
 		})
 	}
 
-	// Client side: dial n connections concurrently.
+	// Client: dial n connections concurrently.
 	addr := fmt.Sprintf("127.0.0.1:%d", bridge.Port())
 	for i := range n {
 		wg.Go(func() {
@@ -113,8 +112,7 @@ func TestBridge_MultipleConnections(t *testing.T) {
 	wg.Wait()
 }
 
-// echoConnection accepts a pipe connection, reads a message, and
-// sends it back unchanged. Used by TestBridge_MultipleConnections.
+// echoConnection reads one message off a pipe connection and sends it back.
 func echoConnection(t *testing.T, pl *pipe.Listener, i int) {
 	t.Helper()
 	conn, err := pl.Accept()
@@ -135,8 +133,7 @@ func echoConnection(t *testing.T, pl *pipe.Listener, i int) {
 	}
 }
 
-// verifyRoundTrip dials a TCP address, sends a message, reads it
-// back, and verifies it matches. Used by TestBridge_MultipleConnections.
+// verifyRoundTrip dials addr, sends a message, and checks what comes back.
 func verifyRoundTrip(ctx context.Context, t *testing.T, addr string, i int) {
 	t.Helper()
 	var d net.Dialer
@@ -201,7 +198,6 @@ func TestBridge_StopClosesListener(t *testing.T) {
 		done <- bridge.Start(ctx)
 	}()
 
-	// Give Start time to begin accepting.
 	time.Sleep(20 * time.Millisecond)
 
 	cancel()
@@ -255,7 +251,6 @@ func TestBridge_StopHonoursDeadline(t *testing.T) {
 	}
 	defer conn.Close()
 
-	// Let the relay establish itself before shutting down.
 	time.Sleep(50 * time.Millisecond)
 
 	ctx, cancel := context.WithTimeout(t.Context(), 100*time.Millisecond)
@@ -300,11 +295,10 @@ func TestBridge_StopWaitsForIdleRelays(t *testing.T) {
 	}
 }
 
-// startBridge runs Start in the background and makes the test wait for
-// it on the way out. Start keeps running after Stop returns — Stop
-// closes the listener but does not cancel Start's context — so a test
-// that simply left it behind would log from a goroutine after it had
-// finished.
+// startBridge runs Start in the background and makes the test wait for it on
+// the way out. Start outlives Stop — which closes the listener without
+// canceling Start's context — so a test that left it behind would log from a
+// goroutine after finishing.
 func startBridge(t *testing.T, bridge *Bridge) {
 	t.Helper()
 

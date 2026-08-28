@@ -5,10 +5,9 @@ import (
 	"fmt"
 )
 
-// ErrorCode represents a domain-level error category that abstracts
-// away infrastructure-specific error codes (e.g. K8s StatusReason).
-// The handler layer maps these codes to transport-level codes
-// (e.g. ConnectRPC codes).
+// ErrorCode is a domain-level error category, standing in for
+// infrastructure-specific codes such as K8s StatusReason. The handler layer
+// maps these onto transport codes.
 type ErrorCode int
 
 const (
@@ -26,10 +25,9 @@ const (
 	ErrorCodeCanceled                            // caller gave up
 )
 
-// DomainError is a generic domain error carrying an ErrorCode and an
-// optional cause. Infrastructure adapters wrap external errors into
-// DomainErrors so that the handler layer only needs to understand
-// domain-level codes, not infrastructure-specific error types.
+// DomainError carries an ErrorCode and an optional cause. Infrastructure
+// adapters wrap external errors into one, so the handler layer only has to
+// understand domain codes.
 type DomainError struct {
 	Code    ErrorCode
 	Message string
@@ -45,8 +43,7 @@ func (e *DomainError) Error() string {
 
 func (e *DomainError) Unwrap() error { return e.Cause }
 
-// DomainErrorCode extracts the ErrorCode from an error if it is a
-// *DomainError. Returns ErrorCodeInternal and false for non-domain errors.
+// DomainErrorCode returns ErrorCodeInternal and false for non-domain errors.
 func DomainErrorCode(err error) (ErrorCode, bool) {
 	var de *DomainError
 	if errors.As(err, &de) {
@@ -55,8 +52,8 @@ func DomainErrorCode(err error) (ErrorCode, bool) {
 	return ErrorCodeInternal, false
 }
 
-// ErrClusterNotFound indicates that the requested cluster is not
-// registered with the tunnel provider.
+// ErrClusterNotFound means the cluster is not registered with the tunnel
+// provider.
 type ErrClusterNotFound struct {
 	Cluster string
 }
@@ -65,8 +62,7 @@ func (e *ErrClusterNotFound) Error() string {
 	return fmt.Sprintf("cluster %s not registered", e.Cluster)
 }
 
-// ErrNotReady indicates that a required subsystem (e.g. the tunnel
-// server) has not been initialized yet.
+// ErrNotReady means a required subsystem is not initialized yet.
 type ErrNotReady struct {
 	Subsystem string
 }
@@ -75,9 +71,8 @@ func (e *ErrNotReady) Error() string {
 	return fmt.Sprintf("%s not initialized", e.Subsystem)
 }
 
-// ErrInvalidInput indicates a domain-level input validation failure.
-// It replaces the use of k8s apierrors.NewBadRequest in the domain
-// layer, keeping the core package free of infrastructure error types.
+// ErrInvalidInput stands in for k8s apierrors.NewBadRequest, keeping core free
+// of infrastructure error types.
 type ErrInvalidInput struct {
 	Field   string
 	Message string
@@ -90,8 +85,7 @@ func (e *ErrInvalidInput) Error() string {
 	return e.Message
 }
 
-// ErrSessionNotFound indicates that a requested session (exec or
-// port-forward) does not exist in the session store.
+// ErrSessionNotFound means the session is not in the store.
 type ErrSessionNotFound struct {
 	Resource string
 	ID       string
@@ -101,16 +95,15 @@ func (e *ErrSessionNotFound) Error() string {
 	return fmt.Sprintf("%s %q not found", e.Resource, e.ID)
 }
 
-// ErrCommandExited reports that an exec'd command ran to completion and
-// exited with a non-zero status.
+// ErrCommandExited reports a command that ran to completion and exited
+// non-zero.
 //
-// This is deliberately distinct from every other error an exec session
-// can end with. Failing to *start* a session — no such pod, no such
-// container, RBAC denial, a failed protocol upgrade — is a failure of
-// the RPC. A command that started, produced its output, and exited 1 is
-// not: the caller got exactly what it asked for, and reporting it as a
-// transport failure would turn every unsuccessful shell command into a
-// server error.
+// It is deliberately distinct from every other error an exec session can end
+// with. Failing to *start* a session — no such pod, no such container, RBAC
+// denial, a failed protocol upgrade — is a failure of the RPC. A command that
+// started, produced its output, and exited 1 is not: the caller got exactly
+// what it asked for, and reporting that as a transport failure would turn every
+// unsuccessful shell command into a server error.
 type ErrCommandExited struct {
 	Code   int
 	Reason string

@@ -25,7 +25,7 @@ func userContext(t *testing.T, subject string) context.Context {
 	return WithUserInfo(t.Context(), UserInfo{Subject: subject, Groups: []string{"system:authenticated"}})
 }
 
-// mockRuntimeRepo implements RuntimeRepo for SubResourceAction testing.
+// mockRuntimeRepo implements RuntimeRepo for these tests.
 type mockRuntimeRepo struct {
 	subResourceResult map[string]any
 	subResourceErr    error
@@ -93,7 +93,7 @@ func (m *mockRuntimeRepo) VNC(_ context.Context, _, _, _ string, opts VNCOptions
 	return nil
 }
 
-// mockDiscovery implements DiscoveryClient for use-case tests.
+// mockDiscovery implements DiscoveryClient for these tests.
 type mockDiscovery struct {
 	lookupErr    error
 	watchList    bool
@@ -123,7 +123,7 @@ func (m *mockDiscovery) SupportsWatchList(context.Context, string) (bool, error)
 	return m.watchList, m.watchListErr
 }
 
-// mockHelmRepoForRuntime implements HelmRepo for runtime tests.
+// mockHelmRepoForRuntime implements HelmRepo for these tests.
 type mockHelmRepoForRuntime struct{}
 
 func (m *mockHelmRepoForRuntime) ShowChart(context.Context, string, string, string) (values, readme []byte, err error) {
@@ -485,10 +485,6 @@ func TestSessionsAreBoundToTheirOwner(t *testing.T) {
 		}
 	})
 }
-
-// ---------------------------------------------------------------------------
-// Session outcomes
-// ---------------------------------------------------------------------------
 
 // TestWaitExecReportsSessionFailure is the regression test for exec
 // failures that never reached the caller. The session goroutine records

@@ -10,7 +10,7 @@ import (
 	"github.com/otterscale/otterscale/internal/core"
 )
 
-// mockTunnelForProxy implements core.TunnelProvider for proxy tests.
+// mockTunnelForProxy implements core.TunnelProvider for these tests.
 type mockTunnelForProxy struct {
 	address    string
 	addressErr error
@@ -89,7 +89,6 @@ func TestProxyHandler_ClusterNotFound(t *testing.T) {
 }
 
 func TestProxyHandler_AllowedPath_ForwardsToBackend(t *testing.T) {
-	// Start a fake Prometheus backend.
 	backend := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path != "/__otterscale/proxy/api/v1/query" {
 			t.Errorf("backend received path %q, want %q", r.URL.Path, "/__otterscale/proxy/api/v1/query")

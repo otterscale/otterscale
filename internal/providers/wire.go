@@ -14,14 +14,12 @@ import (
 	"github.com/otterscale/otterscale/internal/transport"
 )
 
-// ProvideDiscoveryCache constructs a DiscoveryCache with the default TTL.
-// This bridges the core.DiscoveryClient to the core.SchemaResolver
-// interface via caching.
+// ProvideDiscoveryCache bridges core.DiscoveryClient to core.SchemaResolver,
+// caching at the default TTL.
 func ProvideDiscoveryCache(discovery core.DiscoveryClient) *cache.DiscoveryCache {
 	return cache.NewDiscoveryCache(discovery, cache.DefaultTTL)
 }
 
-// ProviderSet is the Wire provider set for all external adapters.
 var ProviderSet = wire.NewSet(
 	chisel.NewService,
 	wire.Bind(new(core.TunnelProvider), new(*chisel.Service)),

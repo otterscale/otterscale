@@ -11,11 +11,10 @@ import (
 	chserver "github.com/jpillora/chisel/server"
 )
 
-// ServerOption configures a Server.
 type ServerOption func(*Server)
 
-// Server manages a chisel reverse-tunnel listener with mTLS
-// certificate authentication and automatic user provisioning.
+// Server manages a chisel reverse-tunnel listener with mTLS authentication and
+// automatic user provisioning.
 type Server struct {
 	serverRef *atomic.Pointer[chserver.Server] // shared with TunnelProvider
 	address   string
@@ -25,45 +24,38 @@ type Server struct {
 	log       *slog.Logger
 }
 
-// WithAddress configures the listen address (e.g. ":8300").
+// WithAddress sets the listen address (e.g. ":8300").
 func WithAddress(address string) ServerOption {
 	return func(s *Server) { s.address = address }
 }
 
-// WithTLSCert configures the file path to the server TLS certificate.
 func WithTLSCert(path string) ServerOption {
 	return func(s *Server) { s.tlsCert = path }
 }
 
-// WithTLSKey configures the file path to the server TLS private key.
 func WithTLSKey(path string) ServerOption {
 	return func(s *Server) { s.tlsKey = path }
 }
 
-// WithTLSCA configures the file path to the CA certificate used to
-// verify client certificates. When set, the server requires and
-// validates client certificates (mTLS).
+// WithTLSCA turns on mTLS: the server then requires and validates client
+// certificates against this CA.
 func WithTLSCA(path string) ServerOption {
 	return func(s *Server) { s.tlsCA = path }
 }
 
-// WithServer injects a shared atomic server reference. The reference
-// is typically owned by a TunnelProvider; init will store the fully
-// initialized server into it so that both sides share the same
-// running instance.
+// WithServer injects the shared reference a TunnelProvider owns; init stores
+// the initialized server into it so both sides share one running instance.
 func WithServer(ref *atomic.Pointer[chserver.Server]) ServerOption {
 	return func(s *Server) { s.serverRef = ref }
 }
 
-// WithServerLogger configures a structured logger. Defaults to
-// slog.Default with a "component" attribute.
+// WithServerLogger defaults to slog.Default with a "component" attribute.
 func WithServerLogger(log *slog.Logger) ServerOption {
 	return func(s *Server) { s.log = log }
 }
 
-// NewServer creates a tunnel server. The underlying chisel server is
-// fully initialized so that AddUser (via TunnelProvider) works
-// immediately, even before Start is called.
+// NewServer fully initializes the underlying chisel server, so AddUser works
+// through the TunnelProvider even before Start is called.
 func NewServer(opts ...ServerOption) (*Server, error) {
 	s := &Server{
 		serverRef: &atomic.Pointer[chserver.Server]{},
@@ -98,7 +90,6 @@ func (s *Server) Start(ctx context.Context) error {
 	return srv.Wait()
 }
 
-// Stop gracefully shuts down the tunnel server.
 func (s *Server) Stop(_ context.Context) error {
 	srv := s.serverRef.Load()
 	if srv == nil {
@@ -108,15 +99,13 @@ func (s *Server) Stop(_ context.Context) error {
 	return srv.Close()
 }
 
-// init creates the real chisel server and stores it into the shared
-// atomic reference so that any TunnelProvider holding the same
-// reference sees the fully initialized instance.
+// init stores the real chisel server into the shared atomic reference, so any
+// TunnelProvider holding it sees the initialized instance.
 func (s *Server) init() error {
 	cfg := &chserver.Config{
 		Reverse: true,
 	}
 
-	// Configure TLS for mTLS when certificate paths are provided.
 	if s.tlsCert != "" && s.tlsKey != "" {
 		cfg.TLS = chserver.TLSConfig{
 			Cert: s.tlsCert,
@@ -130,14 +119,12 @@ func (s *Server) init() error {
 		return err
 	}
 
-	// Chisel allows anonymous connections when no users exist.
-	// Add a disabled sentinel user to enforce authentication.
+	// Chisel allows anonymous connections while no users exist; this disabled
+	// sentinel user is what forces authentication.
 	if err := ch.AddUser(uuid.NewString(), uuid.NewString(), "127.0.0.1"); err != nil {
 		return err
 	}
 
-	// Store the pointer into the shared atomic reference so the
-	// TunnelProvider sees the initialized server.
 	s.serverRef.Store(ch)
 	return nil
 }

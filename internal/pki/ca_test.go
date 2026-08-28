@@ -53,7 +53,7 @@ func TestNewCA_UniquePerCall(t *testing.T) {
 		t.Fatalf("NewCA: %v", err)
 	}
 
-	// Each call produces a fresh key, so the certs must differ.
+	// Fresh key per call, so the certs must differ.
 	if bytes.Equal(ca1.CertPEM(), ca2.CertPEM()) {
 		t.Error("expected different CA certs from two NewCA calls")
 	}
@@ -94,7 +94,6 @@ func TestSignCSR(t *testing.T) {
 		t.Errorf("expected CN=test-agent, got %s", cert.Subject.CommonName)
 	}
 
-	// Verify the certificate was signed by the CA.
 	pool := x509.NewCertPool()
 	pool.AddCert(ca.cert)
 	if _, err := cert.Verify(x509.VerifyOptions{
@@ -152,7 +151,6 @@ func TestGenerateServerCert(t *testing.T) {
 		t.Errorf("expected DNS SAN example.com, got %v", cert.DNSNames)
 	}
 
-	// Verify signed by CA.
 	pool := x509.NewCertPool()
 	pool.AddCert(ca.cert)
 	if _, err := cert.Verify(x509.VerifyOptions{

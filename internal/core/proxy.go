@@ -5,10 +5,8 @@ import (
 	"strings"
 )
 
-// allowedPrometheusPathPrefixes lists the Prometheus HTTP API paths
-// that the metrics proxy permits. Only read-only query endpoints are
-// included; administrative paths (/api/v1/admin/*, /-/*) are
-// explicitly excluded.
+// allowedPrometheusPathPrefixes covers read-only query endpoints only;
+// administrative paths (/api/v1/admin/*, /-/*) are excluded.
 var allowedPrometheusPathPrefixes = []string{
 	"/api/v1/query",
 	"/api/v1/query_range",
@@ -20,16 +18,14 @@ var allowedPrometheusPathPrefixes = []string{
 	"/api/v1/status/",
 }
 
-// AllowedPrometheusPath normalizes raw and reports whether it addresses
-// a permitted Prometheus endpoint. It uses a prefix match, so paths
-// like "/api/v1/query_range" and "/api/v1/label/job/values" are
-// accepted while "/api/v1/admin/tsdb/delete_series" is rejected.
+// AllowedPrometheusPath matches by prefix, so "/api/v1/query_range" and
+// "/api/v1/label/job/values" are accepted while "/api/v1/admin/tsdb/delete_series"
+// is rejected.
 //
-// Normalizing and checking are deliberately one operation returning one
-// value. The allowlist matches prefixes, so "/api/v1/query/../../-/reload"
-// satisfies it while addressing an admin endpoint; handing back the
-// normalized path is what stops a caller from checking one path and
-// forwarding another.
+// Normalizing and checking are deliberately one operation returning one value:
+// prefix matching means "/api/v1/query/../../-/reload" satisfies the allowlist
+// while addressing an admin endpoint, and handing back the normalized path is
+// what stops a caller from checking one path and forwarding another.
 func AllowedPrometheusPath(raw string) (normalized string, allowed bool) {
 	normalized = normalizePath(raw)
 	for _, prefix := range allowedPrometheusPathPrefixes {

@@ -1,7 +1,6 @@
-// Package helm implements the core.HelmRepo interface using the Helm
-// v4 Go SDK. It fetches chart metadata (values.yaml, README.md)
-// directly from remote HTTP/OCI chart repositories without requiring
-// a Kubernetes cluster connection.
+// Package helm implements core.HelmRepo with the Helm v4 Go SDK, fetching
+// chart metadata (values.yaml, README.md) straight from remote HTTP/OCI
+// repositories with no Kubernetes cluster involved.
 package helm
 
 import (
@@ -31,14 +30,12 @@ var readmeFileNames = []string{"readme.md", "readme.txt", "readme"}
 // unresponsive repository when the caller set no deadline of its own.
 const showChartTimeout = 60 * time.Second
 
-// Repo implements core.HelmRepo using the Helm v4 Go SDK.
-// It holds a reusable registry client with auth caching enabled.
+// Repo holds a reusable registry client with auth caching enabled.
 type Repo struct {
 	registryClient *registry.Client
 	settings       *cli.EnvSettings
 }
 
-// NewRepo returns a new Helm repository adapter.
 func NewRepo() (core.HelmRepo, error) {
 	rc, err := registry.NewClient(registry.ClientOptEnableCache(true))
 	if err != nil {
@@ -49,31 +46,27 @@ func NewRepo() (core.HelmRepo, error) {
 		return nil, err
 	}
 
-	// cli.New reads the HELM_* variables set above, so the settings
-	// carry the same paths without any later call depending on the
-	// environment being read at the right moment.
+	// cli.New reads the HELM_* variables set above, so the settings carry the
+	// same paths and no later call depends on when the environment is read.
 	return &Repo{registryClient: rc, settings: cli.New()}, nil
 }
 
-// helmHome returns the base directory Helm may write to: a stable
-// per-user path under the system temp directory. A fixed name is
-// deliberate — a fresh directory on every start would leak one cache
-// tree per restart, whereas reusing this one also preserves the chart
-// cache across restarts.
+// helmHome is a stable per-user path under the system temp directory. The
+// fixed name is deliberate: a fresh directory per start would leak one cache
+// tree per restart, while reusing this one also preserves the chart cache.
 func helmHome() string {
 	return filepath.Join(os.TempDir(), fmt.Sprintf("otterscale-helm-%d", os.Getuid()))
 }
 
-// setHelmHome points Helm's cache, config and data directories at a
-// writable location, without overriding anything the operator has
-// already configured.
+// setHelmHome points Helm's cache, config and data directories at a writable
+// location, leaving anything the operator configured alone.
 //
-// The environment is the only lever available: parts of the SDK reached
-// through LocateChart — repo.NewChartRepository in particular — build
-// their cache path from helmpath.CachePath instead of the settings they
-// are handed, and helmpath resolves the HELM_*_HOME variables at call
-// time. The default resolves under $HOME, which a distroless container
-// running as nonroot cannot write to.
+// The environment is the only lever: parts of the SDK reached through
+// LocateChart — repo.NewChartRepository in particular — build their cache path
+// from helmpath.CachePath rather than the settings they are handed, and
+// helmpath resolves the HELM_*_HOME variables at call time. The default
+// resolves under $HOME, which a distroless container running as nonroot cannot
+// write to.
 func setHelmHome() error {
 	base := helmHome()
 
@@ -98,13 +91,11 @@ func setHelmHome() error {
 	return nil
 }
 
-// ShowChart fetches a chart from the given repo URL and extracts its
-// values.yaml and README.md.
+// ShowChart extracts values.yaml and README.md from the chart.
 //
-// The Helm SDK call is blocking and takes no context, so it runs on its
-// own goroutine and this returns as soon as the caller gives up. The
-// fetch itself keeps running until it finishes on its own; its result
-// is then discarded.
+// The Helm SDK call blocks and takes no context, so it runs on its own
+// goroutine and this returns as soon as the caller gives up; the fetch runs to
+// completion and its result is discarded.
 func (r *Repo) ShowChart(ctx context.Context, repoURL, chartName, version string) (values, readme []byte, err error) {
 	ctx, cancel := context.WithTimeout(ctx, showChartTimeout)
 	defer cancel()
@@ -123,17 +114,14 @@ func (r *Repo) ShowChart(ctx context.Context, repoURL, chartName, version string
 	return content.values, content.readme, nil
 }
 
-// chartContent is what a single chart fetch produces.
 type chartContent struct {
 	values []byte
 	readme []byte
 }
 
-// awaitWithContext runs fn on its own goroutine and returns as soon as
-// ctx is done. It is how a blocking SDK call that takes no context
-// becomes cancellable from the caller's side; fn still runs to
-// completion, and its result is then discarded. what names the
-// operation for the error message.
+// awaitWithContext makes a blocking, context-less SDK call cancellable from the
+// caller's side: fn runs on its own goroutine and still runs to completion, but
+// this returns as soon as ctx is done. what names the operation in the error.
 func awaitWithContext[T any](ctx context.Context, what string, fn func() (T, error)) (T, error) {
 	type result struct {
 		value T
@@ -167,8 +155,8 @@ func ctxErrorCode(err error) core.ErrorCode {
 	return core.ErrorCodeCanceled
 }
 
-// showChart performs the blocking fetch. The chart is loaded once and
-// both outputs are extracted from the in-memory structure.
+// showChart is the blocking fetch: the chart is loaded once and both outputs
+// come from the in-memory structure.
 func (r *Repo) showChart(repoURL, chartName, version string) (values, readme []byte, err error) {
 	cfg := action.NewConfiguration()
 	cfg.RegistryClient = r.registryClient

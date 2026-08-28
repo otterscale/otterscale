@@ -12,9 +12,8 @@ import (
 // secret.
 const enrolmentTokenContext = "otterscale-enrolment:" //nolint:gosec // a domain separator, not a credential
 
-// EnrolmentToken is the token an agent presents when registering. It
-// is a distinct type so that Wire can tell it apart from other strings
-// when injecting dependencies.
+// EnrolmentToken is what an agent presents when registering. It is a distinct
+// type so Wire can tell it apart from other strings.
 type EnrolmentToken string
 
 // Enrolment issues and verifies the tokens that authorize an agent to
@@ -33,8 +32,7 @@ type Enrolment struct {
 	secret []byte
 }
 
-// NewEnrolment returns an Enrolment backed by the given root secret.
-// The secret is required: without one the registration endpoint, which
+// NewEnrolment requires a secret: without one the registration endpoint, which
 // is reachable without authentication, would accept any caller.
 func NewEnrolment(secret string) (*Enrolment, error) {
 	if secret == "" {
@@ -43,7 +41,6 @@ func NewEnrolment(secret string) (*Enrolment, error) {
 	return &Enrolment{secret: []byte(secret)}, nil
 }
 
-// Token returns the enrolment token for the given cluster.
 func (e *Enrolment) Token(cluster string) string {
 	return base64.RawURLEncoding.EncodeToString(e.expected(cluster))
 }

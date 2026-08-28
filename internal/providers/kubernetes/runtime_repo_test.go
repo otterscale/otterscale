@@ -277,10 +277,6 @@ func TestVNCURL(t *testing.T) {
 	}
 }
 
-// ---------------------------------------------------------------------------
-// Exec error classification
-// ---------------------------------------------------------------------------
-
 // stubExitError implements utilexec.ExitError, which is what
 // remotecommand returns when a command runs and exits non-zero.
 type stubExitError struct {

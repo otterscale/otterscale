@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-// mockTunnelProvider implements TunnelProvider for testing.
+// mockTunnelProvider implements TunnelProvider for these tests.
 type mockTunnelProvider struct {
 	links       map[string]Link
 	caCertPEM   []byte
@@ -145,8 +145,6 @@ func TestLinkUseCase_RegisterCluster_Success(t *testing.T) {
 	}
 }
 
-// isErrInvalidInput checks if err is *ErrInvalidInput using the
-// standard errors.As mechanism.
 func isErrInvalidInput(err error, target **ErrInvalidInput) bool {
 	return errors.As(err, target)
 }

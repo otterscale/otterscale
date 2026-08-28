@@ -59,10 +59,6 @@ func TestWatchListCache(t *testing.T) {
 	}
 }
 
-// ---------------------------------------------------------------------------
-// Resource list cache
-// ---------------------------------------------------------------------------
-
 // fakeTunnel points every cluster at a test server.
 type fakeTunnel struct{ address string }
 

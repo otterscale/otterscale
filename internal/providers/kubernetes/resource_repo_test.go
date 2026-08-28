@@ -43,15 +43,14 @@ func podEvent(name string) watch.Event {
 	}
 }
 
-// TestWatcherAdapterStopUnblocksParkedRelay is the regression test for
-// the leak: a consumer that walks away mid-stream (canceled request
-// context, failed stream send) leaves relay holding an event nobody
-// will ever receive. Stopping only the upstream watch does not free it,
-// because relay is parked on a send rather than on the range.
+// TestWatcherAdapterStopUnblocksParkedRelay is the regression test for the
+// leak: a consumer that walks away mid-stream (canceled request context, failed
+// stream send) leaves relay holding an event nobody will receive. Stopping only
+// the upstream watch does not free it, because relay is parked on a send rather
+// than on the range.
 //
-// The test deliberately never receives from the result channel — doing
-// so would unpark relay and hide the bug — so relay's exit is observed
-// through the goroutine count instead.
+// Receiving from the result channel would unpark relay and hide the bug, so its
+// exit is observed through the goroutine count instead.
 func TestWatcherAdapterStopUnblocksParkedRelay(t *testing.T) {
 	before := goroutineFloor(t)
 
@@ -109,10 +108,6 @@ func TestWatcherAdapterRelaysEventsAndClosesOnUpstreamEnd(t *testing.T) {
 
 	assertClosed(t, w.ResultChan())
 }
-
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
 
 // receive takes one event, failing the test rather than blocking the
 // suite if none arrives.
