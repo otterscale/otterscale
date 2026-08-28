@@ -427,3 +427,62 @@ func TestLinkRegisterClusterRejectsMalformedCSR(t *testing.T) {
 		t.Error("a cluster was registered despite the CSR being rejected")
 	}
 }
+
+// TestLinkRegisterClusterKeepsAddressAcrossReregistration pins the
+// property that lets registration be failure-safe. Re-registration
+// replaces the agent behind a cluster, not the cluster's place on the
+// tunnel, so the address is kept rather than released and re-allocated.
+//
+// That ordering is what matters: nothing belonging to the existing
+// registration is torn down until the replacement credential is live.
+// Releasing first meant a re-registration that failed part-way took the
+// agent already serving that cluster offline with it.
+func TestLinkRegisterClusterKeepsAddressAcrossReregistration(t *testing.T) {
+	tunnel := newTestTunnel(t)
+	initTunnelServer(t, tunnel)
+	link, tokenFor := newTestLink(t, tunnel)
+
+	register := func(agentID string) core.Registration {
+		t.Helper()
+		reg, err := link.RegisterCluster(t.Context(), &core.RegistrationRequest{
+			Cluster:        "cluster-stable",
+			AgentID:        agentID,
+			AgentVersion:   "test",
+			EnrolmentToken: tokenFor("cluster-stable"),
+			CSRPEM:         generateCSR(t, agentID),
+		})
+		if err != nil {
+			t.Fatalf("register %s: %v", agentID, err)
+		}
+		return reg
+	}
+
+	first := register("agent-a")
+
+	// A different agent taking over, then the original returning.
+	second := register("agent-b")
+	third := register("agent-a")
+
+	if first.Endpoint != second.Endpoint || second.Endpoint != third.Endpoint {
+		t.Errorf("endpoint churned across re-registrations: %q, %q, %q",
+			first.Endpoint, second.Endpoint, third.Endpoint)
+	}
+
+	// Each registration still issues its own credential.
+	if first.TunnelPassword == second.TunnelPassword || second.TunnelPassword == third.TunnelPassword {
+		t.Error("expected a fresh tunnel password on every registration")
+	}
+
+	// Exactly one registration, still resolvable.
+	links := tunnel.ListLinks()
+	if len(links) != 1 {
+		t.Errorf("registry holds %d links, want 1: %v", len(links), links)
+	}
+	addr, err := tunnel.ResolveAddress(t.Context(), "cluster-stable")
+	if err != nil {
+		t.Fatalf("resolve after re-registration: %v", err)
+	}
+	if addr != "http://"+third.Endpoint {
+		t.Errorf("resolved %q, want %q", addr, "http://"+third.Endpoint)
+	}
+}

@@ -133,17 +133,24 @@ func (s *Service) RegisterLink(_ context.Context, cluster, agentID, agentVersion
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	// Release the previous host and user for this cluster, if any,
-	// so that stale credentials do not accumulate in chisel.
-	if prev, ok := s.links[cluster]; ok {
-		srv.DeleteUser(prev.User)
-		s.addrs.release(prev.Host)
-		delete(s.links, cluster)
-	}
+	// Nothing is torn down until the replacement is in place. An
+	// earlier version released the previous host and user first, so a
+	// failure below left the cluster deregistered — a re-registration
+	// that could not complete took the agent already serving that
+	// cluster offline with it.
+	//
+	// A cluster keeps the address it was given. Re-registration
+	// replaces the agent behind a cluster, not the cluster's identity
+	// on the tunnel, and churning the address would invalidate the
+	// per-cluster transport cached against it for no reason.
+	prev, registered := s.links[cluster]
 
-	host, err := s.addrs.allocate(cluster)
-	if err != nil {
-		return core.TunnelGrant{}, err
+	host := prev.Host
+	if !registered {
+		host, err = s.addrs.allocate(cluster)
+		if err != nil {
+			return core.TunnelGrant{}, err
+		}
 	}
 
 	// Restrict the user to reverse-tunneling only the allocated
@@ -151,12 +158,21 @@ func (s *Service) RegisterLink(_ context.Context, cluster, agentID, agentVersion
 	// from binding arbitrary endpoints.
 	allowed := fmt.Sprintf("^R:%s:%d(:.*)?$", regexp.QuoteMeta(host), tunnelPort)
 	if err := srv.AddUser(user, pass, allowed); err != nil {
-		s.addrs.release(host)
+		if !registered {
+			s.addrs.release(host)
+		}
 		return core.TunnelGrant{}, &core.DomainError{
 			Code:    core.ErrorCodeInternal,
 			Message: "provision tunnel user",
 			Cause:   err,
 		}
+	}
+
+	// The new credential is live. AddUser replaces an entry of the same
+	// name, so only a predecessor registered under a different one has
+	// to be retired explicitly.
+	if registered && prev.User != user {
+		srv.DeleteUser(prev.User)
 	}
 
 	s.links[cluster] = core.Link{

@@ -2,6 +2,7 @@ package tunnel
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"net"
@@ -213,4 +214,107 @@ func TestBridge_StopClosesListener(t *testing.T) {
 	case <-time.After(2 * time.Second):
 		t.Fatal("Start did not return after cancel")
 	}
+}
+
+// TestBridge_StopHonoursDeadline is the regression test for a shutdown
+// that could not be bounded. A relay copies until its connection
+// closes, and a request still streaming through the tunnel — a watch, a
+// log follow, an exec — holds one open indefinitely. Stop used to wait
+// on those unconditionally, ignoring the budget transport.Serve allots
+// each listener and hanging the process on a client that never hangs up.
+func TestBridge_StopHonoursDeadline(t *testing.T) {
+	t.Parallel()
+
+	pl := pipe.NewListener()
+	defer pl.Close()
+
+	bridge, err := NewBridge(t.Context(), pl)
+	if err != nil {
+		t.Fatalf("NewBridge: %v", err)
+	}
+
+	startBridge(t, bridge)
+
+	// A server behind the pipe that accepts and then never says
+	// anything, standing in for a long-lived stream.
+	serverHolds := make(chan struct{})
+	go func() {
+		conn, acceptErr := pl.Accept()
+		if acceptErr != nil {
+			return
+		}
+		defer conn.Close()
+		<-serverHolds
+	}()
+	defer close(serverHolds)
+
+	var dialer net.Dialer
+	conn, err := dialer.DialContext(t.Context(), "tcp", fmt.Sprintf("127.0.0.1:%d", bridge.Port()))
+	if err != nil {
+		t.Fatalf("dial bridge: %v", err)
+	}
+	defer conn.Close()
+
+	// Let the relay establish itself before shutting down.
+	time.Sleep(50 * time.Millisecond)
+
+	ctx, cancel := context.WithTimeout(t.Context(), 100*time.Millisecond)
+	defer cancel()
+
+	stopped := make(chan error, 1)
+	go func() { stopped <- bridge.Stop(ctx) }()
+
+	select {
+	case err := <-stopped:
+		if err == nil {
+			t.Fatal("Stop reported success while a relay was still in flight")
+		}
+		if !errors.Is(err, context.DeadlineExceeded) {
+			t.Errorf("Stop error = %v, want it to wrap context.DeadlineExceeded", err)
+		}
+	case <-time.After(2 * time.Second):
+		t.Fatal("Stop ignored its deadline and blocked on an in-flight relay")
+	}
+}
+
+// TestBridge_StopWaitsForIdleRelays checks the other half: when nothing
+// is in flight, Stop still returns cleanly rather than reporting the
+// deadline it never needed.
+func TestBridge_StopWaitsForIdleRelays(t *testing.T) {
+	t.Parallel()
+
+	pl := pipe.NewListener()
+	bridge, err := NewBridge(t.Context(), pl)
+	if err != nil {
+		t.Fatalf("NewBridge: %v", err)
+	}
+
+	startBridge(t, bridge)
+	time.Sleep(20 * time.Millisecond)
+
+	ctx, cancel := context.WithTimeout(t.Context(), 2*time.Second)
+	defer cancel()
+
+	if err := bridge.Stop(ctx); err != nil {
+		t.Fatalf("Stop on an idle bridge: %v", err)
+	}
+}
+
+// startBridge runs Start in the background and makes the test wait for
+// it on the way out. Start keeps running after Stop returns — Stop
+// closes the listener but does not cancel Start's context — so a test
+// that simply left it behind would log from a goroutine after it had
+// finished.
+func startBridge(t *testing.T, bridge *Bridge) {
+	t.Helper()
+
+	ctx, cancel := context.WithCancel(t.Context())
+	stopped := make(chan error, 1)
+
+	go func() { stopped <- bridge.Start(ctx) }()
+
+	t.Cleanup(func() {
+		cancel()
+		<-stopped
+	})
 }

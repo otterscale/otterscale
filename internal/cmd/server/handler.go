@@ -116,6 +116,18 @@ func (h *Handler) registerOpsHandlers(mux *http.ServeMux, serviceNames []string)
 	// it without explicit injection. Ideally this would be injected
 	// via Wire, but otelconnect relies on the global provider.
 	otel.SetMeterProvider(metric.NewMeterProvider(metric.WithReader(exporter)))
+
+	// /metrics is not in the server's public paths, so the OIDC
+	// middleware guards it like any other route: a scrape must present
+	// a valid bearer token. Prometheus can do that with an oauth2:
+	// section in its scrape config, pointed at the same Keycloak
+	// client — a plain unauthenticated scrape gets 401.
+	//
+	// Left protected deliberately: these metrics carry cluster names
+	// and per-procedure call patterns across every managed cluster. If
+	// a deployment needs open scraping, expose it on a separate
+	// listener rather than adding this path to WithPublicPaths, which
+	// would also open it to the internet-facing API port.
 	mux.Handle("/metrics", promhttp.Handler())
 
 	return nil

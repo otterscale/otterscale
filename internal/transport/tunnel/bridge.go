@@ -55,13 +55,16 @@ func (b *Bridge) Port() int {
 func (b *Bridge) Start(ctx context.Context) error {
 	b.log.Info("starting", "address", b.tcpListener.Addr().String())
 
-	// Close the TCP listener when the context is done so that
-	// Accept unblocks.
-	go func() {
-		<-ctx.Done()
+	// Close the TCP listener when the context is done so that Accept
+	// unblocks. AfterFunc rather than a goroutine parked on ctx.Done():
+	// the stop function releases the watcher when Start returns for its
+	// own reasons, instead of leaving it alive until the process ends.
+	stopWatch := context.AfterFunc(ctx, func() {
 		b.tcpListener.Close()
-	}()
+	})
+	defer stopWatch()
 
+	var acceptErr error
 	for {
 		tcpConn, err := b.tcpListener.Accept()
 		if err != nil {
@@ -76,7 +79,11 @@ func (b *Bridge) Start(ctx context.Context) error {
 				b.log.Warn("temporary accept error", "error", err)
 				continue
 			}
-			return fmt.Errorf("bridge accept: %w", err)
+			// Fall through to the same wait as a clean shutdown: relays
+			// already in flight own a pipe connection each, and
+			// abandoning them here would return while they still run.
+			acceptErr = fmt.Errorf("bridge accept: %w", err)
+			break
 		}
 
 		b.wg.Add(1)
@@ -84,17 +91,38 @@ func (b *Bridge) Start(ctx context.Context) error {
 	}
 
 	b.wg.Wait()
-	return nil
+	return acceptErr
 }
 
-// Stop gracefully shuts down the bridge. It closes the TCP listener
-// and the pipe listener, then waits for in-flight relays to finish.
-func (b *Bridge) Stop(_ context.Context) error {
+// Stop gracefully shuts down the bridge. It closes the TCP listener and
+// the pipe listener, then waits for in-flight relays to finish — but
+// only for as long as ctx allows.
+//
+// The deadline matters: a relay copies until its connection closes, and
+// a request still streaming through the tunnel (a watch, a log follow,
+// an exec) holds one open indefinitely. Waiting unconditionally would
+// ignore the shutdown budget the caller allotted and hang the whole
+// process on a client that never disconnects.
+func (b *Bridge) Stop(ctx context.Context) error {
 	b.log.Info("shutting down")
 	b.tcpListener.Close()
 	b.pipeListener.Close()
-	b.wg.Wait()
-	return nil
+
+	done := make(chan struct{})
+	go func() {
+		b.wg.Wait()
+		close(done)
+	}()
+
+	select {
+	case <-done:
+		return nil
+	case <-ctx.Done():
+		// The relays are left running: they hold connections this
+		// bridge does not own, and the process is going away anyway.
+		b.log.Warn("shutdown deadline reached with relays still in flight")
+		return fmt.Errorf("bridge shutdown: %w", ctx.Err())
+	}
 }
 
 // relay bridges a single TCP connection to the pipe listener. It

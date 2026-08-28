@@ -54,16 +54,41 @@ func New(tunnel core.TunnelProvider) *Kubernetes {
 	}
 }
 
+// impersonation builds the impersonation settings for the caller in
+// ctx.
+//
+// The empty subject is rejected, not merely absent-checked. Every
+// authorization decision in this system is made by the target cluster
+// against the impersonated identity, and client-go attaches the
+// impersonation headers only when at least one of UserName, UID, Groups
+// or Extra is set. A UserInfo with no subject and no groups would
+// therefore produce a request carrying no identity at all — which the
+// API server answers as the agent's own ServiceAccount, an account with
+// far broader rights than any user. Nothing constructs such a value
+// today; this makes that a checked invariant rather than a property of
+// the current auth middleware.
+func impersonation(ctx context.Context) (rest.ImpersonationConfig, error) {
+	userInfo, ok := core.UserInfoFromContext(ctx)
+	if !ok || userInfo.Subject == "" {
+		return rest.ImpersonationConfig{}, &core.DomainError{
+			Code:    core.ErrorCodeUnauthenticated,
+			Message: "no authenticated subject in context",
+		}
+	}
+
+	return rest.ImpersonationConfig{
+		UserName: userInfo.Subject,
+		Groups:   userInfo.Groups,
+	}, nil
+}
+
 // impersonationConfig builds a rest.Config that targets the given
 // cluster through its tunnel address and impersonates the calling
 // user extracted from the request context.
 func (k *Kubernetes) impersonationConfig(ctx context.Context, cluster string) (*rest.Config, error) {
-	userInfo, ok := core.UserInfoFromContext(ctx)
-	if !ok {
-		return nil, &core.DomainError{
-			Code:    core.ErrorCodeUnauthenticated,
-			Message: "user info not found in context",
-		}
+	impersonate, err := impersonation(ctx)
+	if err != nil {
+		return nil, err
 	}
 
 	address, err := k.tunnel.ResolveAddress(ctx, cluster)
@@ -80,13 +105,10 @@ func (k *Kubernetes) impersonationConfig(ctx context.Context, cluster string) (*
 	}
 
 	cfg := &rest.Config{
-		Host: address,
-		Impersonate: rest.ImpersonationConfig{
-			UserName: userInfo.Subject,
-			Groups:   userInfo.Groups,
-		},
-		Transport: rt,
-		Timeout:   clientTimeout,
+		Host:        address,
+		Impersonate: impersonate,
+		Transport:   rt,
+		Timeout:     clientTimeout,
 	}
 
 	return cfg, nil
@@ -97,12 +119,9 @@ func (k *Kubernetes) impersonationConfig(ctx context.Context, cluster string) (*
 // set a pre-built Transport because streaming executors and dialers need
 // to negotiate their own connection upgrade.
 func (k *Kubernetes) streamConfig(ctx context.Context, cluster string) (*rest.Config, error) {
-	userInfo, ok := core.UserInfoFromContext(ctx)
-	if !ok {
-		return nil, &core.DomainError{
-			Code:    core.ErrorCodeUnauthenticated,
-			Message: "user info not found in context",
-		}
+	impersonate, err := impersonation(ctx)
+	if err != nil {
+		return nil, err
 	}
 
 	address, err := k.tunnel.ResolveAddress(ctx, cluster)
@@ -114,11 +133,8 @@ func (k *Kubernetes) streamConfig(ctx context.Context, cluster string) (*rest.Co
 	}
 
 	return &rest.Config{
-		Host: address,
-		Impersonate: rest.ImpersonationConfig{
-			UserName: userInfo.Subject,
-			Groups:   userInfo.Groups,
-		},
+		Host:        address,
+		Impersonate: impersonate,
 	}, nil
 }
 
