@@ -25,6 +25,21 @@ const (
 	ErrorCodeCanceled                            // caller gave up
 )
 
+// Field names used by ErrInvalidInput. They are also the log keys the
+// resource layer records the same values under, so keeping one spelling keeps
+// validation errors and logs searchable together.
+const (
+	fieldCluster = "cluster"
+	fieldName    = "name"
+)
+
+// Messages shared by more than one ErrInvalidInput.
+const (
+	msgResourceNameRequired = "resource name is required"
+	msgPodNameRequired      = "pod name is required"
+	msgMustNotBeEmpty       = "must not be empty"
+)
+
 // DomainError carries an ErrorCode and an optional cause. Infrastructure
 // adapters wrap external errors into one, so the handler layer only has to
 // understand domain codes.

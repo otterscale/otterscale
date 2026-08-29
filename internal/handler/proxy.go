@@ -66,15 +66,22 @@ func (h *ProxyHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	originalQuery := r.URL.RawQuery
 	proxy := &httputil.ReverseProxy{
-		Director: func(req *http.Request) {
-			req.URL.Scheme = target.Scheme
-			if req.URL.Scheme == "" {
-				req.URL.Scheme = "http"
+		Rewrite: func(pr *httputil.ProxyRequest) {
+			out := pr.Out
+			out.URL.Scheme = target.Scheme
+			if out.URL.Scheme == "" {
+				out.URL.Scheme = "http"
 			}
-			req.URL.Host = target.Host
-			req.URL.Path = "/__otterscale/proxy" + promPath
-			req.URL.RawQuery = originalQuery
-			req.Host = target.Host
+			out.URL.Host = target.Host
+			out.URL.Path = "/__otterscale/proxy" + promPath
+			out.URL.RawQuery = originalQuery
+			out.Host = target.Host
+
+			// Rewrite, unlike the deprecated Director, does not forward the
+			// client address on its own. SetXForwarded overwrites rather than
+			// appends, so an inbound X-Forwarded-For cannot be used to forge a
+			// chain — the same reasoning as the header stripping below.
+			pr.SetXForwarded()
 
 			// Drop anything downstream could read as a credential or an
 			// identity assertion. Authorization belongs to the OIDC
@@ -86,10 +93,10 @@ func (h *ProxyHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			//
 			// net/http canonicalizes header names as it parses them, so the
 			// canonical prefix also catches Impersonate-Extra-*.
-			req.Header.Del("Authorization")
-			for name := range req.Header {
+			out.Header.Del("Authorization")
+			for name := range out.Header {
 				if strings.HasPrefix(name, impersonationHeaderPrefix) {
-					req.Header.Del(name)
+					out.Header.Del(name)
 				}
 			}
 		},

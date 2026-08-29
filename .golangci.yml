@@ -50,6 +50,10 @@ linters:
     goconst:
       min-len: 2
       min-occurrences: 3
+      # Table-driven tests repeat fixture literals ("prod", "v1", "default") on
+      # purpose: each case is meant to be readable on its own line, and hoisting
+      # them into constants makes the tables harder to read, not safer.
+      ignore-tests: true
     gocritic:
       disabled-checks:
         - dupImport

@@ -20,17 +20,17 @@ var reClusterName = regexp.MustCompile(`^[a-z0-9]([a-z0-9-]*[a-z0-9])?$`)
 // ValidateClusterName returns an *ErrInvalidInput on failure.
 func ValidateClusterName(cluster string) error {
 	if cluster == "" {
-		return &ErrInvalidInput{Field: "cluster", Message: "must not be empty"}
+		return &ErrInvalidInput{Field: fieldCluster, Message: msgMustNotBeEmpty}
 	}
 	if len(cluster) > maxClusterNameLength {
 		return &ErrInvalidInput{
-			Field:   "cluster",
+			Field:   fieldCluster,
 			Message: fmt.Sprintf("must not exceed %d characters", maxClusterNameLength),
 		}
 	}
 	if !reClusterName.MatchString(cluster) {
 		return &ErrInvalidInput{
-			Field:   "cluster",
+			Field:   fieldCluster,
 			Message: fmt.Sprintf("must match [a-z0-9]([a-z0-9-]*[a-z0-9])?, got %q", cluster),
 		}
 	}
@@ -156,10 +156,10 @@ func (uc *LinkUseCase) RegisterCluster(ctx context.Context, req *RegistrationReq
 		return Registration{}, err
 	}
 	if req.AgentID == "" {
-		return Registration{}, &ErrInvalidInput{Field: "agent_id", Message: "must not be empty"}
+		return Registration{}, &ErrInvalidInput{Field: "agent_id", Message: msgMustNotBeEmpty}
 	}
 	if len(req.CSRPEM) == 0 {
-		return Registration{}, &ErrInvalidInput{Field: "csr", Message: "must not be empty"}
+		return Registration{}, &ErrInvalidInput{Field: "csr", Message: msgMustNotBeEmpty}
 	}
 
 	grant, err := uc.tunnel.RegisterLink(ctx, req.Cluster, req.AgentID, req.AgentVersion, req.CSRPEM)
