@@ -18,6 +18,7 @@ test/
 
 # Documentation
 README.md
+docs/
 
 # CI/CD and tooling
 .golangci.yml
