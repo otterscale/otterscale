@@ -211,9 +211,9 @@ func (uc *ResourceUseCase) DescribeResource(
 		// Events are supplementary, so return the resource anyway. Log it, or a
 		// permission problem is indistinguishable from having no events.
 		slog.Warn("failed to list events for describe",
-			"cluster", id.Cluster,
+			fieldCluster, id.Cluster,
 			"namespace", id.Namespace,
-			"name", id.Name,
+			fieldName, id.Name,
 			"error", err,
 		)
 		return obj, &unstructured.UnstructuredList{}, nil
@@ -313,7 +313,7 @@ func (uc *ResourceUseCase) wantsInitialEvents(ctx context.Context, cluster, reso
 	supported, err := uc.discovery.SupportsWatchList(ctx, cluster)
 	if err != nil {
 		slog.Warn("watch-list support unknown, falling back to a plain watch",
-			"cluster", cluster,
+			fieldCluster, cluster,
 			"error", err,
 		)
 		return false

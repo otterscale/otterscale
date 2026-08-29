@@ -27,6 +27,15 @@ import (
 // revocation machinery is needed.
 const certValidity = 24 * time.Hour
 
+const (
+	// organization is the X.509 Subject Organization stamped on every
+	// certificate this CA issues.
+	organization = "otterscale"
+
+	// pemTypeCertificate is the PEM block type for a DER-encoded certificate.
+	pemTypeCertificate = "CERTIFICATE"
+)
+
 // CA is a self-signed certificate authority that signs CSRs and issues server
 // certificates.
 type CA struct {
@@ -52,7 +61,7 @@ func NewCA() (*CA, error) {
 	tmpl := &x509.Certificate{
 		SerialNumber: serial,
 		Subject: pkix.Name{
-			Organization: []string{"otterscale"},
+			Organization: []string{organization},
 			CommonName:   "otterscale-ca",
 		},
 		NotBefore:             now.Add(-5 * time.Minute),
@@ -73,7 +82,7 @@ func NewCA() (*CA, error) {
 		return nil, fmt.Errorf("pki: parse CA cert: %w", err)
 	}
 
-	certPEM := pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE", Bytes: certDER})
+	certPEM := pem.EncodeToMemory(&pem.Block{Type: pemTypeCertificate, Bytes: certDER})
 
 	return &CA{cert: cert, key: key, certPEM: certPEM}, nil
 }
@@ -128,7 +137,7 @@ func (ca *CA) SignCSR(csrPEM []byte) ([]byte, error) {
 		return nil, fmt.Errorf("pki: sign certificate: %w", err)
 	}
 
-	return pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE", Bytes: certDER}), nil
+	return pem.EncodeToMemory(&pem.Block{Type: pemTypeCertificate, Bytes: certDER}), nil
 }
 
 // GenerateServerCert adds each host — IP address or DNS name — as a Subject
@@ -148,7 +157,7 @@ func (ca *CA) GenerateServerCert(hosts ...string) (certPEM, keyPEM []byte, err e
 	tmpl := &x509.Certificate{
 		SerialNumber: serial,
 		Subject: pkix.Name{
-			Organization: []string{"otterscale"},
+			Organization: []string{organization},
 			CommonName:   "otterscale-tunnel",
 		},
 		NotBefore:   now.Add(-5 * time.Minute),
@@ -175,7 +184,7 @@ func (ca *CA) GenerateServerCert(hosts ...string) (certPEM, keyPEM []byte, err e
 		return nil, nil, fmt.Errorf("pki: marshal server key: %w", err)
 	}
 
-	certPEM = pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE", Bytes: certDER})
+	certPEM = pem.EncodeToMemory(&pem.Block{Type: pemTypeCertificate, Bytes: certDER})
 	keyPEM = pem.EncodeToMemory(&pem.Block{Type: "EC PRIVATE KEY", Bytes: keyDER})
 	return certPEM, keyPEM, nil
 }
@@ -201,7 +210,7 @@ func GenerateKey() (*ecdsa.PrivateKey, []byte, error) {
 func GenerateCSR(key *ecdsa.PrivateKey, cn string) ([]byte, error) {
 	tmpl := &x509.CertificateRequest{
 		Subject: pkix.Name{
-			Organization: []string{"otterscale"},
+			Organization: []string{organization},
 			CommonName:   cn,
 		},
 	}

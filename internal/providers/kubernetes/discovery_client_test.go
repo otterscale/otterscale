@@ -67,6 +67,7 @@ func (fakeTunnel) ListLinks() map[string]core.Link { return nil }
 func (fakeTunnel) RegisterLink(context.Context, string, string, string, []byte) (core.TunnelGrant, error) {
 	return core.TunnelGrant{}, nil
 }
+
 func (f fakeTunnel) ResolveAddress(context.Context, string) (string, error) { return f.address, nil }
 
 // discoveryServer is a stand-in API server that counts how often its

@@ -149,7 +149,7 @@ func (uc *RuntimeUseCase) vncSession(ctx context.Context, sessionID string) (*VN
 
 func (uc *RuntimeUseCase) StartPodLogs(ctx context.Context, cluster, namespace, name string, opts PodLogOptions) (io.ReadCloser, error) {
 	if name == "" {
-		return nil, &ErrInvalidInput{Field: "name", Message: "pod name is required"}
+		return nil, &ErrInvalidInput{Field: fieldName, Message: msgPodNameRequired}
 	}
 	return uc.runtime.PodLogs(ctx, cluster, namespace, name, opts)
 }
@@ -158,7 +158,7 @@ func (uc *RuntimeUseCase) StartPodLogs(ctx context.Context, cluster, namespace, 
 // plus stdout and stderr readers for the caller to stream from.
 func (uc *RuntimeUseCase) StartExec(ctx context.Context, params *StartExecParams) (session *ExecSession, stdoutReader, stderrReader io.ReadCloser, err error) {
 	if params.Name == "" {
-		return nil, nil, nil, &ErrInvalidInput{Field: "name", Message: "pod name is required"}
+		return nil, nil, nil, &ErrInvalidInput{Field: fieldName, Message: msgPodNameRequired}
 	}
 	if len(params.Command) == 0 {
 		return nil, nil, nil, &ErrInvalidInput{Field: "command", Message: "command is required"}
@@ -320,7 +320,7 @@ func (uc *RuntimeUseCase) CleanupExec(ctx context.Context, sessionID string) {
 // plus a reader for data coming from the pod.
 func (uc *RuntimeUseCase) StartPortForward(ctx context.Context, cluster, namespace, name string, port int32) (*PortForwardSession, io.ReadCloser, error) {
 	if name == "" {
-		return nil, nil, &ErrInvalidInput{Field: "name", Message: "pod name is required"}
+		return nil, nil, &ErrInvalidInput{Field: fieldName, Message: msgPodNameRequired}
 	}
 	if port <= 0 || port > 65535 {
 		return nil, nil, &ErrInvalidInput{Field: "port", Message: "must be between 1 and 65535"}
@@ -434,7 +434,7 @@ func (uc *RuntimeUseCase) CleanupPortForward(ctx context.Context, sessionID stri
 // reader for data coming from the VMI.
 func (uc *RuntimeUseCase) StartVNC(ctx context.Context, cluster, namespace, name string) (*VNCSession, io.ReadCloser, error) {
 	if name == "" {
-		return nil, nil, &ErrInvalidInput{Field: "name", Message: "VMI name is required"}
+		return nil, nil, &ErrInvalidInput{Field: fieldName, Message: "VMI name is required"}
 	}
 
 	owner, err := sessionOwner(ctx)
@@ -525,7 +525,7 @@ func (uc *RuntimeUseCase) CleanupVNC(ctx context.Context, sessionID string) {
 
 func (uc *RuntimeUseCase) Scale(ctx context.Context, id *ResourceIdentifier, replicas int32) (int32, error) {
 	if id.Name == "" {
-		return 0, &ErrInvalidInput{Field: "name", Message: "resource name is required"}
+		return 0, &ErrInvalidInput{Field: fieldName, Message: msgResourceNameRequired}
 	}
 	if replicas < 0 {
 		return 0, &ErrInvalidInput{Field: "replicas", Message: "must be non-negative"}
@@ -558,7 +558,7 @@ func (uc *RuntimeUseCase) StartSessionReaper(ctx context.Context, interval time.
 
 func (uc *RuntimeUseCase) Restart(ctx context.Context, id *ResourceIdentifier) error {
 	if id.Name == "" {
-		return &ErrInvalidInput{Field: "name", Message: "resource name is required"}
+		return &ErrInvalidInput{Field: fieldName, Message: msgResourceNameRequired}
 	}
 	gvr, err := id.lookupGVR(ctx, uc.discovery)
 	if err != nil {
@@ -574,7 +574,7 @@ var allowedSubResourceMethods = map[string]bool{"PUT": true, "POST": true}
 // via impersonation, covering cases such as KubeVirt VM start/stop/restart/migrate.
 func (uc *RuntimeUseCase) SubResourceAction(ctx context.Context, id *ResourceIdentifier, method string, body []byte) (map[string]any, error) {
 	if id.Name == "" {
-		return nil, &ErrInvalidInput{Field: "name", Message: "resource name is required"}
+		return nil, &ErrInvalidInput{Field: fieldName, Message: msgResourceNameRequired}
 	}
 	if id.SubResource == "" {
 		return nil, &ErrInvalidInput{Field: "subresource", Message: "subresource is required"}
