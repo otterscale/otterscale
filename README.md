@@ -38,7 +38,7 @@ flowchart LR
 
 ## Quick start
 
-Build from source (Go 1.26+), or use the published image:
+Build from source (Go 1.27+), or use the published image:
 
 ```console
 $ make build && ./bin/otterscale --help

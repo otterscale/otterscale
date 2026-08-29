@@ -1,6 +1,6 @@
 # Development
 
-Go 1.26 or later. `make help` lists every target.
+Go 1.27 or later. `make help` lists every target.
 
 ```console
 $ make build          # build ./bin/otterscale with FIPS 140-3
