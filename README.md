@@ -73,13 +73,13 @@ The agent uses the in-cluster service account when it runs as a Pod, and falls b
 
 ## Documentation
 
-| Guide                                          | Contents                                                                          |
-| ---------------------------------------------- | --------------------------------------------------------------------------------- |
-| [Architecture](docs/architecture.md)           | Hub and spoke, the request lifecycle, streaming, and caching.                     |
-| [API surface](docs/api.md)                     | The three ConnectRPC services, the Prometheus proxy, `/metrics`, and auth.        |
-| [Configuration](docs/configuration.md)         | Every flag, environment variable, and default, and how they are resolved.         |
-| [Operations](docs/operations.md)               | Enrolling clusters, running the server, monitoring, and troubleshooting.          |
-| [Development](docs/development.md)             | Build and test targets, repository layout, and changing the API.                  |
+| Guide                                  | Contents                                                                   |
+| -------------------------------------- | -------------------------------------------------------------------------- |
+| [Architecture](docs/architecture.md)   | Hub and spoke, the request lifecycle, streaming, and caching.              |
+| [API surface](docs/api.md)             | The three ConnectRPC services, the Prometheus proxy, `/metrics`, and auth. |
+| [Configuration](docs/configuration.md) | Every flag, environment variable, and default, and how they are resolved.  |
+| [Operations](docs/operations.md)       | Enrolling clusters, running the server, monitoring, and troubleshooting.   |
+| [Development](docs/development.md)     | Build and test targets, repository layout, and changing the API.           |
 
 Generated clients: Go in [api/](api/), TypeScript as [`@otterscale/api`](https://www.npmjs.com/package/@otterscale/api), and [openapi.yaml](openapi.yaml) for plain HTTP+JSON.
 
