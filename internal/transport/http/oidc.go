@@ -66,16 +66,13 @@ func NewOIDC(issuer, clientID string) (*authn.Middleware, error) {
 	return authn.NewMiddleware(authenticate), nil
 }
 
-// newUserInfo maps verified claims onto the identity that reaches the API
-// server as Impersonate-User and Impersonate-Group.
+// newUserInfo maps verified claims onto the identity sent as Impersonate-User
+// and Impersonate-Group.
 func newUserInfo(subject string, claims oidcGroupClaims, clientID string) (core.UserInfo, error) {
-	// Groups are safe by construction below, but the subject is passed through
-	// verbatim: it doubles as the RBAC subject in Workspace membership and as
-	// the Harbor identity, so it cannot carry a prefix without breaking both.
-	// Reject the reserved namespace instead. The shape that matters is
-	// "system:serviceaccount:<ns>:<name>", which the API server resolves as a
-	// service account rather than a user; today only the agent's lack of
-	// serviceaccounts impersonation stops it.
+	// The subject doubles as the RBAC subject and the Harbor identity, so it
+	// cannot carry a prefix the way groups do. Reject the reserved namespace
+	// instead: "system:serviceaccount:<ns>:<name>" would impersonate a service
+	// account rather than a user.
 	if subject == "" || strings.HasPrefix(subject, "system:") {
 		return core.UserInfo{}, authn.Errorf("invalid subject")
 	}

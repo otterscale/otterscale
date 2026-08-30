@@ -15,8 +15,6 @@ func TestNewUserInfo_RejectsReservedSubjects(t *testing.T) {
 		name    string
 		subject string
 	}{
-		// The API server resolves this shape as a service account, not a user,
-		// so it would try to impersonate flux-admin rather than a person.
 		{"service account", "system:serviceaccount:otterscale-system:flux-admin"},
 		{"anonymous", "system:anonymous"},
 		{"reserved prefix", "system:whatever"},
@@ -38,8 +36,7 @@ func TestNewUserInfo_PrefixesEveryClaimedGroup(t *testing.T) {
 	t.Parallel()
 
 	claims := oidcGroupClaims{
-		// A claim naming a built-in group is the case that matters: unprefixed
-		// it would grant cluster-admin outright.
+		// Unprefixed, this claim would grant cluster-admin outright.
 		Groups: []string{"system:masters", "platform"},
 		ResourceAccess: map[string]oidcResourceAccess{
 			testClientID: {Roles: []string{"admin"}},
@@ -61,8 +58,7 @@ func TestNewUserInfo_PrefixesEveryClaimedGroup(t *testing.T) {
 		t.Fatalf("Groups = %v, want %v", got.Groups, want)
 	}
 
-	// system:authenticated is ours to add; nothing else may land outside the
-	// oidc: namespace, however a claim is spelled.
+	// system:authenticated is ours to add; no claim may land outside oidc:.
 	for _, g := range got.Groups {
 		if g == "system:authenticated" {
 			continue
