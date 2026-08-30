@@ -15,7 +15,7 @@ func TestNewUserInfo_RejectsReservedSubjects(t *testing.T) {
 		name    string
 		subject string
 	}{
-		{"service account", "system:serviceaccount:otterscale-system:flux-admin"},
+		{"service account", "system:serviceaccount:otterscale-system:platform-deployer"},
 		{"anonymous", "system:anonymous"},
 		{"reserved prefix", "system:whatever"},
 		{"empty", ""},
