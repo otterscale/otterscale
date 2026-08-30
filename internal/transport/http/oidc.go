@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"strings"
 	"time"
 
 	"connectrpc.com/authn"
@@ -59,24 +60,41 @@ func NewOIDC(issuer, clientID string) (*authn.Middleware, error) {
 			return nil, authn.Errorf("parse token claims: %s", err)
 		}
 
-		// The "oidc:" prefix keeps these clear of built-in groups such as
-		// "system:masters". Client roles from resource_access merge with
-		// top-level groups, so a Keycloak client role "admin" and a realm
-		// group "admin" both land on "oidc:admin".
-		clientRoles := claims.ResourceAccess[clientID].Roles
-		groups := make([]string, 0, 1+len(claims.Groups)+len(clientRoles))
-		groups = append(groups, "system:authenticated")
-		for _, names := range [][]string{claims.Groups, clientRoles} {
-			for _, n := range names {
-				groups = append(groups, "oidc:"+n)
-			}
-		}
-
-		return core.UserInfo{
-			Subject: idToken.Subject,
-			Groups:  groups,
-		}, nil
+		return newUserInfo(idToken.Subject, claims, clientID)
 	}
 
 	return authn.NewMiddleware(authenticate), nil
+}
+
+// newUserInfo maps verified claims onto the identity that reaches the API
+// server as Impersonate-User and Impersonate-Group.
+func newUserInfo(subject string, claims oidcGroupClaims, clientID string) (core.UserInfo, error) {
+	// Groups are safe by construction below, but the subject is passed through
+	// verbatim: it doubles as the RBAC subject in Workspace membership and as
+	// the Harbor identity, so it cannot carry a prefix without breaking both.
+	// Reject the reserved namespace instead. The shape that matters is
+	// "system:serviceaccount:<ns>:<name>", which the API server resolves as a
+	// service account rather than a user; today only the agent's lack of
+	// serviceaccounts impersonation stops it.
+	if subject == "" || strings.HasPrefix(subject, "system:") {
+		return core.UserInfo{}, authn.Errorf("invalid subject")
+	}
+
+	// The "oidc:" prefix keeps these clear of built-in groups such as
+	// "system:masters". Client roles from resource_access merge with
+	// top-level groups, so a Keycloak client role "admin" and a realm
+	// group "admin" both land on "oidc:admin".
+	clientRoles := claims.ResourceAccess[clientID].Roles
+	groups := make([]string, 0, 1+len(claims.Groups)+len(clientRoles))
+	groups = append(groups, "system:authenticated")
+	for _, names := range [][]string{claims.Groups, clientRoles} {
+		for _, n := range names {
+			groups = append(groups, "oidc:"+n)
+		}
+	}
+
+	return core.UserInfo{
+		Subject: subject,
+		Groups:  groups,
+	}, nil
 }
