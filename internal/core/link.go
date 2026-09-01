@@ -109,18 +109,18 @@ type Link struct {
 // LinkUseCase orchestrates cluster registration on the server side, delegating
 // CSR signing and tunnel setup to the TunnelProvider.
 type LinkUseCase struct {
-	tunnel    TunnelProvider
-	version   Version
-	join *JoinAuthority
+	tunnel  TunnelProvider
+	version Version
+	join    *JoinAuthority
 }
 
 // NewLinkUseCase takes the server binary version, included in registration
 // responses, and the join that authorizes agents to claim a cluster.
 func NewLinkUseCase(tunnel TunnelProvider, version Version, join *JoinAuthority) *LinkUseCase {
 	return &LinkUseCase{
-		tunnel:    tunnel,
-		version:   version,
-		join: join,
+		tunnel:  tunnel,
+		version: version,
+		join:    join,
 	}
 }
 

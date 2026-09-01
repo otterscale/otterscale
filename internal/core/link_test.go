@@ -58,11 +58,11 @@ func newTestLinkUseCase(t *testing.T, tp TunnelProvider) *LinkUseCase {
 func validRegistration(t *testing.T, cluster string) *RegistrationRequest {
 	t.Helper()
 	return &RegistrationRequest{
-		Cluster:        cluster,
-		AgentID:        "agent-1",
-		AgentVersion:   "v1",
-		JoinToken: newTestJoinAuthority(t, testJoinAuthoritySecret).Token(cluster),
-		CSRPEM:         []byte("csr-data"),
+		Cluster:      cluster,
+		AgentID:      "agent-1",
+		AgentVersion: "v1",
+		JoinToken:    newTestJoinAuthority(t, testJoinAuthoritySecret).Token(cluster),
+		CSRPEM:       []byte("csr-data"),
 	}
 }
 

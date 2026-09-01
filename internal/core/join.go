@@ -10,7 +10,7 @@ import (
 // joinTokenContext namespaces the derivation so a token can never
 // be mistaken for, or reused as, some other value derived from the same
 // secret.
-const joinTokenContext = "otterscale-join:" //nolint:gosec // a domain separator, not a credential
+const joinTokenContext = "otterscale-join:"
 
 // JoinToken is what an agent presents when registering. It is a distinct
 // type so Wire can tell it apart from other strings.
