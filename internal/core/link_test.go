@@ -45,12 +45,12 @@ func (m *mockTunnelProvider) ResolveAddress(_ context.Context, _ string) (string
 	return "", nil
 }
 
-// testEnrolmentSecret backs the tokens used by the link tests.
-const testEnrolmentSecret = "test-root-secret"
+// testJoinAuthoritySecret backs the tokens used by the link tests.
+const testJoinAuthoritySecret = "test-root-secret"
 
 func newTestLinkUseCase(t *testing.T, tp TunnelProvider) *LinkUseCase {
 	t.Helper()
-	return NewLinkUseCase(tp, "v1.0.0", newTestEnrolment(t, testEnrolmentSecret))
+	return NewLinkUseCase(tp, "v1.0.0", newTestJoinAuthority(t, testJoinAuthoritySecret))
 }
 
 // validRegistration returns a request that passes every check, so a
@@ -58,11 +58,11 @@ func newTestLinkUseCase(t *testing.T, tp TunnelProvider) *LinkUseCase {
 func validRegistration(t *testing.T, cluster string) *RegistrationRequest {
 	t.Helper()
 	return &RegistrationRequest{
-		Cluster:        cluster,
-		AgentID:        "agent-1",
-		AgentVersion:   "v1",
-		EnrolmentToken: newTestEnrolment(t, testEnrolmentSecret).Token(cluster),
-		CSRPEM:         []byte("csr-data"),
+		Cluster:      cluster,
+		AgentID:      "agent-1",
+		AgentVersion: "v1",
+		JoinToken:    newTestJoinAuthority(t, testJoinAuthoritySecret).Token(cluster),
+		CSRPEM:       []byte("csr-data"),
 	}
 }
 
@@ -172,14 +172,14 @@ func TestLinkUseCase_RegisterCluster_RejectsBadToken(t *testing.T) {
 			name: "another cluster's token",
 			token: func(t *testing.T) string {
 				t.Helper()
-				return newTestEnrolment(t, testEnrolmentSecret).Token("staging")
+				return newTestJoinAuthority(t, testJoinAuthoritySecret).Token("staging")
 			},
 		},
 		{
 			name: "token from a rotated secret",
 			token: func(t *testing.T) string {
 				t.Helper()
-				return newTestEnrolment(t, "some-other-secret").Token("my-cluster")
+				return newTestJoinAuthority(t, "some-other-secret").Token("my-cluster")
 			},
 		},
 	}
@@ -190,7 +190,7 @@ func TestLinkUseCase_RegisterCluster_RejectsBadToken(t *testing.T) {
 			uc := newTestLinkUseCase(t, tp)
 
 			req := validRegistration(t, "my-cluster")
-			req.EnrolmentToken = tt.token(t)
+			req.JoinToken = tt.token(t)
 
 			_, err := uc.RegisterCluster(t.Context(), req)
 			if err == nil {

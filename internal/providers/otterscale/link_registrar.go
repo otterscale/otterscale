@@ -21,13 +21,13 @@ import (
 type linkRegistrar struct {
 	agentID      string
 	agentVersion string // agent binary version, sent during registration
-	token        string // enrolment token authorizing this cluster
+	token        string // join token authorizing this cluster
 	client       *http.Client
 }
 
 // NewLinkRegistrar returns a TunnelConsumer that registers agents against the
 // otterscale link API over CSR-based mTLS.
-func NewLinkRegistrar(version core.Version, token core.EnrolmentToken) (core.TunnelConsumer, error) {
+func NewLinkRegistrar(version core.Version, token core.JoinToken) (core.TunnelConsumer, error) {
 	agentID, err := os.Hostname()
 	if err != nil {
 		return nil, fmt.Errorf("failed to get hostname: %w", err)
@@ -68,7 +68,7 @@ func (f *linkRegistrar) Register(ctx context.Context, serverURL, cluster string)
 	req.SetAgentId(f.agentID)
 	req.SetCsr(csrPEM)
 	req.SetAgentVersion(f.agentVersion)
-	req.SetEnrolmentToken(f.token)
+	req.SetJoinToken(f.token)
 
 	resp, err := client.Register(ctx, req)
 	if err != nil {

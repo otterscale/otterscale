@@ -4,7 +4,7 @@ Three ConnectRPC services, defined in [proto/](../proto/) and served over gRPC, 
 
 | Service                       | RPCs                                                                                                                                                    | Purpose                                                                                                                                                                        |
 | ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `link.v1.LinkService`         | `Register`, `ListLinks`                                                                                                                                 | Agent enrolment via CSR, and the roster of connected clusters.                                                                                                                 |
+| `link.v1.LinkService`         | `Register`, `ListLinks`                                                                                                                                 | Agent registration via CSR, and the roster of connected clusters.                                                                                                              |
 | `resource.v1.ResourceService` | `Discovery`, `Schema`, `List`, `Get`, `Describe`, `Create`, `Apply`, `Update`, `Delete`, `Watch`                                                        | Generic typed and unstructured access to any Kubernetes resource, including server-side apply and streaming watches. Discovery and OpenAPI schemas are TTL-cached per cluster. |
 | `runtime.v1.RuntimeService`   | `PodLog`, `ExecuteTTY`/`WriteTTY`/`ResizeTTY`, `PortForward`/`WritePortForward`, `VNC`/`WriteVNC`, `Scale`, `Restart`, `SubResourceAction`, `ShowChart` | Interactive operations: log follow, exec with a resizable TTY, port-forward, VNC consoles, scaling, rolling restarts, and Helm chart inspection.                               |
 
@@ -24,7 +24,7 @@ Every request carries a `cluster` field naming the target; the server routes it 
 
 Requests are authenticated by OIDC against the configured Keycloak realm. Exactly three paths are reachable without a token:
 
-- `link.v1.LinkService/Register` — agents have no credential until they have registered; the call is authorised by an [enrolment token](operations.md#enrolling-a-cluster) instead.
+- `link.v1.LinkService/Register` — agents have no credential until they have registered; the call is authorised by a [join token](operations.md#joining-a-cluster) instead.
 - `grpc.health.v1.Health/Check` and `/Watch`
 - `grpc.reflection.v1.ServerReflection/ServerReflectionInfo`
 

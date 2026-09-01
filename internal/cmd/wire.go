@@ -14,9 +14,9 @@ import (
 var ProviderSet = wire.NewSet(
 	agent.NewAgent,
 	agent.NewHandler,
-	agent.ProvideEnrolmentToken,
+	agent.ProvideJoinToken,
 	server.NewServer,
 	server.NewHandler,
 	server.ProvideBackgroundListeners,
-	server.ProvideEnrolment,
+	server.ProvideJoinAuthority,
 )

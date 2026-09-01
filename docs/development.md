@@ -16,16 +16,16 @@ $ make proto-breaking # buf breaking-change check against main
 
 ## Layout
 
-| Path                                          | What lives there                                                       |
-| --------------------------------------------- | ---------------------------------------------------------------------- |
-| [cmd/otterscale/](../cmd/otterscale/)         | Entry point and Wire injectors.                                        |
-| [internal/cmd/](../internal/cmd/)             | Cobra commands and the server/agent runtimes.                          |
-| [internal/core/](../internal/core/)           | Domain logic: links, resources, runtime, sessions, enrolment, caching. |
-| [internal/handler/](../internal/handler/)     | ConnectRPC handlers translating proto to core.                         |
-| [internal/transport/](../internal/transport/) | HTTP server, chisel tunnel, in-memory pipe listener.                   |
-| [internal/providers/](../internal/providers/) | Kubernetes, Helm, chisel, and cache wiring.                            |
-| [internal/pki/](../internal/pki/)             | The tunnel CA and certificate issuance.                                |
-| [proto/](../proto/)                           | Service definitions — the source of truth for all three clients.       |
+| Path                                          | What lives there                                                     |
+| --------------------------------------------- | -------------------------------------------------------------------- |
+| [cmd/otterscale/](../cmd/otterscale/)         | Entry point and Wire injectors.                                      |
+| [internal/cmd/](../internal/cmd/)             | Cobra commands and the server/agent runtimes.                        |
+| [internal/core/](../internal/core/)           | Domain logic: links, resources, runtime, sessions, joining, caching. |
+| [internal/handler/](../internal/handler/)     | ConnectRPC handlers translating proto to core.                       |
+| [internal/transport/](../internal/transport/) | HTTP server, chisel tunnel, in-memory pipe listener.                 |
+| [internal/providers/](../internal/providers/) | Kubernetes, Helm, chisel, and cache wiring.                          |
+| [internal/pki/](../internal/pki/)             | The tunnel CA and certificate issuance.                              |
+| [proto/](../proto/)                           | Service definitions — the source of truth for all three clients.     |
 
 ## Dependency injection
 
@@ -46,16 +46,16 @@ A new RPC that returns a long-lived stream must also be added to `Handler.LongRu
 
 ## Running locally
 
-The server needs a Keycloak realm and an enrolment secret; the agent needs a token derived from that secret. Against a kind or minikube cluster the agent picks up your ambient kubeconfig, so no in-cluster deployment is required:
+The server needs a Keycloak realm and a join secret; the agent needs a token derived from that secret. Against a kind or minikube cluster the agent picks up your ambient kubeconfig, so no in-cluster deployment is required:
 
 ```console
 $ otterscale server \
     --keycloak-realm-url=https://sso.example.com/realms/otterscale \
-    --enrolment-secret=dev-only-secret &
+    --join-secret=dev-only-secret &
 
 $ otterscale agent \
     --cluster=dev \
-    --enrolment-token="$(otterscale enrolment-token --cluster dev --enrolment-secret=dev-only-secret)"
+    --join-token="$(otterscale join token --cluster dev --join-secret=dev-only-secret)"
 ```
 
 The defaults already point the agent at `127.0.0.1:8299` and `127.0.0.1:8300`.

@@ -45,7 +45,7 @@ $ make build && ./bin/otterscale --help
 $ docker run --rm ghcr.io/otterscale/otterscale:latest --help
 ```
 
-Run the hub. It needs a Keycloak realm to validate tokens against and an enrolment secret to issue agent tokens from, and refuses to start without either:
+Run the hub. It needs a Keycloak realm to validate tokens against and a join secret to issue agent tokens from, and refuses to start without either:
 
 ```console
 $ otterscale server \
@@ -53,20 +53,20 @@ $ otterscale server \
     --tunnel-address=0.0.0.0:8300 \
     --external-tunnel-url=https://tunnel.example.com:8300 \
     --keycloak-realm-url=https://sso.example.com/realms/otterscale \
-    --enrolment-secret-file=/etc/otterscale/enrolment-secret
+    --join-secret-file=/etc/otterscale/join/secret
 ```
 
 Mint a token for a cluster, then start its agent with it:
 
 ```console
-$ kubectl exec deploy/otterscale-server -- /otterscale enrolment-token --cluster prod
+$ kubectl exec deploy/otterscale-server -- /otterscale join token --cluster prod
 xlbQpGep3w9ZJpaDyUzKpHXVTcw_5pO5mNgT3qnf3Ss
 
 $ otterscale agent \
     --cluster=prod \
     --server-url=https://api.example.com \
     --tunnel-server-url=https://tunnel.example.com:8300 \
-    --enrolment-token-file=/etc/otterscale/enrolment-token
+    --join-token-file=/etc/otterscale/join/token
 ```
 
 The agent uses the in-cluster service account when it runs as a Pod, and falls back to the ambient kubeconfig outside one — handy for a trial run against kind or minikube.

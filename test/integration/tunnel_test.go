@@ -12,19 +12,19 @@ import (
 	tunneltransport "github.com/otterscale/otterscale/internal/transport/tunnel"
 )
 
-// integrationSecret backs the enrolment tokens these tests present.
+// integrationSecret backs the join tokens these tests present.
 const integrationSecret = "integration-root-secret"
 
-// newTestLink builds a LinkUseCase with enrolment configured, and a
+// newTestLink builds a LinkUseCase with join configured, and a
 // helper that mints the token for a cluster.
 func newTestLink(t *testing.T, tunnel core.TunnelProvider) (link *core.LinkUseCase, tokenFor func(cluster string) string) {
 	t.Helper()
 
-	enrolment, err := core.NewEnrolment(integrationSecret)
+	join, err := core.NewJoinAuthority(integrationSecret)
 	if err != nil {
-		t.Fatalf("NewEnrolment: %v", err)
+		t.Fatalf("NewJoinAuthority: %v", err)
 	}
-	return core.NewLinkUseCase(tunnel, "test", enrolment), enrolment.Token
+	return core.NewLinkUseCase(tunnel, "test", join), join.Token
 }
 
 func TestLinkRegisterClusterUsesSingleSharedTunnelPort(t *testing.T) {
@@ -36,21 +36,21 @@ func TestLinkRegisterClusterUsesSingleSharedTunnelPort(t *testing.T) {
 	csrB := generateCSR(t, "agent-b")
 
 	regA, err := link.RegisterCluster(t.Context(), &core.RegistrationRequest{
-		Cluster:        "cluster-a",
-		AgentID:        "agent-a",
-		AgentVersion:   "test",
-		EnrolmentToken: tokenFor("cluster-a"),
-		CSRPEM:         csrA,
+		Cluster:      "cluster-a",
+		AgentID:      "agent-a",
+		AgentVersion: "test",
+		JoinToken:    tokenFor("cluster-a"),
+		CSRPEM:       csrA,
 	})
 	if err != nil {
 		t.Fatalf("register cluster-a: %v", err)
 	}
 	regB, err := link.RegisterCluster(t.Context(), &core.RegistrationRequest{
-		Cluster:        "cluster-b",
-		AgentID:        "agent-b",
-		AgentVersion:   "test",
-		EnrolmentToken: tokenFor("cluster-b"),
-		CSRPEM:         csrB,
+		Cluster:      "cluster-b",
+		AgentID:      "agent-b",
+		AgentVersion: "test",
+		JoinToken:    tokenFor("cluster-b"),
+		CSRPEM:       csrB,
 	})
 	if err != nil {
 		t.Fatalf("register cluster-b: %v", err)
@@ -93,21 +93,21 @@ func TestLinkRegisterClusterLatestAgentWinsForSameCluster(t *testing.T) {
 	csr2 := generateCSR(t, "agent-r-2")
 
 	_, err := link.RegisterCluster(t.Context(), &core.RegistrationRequest{
-		Cluster:        "cluster-r",
-		AgentID:        "agent-r-1",
-		AgentVersion:   "test",
-		EnrolmentToken: tokenFor("cluster-r"),
-		CSRPEM:         csr1,
+		Cluster:      "cluster-r",
+		AgentID:      "agent-r-1",
+		AgentVersion: "test",
+		JoinToken:    tokenFor("cluster-r"),
+		CSRPEM:       csr1,
 	})
 	if err != nil {
 		t.Fatalf("register agent-r-1: %v", err)
 	}
 	reg2, err := link.RegisterCluster(t.Context(), &core.RegistrationRequest{
-		Cluster:        "cluster-r",
-		AgentID:        "agent-r-2",
-		AgentVersion:   "test",
-		EnrolmentToken: tokenFor("cluster-r"),
-		CSRPEM:         csr2,
+		Cluster:      "cluster-r",
+		AgentID:      "agent-r-2",
+		AgentVersion: "test",
+		JoinToken:    tokenFor("cluster-r"),
+		CSRPEM:       csr2,
 	})
 	if err != nil {
 		t.Fatalf("register agent-r-2: %v", err)
@@ -139,22 +139,22 @@ func TestLinkRegisterClusterReregisterAndReplaceAcrossAgents(t *testing.T) {
 	csrB := generateCSR(t, "agent-b")
 
 	regA1, err := link.RegisterCluster(t.Context(), &core.RegistrationRequest{
-		Cluster:        "cluster-z",
-		AgentID:        "agent-a",
-		AgentVersion:   "test",
-		EnrolmentToken: tokenFor("cluster-z"),
-		CSRPEM:         csrA,
+		Cluster:      "cluster-z",
+		AgentID:      "agent-a",
+		AgentVersion: "test",
+		JoinToken:    tokenFor("cluster-z"),
+		CSRPEM:       csrA,
 	})
 	if err != nil {
 		t.Fatalf("register agent-a #1: %v", err)
 	}
 
 	regB, err := link.RegisterCluster(t.Context(), &core.RegistrationRequest{
-		Cluster:        "cluster-z",
-		AgentID:        "agent-b",
-		AgentVersion:   "test",
-		EnrolmentToken: tokenFor("cluster-z"),
-		CSRPEM:         csrB,
+		Cluster:      "cluster-z",
+		AgentID:      "agent-b",
+		AgentVersion: "test",
+		JoinToken:    tokenFor("cluster-z"),
+		CSRPEM:       csrB,
 	})
 	if err != nil {
 		t.Fatalf("register agent-b: %v", err)
@@ -171,11 +171,11 @@ func TestLinkRegisterClusterReregisterAndReplaceAcrossAgents(t *testing.T) {
 	}
 
 	regA2, err := link.RegisterCluster(t.Context(), &core.RegistrationRequest{
-		Cluster:        "cluster-z",
-		AgentID:        "agent-a",
-		AgentVersion:   "test",
-		EnrolmentToken: tokenFor("cluster-z"),
-		CSRPEM:         csrA,
+		Cluster:      "cluster-z",
+		AgentID:      "agent-a",
+		AgentVersion: "test",
+		JoinToken:    tokenFor("cluster-z"),
+		CSRPEM:       csrA,
 	})
 	if err != nil {
 		t.Fatalf("register agent-a #2: %v", err)
@@ -260,11 +260,11 @@ func TestLinkRegisterClusterRejectedTokenKeepsExistingAgent(t *testing.T) {
 	link, tokenFor := newTestLink(t, tunnel)
 
 	if _, err := link.RegisterCluster(t.Context(), &core.RegistrationRequest{
-		Cluster:        "cluster-x",
-		AgentID:        "agent-x",
-		AgentVersion:   "test",
-		EnrolmentToken: tokenFor("cluster-x"),
-		CSRPEM:         generateCSR(t, "agent-x"),
+		Cluster:      "cluster-x",
+		AgentID:      "agent-x",
+		AgentVersion: "test",
+		JoinToken:    tokenFor("cluster-x"),
+		CSRPEM:       generateCSR(t, "agent-x"),
 	}); err != nil {
 		t.Fatalf("register the legitimate agent: %v", err)
 	}
@@ -275,11 +275,11 @@ func TestLinkRegisterClusterRejectedTokenKeepsExistingAgent(t *testing.T) {
 	}
 
 	_, err = link.RegisterCluster(t.Context(), &core.RegistrationRequest{
-		Cluster:        "cluster-x",
-		AgentID:        "impostor",
-		AgentVersion:   "test",
-		EnrolmentToken: tokenFor("some-other-cluster"),
-		CSRPEM:         generateCSR(t, "impostor"),
+		Cluster:      "cluster-x",
+		AgentID:      "impostor",
+		AgentVersion: "test",
+		JoinToken:    tokenFor("some-other-cluster"),
+		CSRPEM:       generateCSR(t, "impostor"),
 	})
 	if err == nil {
 		t.Fatal("registration with another cluster's token succeeded")
@@ -315,11 +315,11 @@ func TestLinkRegisterClusterSharedAgentHostnameDoesNotCollide(t *testing.T) {
 	register := func(cluster string) core.Registration {
 		t.Helper()
 		reg, err := link.RegisterCluster(t.Context(), &core.RegistrationRequest{
-			Cluster:        cluster,
-			AgentID:        sharedAgentID,
-			AgentVersion:   "test",
-			EnrolmentToken: tokenFor(cluster),
-			CSRPEM:         generateCSR(t, sharedAgentID),
+			Cluster:      cluster,
+			AgentID:      sharedAgentID,
+			AgentVersion: "test",
+			JoinToken:    tokenFor(cluster),
+			CSRPEM:       generateCSR(t, sharedAgentID),
 		})
 		if err != nil {
 			t.Fatalf("register %s: %v", cluster, err)
@@ -367,11 +367,11 @@ func TestDeregisterClusterLeavesOtherClustersRegistered(t *testing.T) {
 
 	for _, cluster := range []string{"cluster-a", "cluster-b"} {
 		if _, err := link.RegisterCluster(t.Context(), &core.RegistrationRequest{
-			Cluster:        cluster,
-			AgentID:        sharedAgentID,
-			AgentVersion:   "test",
-			EnrolmentToken: tokenFor(cluster),
-			CSRPEM:         generateCSR(t, sharedAgentID),
+			Cluster:      cluster,
+			AgentID:      sharedAgentID,
+			AgentVersion: "test",
+			JoinToken:    tokenFor(cluster),
+			CSRPEM:       generateCSR(t, sharedAgentID),
 		}); err != nil {
 			t.Fatalf("register %s: %v", cluster, err)
 		}
@@ -404,11 +404,11 @@ func TestLinkRegisterClusterRejectsMalformedCSR(t *testing.T) {
 	link, tokenFor := newTestLink(t, tunnel)
 
 	_, err := link.RegisterCluster(t.Context(), &core.RegistrationRequest{
-		Cluster:        "cluster-bad-csr",
-		AgentID:        "agent-a",
-		AgentVersion:   "test",
-		EnrolmentToken: tokenFor("cluster-bad-csr"),
-		CSRPEM:         []byte("-----BEGIN CERTIFICATE REQUEST-----\nbm90IGEgY3Ny\n-----END CERTIFICATE REQUEST-----\n"),
+		Cluster:      "cluster-bad-csr",
+		AgentID:      "agent-a",
+		AgentVersion: "test",
+		JoinToken:    tokenFor("cluster-bad-csr"),
+		CSRPEM:       []byte("-----BEGIN CERTIFICATE REQUEST-----\nbm90IGEgY3Ny\n-----END CERTIFICATE REQUEST-----\n"),
 	})
 	if err == nil {
 		t.Fatal("expected a malformed CSR to be rejected")
@@ -445,11 +445,11 @@ func TestLinkRegisterClusterKeepsAddressAcrossReregistration(t *testing.T) {
 	register := func(agentID string) core.Registration {
 		t.Helper()
 		reg, err := link.RegisterCluster(t.Context(), &core.RegistrationRequest{
-			Cluster:        "cluster-stable",
-			AgentID:        agentID,
-			AgentVersion:   "test",
-			EnrolmentToken: tokenFor("cluster-stable"),
-			CSRPEM:         generateCSR(t, agentID),
+			Cluster:      "cluster-stable",
+			AgentID:      agentID,
+			AgentVersion: "test",
+			JoinToken:    tokenFor("cluster-stable"),
+			CSRPEM:       generateCSR(t, agentID),
 		})
 		if err != nil {
 			t.Fatalf("register %s: %v", agentID, err)

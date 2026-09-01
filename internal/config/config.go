@@ -105,10 +105,16 @@ func (c *Config) ServerExternalTunnelURL() string {
 	return c.v.GetString(keyServerExternalTunnelURL)
 }
 
-// ServerEnrolmentSecret is the root secret for issuing and verifying agent
-// enrolment tokens, read from the configured file when one is set.
-func (c *Config) ServerEnrolmentSecret() (string, error) {
-	return c.secret(keyServerEnrolmentSecretFile, keyServerEnrolmentSecret)
+// ServerJoinSecret is the root secret for issuing and verifying agent
+// join tokens, read from the configured file when one is set.
+func (c *Config) ServerJoinSecret() (string, error) {
+	return c.secret(keyServerJoinSecretFile, keyServerJoinSecret)
+}
+
+// ServerTrustedCAFile is the path to the CA certificate agents need to verify
+// this server. Empty when the server's certificate chains to a public CA.
+func (c *Config) ServerTrustedCAFile() string {
+	return c.v.GetString(keyServerTrustedCAFile)
 }
 
 // AgentCluster is the name this agent registers under.
@@ -130,10 +136,10 @@ func (c *Config) AgentProxyPrometheusURL() string {
 	return c.v.GetString(keyAgentProxyPrometheusURL)
 }
 
-// AgentEnrolmentToken is what this agent presents when it registers, read from
+// AgentJoinToken is what this agent presents when it registers, read from
 // the configured file when one is set.
-func (c *Config) AgentEnrolmentToken() (string, error) {
-	return c.secret(keyAgentEnrolmentTokenFile, keyAgentEnrolmentToken)
+func (c *Config) AgentJoinToken() (string, error) {
+	return c.secret(keyAgentJoinTokenFile, keyAgentJoinToken)
 }
 
 // secret reads a credential from the file named by fileKey, falling back to the

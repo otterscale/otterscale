@@ -54,19 +54,19 @@ func (l *cacheEvictorListener) Stop(_ context.Context) error {
 	return nil // evictor stops when its context is canceled
 }
 
-// ProvideEnrolment fails when no secret is configured: the registration
+// ProvideJoinAuthority fails when no secret is configured: the registration
 // endpoint is reachable without authentication, so a server without one would
 // let any caller claim — and take over — any cluster.
-func ProvideEnrolment(conf *config.Config) (*core.Enrolment, error) {
-	secret, err := conf.ServerEnrolmentSecret()
+func ProvideJoinAuthority(conf *config.Config) (*core.JoinAuthority, error) {
+	secret, err := conf.ServerJoinSecret()
 	if err != nil {
 		return nil, err
 	}
 	if secret == "" {
 		return nil, errors.New(
-			"enrolment secret is required but not configured; " +
-				"set --enrolment-secret, --enrolment-secret-file or OTTERSCALE_SERVER_ENROLMENT_SECRET",
+			"join secret is required but not configured; " +
+				"set --join-secret, --join-secret-file or OTTERSCALE_SERVER_JOIN_SECRET",
 		)
 	}
-	return core.NewEnrolment(secret)
+	return core.NewJoinAuthority(secret)
 }

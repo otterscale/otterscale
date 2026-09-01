@@ -101,25 +101,25 @@ func (a *Agent) register() tunnel.RegisterFunc {
 	}
 }
 
-// ProvideEnrolmentToken fails when no token is configured: the server would
+// ProvideJoinToken fails when no token is configured: the server would
 // reject every registration anyway, and failing here says why instead of
 // leaving the agent to retry an unauthenticated call forever.
-func ProvideEnrolmentToken(conf *config.Config) (core.EnrolmentToken, error) {
-	token, err := conf.AgentEnrolmentToken()
+func ProvideJoinToken(conf *config.Config) (core.JoinToken, error) {
+	token, err := conf.AgentJoinToken()
 	if err != nil {
 		return "", err
 	}
 	if token == "" {
 		return "", errors.New(
-			"enrolment token is required but not configured; " +
-				"set --enrolment-token, --enrolment-token-file or OTTERSCALE_AGENT_ENROLMENT_TOKEN " +
-				"to the value of `otterscale enrolment-token --cluster <name>`",
+			"join token is required but not configured; " +
+				"set --join-token, --join-token-file or OTTERSCALE_AGENT_JOIN_TOKEN " +
+				"to the value of `otterscale join token --cluster <name>`",
 		)
 	}
-	return core.EnrolmentToken(token), nil
+	return core.JoinToken(token), nil
 }
 
-// warnInsecureServerURL fires when registration would send the enrolment token
+// warnInsecureServerURL fires when registration would send the join token
 // over plaintext HTTP to a remote host, where anything on the path could read
 // it and register clusters of its own.
 //
@@ -131,7 +131,7 @@ func warnInsecureServerURL(serverURL string) {
 		return
 	}
 
-	slog.Warn("registering over plaintext HTTP: the enrolment token is exposed to anything on the network path",
+	slog.Warn("registering over plaintext HTTP: the join token is exposed to anything on the network path",
 		"server_url", serverURL,
 		"advice", "use https, unless TLS is terminated for this process by a service mesh",
 	)

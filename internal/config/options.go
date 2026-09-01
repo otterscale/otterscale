@@ -14,12 +14,18 @@ type Option struct {
 	Description string
 }
 
-// EnrolmentOptions defines the entries that configure the enrolment
+// JoinOptions defines the entries that configure the join
 // secret. They are part of ServerOptions and are also bound on their
-// own by the enrolment-token subcommand.
-var EnrolmentOptions = []Option{
-	{Key: keyServerEnrolmentSecret, Flag: toFlag(keyServerEnrolmentSecret), Default: "", Description: "Root secret used to issue and verify agent enrolment tokens (required)"},
-	{Key: keyServerEnrolmentSecretFile, Flag: toFlag(keyServerEnrolmentSecretFile), Default: "", Description: "Path to a file holding the enrolment secret; takes precedence over --enrolment-secret"},
+// own by the "join token" subcommand.
+var JoinOptions = []Option{
+	{Key: keyServerJoinSecret, Flag: toFlag(keyServerJoinSecret), Default: "", Description: "Root secret used to issue and verify agent join tokens (required)"},
+	{Key: keyServerJoinSecretFile, Flag: toFlag(keyServerJoinSecretFile), Default: "", Description: "Path to a file holding the join secret; takes precedence over --join-secret"},
+}
+
+// TrustedCAOptions defines the entry naming the CA agents must trust. It is
+// part of ServerOptions and is also bound on its own by "join ca".
+var TrustedCAOptions = []Option{
+	{Key: keyServerTrustedCAFile, Flag: toFlag(keyServerTrustedCAFile), Default: "", Description: "Path to the CA certificate agents must trust to reach this server"},
 }
 
 // ServerOptions defines the configuration entries available in server
@@ -31,7 +37,7 @@ var ServerOptions = append([]Option{
 	{Key: keyServerKeycloakRealmURL, Flag: toFlag(keyServerKeycloakRealmURL), Default: "", Description: "Server keycloak realm url (required)"},
 	{Key: keyServerKeycloakClientID, Flag: toFlag(keyServerKeycloakClientID), Default: "otterscale-server", Description: "Server keycloak client id"},
 	{Key: keyServerExternalTunnelURL, Flag: toFlag(keyServerExternalTunnelURL), Default: "", Description: "Externally reachable tunnel URL advertised to agents"},
-}, EnrolmentOptions...)
+}, append(JoinOptions, TrustedCAOptions...)...)
 
 // AgentOptions defines the configuration entries available in agent
 // mode.
@@ -40,8 +46,8 @@ var AgentOptions = []Option{
 	{Key: keyAgentServerURL, Flag: toFlag(keyAgentServerURL), Default: "http://127.0.0.1:8299", Description: "Agent control-plane server url"},
 	{Key: keyAgentTunnelServerURL, Flag: toFlag(keyAgentTunnelServerURL), Default: "https://127.0.0.1:8300", Description: "Agent tunnel server url"},
 	{Key: keyAgentProxyPrometheusURL, Flag: toFlag(keyAgentProxyPrometheusURL), Default: "http://otterscale-prometheus-kube-prometheus.monitoring.svc:9090", Description: "In-cluster Prometheus URL for the metrics proxy"},
-	{Key: keyAgentEnrolmentToken, Flag: toFlag(keyAgentEnrolmentToken), Default: "", Description: "Enrolment token for this cluster, issued by `otterscale enrolment-token` (required)"},
-	{Key: keyAgentEnrolmentTokenFile, Flag: toFlag(keyAgentEnrolmentTokenFile), Default: "", Description: "Path to a file holding the enrolment token; takes precedence over --enrolment-token"},
+	{Key: keyAgentJoinToken, Flag: toFlag(keyAgentJoinToken), Default: "", Description: "Join token for this cluster, issued by `otterscale join token` (required)"},
+	{Key: keyAgentJoinTokenFile, Flag: toFlag(keyAgentJoinTokenFile), Default: "", Description: "Path to a file holding the join token; takes precedence over --join-token"},
 }
 
 // toFlag converts a viper key like "server.tunnel.key_seed" into a
