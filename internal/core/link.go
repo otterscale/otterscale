@@ -111,16 +111,16 @@ type Link struct {
 type LinkUseCase struct {
 	tunnel    TunnelProvider
 	version   Version
-	enrolment *Enrolment
+	join *JoinAuthority
 }
 
 // NewLinkUseCase takes the server binary version, included in registration
-// responses, and the enrolment that authorizes agents to claim a cluster.
-func NewLinkUseCase(tunnel TunnelProvider, version Version, enrolment *Enrolment) *LinkUseCase {
+// responses, and the join that authorizes agents to claim a cluster.
+func NewLinkUseCase(tunnel TunnelProvider, version Version, join *JoinAuthority) *LinkUseCase {
 	return &LinkUseCase{
 		tunnel:    tunnel,
 		version:   version,
-		enrolment: enrolment,
+		join: join,
 	}
 }
 
@@ -132,8 +132,8 @@ type RegistrationRequest struct {
 	AgentID string
 	// AgentVersion is kept for diagnostics.
 	AgentVersion string
-	// EnrolmentToken authorizes claiming Cluster.
-	EnrolmentToken string
+	// JoinToken authorizes claiming Cluster.
+	JoinToken string
 	// CSRPEM is the PKCS#10 request to be signed.
 	CSRPEM []byte
 }
@@ -145,14 +145,14 @@ func (uc *LinkUseCase) ListLinks(_ context.Context) map[string]Link {
 // RegisterCluster authorizes the request, then has the tunnel provider sign the
 // agent's CSR.
 //
-// The enrolment token is checked before anything else, because registering a
+// The join token is checked before anything else, because registering a
 // cluster replaces whatever was registered under that name: an unauthorized
 // request must not be able to disturb the agent currently serving it.
 func (uc *LinkUseCase) RegisterCluster(ctx context.Context, req *RegistrationRequest) (Registration, error) {
 	if err := ValidateClusterName(req.Cluster); err != nil {
 		return Registration{}, err
 	}
-	if err := uc.enrolment.Verify(req.Cluster, req.EnrolmentToken); err != nil {
+	if err := uc.join.Verify(req.Cluster, req.JoinToken); err != nil {
 		return Registration{}, err
 	}
 	if req.AgentID == "" {

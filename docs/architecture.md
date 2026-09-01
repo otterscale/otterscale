@@ -33,7 +33,7 @@ sequenceDiagram
     participant K8s as kube-apiserver
 
     Note over Agent, Tunnel: Agent startup
-    Agent->>Server: Register (enrolment token + CSR)
+    Agent->>Server: Register (join token + CSR)
     Server-->>Agent: Signed cert, CA, tunnel credential
     Agent->>Tunnel: Establish reverse tunnel (mTLS)
     Tunnel-->>Agent: Assigned 127.x.x.x loopback

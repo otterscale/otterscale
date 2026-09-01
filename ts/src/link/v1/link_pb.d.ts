@@ -106,13 +106,13 @@ export declare type RegisterRequest = Message<"otterscale.link.v1.RegisterReques
   agentVersion: string;
 
   /**
-   * The enrolment token for this cluster, issued by the operator with
-   * `otterscale enrolment-token --cluster <name>`. Registration is
+   * The join token for this cluster, issued by the operator with
+   * `otterscale join token --cluster <name>`. Registration is
    * rejected without a token that matches the cluster being claimed.
    *
-   * @generated from field: string enrolment_token = 5;
+   * @generated from field: string join_token = 5;
    */
-  enrolmentToken: string;
+  joinToken: string;
 };
 
 /**

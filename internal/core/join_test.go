@@ -6,35 +6,35 @@ import (
 	"testing"
 )
 
-func newTestEnrolment(t *testing.T, secret string) *Enrolment {
+func newTestJoinAuthority(t *testing.T, secret string) *JoinAuthority {
 	t.Helper()
 
-	e, err := NewEnrolment(secret)
+	e, err := NewJoinAuthority(secret)
 	if err != nil {
-		t.Fatalf("NewEnrolment: %v", err)
+		t.Fatalf("NewJoinAuthority: %v", err)
 	}
 	return e
 }
 
-func TestNewEnrolment_RequiresSecret(t *testing.T) {
+func TestNewJoinAuthority_RequiresSecret(t *testing.T) {
 	t.Parallel()
 
-	if _, err := NewEnrolment(""); err == nil {
+	if _, err := NewJoinAuthority(""); err == nil {
 		t.Error("expected an error for an empty secret, got nil")
 	}
 }
 
-func TestEnrolment_TokenIsStable(t *testing.T) {
+func TestJoinAuthority_TokenIsStable(t *testing.T) {
 	t.Parallel()
 
-	e := newTestEnrolment(t, "root-secret")
+	e := newTestJoinAuthority(t, "root-secret")
 
 	first := e.Token("prod")
 	if first != e.Token("prod") {
 		t.Error("the same cluster produced two different tokens")
 	}
-	if first != newTestEnrolment(t, "root-secret").Token("prod") {
-		t.Error("a second Enrolment with the same secret produced a different token")
+	if first != newTestJoinAuthority(t, "root-secret").Token("prod") {
+		t.Error("a second JoinAuthority with the same secret produced a different token")
 	}
 
 	// 32 raw bytes, unpadded base64url.
@@ -43,13 +43,13 @@ func TestEnrolment_TokenIsStable(t *testing.T) {
 	}
 }
 
-// TestEnrolment_TokenIsPerCluster is the property the whole scheme
+// TestJoinAuthority_TokenIsPerCluster is the property the whole scheme
 // rests on: an agent holding one cluster's token cannot register under
 // another cluster's name.
-func TestEnrolment_TokenIsPerCluster(t *testing.T) {
+func TestJoinAuthority_TokenIsPerCluster(t *testing.T) {
 	t.Parallel()
 
-	e := newTestEnrolment(t, "root-secret")
+	e := newTestJoinAuthority(t, "root-secret")
 
 	if e.Token("prod") == e.Token("staging") {
 		t.Fatal("two clusters share a token")
@@ -59,21 +59,21 @@ func TestEnrolment_TokenIsPerCluster(t *testing.T) {
 	}
 }
 
-func TestEnrolment_TokenDependsOnSecret(t *testing.T) {
+func TestJoinAuthority_TokenDependsOnSecret(t *testing.T) {
 	t.Parallel()
 
-	token := newTestEnrolment(t, "root-secret").Token("prod")
+	token := newTestJoinAuthority(t, "root-secret").Token("prod")
 
 	// Rotating the secret must invalidate every token issued before.
-	if err := newTestEnrolment(t, "rotated-secret").Verify("prod", token); err == nil {
+	if err := newTestJoinAuthority(t, "rotated-secret").Verify("prod", token); err == nil {
 		t.Error("a token issued under the previous secret is still accepted")
 	}
 }
 
-func TestEnrolment_Verify(t *testing.T) {
+func TestJoinAuthority_Verify(t *testing.T) {
 	t.Parallel()
 
-	e := newTestEnrolment(t, "root-secret")
+	e := newTestJoinAuthority(t, "root-secret")
 	valid := e.Token("prod")
 
 	tests := []struct {
@@ -102,7 +102,7 @@ func TestEnrolment_Verify(t *testing.T) {
 				}
 				// The message must not distinguish between failure
 				// modes, or it becomes an oracle.
-				if got := err.Error(); !strings.Contains(got, "invalid enrolment token") {
+				if got := err.Error(); !strings.Contains(got, "invalid join token") {
 					t.Errorf("message = %q, want the uniform rejection message", got)
 				}
 				return

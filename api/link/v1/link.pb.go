@@ -241,16 +241,16 @@ func (b0 ListLinksResponse_builder) Build() *ListLinksResponse {
 // RegisterRequest contains the agent's cluster identity and a CSR for
 // mTLS certificate issuance.
 type RegisterRequest struct {
-	state                     protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Cluster        *string                `protobuf:"bytes,1,opt,name=cluster"`
-	xxx_hidden_Csr            []byte                 `protobuf:"bytes,2,opt,name=csr"`
-	xxx_hidden_AgentId        *string                `protobuf:"bytes,3,opt,name=agent_id,json=agentId"`
-	xxx_hidden_AgentVersion   *string                `protobuf:"bytes,4,opt,name=agent_version,json=agentVersion"`
-	xxx_hidden_EnrolmentToken *string                `protobuf:"bytes,5,opt,name=enrolment_token,json=enrolmentToken"`
-	XXX_raceDetectHookData    protoimpl.RaceDetectHookData
-	XXX_presence              [1]uint32
-	unknownFields             protoimpl.UnknownFields
-	sizeCache                 protoimpl.SizeCache
+	state                   protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Cluster      *string                `protobuf:"bytes,1,opt,name=cluster"`
+	xxx_hidden_Csr          []byte                 `protobuf:"bytes,2,opt,name=csr"`
+	xxx_hidden_AgentId      *string                `protobuf:"bytes,3,opt,name=agent_id,json=agentId"`
+	xxx_hidden_AgentVersion *string                `protobuf:"bytes,4,opt,name=agent_version,json=agentVersion"`
+	xxx_hidden_JoinToken    *string                `protobuf:"bytes,5,opt,name=join_token,json=joinToken"`
+	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
+	XXX_presence            [1]uint32
+	unknownFields           protoimpl.UnknownFields
+	sizeCache               protoimpl.SizeCache
 }
 
 func (x *RegisterRequest) Reset() {
@@ -315,10 +315,10 @@ func (x *RegisterRequest) GetAgentVersion() string {
 	return ""
 }
 
-func (x *RegisterRequest) GetEnrolmentToken() string {
+func (x *RegisterRequest) GetJoinToken() string {
 	if x != nil {
-		if x.xxx_hidden_EnrolmentToken != nil {
-			return *x.xxx_hidden_EnrolmentToken
+		if x.xxx_hidden_JoinToken != nil {
+			return *x.xxx_hidden_JoinToken
 		}
 		return ""
 	}
@@ -348,8 +348,8 @@ func (x *RegisterRequest) SetAgentVersion(v string) {
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
 }
 
-func (x *RegisterRequest) SetEnrolmentToken(v string) {
-	x.xxx_hidden_EnrolmentToken = &v
+func (x *RegisterRequest) SetJoinToken(v string) {
+	x.xxx_hidden_JoinToken = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 5)
 }
 
@@ -381,7 +381,7 @@ func (x *RegisterRequest) HasAgentVersion() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
-func (x *RegisterRequest) HasEnrolmentToken() bool {
+func (x *RegisterRequest) HasJoinToken() bool {
 	if x == nil {
 		return false
 	}
@@ -408,9 +408,9 @@ func (x *RegisterRequest) ClearAgentVersion() {
 	x.xxx_hidden_AgentVersion = nil
 }
 
-func (x *RegisterRequest) ClearEnrolmentToken() {
+func (x *RegisterRequest) ClearJoinToken() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
-	x.xxx_hidden_EnrolmentToken = nil
+	x.xxx_hidden_JoinToken = nil
 }
 
 type RegisterRequest_builder struct {
@@ -425,10 +425,10 @@ type RegisterRequest_builder struct {
 	AgentId *string
 	// The version of the agent binary (e.g. "v1.2.3"), set at build time.
 	AgentVersion *string
-	// The enrolment token for this cluster, issued by the operator with
-	// `otterscale enrolment-token --cluster <name>`. Registration is
+	// The join token for this cluster, issued by the operator with
+	// `otterscale join token --cluster <name>`. Registration is
 	// rejected without a token that matches the cluster being claimed.
-	EnrolmentToken *string
+	JoinToken *string
 }
 
 func (b0 RegisterRequest_builder) Build() *RegisterRequest {
@@ -451,9 +451,9 @@ func (b0 RegisterRequest_builder) Build() *RegisterRequest {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
 		x.xxx_hidden_AgentVersion = b.AgentVersion
 	}
-	if b.EnrolmentToken != nil {
+	if b.JoinToken != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 5)
-		x.xxx_hidden_EnrolmentToken = b.EnrolmentToken
+		x.xxx_hidden_JoinToken = b.JoinToken
 	}
 	return m0
 }
@@ -730,13 +730,14 @@ const file_link_v1_link_proto_rawDesc = "" +
 	"\ragent_version\x18\x02 \x01(\tR\fagentVersion\"\x12\n" +
 	"\x10ListLinksRequest\"C\n" +
 	"\x11ListLinksResponse\x12.\n" +
-	"\x05links\x18\x01 \x03(\v2\x18.otterscale.link.v1.LinkR\x05links\"\xa6\x01\n" +
+	"\x05links\x18\x01 \x03(\v2\x18.otterscale.link.v1.LinkR\x05links\"\x9c\x01\n" +
 	"\x0fRegisterRequest\x12\x18\n" +
 	"\acluster\x18\x01 \x01(\tR\acluster\x12\x10\n" +
 	"\x03csr\x18\x02 \x01(\fR\x03csr\x12\x19\n" +
 	"\bagent_id\x18\x03 \x01(\tR\aagentId\x12#\n" +
-	"\ragent_version\x18\x04 \x01(\tR\fagentVersion\x12'\n" +
-	"\x0fenrolment_token\x18\x05 \x01(\tR\x0eenrolmentToken\"\xe8\x01\n" +
+	"\ragent_version\x18\x04 \x01(\tR\fagentVersion\x12\x1d\n" +
+	"\n" +
+	"join_token\x18\x05 \x01(\tR\tjoinToken\"\xe8\x01\n" +
 	"\x10RegisterResponse\x12\x1a\n" +
 	"\bendpoint\x18\x01 \x01(\tR\bendpoint\x12 \n" +
 	"\vcertificate\x18\x02 \x01(\fR\vcertificate\x12%\n" +

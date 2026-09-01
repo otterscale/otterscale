@@ -45,7 +45,7 @@ func (s *LinkService) Register(ctx context.Context, req *pb.RegisterRequest) (*p
 		Cluster:        req.GetCluster(),
 		AgentID:        req.GetAgentId(),
 		AgentVersion:   req.GetAgentVersion(),
-		EnrolmentToken: req.GetEnrolmentToken(),
+		JoinToken: req.GetJoinToken(),
 		CSRPEM:         req.GetCsr(),
 	})
 	if err != nil {

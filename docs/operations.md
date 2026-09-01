@@ -1,22 +1,33 @@
 # Operations
 
-## Enrolling a cluster
+## Joining a cluster
 
-Registration is the one endpoint agents reach before they have any credentials, so it is authorised by an **enrolment token** instead. The server holds a single root secret (`--enrolment-secret`, `--enrolment-secret-file`, or `OTTERSCALE_SERVER_ENROLMENT_SECRET`) and refuses to start without one; each cluster's token is derived from that secret and the cluster's name.
+Registration is the one endpoint agents reach before they have any credentials, so it is authorised by a **join token** instead. The server holds a single root secret (`--join-secret`, `--join-secret-file`, or `OTTERSCALE_SERVER_JOIN_SECRET`) and refuses to start without one; each cluster's token is derived from that secret and the cluster's name.
 
 Issue a token wherever the root secret is available — most conveniently inside the server itself, so the secret never leaves the pod:
 
 ```console
-$ kubectl exec deploy/otterscale-server -- /otterscale enrolment-token --cluster prod
+$ kubectl exec deploy/otterscale-server -- /otterscale join token --cluster prod
 xlbQpGep3w9ZJpaDyUzKpHXVTcw_5pO5mNgT3qnf3Ss
 ```
 
-Then install the agent with it:
+An agent verifies the server with its image's system roots, so a privately signed certificate has to travel with the token. The same command prints it, and says so when nothing is needed:
+
+```console
+$ kubectl exec deploy/otterscale-server -- /otterscale join ca > ca.crt
+$ kubectl --context downstream -n otterscale-system \
+    create secret generic otterscale-ca --from-file=ca.crt
+```
+
+Then install the agent on the joining cluster:
 
 ```console
 $ helm install otterscale-agent otterscale/otterscale-agent \
-    --set cluster=prod \
-    --set enrolmentToken=xlbQpGep3w9ZJpaDyUzKpHXVTcw_5pO5mNgT3qnf3Ss
+    --set agent.cluster=prod \
+    --set agent.joinToken=xlbQpGep3w9ZJpaDyUzKpHXVTcw_5pO5mNgT3qnf3Ss \
+    --set agent.serverURL=https://otterscale.example.com/api/ \
+    --set agent.tunnelServerURL=https://node1:30300 \
+    --set trustedCA.secretName=otterscale-ca
 ```
 
 What this does and does not give you:
@@ -25,7 +36,7 @@ What this does and does not give you:
 - A rejected token changes nothing. The check runs before any state is touched, so a bad registration cannot displace the agent currently serving that cluster.
 - Tokens **do not expire** and cannot be revoked one by one. Rotating the root secret invalidates every token at once, after which each agent needs its new token.
 - The token is sent in the registration request, so `--server-url` should be `https://`. The agent warns at startup when it is plain HTTP to a remote host — legitimate only when something else (a service mesh, for instance) provides the transport security.
-- With `--set`, the token is stored in the Helm release's values and is readable by anyone who can read Secrets in that namespace. Prefer a pre-created Secret and `--enrolment-token-file`.
+- With `--set`, the token is stored in the Helm release's values and is readable by anyone who can read Secrets in that namespace. Outside the chart, the binary also takes `--join-token-file`, which keeps the value out of argv and out of `kubectl describe`.
 
 ## Operating the server
 
@@ -44,10 +55,10 @@ A background reaper detects disconnected tunnel clients and removes stale regist
 
 ## Troubleshooting
 
-| Symptom                                               | Likely cause                                                                                                                                   |
-| ----------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| Agent logs a TLS handshake failure against the tunnel | `--external-tunnel-url` does not match the name the agent dials. The certificate is issued for that name and the agent verifies it.            |
-| Registration rejected                                 | The token does not match the cluster name, or the server's enrolment secret has been rotated.                                                  |
-| `cluster not registered`                              | The agent has not (re)connected yet, or requests are reaching a second server replica. Run one replica.                                        |
-| Agent warns about plaintext HTTP at startup           | `--server-url` is `http://` to a remote host, which exposes the enrolment token in transit. Legitimate only behind a mesh that terminates TLS. |
-| Every cluster goes unreachable at once, then recovers | The server restarted; its CA is regenerated at startup and agents must re-register.                                                            |
+| Symptom                                               | Likely cause                                                                                                                              |
+| ----------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| Agent logs a TLS handshake failure against the tunnel | `--external-tunnel-url` does not match the name the agent dials. The certificate is issued for that name and the agent verifies it.       |
+| Registration rejected                                 | The token does not match the cluster name, or the server's join secret has been rotated.                                                  |
+| `cluster not registered`                              | The agent has not (re)connected yet, or requests are reaching a second server replica. Run one replica.                                   |
+| Agent warns about plaintext HTTP at startup           | `--server-url` is `http://` to a remote host, which exposes the join token in transit. Legitimate only behind a mesh that terminates TLS. |
+| Every cluster goes unreachable at once, then recovers | The server restarted; its CA is regenerated at startup and agents must re-register.                                                       |

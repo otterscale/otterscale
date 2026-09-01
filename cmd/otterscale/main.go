@@ -76,12 +76,12 @@ func newCmd(conf *config.Config) (*cobra.Command, error) {
 		return nil, err
 	}
 
-	enrolmentCmd, err := cmd.NewEnrolmentTokenCommand(conf)
+	joinCmd, err := cmd.NewJoinCommand(conf)
 	if err != nil {
 		return nil, err
 	}
 
-	c.AddCommand(serverCmd, agentCmd, enrolmentCmd)
+	c.AddCommand(serverCmd, agentCmd, joinCmd)
 
 	return c, nil
 }

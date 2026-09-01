@@ -18,11 +18,12 @@ const (
 	keyServerExternalTunnelURL = "server.external_tunnel_url"
 )
 
-// Server-mode keys for the enrolment secret, grouped separately because the
-// enrolment-token subcommand binds them without the rest of the server flags.
+// Server-mode keys for the join secret, grouped separately because the
+// "join token" subcommand binds them without the rest of the server flags.
 const (
-	keyServerEnrolmentSecret     = "server.enrolment_secret"      //nolint:gosec // configuration key name, not a credential
-	keyServerEnrolmentSecretFile = "server.enrolment_secret_file" //nolint:gosec // configuration key name, not a credential
+	keyServerJoinSecret     = "server.join_secret"      //nolint:gosec // configuration key name, not a credential
+	keyServerJoinSecretFile = "server.join_secret_file" //nolint:gosec // configuration key name, not a credential
+	keyServerTrustedCAFile       = "server.trusted_ca_file"       //nolint:gosec // configuration key name, not a credential
 )
 
 // Viper keys for agent-mode configuration.
@@ -31,6 +32,6 @@ const (
 	keyAgentServerURL          = "agent.server_url"
 	keyAgentTunnelServerURL    = "agent.tunnel.server_url"
 	keyAgentProxyPrometheusURL = "agent.proxy.prometheus_url"
-	keyAgentEnrolmentToken     = "agent.enrolment_token"      //nolint:gosec // configuration key name, not a credential
-	keyAgentEnrolmentTokenFile = "agent.enrolment_token_file" //nolint:gosec // configuration key name, not a credential
+	keyAgentJoinToken     = "agent.join_token"      //nolint:gosec // configuration key name, not a credential
+	keyAgentJoinTokenFile = "agent.join_token_file" //nolint:gosec // configuration key name, not a credential
 )
