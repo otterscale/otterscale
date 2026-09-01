@@ -36,7 +36,7 @@ What this does and does not give you:
 - A rejected token changes nothing. The check runs before any state is touched, so a bad registration cannot displace the agent currently serving that cluster.
 - Tokens **do not expire** and cannot be revoked one by one. Rotating the root secret invalidates every token at once, after which each agent needs its new token.
 - The token is sent in the registration request, so `--server-url` should be `https://`. The agent warns at startup when it is plain HTTP to a remote host — legitimate only when something else (a service mesh, for instance) provides the transport security.
-- With `--set`, the token is stored in the Helm release's values and is readable by anyone who can read Secrets in that namespace. Outside the chart, the binary also takes `--join-token-file`, which keeps the value out of argv and out of `kubectl describe`.
+- With `--set agent.joinToken`, the token is stored in the Helm release's values and is readable by anyone who can read Secrets in that namespace. To keep it out, create the Secret yourself and point `agent.existingSecret` at it. Either way the chart mounts it as a file rather than putting it in the agent's environment.
 
 ## Operating the server
 
