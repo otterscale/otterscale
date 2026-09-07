@@ -238,6 +238,170 @@ func (b0 ListLinksResponse_builder) Build() *ListLinksResponse {
 	return m0
 }
 
+// IssueJoinTokenRequest names the cluster whose token is being issued.
+type IssueJoinTokenRequest struct {
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Cluster     *string                `protobuf:"bytes,1,opt,name=cluster"`
+	XXX_raceDetectHookData protoimpl.RaceDetectHookData
+	XXX_presence           [1]uint32
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
+}
+
+func (x *IssueJoinTokenRequest) Reset() {
+	*x = IssueJoinTokenRequest{}
+	mi := &file_link_v1_link_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *IssueJoinTokenRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*IssueJoinTokenRequest) ProtoMessage() {}
+
+func (x *IssueJoinTokenRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_link_v1_link_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *IssueJoinTokenRequest) GetCluster() string {
+	if x != nil {
+		if x.xxx_hidden_Cluster != nil {
+			return *x.xxx_hidden_Cluster
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *IssueJoinTokenRequest) SetCluster(v string) {
+	x.xxx_hidden_Cluster = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 1)
+}
+
+func (x *IssueJoinTokenRequest) HasCluster() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *IssueJoinTokenRequest) ClearCluster() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_Cluster = nil
+}
+
+type IssueJoinTokenRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	// The cluster the token will authorize.
+	Cluster *string
+}
+
+func (b0 IssueJoinTokenRequest_builder) Build() *IssueJoinTokenRequest {
+	m0 := &IssueJoinTokenRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.Cluster != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 1)
+		x.xxx_hidden_Cluster = b.Cluster
+	}
+	return m0
+}
+
+// IssueJoinTokenResponse carries the derived join token.
+type IssueJoinTokenResponse struct {
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_JoinToken   *string                `protobuf:"bytes,1,opt,name=join_token,json=joinToken"`
+	XXX_raceDetectHookData protoimpl.RaceDetectHookData
+	XXX_presence           [1]uint32
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
+}
+
+func (x *IssueJoinTokenResponse) Reset() {
+	*x = IssueJoinTokenResponse{}
+	mi := &file_link_v1_link_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *IssueJoinTokenResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*IssueJoinTokenResponse) ProtoMessage() {}
+
+func (x *IssueJoinTokenResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_link_v1_link_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *IssueJoinTokenResponse) GetJoinToken() string {
+	if x != nil {
+		if x.xxx_hidden_JoinToken != nil {
+			return *x.xxx_hidden_JoinToken
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *IssueJoinTokenResponse) SetJoinToken(v string) {
+	x.xxx_hidden_JoinToken = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 1)
+}
+
+func (x *IssueJoinTokenResponse) HasJoinToken() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *IssueJoinTokenResponse) ClearJoinToken() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_JoinToken = nil
+}
+
+type IssueJoinTokenResponse_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	// The join token for the requested cluster.
+	//
+	// Derived from the server's join secret rather than stored, so the same
+	// cluster name always yields the same token: re-importing a cluster needs
+	// no revocation, and two callers asking for one cluster get one token.
+	JoinToken *string
+}
+
+func (b0 IssueJoinTokenResponse_builder) Build() *IssueJoinTokenResponse {
+	m0 := &IssueJoinTokenResponse{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.JoinToken != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 1)
+		x.xxx_hidden_JoinToken = b.JoinToken
+	}
+	return m0
+}
+
 // RegisterRequest contains the agent's cluster identity and a CSR for
 // mTLS certificate issuance.
 type RegisterRequest struct {
@@ -255,7 +419,7 @@ type RegisterRequest struct {
 
 func (x *RegisterRequest) Reset() {
 	*x = RegisterRequest{}
-	mi := &file_link_v1_link_proto_msgTypes[3]
+	mi := &file_link_v1_link_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -267,7 +431,7 @@ func (x *RegisterRequest) String() string {
 func (*RegisterRequest) ProtoMessage() {}
 
 func (x *RegisterRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_link_v1_link_proto_msgTypes[3]
+	mi := &file_link_v1_link_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -476,7 +640,7 @@ type RegisterResponse struct {
 
 func (x *RegisterResponse) Reset() {
 	*x = RegisterResponse{}
-	mi := &file_link_v1_link_proto_msgTypes[4]
+	mi := &file_link_v1_link_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -488,7 +652,7 @@ func (x *RegisterResponse) String() string {
 func (*RegisterResponse) ProtoMessage() {}
 
 func (x *RegisterResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_link_v1_link_proto_msgTypes[4]
+	mi := &file_link_v1_link_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -730,7 +894,12 @@ const file_link_v1_link_proto_rawDesc = "" +
 	"\ragent_version\x18\x02 \x01(\tR\fagentVersion\"\x12\n" +
 	"\x10ListLinksRequest\"C\n" +
 	"\x11ListLinksResponse\x12.\n" +
-	"\x05links\x18\x01 \x03(\v2\x18.otterscale.link.v1.LinkR\x05links\"\x9c\x01\n" +
+	"\x05links\x18\x01 \x03(\v2\x18.otterscale.link.v1.LinkR\x05links\"1\n" +
+	"\x15IssueJoinTokenRequest\x12\x18\n" +
+	"\acluster\x18\x01 \x01(\tR\acluster\"7\n" +
+	"\x16IssueJoinTokenResponse\x12\x1d\n" +
+	"\n" +
+	"join_token\x18\x01 \x01(\tR\tjoinToken\"\x9c\x01\n" +
 	"\x0fRegisterRequest\x12\x18\n" +
 	"\acluster\x18\x01 \x01(\tR\acluster\x12\x10\n" +
 	"\x03csr\x18\x02 \x01(\fR\x03csr\x12\x19\n" +
@@ -745,27 +914,32 @@ const file_link_v1_link_proto_rawDesc = "" +
 	"\x0eserver_version\x18\x04 \x01(\tR\rserverVersion\x12\x1f\n" +
 	"\vtunnel_user\x18\x05 \x01(\tR\n" +
 	"tunnelUser\x12'\n" +
-	"\x0ftunnel_password\x18\x06 \x01(\tR\x0etunnelPassword2\xc2\x01\n" +
+	"\x0ftunnel_password\x18\x06 \x01(\tR\x0etunnelPassword2\xad\x02\n" +
 	"\vLinkService\x12Z\n" +
 	"\tListLinks\x12$.otterscale.link.v1.ListLinksRequest\x1a%.otterscale.link.v1.ListLinksResponse\"\x00\x12W\n" +
-	"\bRegister\x12#.otterscale.link.v1.RegisterRequest\x1a$.otterscale.link.v1.RegisterResponse\"\x00B5Z3github.com/otterscale/otterscale/api/link/v1;linkv1b\beditionsp\xe8\a"
+	"\bRegister\x12#.otterscale.link.v1.RegisterRequest\x1a$.otterscale.link.v1.RegisterResponse\"\x00\x12i\n" +
+	"\x0eIssueJoinToken\x12).otterscale.link.v1.IssueJoinTokenRequest\x1a*.otterscale.link.v1.IssueJoinTokenResponse\"\x00B5Z3github.com/otterscale/otterscale/api/link/v1;linkv1b\beditionsp\xe8\a"
 
-var file_link_v1_link_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
+var file_link_v1_link_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_link_v1_link_proto_goTypes = []any{
-	(*Link)(nil),              // 0: otterscale.link.v1.Link
-	(*ListLinksRequest)(nil),  // 1: otterscale.link.v1.ListLinksRequest
-	(*ListLinksResponse)(nil), // 2: otterscale.link.v1.ListLinksResponse
-	(*RegisterRequest)(nil),   // 3: otterscale.link.v1.RegisterRequest
-	(*RegisterResponse)(nil),  // 4: otterscale.link.v1.RegisterResponse
+	(*Link)(nil),                   // 0: otterscale.link.v1.Link
+	(*ListLinksRequest)(nil),       // 1: otterscale.link.v1.ListLinksRequest
+	(*ListLinksResponse)(nil),      // 2: otterscale.link.v1.ListLinksResponse
+	(*IssueJoinTokenRequest)(nil),  // 3: otterscale.link.v1.IssueJoinTokenRequest
+	(*IssueJoinTokenResponse)(nil), // 4: otterscale.link.v1.IssueJoinTokenResponse
+	(*RegisterRequest)(nil),        // 5: otterscale.link.v1.RegisterRequest
+	(*RegisterResponse)(nil),       // 6: otterscale.link.v1.RegisterResponse
 }
 var file_link_v1_link_proto_depIdxs = []int32{
 	0, // 0: otterscale.link.v1.ListLinksResponse.links:type_name -> otterscale.link.v1.Link
 	1, // 1: otterscale.link.v1.LinkService.ListLinks:input_type -> otterscale.link.v1.ListLinksRequest
-	3, // 2: otterscale.link.v1.LinkService.Register:input_type -> otterscale.link.v1.RegisterRequest
-	2, // 3: otterscale.link.v1.LinkService.ListLinks:output_type -> otterscale.link.v1.ListLinksResponse
-	4, // 4: otterscale.link.v1.LinkService.Register:output_type -> otterscale.link.v1.RegisterResponse
-	3, // [3:5] is the sub-list for method output_type
-	1, // [1:3] is the sub-list for method input_type
+	5, // 2: otterscale.link.v1.LinkService.Register:input_type -> otterscale.link.v1.RegisterRequest
+	3, // 3: otterscale.link.v1.LinkService.IssueJoinToken:input_type -> otterscale.link.v1.IssueJoinTokenRequest
+	2, // 4: otterscale.link.v1.LinkService.ListLinks:output_type -> otterscale.link.v1.ListLinksResponse
+	6, // 5: otterscale.link.v1.LinkService.Register:output_type -> otterscale.link.v1.RegisterResponse
+	4, // 6: otterscale.link.v1.LinkService.IssueJoinToken:output_type -> otterscale.link.v1.IssueJoinTokenResponse
+	4, // [4:7] is the sub-list for method output_type
+	1, // [1:4] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name
 	1, // [1:1] is the sub-list for extension extendee
 	0, // [0:1] is the sub-list for field type_name
@@ -782,7 +956,7 @@ func file_link_v1_link_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_link_v1_link_proto_rawDesc), len(file_link_v1_link_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   5,
+			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

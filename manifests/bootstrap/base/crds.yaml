@@ -1,0 +1,527 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.20.1
+  name: workspaces.tenant.otterscale.io
+spec:
+  group: tenant.otterscale.io
+  names:
+    categories:
+    - otterscale
+    kind: Workspace
+    listKind: WorkspaceList
+    plural: workspaces
+    singular: workspace
+  scope: Cluster
+  versions:
+  - additionalPrinterColumns:
+    - jsonPath: .status.namespaceRef.name
+      name: Namespace
+      type: string
+    - jsonPath: .status.conditions[?(@.type=="Ready")].status
+      name: Ready
+      type: string
+    - jsonPath: .metadata.creationTimestamp
+      name: Age
+      type: date
+    name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: |-
+          Workspace is the Schema for the workspaces API.
+          A Workspace represents a logical isolation unit (Namespace) with associated policies, quotas, and member access.
+        properties:
+          apiVersion:
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            type: string
+          kind:
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: Spec defines the desired behavior of the Workspace.
+            properties:
+              limitRange:
+                description: LimitRange defines the default resource limits and requests
+                  for pods in the workspace.
+                properties:
+                  limits:
+                    description: Limits is the list of LimitRangeItem objects that
+                      are enforced.
+                    items:
+                      description: LimitRangeItem defines a min/max usage limit for
+                        any resource that matches on kind.
+                      properties:
+                        default:
+                          additionalProperties:
+                            anyOf:
+                            - type: integer
+                            - type: string
+                            pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                            x-kubernetes-int-or-string: true
+                          description: Default resource requirement limit value by
+                            resource name if resource limit is omitted.
+                          type: object
+                        defaultRequest:
+                          additionalProperties:
+                            anyOf:
+                            - type: integer
+                            - type: string
+                            pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                            x-kubernetes-int-or-string: true
+                          description: DefaultRequest is the default resource requirement
+                            request value by resource name if resource request is
+                            omitted.
+                          type: object
+                        max:
+                          additionalProperties:
+                            anyOf:
+                            - type: integer
+                            - type: string
+                            pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                            x-kubernetes-int-or-string: true
+                          description: Max usage constraints on this kind by resource
+                            name.
+                          type: object
+                        maxLimitRequestRatio:
+                          additionalProperties:
+                            anyOf:
+                            - type: integer
+                            - type: string
+                            pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                            x-kubernetes-int-or-string: true
+                          description: MaxLimitRequestRatio if specified, the named
+                            resource must have a request and limit that are both non-zero
+                            where limit divided by request is less than or equal to
+                            the enumerated value; this represents the max burst for
+                            the named resource.
+                          type: object
+                        min:
+                          additionalProperties:
+                            anyOf:
+                            - type: integer
+                            - type: string
+                            pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                            x-kubernetes-int-or-string: true
+                          description: Min usage constraints on this kind by resource
+                            name.
+                          type: object
+                        type:
+                          description: Type of resource that this limit applies to.
+                          type: string
+                      required:
+                      - type
+                      type: object
+                    type: array
+                    x-kubernetes-list-type: atomic
+                required:
+                - limits
+                type: object
+              members:
+                description: Members is the list of members granted access to this
+                  workspace.
+                items:
+                  description: WorkspaceMember defines a single member entity associated
+                    with a workspace.
+                  properties:
+                    name:
+                      description: Name is the human-readable display name of the
+                        member.
+                      type: string
+                    role:
+                      description: Role defines the authorization level (Admin, Edit,
+                        View).
+                      enum:
+                      - admin
+                      - edit
+                      - view
+                      type: string
+                    serviceAccount:
+                      description: |-
+                        ServiceAccount indicates whether this member is a service account
+                        rather than a human user.
+                      type: boolean
+                    subject:
+                      description: |-
+                        Subject is the unique identifier of the member (e.g., OIDC subject or username).
+                        This identifier maps directly to the Kubernetes RBAC Subject.
+                      maxLength: 253
+                      minLength: 1
+                      type: string
+                    username:
+                      description: |-
+                        Username is the member's Harbor registry username.
+                        When set, this value is used as the Harbor project member identity
+                        instead of Subject.
+                      maxLength: 253
+                      minLength: 1
+                      type: string
+                  required:
+                  - role
+                  - subject
+                  type: object
+                minItems: 1
+                type: array
+                x-kubernetes-list-type: atomic
+                x-kubernetes-validations:
+                - message: at least one workspace member must have role 'admin'
+                  rule: self.exists(u, u.role == 'admin')
+              namespace:
+                description: |-
+                  Namespace is the name of the Kubernetes Namespace to be created for this workspace.
+                  It must be unique across all Workspaces.
+                  When omitted, a 6-character name is auto-generated by the mutating webhook.
+                maxLength: 63
+                pattern: ^$|^[a-z0-9]([-a-z0-9]*[a-z0-9])?$
+                type: string
+                x-kubernetes-validations:
+                - message: namespace is immutable
+                  rule: self == oldSelf
+                - message: namespace is reserved and cannot be used for a workspace
+                  rule: '!(self in [''default'',''kube-system'',''kube-public'',''kube-node-lease'',''otterscale-system''])'
+              networkIsolation:
+                description: NetworkIsolation defines the ingress traffic rules for
+                  the workspace.
+                properties:
+                  allowedNamespaces:
+                    description: |-
+                      AllowedNamespaces specifies a list of external namespaces permitted to access this workspace
+                      when isolation is enabled. Essential system namespaces (e.g., 'istio-system', 'monitoring')
+                      should be included here if required.
+                    items:
+                      maxLength: 63
+                      minLength: 1
+                      pattern: ^([a-z0-9]([-a-z0-9]*[a-z0-9])?)$
+                      type: string
+                    maxItems: 64
+                    type: array
+                    x-kubernetes-list-type: set
+                  enabled:
+                    description: |-
+                      Enabled toggles the enforcement of network isolation.
+                      If true, default deny-all ingress rules are applied except for allowed namespaces.
+                    type: boolean
+                type: object
+                x-kubernetes-validations:
+                - message: allowedNamespaces can only be set when network isolation
+                    is enabled
+                  rule: '!has(self.allowedNamespaces) || size(self.allowedNamespaces)
+                    == 0 || self.enabled'
+              resourceQuota:
+                description: ResourceQuota defines the compute resource constraints
+                  (CPU, Memory, etc.) applied to the underlying namespace.
+                properties:
+                  hard:
+                    additionalProperties:
+                      anyOf:
+                      - type: integer
+                      - type: string
+                      pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                      x-kubernetes-int-or-string: true
+                    description: |-
+                      hard is the set of desired hard limits for each named resource.
+                      More info: https://kubernetes.io/docs/concepts/policy/resource-quotas/
+                    type: object
+                  scopeSelector:
+                    description: |-
+                      scopeSelector is also a collection of filters like scopes that must match each object tracked by a quota
+                      but expressed using ScopeSelectorOperator in combination with possible values.
+                      For a resource to match, both scopes AND scopeSelector (if specified in spec), must be matched.
+                    properties:
+                      matchExpressions:
+                        description: A list of scope selector requirements by scope
+                          of the resources.
+                        items:
+                          description: |-
+                            A scoped-resource selector requirement is a selector that contains values, a scope name, and an operator
+                            that relates the scope name and values.
+                          properties:
+                            operator:
+                              description: |-
+                                Represents a scope's relationship to a set of values.
+                                Valid operators are In, NotIn, Exists, DoesNotExist.
+                              type: string
+                            scopeName:
+                              description: The name of the scope that the selector
+                                applies to.
+                              type: string
+                            values:
+                              description: |-
+                                An array of string values. If the operator is In or NotIn,
+                                the values array must be non-empty. If the operator is Exists or DoesNotExist,
+                                the values array must be empty.
+                                This array is replaced during a strategic merge patch.
+                              items:
+                                type: string
+                              type: array
+                              x-kubernetes-list-type: atomic
+                          required:
+                          - operator
+                          - scopeName
+                          type: object
+                        type: array
+                        x-kubernetes-list-type: atomic
+                    type: object
+                    x-kubernetes-map-type: atomic
+                  scopes:
+                    description: |-
+                      A collection of filters that must match each object tracked by a quota.
+                      If not specified, the quota matches all objects.
+                    items:
+                      description: A ResourceQuotaScope defines a filter that must
+                        match each object tracked by a quota
+                      type: string
+                    type: array
+                    x-kubernetes-list-type: atomic
+                type: object
+            required:
+            - members
+            type: object
+          status:
+            description: Status represents the current information about the Workspace.
+            properties:
+              authorizationPolicyRef:
+                description: AuthorizationPolicyRef is a reference to the Istio AuthorizationPolicy
+                  enforcing network isolation.
+                properties:
+                  name:
+                    description: Name is the name of the referenced resource.
+                    type: string
+                  namespace:
+                    description: |-
+                      Namespace is the namespace of the referenced resource.
+                      Empty for cluster-scoped resources.
+                    type: string
+                required:
+                - name
+                type: object
+              conditions:
+                description: Conditions store the status conditions of the Workspace
+                  (e.g., Ready, Failed).
+                items:
+                  description: Condition contains details for one aspect of the current
+                    state of this API Resource.
+                  properties:
+                    lastTransitionTime:
+                      description: |-
+                        lastTransitionTime is the last time the condition transitioned from one status to another.
+                        This should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable.
+                      format: date-time
+                      type: string
+                    message:
+                      description: |-
+                        message is a human readable message indicating details about the transition.
+                        This may be an empty string.
+                      maxLength: 32768
+                      type: string
+                    observedGeneration:
+                      description: |-
+                        observedGeneration represents the .metadata.generation that the condition was set based upon.
+                        For instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date
+                        with respect to the current state of the instance.
+                      format: int64
+                      minimum: 0
+                      type: integer
+                    reason:
+                      description: |-
+                        reason contains a programmatic identifier indicating the reason for the condition's last transition.
+                        Producers of specific condition types may define expected values and meanings for this field,
+                        and whether the values are considered a guaranteed API.
+                        The value should be a CamelCase string.
+                        This field may not be empty.
+                      maxLength: 1024
+                      minLength: 1
+                      pattern: ^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$
+                      type: string
+                    status:
+                      description: status of the condition, one of True, False, Unknown.
+                      enum:
+                      - "True"
+                      - "False"
+                      - Unknown
+                      type: string
+                    type:
+                      description: type of condition in CamelCase or in foo.example.com/CamelCase.
+                      maxLength: 316
+                      pattern: ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
+                      type: string
+                  required:
+                  - lastTransitionTime
+                  - message
+                  - reason
+                  - status
+                  - type
+                  type: object
+                type: array
+                x-kubernetes-list-map-keys:
+                - type
+                x-kubernetes-list-type: map
+              configMapRef:
+                description: ConfigMapRef is a reference to the ConfigMap managed
+                  by this Workspace.
+                properties:
+                  name:
+                    description: Name is the name of the referenced resource.
+                    type: string
+                  namespace:
+                    description: |-
+                      Namespace is the namespace of the referenced resource.
+                      Empty for cluster-scoped resources.
+                    type: string
+                required:
+                - name
+                type: object
+              helmRepositoryRef:
+                description: HelmRepositoryRef is a reference to the FluxCD HelmRepository
+                  for this workspace's Harbor OCI registry.
+                properties:
+                  name:
+                    description: Name is the name of the referenced resource.
+                    type: string
+                  namespace:
+                    description: |-
+                      Namespace is the namespace of the referenced resource.
+                      Empty for cluster-scoped resources.
+                    type: string
+                required:
+                - name
+                type: object
+              imagePullSecretRef:
+                description: |-
+                  ImagePullSecretRef is a reference to the docker-registry Secret
+                  containing Harbor robot credentials for image pull/push.
+                properties:
+                  name:
+                    description: Name is the name of the referenced resource.
+                    type: string
+                  namespace:
+                    description: |-
+                      Namespace is the namespace of the referenced resource.
+                      Empty for cluster-scoped resources.
+                    type: string
+                required:
+                - name
+                type: object
+              limitRangeRef:
+                description: LimitRangeRef is a reference to the LimitRange managed
+                  by this Workspace.
+                properties:
+                  name:
+                    description: Name is the name of the referenced resource.
+                    type: string
+                  namespace:
+                    description: |-
+                      Namespace is the namespace of the referenced resource.
+                      Empty for cluster-scoped resources.
+                    type: string
+                required:
+                - name
+                type: object
+              namespaceRef:
+                description: NamespaceRef is a reference to the Namespace managed
+                  by this Workspace.
+                properties:
+                  name:
+                    description: Name is the name of the referenced resource.
+                    type: string
+                  namespace:
+                    description: |-
+                      Namespace is the namespace of the referenced resource.
+                      Empty for cluster-scoped resources.
+                    type: string
+                required:
+                - name
+                type: object
+              networkPolicyRef:
+                description: NetworkPolicyRef is a reference to the NetworkPolicy
+                  enforcing network isolation.
+                properties:
+                  name:
+                    description: Name is the name of the referenced resource.
+                    type: string
+                  namespace:
+                    description: |-
+                      Namespace is the namespace of the referenced resource.
+                      Empty for cluster-scoped resources.
+                    type: string
+                required:
+                - name
+                type: object
+              observedGeneration:
+                description: |-
+                  ObservedGeneration is the most recent generation observed by the controller.
+                  It corresponds to the Workspace's generation, which is updated on mutation by the API Server.
+                  This allows clients to determine whether the controller has processed the latest spec changes.
+                format: int64
+                type: integer
+              peerAuthenticationRef:
+                description: PeerAuthenticationRef is a reference to the Istio PeerAuthentication
+                  resource for mTLS settings.
+                properties:
+                  name:
+                    description: Name is the name of the referenced resource.
+                    type: string
+                  namespace:
+                    description: |-
+                      Namespace is the namespace of the referenced resource.
+                      Empty for cluster-scoped resources.
+                    type: string
+                required:
+                - name
+                type: object
+              resourceQuotaRef:
+                description: ResourceQuotaRef is a reference to the ResourceQuota
+                  managed by this Workspace.
+                properties:
+                  name:
+                    description: Name is the name of the referenced resource.
+                    type: string
+                  namespace:
+                    description: |-
+                      Namespace is the namespace of the referenced resource.
+                      Empty for cluster-scoped resources.
+                    type: string
+                required:
+                - name
+                type: object
+              roleBindingRefs:
+                description: RoleBindingRefs contains references to all RBAC RoleBindings
+                  created for the workspace members.
+                items:
+                  description: ResourceReference is a lightweight reference to a Kubernetes
+                    resource managed by the operator.
+                  properties:
+                    name:
+                      description: Name is the name of the referenced resource.
+                      type: string
+                    namespace:
+                      description: |-
+                        Namespace is the namespace of the referenced resource.
+                        Empty for cluster-scoped resources.
+                      type: string
+                  required:
+                  - name
+                  type: object
+                type: array
+                x-kubernetes-list-map-keys:
+                - name
+                x-kubernetes-list-type: map
+            type: object
+        required:
+        - spec
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}

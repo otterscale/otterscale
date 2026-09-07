@@ -70,6 +70,50 @@ export declare type ListLinksResponse = Message<"otterscale.link.v1.ListLinksRes
 export declare const ListLinksResponseSchema: GenMessage<ListLinksResponse>;
 
 /**
+ * IssueJoinTokenRequest names the cluster whose token is being issued.
+ *
+ * @generated from message otterscale.link.v1.IssueJoinTokenRequest
+ */
+export declare type IssueJoinTokenRequest = Message<"otterscale.link.v1.IssueJoinTokenRequest"> & {
+  /**
+   * The cluster the token will authorize.
+   *
+   * @generated from field: string cluster = 1;
+   */
+  cluster: string;
+};
+
+/**
+ * Describes the message otterscale.link.v1.IssueJoinTokenRequest.
+ * Use `create(IssueJoinTokenRequestSchema)` to create a new message.
+ */
+export declare const IssueJoinTokenRequestSchema: GenMessage<IssueJoinTokenRequest>;
+
+/**
+ * IssueJoinTokenResponse carries the derived join token.
+ *
+ * @generated from message otterscale.link.v1.IssueJoinTokenResponse
+ */
+export declare type IssueJoinTokenResponse = Message<"otterscale.link.v1.IssueJoinTokenResponse"> & {
+  /**
+   * The join token for the requested cluster.
+   *
+   * Derived from the server's join secret rather than stored, so the same
+   * cluster name always yields the same token: re-importing a cluster needs
+   * no revocation, and two callers asking for one cluster get one token.
+   *
+   * @generated from field: string join_token = 1;
+   */
+  joinToken: string;
+};
+
+/**
+ * Describes the message otterscale.link.v1.IssueJoinTokenResponse.
+ * Use `create(IssueJoinTokenResponseSchema)` to create a new message.
+ */
+export declare const IssueJoinTokenResponseSchema: GenMessage<IssueJoinTokenResponse>;
+
+/**
  * RegisterRequest contains the agent's cluster identity and a CSR for
  * mTLS certificate issuance.
  *
@@ -218,6 +262,21 @@ export declare const LinkService: GenService<{
     methodKind: "unary";
     input: typeof RegisterRequestSchema;
     output: typeof RegisterResponseSchema;
+  },
+  /**
+   * IssueJoinToken derives the join token an agent needs to register a
+   * cluster, so an import flow needs no `otterscale join token` in the pod.
+   *
+   * Restricted to the admin group: what this returns claims the cluster it
+   * names, and thereby cluster-admin on it. The subcommand needs no role
+   * because holding the root secret is itself the authorization.
+   *
+   * @generated from rpc otterscale.link.v1.LinkService.IssueJoinToken
+   */
+  issueJoinToken: {
+    methodKind: "unary";
+    input: typeof IssueJoinTokenRequestSchema;
+    output: typeof IssueJoinTokenResponseSchema;
   },
 }>;
 
