@@ -34,7 +34,7 @@ Every option can be given four ways. Highest precedence wins:
 | `--cluster`              | `OTTERSCALE_AGENT_CLUSTER`              | `default`                                                          |
 | `--server-url`           | `OTTERSCALE_AGENT_SERVER_URL`           | `http://127.0.0.1:8299`                                            |
 | `--tunnel-server-url`    | `OTTERSCALE_AGENT_TUNNEL_SERVER_URL`    | `https://127.0.0.1:8300`                                           |
-| `--proxy-prometheus-url` | `OTTERSCALE_AGENT_PROXY_PROMETHEUS_URL` | `http://otterscale-prometheus-kube-prometheus.monitoring.svc:9090` |
+| `--proxy-prometheus-url` | `OTTERSCALE_AGENT_PROXY_PROMETHEUS_URL` | `http://prometheus-stack-kube-prom-prometheus.monitoring.svc:9090` |
 | `--join-token`           | `OTTERSCALE_AGENT_JOIN_TOKEN`           | _(required)_                                                       |
 | `--join-token-file`      | `OTTERSCALE_AGENT_JOIN_TOKEN_FILE`      | _(takes precedence over the above)_                                |
 
