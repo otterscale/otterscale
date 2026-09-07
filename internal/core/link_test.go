@@ -205,3 +205,36 @@ func TestLinkUseCase_RegisterCluster_RejectsBadToken(t *testing.T) {
 		})
 	}
 }
+
+// TestLinkUseCase_IssueJoinToken pins the issued token to the one an agent is
+// verified against — a token that does not satisfy Verify would be useless in a
+// way no test of IssueJoinToken alone would catch. The admin gate lives in the
+// handler, so its tests are in handler/link_test.go.
+func TestLinkUseCase_IssueJoinToken(t *testing.T) {
+	uc := newTestLinkUseCase(t, &mockTunnelProvider{})
+
+	token, err := uc.IssueJoinToken(t.Context(), "my-cluster")
+	if err != nil {
+		t.Fatalf("IssueJoinToken() error = %v", err)
+	}
+	if token == "" {
+		t.Fatal("token is empty")
+	}
+
+	if err := newTestJoinAuthority(t, testJoinAuthoritySecret).Verify("my-cluster", token); err != nil {
+		t.Errorf("the issued token does not verify for its own cluster: %v", err)
+	}
+}
+
+// TestLinkUseCase_IssueJoinToken_ValidatesCluster guards the one check the use
+// case still makes. Without it a token could be minted for a name no cluster
+// can ever register under, which fails at the agent instead.
+func TestLinkUseCase_IssueJoinToken_ValidatesCluster(t *testing.T) {
+	uc := newTestLinkUseCase(t, &mockTunnelProvider{})
+
+	for _, cluster := range []string{"", "Not-A-Label", strings.Repeat("a", 64)} {
+		if _, err := uc.IssueJoinToken(t.Context(), cluster); err == nil {
+			t.Errorf("IssueJoinToken(%q) succeeded; want a validation error", cluster)
+		}
+	}
+}
