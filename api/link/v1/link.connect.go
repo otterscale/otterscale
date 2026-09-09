@@ -36,6 +36,9 @@ const (
 	LinkServiceListLinksProcedure = "/otterscale.link.v1.LinkService/ListLinks"
 	// LinkServiceRegisterProcedure is the fully-qualified name of the LinkService's Register RPC.
 	LinkServiceRegisterProcedure = "/otterscale.link.v1.LinkService/Register"
+	// LinkServiceIssueJoinTokenProcedure is the fully-qualified name of the LinkService's
+	// IssueJoinToken RPC.
+	LinkServiceIssueJoinTokenProcedure = "/otterscale.link.v1.LinkService/IssueJoinToken"
 )
 
 // LinkServiceClient is a client for the otterscale.link.v1.LinkService service.
@@ -48,6 +51,13 @@ type LinkServiceClient interface {
 	// The agent sends its cluster identity and tunnel port; the server responds
 	// with its fingerprint so the agent can verify the tunnel connection.
 	Register(context.Context, *RegisterRequest) (*RegisterResponse, error)
+	// IssueJoinToken derives the join token an agent needs to register a
+	// cluster, so an import flow needs no `otterscale join token` in the pod.
+	//
+	// Restricted to the admin group: what this returns claims the cluster it
+	// names, and thereby cluster-admin on it. The subcommand needs no role
+	// because holding the root secret is itself the authorization.
+	IssueJoinToken(context.Context, *IssueJoinTokenRequest) (*IssueJoinTokenResponse, error)
 }
 
 // NewLinkServiceClient constructs a client for the otterscale.link.v1.LinkService service. By
@@ -73,13 +83,20 @@ func NewLinkServiceClient(httpClient connect.HTTPClient, baseURL string, opts ..
 			connect.WithSchema(linkServiceMethods.ByName("Register")),
 			connect.WithClientOptions(opts...),
 		),
+		issueJoinToken: connect.NewClient[IssueJoinTokenRequest, IssueJoinTokenResponse](
+			httpClient,
+			baseURL+LinkServiceIssueJoinTokenProcedure,
+			connect.WithSchema(linkServiceMethods.ByName("IssueJoinToken")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
 // linkServiceClient implements LinkServiceClient.
 type linkServiceClient struct {
-	listLinks *connect.Client[ListLinksRequest, ListLinksResponse]
-	register  *connect.Client[RegisterRequest, RegisterResponse]
+	listLinks      *connect.Client[ListLinksRequest, ListLinksResponse]
+	register       *connect.Client[RegisterRequest, RegisterResponse]
+	issueJoinToken *connect.Client[IssueJoinTokenRequest, IssueJoinTokenResponse]
 }
 
 // ListLinks calls otterscale.link.v1.LinkService.ListLinks.
@@ -100,6 +117,15 @@ func (c *linkServiceClient) Register(ctx context.Context, req *RegisterRequest) 
 	return nil, err
 }
 
+// IssueJoinToken calls otterscale.link.v1.LinkService.IssueJoinToken.
+func (c *linkServiceClient) IssueJoinToken(ctx context.Context, req *IssueJoinTokenRequest) (*IssueJoinTokenResponse, error) {
+	response, err := c.issueJoinToken.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
+}
+
 // LinkServiceHandler is an implementation of the otterscale.link.v1.LinkService service.
 type LinkServiceHandler interface {
 	// ListLinks returns all cluster identifiers that the current agent
@@ -110,6 +136,13 @@ type LinkServiceHandler interface {
 	// The agent sends its cluster identity and tunnel port; the server responds
 	// with its fingerprint so the agent can verify the tunnel connection.
 	Register(context.Context, *RegisterRequest) (*RegisterResponse, error)
+	// IssueJoinToken derives the join token an agent needs to register a
+	// cluster, so an import flow needs no `otterscale join token` in the pod.
+	//
+	// Restricted to the admin group: what this returns claims the cluster it
+	// names, and thereby cluster-admin on it. The subcommand needs no role
+	// because holding the root secret is itself the authorization.
+	IssueJoinToken(context.Context, *IssueJoinTokenRequest) (*IssueJoinTokenResponse, error)
 }
 
 // NewLinkServiceHandler builds an HTTP handler from the service implementation. It returns the path
@@ -131,12 +164,20 @@ func NewLinkServiceHandler(svc LinkServiceHandler, opts ...connect.HandlerOption
 		connect.WithSchema(linkServiceMethods.ByName("Register")),
 		connect.WithHandlerOptions(opts...),
 	)
+	linkServiceIssueJoinTokenHandler := connect.NewUnaryHandlerSimple(
+		LinkServiceIssueJoinTokenProcedure,
+		svc.IssueJoinToken,
+		connect.WithSchema(linkServiceMethods.ByName("IssueJoinToken")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/otterscale.link.v1.LinkService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case LinkServiceListLinksProcedure:
 			linkServiceListLinksHandler.ServeHTTP(w, r)
 		case LinkServiceRegisterProcedure:
 			linkServiceRegisterHandler.ServeHTTP(w, r)
+		case LinkServiceIssueJoinTokenProcedure:
+			linkServiceIssueJoinTokenHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -152,4 +193,8 @@ func (UnimplementedLinkServiceHandler) ListLinks(context.Context, *ListLinksRequ
 
 func (UnimplementedLinkServiceHandler) Register(context.Context, *RegisterRequest) (*RegisterResponse, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.link.v1.LinkService.Register is not implemented"))
+}
+
+func (UnimplementedLinkServiceHandler) IssueJoinToken(context.Context, *IssueJoinTokenRequest) (*IssueJoinTokenResponse, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.link.v1.LinkService.IssueJoinToken is not implemented"))
 }

@@ -16,6 +16,14 @@ service LinkService {
   // The agent sends its cluster identity and tunnel port; the server responds
   // with its fingerprint so the agent can verify the tunnel connection.
   rpc Register(RegisterRequest) returns (RegisterResponse) {}
+
+  // IssueJoinToken derives the join token an agent needs to register a
+  // cluster, so an import flow needs no `otterscale join token` in the pod.
+  //
+  // Restricted to the admin group: what this returns claims the cluster it
+  // names, and thereby cluster-admin on it. The subcommand needs no role
+  // because holding the root secret is itself the authorization.
+  rpc IssueJoinToken(IssueJoinTokenRequest) returns (IssueJoinTokenResponse) {}
 }
 
 message Link {
@@ -33,6 +41,22 @@ message ListLinksRequest {}
 message ListLinksResponse {
   // The list of links.
   repeated Link links = 1;
+}
+
+// IssueJoinTokenRequest names the cluster whose token is being issued.
+message IssueJoinTokenRequest {
+  // The cluster the token will authorize.
+  string cluster = 1;
+}
+
+// IssueJoinTokenResponse carries the derived join token.
+message IssueJoinTokenResponse {
+  // The join token for the requested cluster.
+  //
+  // Derived from the server's join secret rather than stored, so the same
+  // cluster name always yields the same token: re-importing a cluster needs
+  // no revocation, and two callers asking for one cluster get one token.
+  string join_token = 1;
 }
 
 // RegisterRequest contains the agent's cluster identity and a CSR for

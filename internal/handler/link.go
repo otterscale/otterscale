@@ -6,7 +6,10 @@ package handler
 import (
 	"cmp"
 	"context"
+	"errors"
 	"slices"
+
+	"connectrpc.com/connect"
 
 	pb "github.com/otterscale/otterscale/api/link/v1"
 
@@ -59,6 +62,31 @@ func (s *LinkService) Register(ctx context.Context, req *pb.RegisterRequest) (*p
 	resp.SetTunnelUser(reg.TunnelUser)
 	resp.SetTunnelPassword(reg.TunnelPassword)
 	resp.SetServerVersion(reg.ServerVersion)
+	return resp, nil
+}
+
+// IssueJoinToken derives the join token for a cluster, so an import flow can
+// obtain one over the API instead of exec-ing `otterscale join token` inside
+// the server pod.
+//
+// Restricted to the admin group: what this returns authorizes claiming a
+// cluster, and thereby cluster-admin on it.
+func (s *LinkService) IssueJoinToken(ctx context.Context, req *pb.IssueJoinTokenRequest) (*pb.IssueJoinTokenResponse, error) {
+	userInfo, ok := core.UserInfoFromContext(ctx)
+	if !ok {
+		return nil, connect.NewError(connect.CodeUnauthenticated, errors.New("user info not found in context"))
+	}
+	if !core.IsAdmin(userInfo.Groups) {
+		return nil, connect.NewError(connect.CodePermissionDenied, errors.New("caller is not a member of the admin group"))
+	}
+
+	token, err := s.link.IssueJoinToken(ctx, req.GetCluster())
+	if err != nil {
+		return nil, domainErrorToConnectError(err)
+	}
+
+	resp := &pb.IssueJoinTokenResponse{}
+	resp.SetJoinToken(token)
 	return resp, nil
 }
 

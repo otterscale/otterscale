@@ -175,3 +175,20 @@ func (uc *LinkUseCase) RegisterCluster(ctx context.Context, req *RegistrationReq
 		ServerVersion:  string(uc.version),
 	}, nil
 }
+
+// IssueJoinToken derives the token that authorizes an agent to register
+// cluster. What it returns claims that cluster and replaces the agent serving
+// it, so it is a credential, not a lookup.
+//
+// The admin check lives in the handler, alongside the other transport-level
+// concerns.
+//
+// The token is a pure function of the join secret and the cluster name, so
+// issuing one creates no state and invalidates nothing.
+func (uc *LinkUseCase) IssueJoinToken(_ context.Context, cluster string) (string, error) {
+	if err := ValidateClusterName(cluster); err != nil {
+		return "", err
+	}
+
+	return uc.join.Token(cluster), nil
+}

@@ -11,6 +11,10 @@ $ kubectl exec deploy/otterscale-server -- /otterscale join token --cluster prod
 xlbQpGep3w9ZJpaDyUzKpHXVTcw_5pO5mNgT3qnf3Ss
 ```
 
+`LinkService.IssueJoinToken` returns the same token over the API, which is how the dashboard's import wizard gets one without shell access to this cluster. Both derive the token, so neither invalidates the other's.
+
+That procedure is **restricted to the admin group** (`oidc:admin` once the OIDC middleware has prefixed the token's group claims): what it returns authorises claiming a cluster, and thereby cluster-admin on it. The subcommand above needs no role because holding the root secret is itself the authorisation.
+
 An agent verifies the server with its image's system roots, so a privately signed certificate has to travel with the token. The same command prints it, and says so when nothing is needed:
 
 ```console
