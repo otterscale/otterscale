@@ -75,7 +75,7 @@ func TestLinkService_IssueJoinToken_RequiresAdmin(t *testing.T) {
 		{
 			// "admin" unprefixed is what a Kubernetes-native group looks like.
 			// The OIDC middleware prefixes every claim it forwards, so matching an
-			// unprefixed name would honour a group it never issued.
+			// unprefixed name would honor a group it never issued.
 			name: "admin without the oidc: prefix",
 			ctx: func(t *testing.T) context.Context {
 				t.Helper()
