@@ -79,7 +79,7 @@ func yamlQuote(s string) string {
 var agentManifestTmpl = template.Must(
 	template.New("agent-manifest").
 		Funcs(template.FuncMap{"yamlQuote": yamlQuote}).
-		Parse(agentManifestYAML),
+		Parse(agentManifestYAML + webTerminalManifestYAML),
 )
 
 const agentManifestYAML = `---
@@ -283,4 +283,144 @@ stringData:
   HARBOR_ROBOT_NAME: {{ yamlQuote .HarborRobotName }}
   HARBOR_ROBOT_SECRET: {{ yamlQuote .HarborRobotSecret }}
 {{- end }}
+`
+
+// webTerminalManifestYAML is the static YAML for the web-terminal
+// namespace: an impersonation-proxy service account, the RBAC that
+// lets it impersonate users, kubeconfigs for the user-facing and
+// in-cluster proxy sides, and a ValidatingAdmissionPolicy that
+// constrains which pods may be created in the namespace.
+const webTerminalManifestYAML = `---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: web-terminal
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: impersonation-proxy
+  namespace: web-terminal
+automountServiceAccountToken: false
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: web-terminal-impersonator
+rules:
+  - apiGroups: [""]
+    resources: ["users"]
+    verbs: ["impersonate"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: web-terminal-impersonator
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: web-terminal-impersonator
+subjects:
+  - kind: ServiceAccount
+    name: impersonation-proxy
+    namespace: web-terminal
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: user-kubeconfig
+  namespace: web-terminal
+data:
+  config: |
+    apiVersion: v1
+    kind: Config
+    clusters:
+      - name: local-proxy
+        cluster:
+          server: http://127.0.0.1:8001
+    contexts:
+      - name: default
+        context:
+          cluster: local-proxy
+    current-context: default
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: proxy-kubeconfig
+  namespace: web-terminal
+data:
+  config: |
+    apiVersion: v1
+    kind: Config
+    clusters:
+      - name: in-cluster
+        cluster:
+          server: https://kubernetes.default.svc
+          certificate-authority: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+    users:
+      - name: sa
+        user:
+          tokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+    contexts:
+      - name: default
+        context:
+          cluster: in-cluster
+          user: sa
+    current-context: default
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: web-terminal-pod-integrity
+spec:
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
+      - apiGroups: [""]
+        apiVersions: ["v1"]
+        operations: ["CREATE", "UPDATE", "DELETE"]
+        resources: ["pods"]
+  validations:
+    # Only the backend service account may manage pods in this namespace
+    # (replace backend/terminal-backend with the actual value).
+    - expression: >-
+        request.userInfo.username == 'system:serviceaccount:backend:terminal-backend'
+      message: "only the terminal backend may manage pods in this namespace"
+    # Pod name must equal term- followed by the first 8 characters of the
+    # uuid label (skipped on DELETE, where object is null).
+    - expression: >-
+        object == null ||
+        (
+          'web-terminal/user-uuid' in object.metadata.labels &&
+          object.metadata.name == 'term-' + object.metadata.labels['web-terminal/user-uuid'].substring(0, 8)
+        )
+      message: "pod name must be term-<first 8 chars of web-terminal/user-uuid label>"
+    # The sidecar's USER_UUID env var must equal the full uuid from the label.
+    - expression: >-
+        object == null ||
+        object.spec.containers.exists(c,
+          c.name == 'proxy' &&
+          c.env.exists(e, e.name == 'USER_UUID' &&
+            e.value == object.metadata.labels['web-terminal/user-uuid']))
+      message: "proxy USER_UUID env must match web-terminal/user-uuid label"
+    # Validate uuid format to prevent non-uuid identity strings (e.g. system
+    # accounts) from being injected.
+    - expression: >-
+        object == null ||
+        object.metadata.labels['web-terminal/user-uuid']
+          .matches('^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$')
+      message: "web-terminal/user-uuid label must be a lowercase uuid"
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicyBinding
+metadata:
+  name: web-terminal-pod-integrity
+spec:
+  policyName: web-terminal-pod-integrity
+  validationActions: ["Deny"]
+  matchResources:
+    namespaceSelector:
+      matchExpressions:
+        - key: kubernetes.io/metadata.name
+          operator: In
+          values: ["web-terminal"]
 `
