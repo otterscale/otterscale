@@ -13,10 +13,13 @@ import (
 	"github.com/otterscale/otterscale/internal/core"
 	"github.com/otterscale/otterscale/internal/handler"
 	"github.com/otterscale/otterscale/internal/providers"
+	"github.com/otterscale/otterscale/internal/providers/cache"
 	"github.com/otterscale/otterscale/internal/providers/chisel"
+	"github.com/otterscale/otterscale/internal/providers/harbor"
 	"github.com/otterscale/otterscale/internal/providers/helm"
 	"github.com/otterscale/otterscale/internal/providers/kubernetes"
 	"github.com/otterscale/otterscale/internal/providers/otterscale"
+	"github.com/otterscale/otterscale/internal/providers/values"
 	"github.com/spf13/cobra"
 )
 
@@ -36,21 +39,25 @@ func wireCmd() (*cobra.Command, func(), error) {
 	}, nil
 }
 
-// wireServer assembles a fully wired Server with all gRPC services,
-// use-cases, and infrastructure providers. The version parameter is
-// provided by the caller and flows through Wire to LinkUseCase.
+// wireServer assembles the Server with its gRPC services, use-cases, and
+// infrastructure providers. v flows through Wire to LinkUseCase.
 func wireServer(v core.Version, conf *config.Config) (*server.Server, func(), error) {
 	ca, err := provideCA()
 	if err != nil {
 		return nil, nil, err
 	}
 	service := chisel.NewService(ca)
-	join, err := server.ProvideJoinAuthority(conf)
+	joinAuthority, err := server.ProvideJoinAuthority(conf)
 	if err != nil {
 		return nil, nil, err
 	}
-	linkUseCase := core.NewLinkUseCase(service, v, join)
-	linkService := handler.NewLinkService(linkUseCase)
+	linkUseCase := core.NewLinkUseCase(service, v, joinAuthority)
+	agentValuesConfig := server.ProvideAgentValuesConfig(conf)
+	agentValuesStore := cache.NewAgentValuesStore()
+	renderer := values.NewRenderer()
+	harborClient := harbor.ProvideHarborClient(conf)
+	agentValuesUseCase := core.NewAgentValuesUseCase(agentValuesConfig, v, joinAuthority, agentValuesStore, renderer, harborClient)
+	linkService := handler.NewLinkService(linkUseCase, agentValuesUseCase)
 	kubernetesKubernetes := kubernetes.New(service)
 	discoveryClient := kubernetes.NewDiscoveryClient(kubernetesKubernetes)
 	resourceRepo := kubernetes.NewResourceRepo(kubernetesKubernetes)
@@ -65,16 +72,16 @@ func wireServer(v core.Version, conf *config.Config) (*server.Server, func(), er
 	sessionStore := core.NewSessionStore()
 	runtimeUseCase := core.NewRuntimeUseCase(discoveryClient, runtimeRepo, helmRepo, sessionStore)
 	runtimeService := handler.NewRuntimeService(runtimeUseCase)
+	agentValuesHandler := handler.NewAgentValuesHandler(agentValuesUseCase)
 	proxyHandler := handler.NewProxyHandler(service)
-	serverHandler := server.NewHandler(linkService, resourceService, runtimeService, proxyHandler)
-	backgroundListeners := server.ProvideBackgroundListeners(runtimeUseCase, discoveryCache)
+	serverHandler := server.NewHandler(linkService, resourceService, runtimeService, agentValuesHandler, proxyHandler)
+	backgroundListeners := server.ProvideBackgroundListeners(runtimeUseCase, discoveryCache, agentValuesStore)
 	serverServer := server.NewServer(serverHandler, service, backgroundListeners)
 	return serverServer, func() {
 	}, nil
 }
 
-// wireAgent assembles a fully wired Agent with its handler and link
-// registrar. The version parameter is provided by the caller and flows
+// wireAgent assembles the Agent with its handler and link registrar. v flows
 // through Wire to the LinkRegistrar.
 func wireAgent(v core.Version, conf *config.Config) (*agent.Agent, func(), error) {
 	restConfig, err := kubernetes.ProvideInClusterConfig()
