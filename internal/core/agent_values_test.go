@@ -53,7 +53,7 @@ func newFakeTicketStore() *fakeTicketStore {
 }
 
 func (s *fakeTicketStore) Put(
-	_ context.Context, id string, req *AgentValuesRequest, _ time.Duration,
+	_ context.Context, id string, req *AgentValuesRequest, _ time.Time,
 ) error {
 	if s.err != nil {
 		return s.err

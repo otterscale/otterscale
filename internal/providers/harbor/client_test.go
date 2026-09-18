@@ -395,8 +395,8 @@ func TestNewClient_TrimsTrailingSlash(t *testing.T) {
 	}
 }
 
-func TestRobotName(t *testing.T) {
-	if got, want := robotName("prod"), "robot$prod"; got != want {
-		t.Errorf("robotName() = %q, want %q", got, want)
+func TestHarborRobotName(t *testing.T) {
+	if got, want := core.HarborRobotName("prod"), "robot$prod"; got != want {
+		t.Errorf("HarborRobotName() = %q, want %q", got, want)
 	}
 }

@@ -51,7 +51,7 @@ func newStubTicketStore() *stubTicketStore {
 }
 
 func (s *stubTicketStore) Put(
-	_ context.Context, id string, req *core.AgentValuesRequest, _ time.Duration,
+	_ context.Context, id string, req *core.AgentValuesRequest, _ time.Time,
 ) error {
 	s.tickets[id] = req
 	return nil

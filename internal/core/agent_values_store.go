@@ -31,7 +31,10 @@ var ErrAgentValuesTicketNotFound = &DomainError{
 // history, scrollback and proxy logs. Implementations live in the
 // infrastructure layer.
 type AgentValuesStore interface {
-	Put(ctx context.Context, id string, req *AgentValuesRequest, ttl time.Duration) error
+	// Put stores req under id until expiresAt. An absolute deadline rather
+	// than a TTL, so the instant reported to the caller is the one the store
+	// enforces, not a second computation of it.
+	Put(ctx context.Context, id string, req *AgentValuesRequest, expiresAt time.Time) error
 	// Get returns ErrAgentValuesTicketNotFound when there is no live entry.
 	// The returned value is the stored one: read it, do not mutate it.
 	Get(ctx context.Context, id string) (*AgentValuesRequest, error)

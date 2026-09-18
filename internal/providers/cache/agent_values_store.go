@@ -45,7 +45,7 @@ func NewAgentValuesStore() *AgentValuesStore {
 // Put sweeps expired entries first, so an old burst of short-lived URLs
 // cannot hold a steady-state deployment at the ceiling.
 func (s *AgentValuesStore) Put(
-	_ context.Context, id string, req *core.AgentValuesRequest, ttl time.Duration,
+	_ context.Context, id string, req *core.AgentValuesRequest, expiresAt time.Time,
 ) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
@@ -60,7 +60,7 @@ func (s *AgentValuesStore) Put(
 		}
 	}
 
-	s.tickets[id] = agentValuesTicket{request: req, expiresAt: s.now().Add(ttl)}
+	s.tickets[id] = agentValuesTicket{request: req, expiresAt: expiresAt}
 	return nil
 }
 

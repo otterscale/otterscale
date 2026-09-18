@@ -92,7 +92,7 @@ func (c *Client) EnsureRobotAccount(ctx context.Context, cluster, secret string)
 		return core.HarborRobotCredentials{}, err
 	}
 
-	return core.HarborRobotCredentials{Name: robotName(cluster), Secret: secret}, nil
+	return core.HarborRobotCredentials{Name: core.HarborRobotName(cluster), Secret: secret}, nil
 }
 
 const msgPasswordUnavailable = "the Harbor admin password is not available; " +
@@ -117,11 +117,6 @@ func (c *Client) adminPassword() (string, error) {
 		}
 	}
 	return password, nil
-}
-
-// robotName is what Harbor assigns a system-level robot.
-func robotName(cluster string) string {
-	return "robot$" + cluster
 }
 
 // robotRequest is the body of a robot create.
@@ -273,7 +268,7 @@ func (c *Client) findRobotID(ctx context.Context, cluster, password string) (int
 	// The query is a substring match, so compare the whole name: "prod" must
 	// not adopt "eu-prod"'s robot.
 	for _, robot := range robots {
-		if robot.Name == robotName(cluster) {
+		if robot.Name == core.HarborRobotName(cluster) {
 			return robot.ID, nil
 		}
 	}
@@ -311,7 +306,7 @@ func (c *Client) do(ctx context.Context, method, reqURL, password string, body i
 	}
 	req.SetBasicAuth(adminUser, password)
 
-	return c.httpClient.Do(req) //nolint:wrapcheck // callers name the operation
+	return c.httpClient.Do(req)
 }
 
 // statusError includes the body, where Harbor puts the reason. A rejected

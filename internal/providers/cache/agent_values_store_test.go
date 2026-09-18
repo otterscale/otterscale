@@ -34,7 +34,7 @@ func TestAgentValuesStore_RoundTrip(t *testing.T) {
 	s := newTestStore(&now)
 
 	want := testRequest()
-	if err := s.Put(t.Context(), "ticket-1", want, testTicketTTL); err != nil {
+	if err := s.Put(t.Context(), "ticket-1", want, now.Add(testTicketTTL)); err != nil {
 		t.Fatalf("Put() error = %v", err)
 	}
 
@@ -63,7 +63,7 @@ func TestAgentValuesStore_Expiry(t *testing.T) {
 	now := time.Date(2026, time.September, 18, 12, 0, 0, 0, time.UTC)
 	s := newTestStore(&now)
 
-	if err := s.Put(t.Context(), "ticket-1", testRequest(), testTicketTTL); err != nil {
+	if err := s.Put(t.Context(), "ticket-1", testRequest(), now.Add(testTicketTTL)); err != nil {
 		t.Fatalf("Put() error = %v", err)
 	}
 
@@ -85,12 +85,12 @@ func TestAgentValuesStore_Capacity(t *testing.T) {
 
 	for i := range maxAgentValuesTickets {
 		id := fmt.Sprintf("ticket-%d", i)
-		if err := s.Put(t.Context(), id, testRequest(), testTicketTTL); err != nil {
+		if err := s.Put(t.Context(), id, testRequest(), now.Add(testTicketTTL)); err != nil {
 			t.Fatalf("Put() %d error = %v", i, err)
 		}
 	}
 
-	err := s.Put(t.Context(), "one-too-many", testRequest(), testTicketTTL)
+	err := s.Put(t.Context(), "one-too-many", testRequest(), now.Add(testTicketTTL))
 	if err == nil {
 		t.Fatal("expected an error past the ceiling, got nil")
 	}
@@ -107,13 +107,13 @@ func TestAgentValuesStore_PutSweepsExpired(t *testing.T) {
 
 	for i := range maxAgentValuesTickets {
 		id := fmt.Sprintf("ticket-%d", i)
-		if err := s.Put(t.Context(), id, testRequest(), testTicketTTL); err != nil {
+		if err := s.Put(t.Context(), id, testRequest(), now.Add(testTicketTTL)); err != nil {
 			t.Fatalf("Put() %d error = %v", i, err)
 		}
 	}
 
 	now = now.Add(testTicketTTL + time.Minute)
-	if err := s.Put(t.Context(), "fresh", testRequest(), testTicketTTL); err != nil {
+	if err := s.Put(t.Context(), "fresh", testRequest(), now.Add(testTicketTTL)); err != nil {
 		t.Fatalf("Put() after the old tickets expired failed: %v", err)
 	}
 	if got := len(s.tickets); got != 1 {
@@ -127,7 +127,7 @@ func TestAgentValuesStore_GetReclaimsExpired(t *testing.T) {
 	now := time.Date(2026, time.September, 18, 12, 0, 0, 0, time.UTC)
 	s := newTestStore(&now)
 
-	if err := s.Put(t.Context(), "stale", testRequest(), testTicketTTL); err != nil {
+	if err := s.Put(t.Context(), "stale", testRequest(), now.Add(testTicketTTL)); err != nil {
 		t.Fatalf("Put() error = %v", err)
 	}
 	now = now.Add(testTicketTTL + time.Minute)

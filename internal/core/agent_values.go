@@ -17,7 +17,7 @@ import (
 )
 
 // robotSecretContext namespaces the Harbor robot secret derivation, as
-// joinTokenContext and valuesTokenContext do for theirs.
+// joinTokenContext does for join tokens.
 const robotSecretContext = "otterscale-harbor-robot:" //nolint:gosec // a derivation namespace, not a credential
 
 // defaultNodePortRange is the Kubernetes default. Unlike the other
@@ -198,14 +198,15 @@ func (uc *AgentValuesUseCase) Issue(ctx context.Context, req *AgentValuesRequest
 	if err != nil {
 		return AgentValuesResult{}, err
 	}
-	if err := uc.tickets.Put(ctx, id, resolved, agentValuesTicketTTL); err != nil {
+	expiresAt := time.Now().Add(agentValuesTicketTTL)
+	if err := uc.tickets.Put(ctx, id, resolved, expiresAt); err != nil {
 		return AgentValuesResult{}, err
 	}
 
 	return AgentValuesResult{
 		YAML:      yaml,
 		URL:       strings.TrimRight(uc.cfg.ExternalURL, "/") + "/link/values/" + id,
-		ExpiresAt: time.Now().Add(agentValuesTicketTTL),
+		ExpiresAt: expiresAt,
 	}, nil
 }
 
@@ -317,9 +318,16 @@ func (uc *AgentValuesUseCase) ensureRobot(ctx context.Context, cluster string) (
 // deriveRobot reproduces what ensureRobot stored, without contacting Harbor.
 func (uc *AgentValuesUseCase) deriveRobot(_ context.Context, cluster string) (HarborRobotCredentials, error) {
 	return HarborRobotCredentials{
-		Name:   "robot$" + cluster,
+		Name:   HarborRobotName(cluster),
 		Secret: uc.robotSecret(cluster),
 	}, nil
+}
+
+// HarborRobotName is the account name Harbor assigns a system-level robot.
+// Defined once: the render has to name the same account whether it went
+// through Harbor or derived it, and two spellings would diverge silently.
+func HarborRobotName(cluster string) string {
+	return "robot$" + cluster
 }
 
 // robotSecret derives the Harbor robot password from the join secret, rather
