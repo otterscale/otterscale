@@ -3,8 +3,6 @@ package core
 import (
 	"cmp"
 	"context"
-	"crypto/hmac"
-	"crypto/sha256"
 	"encoding/base64"
 	"fmt"
 	"net/url"
@@ -338,11 +336,8 @@ func HarborRobotName(cluster string) string {
 // The leading "Ot" and trailing "0" satisfy Harbor's complexity policy
 // whatever the base64 happens to contain.
 func (uc *AgentValuesUseCase) robotSecret(cluster string) string {
-	mac := hmac.New(sha256.New, uc.join.secret)
-	// hash.Hash.Write is documented never to return an error.
-	_, _ = mac.Write([]byte(robotSecretContext))
-	_, _ = mac.Write([]byte(cluster))
-	return "Ot" + base64.RawURLEncoding.EncodeToString(mac.Sum(nil)) + "0"
+	derived := uc.join.Derive(robotSecretContext, cluster)
+	return "Ot" + base64.RawURLEncoding.EncodeToString(derived) + "0"
 }
 
 // resolve validates a request and fills in the one field with a real default,

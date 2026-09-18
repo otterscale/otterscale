@@ -514,6 +514,47 @@ func TestRobotSecret(t *testing.T) {
 	}
 }
 
+// TestRobotSecret_IsStableAcrossChanges pins the bytes, not just the
+// properties above. A joined cluster's tenant operator authenticates with the
+// secret it was issued, so changing this derivation breaks every one of them
+// with no error that points at the cause — the same hazard the join token's
+// own golden test guards.
+func TestRobotSecret_IsStableAcrossChanges(t *testing.T) {
+	const (
+		secret = "dev-only-secret"
+		want   = "OtdRa4c-aAAxPuFcgLgp7pmGbmIqfRdXts0pXfz36TNxI0"
+	)
+
+	join, err := NewJoinAuthority(secret)
+	if err != nil {
+		t.Fatalf("NewJoinAuthority() error = %v", err)
+	}
+	uc := &AgentValuesUseCase{join: join}
+
+	if got := uc.robotSecret("dev"); got != want {
+		t.Errorf("robotSecret() = %q, want %q\n"+
+			"the derivation changed: every joined cluster's Harbor robot secret is now wrong",
+			got, want)
+	}
+}
+
+// The two derivations share a root secret, so the namespacing has to keep them
+// apart: neither may ever be usable as the other.
+func TestRobotSecretIsNotAJoinToken(t *testing.T) {
+	join, err := NewJoinAuthority(testJoinSecret)
+	if err != nil {
+		t.Fatalf("NewJoinAuthority() error = %v", err)
+	}
+	uc := &AgentValuesUseCase{join: join}
+
+	if uc.robotSecret("prod") == join.Token("prod") {
+		t.Error("the robot secret and the join token for one cluster are the same value")
+	}
+	if err := join.Verify("prod", uc.robotSecret("prod")); err == nil {
+		t.Error("a robot secret was accepted as a join token")
+	}
+}
+
 func TestRobotSecret_DiffersByJoinSecret(t *testing.T) {
 	makeUseCase := func(secret string) *AgentValuesUseCase {
 		join, err := NewJoinAuthority(secret)
