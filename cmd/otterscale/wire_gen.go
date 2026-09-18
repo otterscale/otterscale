@@ -55,8 +55,8 @@ func wireServer(v core.Version, conf *config.Config) (*server.Server, func(), er
 	agentValuesConfig := server.ProvideAgentValuesConfig(conf)
 	agentValuesStore := cache.NewAgentValuesStore()
 	renderer := values.NewRenderer()
-	harborClient := harbor.ProvideHarborClient(conf)
-	agentValuesUseCase := core.NewAgentValuesUseCase(agentValuesConfig, v, joinAuthority, agentValuesStore, renderer, harborClient)
+	client := harbor.ProvideHarborClient(conf)
+	agentValuesUseCase := core.NewAgentValuesUseCase(agentValuesConfig, v, joinAuthority, agentValuesStore, renderer, client)
 	linkService := handler.NewLinkService(linkUseCase, agentValuesUseCase)
 	kubernetesKubernetes := kubernetes.New(service)
 	discoveryClient := kubernetes.NewDiscoveryClient(kubernetesKubernetes)
@@ -75,7 +75,7 @@ func wireServer(v core.Version, conf *config.Config) (*server.Server, func(), er
 	agentValuesHandler := handler.NewAgentValuesHandler(agentValuesUseCase)
 	proxyHandler := handler.NewProxyHandler(service)
 	serverHandler := server.NewHandler(linkService, resourceService, runtimeService, agentValuesHandler, proxyHandler)
-	backgroundListeners := server.ProvideBackgroundListeners(runtimeUseCase, discoveryCache, agentValuesStore)
+	backgroundListeners := server.ProvideBackgroundListeners(runtimeUseCase, discoveryCache)
 	serverServer := server.NewServer(serverHandler, service, backgroundListeners)
 	return serverServer, func() {
 	}, nil

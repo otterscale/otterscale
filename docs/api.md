@@ -33,7 +33,7 @@ Every request carries a `cluster` field naming the target; the server routes it 
 Requests are authenticated by OIDC against the configured Keycloak realm. Four paths are reachable without a token:
 
 - `link.v1.LinkService/Register` — agents have no credential until they have registered; the call is authorised by a [join token](operations.md#joining-a-cluster) instead.
-- `/link/values/` and everything under it — authorised by the signed token in the path, as above.
+- `/link/values/` and everything under it — authorised by the id in the path, as above.
 - `grpc.health.v1.Health/Check` and `/Watch`
 - `grpc.reflection.v1.ServerReflection/ServerReflectionInfo`
 

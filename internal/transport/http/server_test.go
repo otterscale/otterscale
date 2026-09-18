@@ -80,6 +80,67 @@ func TestNewServer_PublicPathsBypassAuth(t *testing.T) {
 	})
 }
 
+// The prefix form, which the agent values route relies on: its credential is
+// the id in its own path, so a bearer token cannot also be required. The
+// adjacent cases are the point — a prefix must not pull in a sibling path.
+func TestNewServer_PublicPathPrefixesBypassAuth(t *testing.T) {
+	t.Parallel()
+
+	authMiddleware := authn.NewMiddleware(func(_ context.Context, r *http.Request) (any, error) {
+		if r.Header.Get("Authorization") == "" {
+			return nil, authn.Errorf("missing bearer token")
+		}
+		return struct{}{}, nil
+	})
+
+	srv := newTestServer(t,
+		WithAuthMiddleware(authMiddleware),
+		WithAllowedOrigins([]string{"https://example.com"}),
+		WithPublicPathPrefixes([]string{"/link/values/"}),
+		WithMount(okMount("/link/values/{id}", "/link/valuesx", "/link/")),
+	)
+
+	tests := []struct {
+		name       string
+		path       string
+		wantPublic bool
+	}{
+		{
+			name:       "an id under the prefix needs no bearer token",
+			path:       "/link/values/iQqR6K1p7EvPKoN5P4lGKA",
+			wantPublic: true,
+		},
+		{
+			// Without the prefix's trailing slash this would be public too.
+			name:       "an adjacent path does not inherit the exemption",
+			path:       "/link/valuesx",
+			wantPublic: false,
+		},
+		{
+			name:       "the parent path does not inherit the exemption",
+			path:       "/link/",
+			wantPublic: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			req := httptest.NewRequestWithContext(t.Context(), http.MethodGet, tt.path, http.NoBody)
+			rec := httptest.NewRecorder()
+			srv.Handler().ServeHTTP(rec, req)
+
+			if tt.wantPublic && rec.Code != http.StatusOK {
+				t.Errorf("status = %d, want %d for a public path", rec.Code, http.StatusOK)
+			}
+			if !tt.wantPublic && rec.Code == http.StatusOK {
+				t.Errorf("status = %d, want a refusal for a path that is not public", rec.Code)
+			}
+		})
+	}
+}
+
 // newTestServer builds a Server on an ephemeral loopback listener.
 func newTestServer(t *testing.T, opts ...ServerOption) *Server {
 	t.Helper()

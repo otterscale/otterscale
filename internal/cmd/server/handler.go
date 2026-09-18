@@ -21,21 +21,34 @@ import (
 	"github.com/otterscale/otterscale/internal/handler"
 )
 
+// agentValuesPath prefixes the route serving agent values behind an opaque id.
+// The trailing slash matters: it is registered as a public prefix, and without
+// it a sibling path could be swept in with it.
+const agentValuesPath = "/link/values/"
+
 // Handler mounts the gRPC service handlers, interceptors, and operational
 // endpoints (health, reflection, metrics) onto an HTTP mux.
 type Handler struct {
-	link     *handler.LinkService
-	resource *handler.ResourceService
-	runtime  *handler.RuntimeService
-	proxy    *handler.ProxyHandler
+	link        *handler.LinkService
+	resource    *handler.ResourceService
+	runtime     *handler.RuntimeService
+	agentValues *handler.AgentValuesHandler
+	proxy       *handler.ProxyHandler
 }
 
-func NewHandler(link *handler.LinkService, resource *handler.ResourceService, runtime *handler.RuntimeService, proxy *handler.ProxyHandler) *Handler {
+func NewHandler(
+	link *handler.LinkService,
+	resource *handler.ResourceService,
+	runtime *handler.RuntimeService,
+	agentValues *handler.AgentValuesHandler,
+	proxy *handler.ProxyHandler,
+) *Handler {
 	return &Handler{
-		link:     link,
-		resource: resource,
-		runtime:  runtime,
-		proxy:    proxy,
+		link:        link,
+		resource:    resource,
+		runtime:     runtime,
+		agentValues: agentValues,
+		proxy:       proxy,
 	}
 }
 
@@ -78,12 +91,35 @@ func (h *Handler) Mount(mux *http.ServeMux) error {
 	mux.Handle(resourcev1.NewResourceServiceHandler(h.resource, interceptors))
 	mux.Handle(runtimev1.NewRuntimeServiceHandler(h.runtime, interceptors))
 
+	// Raw YAML for `curl <url> | helm install -f -`. The opaque id in the path
+	// is the only credential, which is why server.go registers this prefix as
+	// public.
+	mux.HandleFunc("GET "+agentValuesPath+"{id}", h.handleAgentValues)
+
 	// Requests arrive as /proxy/{cluster}/prometheus/api/v1/query?... and are
 	// forwarded through the tunnel to the agent's /__otterscale/proxy/. The
 	// path is absent from the public paths list, so OIDC protects it.
 	mux.Handle("/proxy/{cluster}/prometheus/{path...}", h.proxy)
 
 	return nil
+}
+
+// handleAgentValues serves the values file a URL stands for, so it can be
+// piped straight into a Helm install. The body is a credential bundle, hence
+// no-store — and hence the procedure that mints these URLs is not GET-able
+// either, since a Connect handler cannot set that header.
+func (h *Handler) handleAgentValues(w http.ResponseWriter, r *http.Request) {
+	values, err := h.agentValues.Render(r.Context(), r.PathValue("id"))
+	if err != nil {
+		http.Error(w, "invalid or expired token", http.StatusUnauthorized)
+		return
+	}
+
+	w.Header().Set("Content-Type", "text/yaml; charset=utf-8")
+	w.Header().Set("Cache-Control", "no-store")
+	if _, err := w.Write([]byte(values)); err != nil { // #nosec G705
+		http.Error(w, "failed to write agent values response", http.StatusInternalServerError)
+	}
 }
 
 // registerOpsHandlers sets up reflection, health checks, and metrics scraping.

@@ -100,9 +100,27 @@ func (c *Config) ServerKeycloakClientID() string {
 	return c.v.GetString(keyServerKeycloakClientID)
 }
 
+// ServerExternalURL is the URL agents register against, including the path
+// prefix the gateway rewrites.
+func (c *Config) ServerExternalURL() string {
+	return c.v.GetString(keyServerExternalURL)
+}
+
 // ServerExternalTunnelURL is the address agents dial to establish tunnels.
 func (c *Config) ServerExternalTunnelURL() string {
 	return c.v.GetString(keyServerExternalTunnelURL)
+}
+
+// ServerHarborURL is the Harbor a joining cluster's tenant operator
+// authenticates to, and the host its module repositories derive from.
+func (c *Config) ServerHarborURL() string {
+	return c.v.GetString(keyServerHarborURL)
+}
+
+// ServerHarborAdminPassword is the credential for provisioning per-cluster
+// robot accounts, read from the configured file when one is set.
+func (c *Config) ServerHarborAdminPassword() (string, error) {
+	return c.secret(keyServerHarborAdminPasswordFile, keyServerHarborAdminPassword)
 }
 
 // ServerJoinSecret is the root secret for issuing and verifying agent
@@ -112,7 +130,7 @@ func (c *Config) ServerJoinSecret() (string, error) {
 }
 
 // ServerTrustedCAFile is the path to the CA certificate agents need to verify
-// this server. Empty when the server's certificate chains to a public CA.
+// this server. Empty when that certificate chains to a public CA.
 func (c *Config) ServerTrustedCAFile() string {
 	return c.v.GetString(keyServerTrustedCAFile)
 }

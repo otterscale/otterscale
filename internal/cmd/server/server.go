@@ -70,6 +70,7 @@ func (s *Server) Run(ctx context.Context, cfg *Config) error {
 			"/grpc.reflection.v1.ServerReflection/ServerReflectionInfo",
 			linkv1.LinkServiceRegisterProcedure,
 		}),
+		http.WithPublicPathPrefixes([]string{agentValuesPath}),
 		http.WithLongRunningPaths(s.handler.LongRunningPaths()),
 		http.WithMount(s.handler.Mount),
 	)

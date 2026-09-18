@@ -10,22 +10,26 @@ import (
 	"slices"
 
 	"connectrpc.com/connect"
+	"google.golang.org/protobuf/types/known/timestamppb"
 
 	pb "github.com/otterscale/otterscale/api/link/v1"
 
 	"github.com/otterscale/otterscale/internal/core"
 )
 
-// LinkService handles cluster listing and agent registration.
+// LinkService handles cluster listing, agent registration, and what an
+// operator needs to install an agent on a joining cluster.
 type LinkService struct {
 	pb.UnimplementedLinkServiceHandler
 
-	link *core.LinkUseCase
+	link        *core.LinkUseCase
+	agentValues *core.AgentValuesUseCase
 }
 
-func NewLinkService(link *core.LinkUseCase) *LinkService {
+func NewLinkService(link *core.LinkUseCase, agentValues *core.AgentValuesUseCase) *LinkService {
 	return &LinkService{
-		link: link,
+		link:        link,
+		agentValues: agentValues,
 	}
 }
 
@@ -65,29 +69,59 @@ func (s *LinkService) Register(ctx context.Context, req *pb.RegisterRequest) (*p
 	return resp, nil
 }
 
-// IssueJoinToken derives the join token for a cluster, so an import flow can
-// obtain one over the API instead of exec-ing `otterscale join token` inside
-// the server pod.
+// IssueAgentValues renders the Helm override values that install the agent on
+// a joining cluster, plus a URL serving the same bytes.
 //
-// Restricted to the admin group: what this returns authorizes claiming a
-// cluster, and thereby cluster-admin on it.
-func (s *LinkService) IssueJoinToken(ctx context.Context, req *pb.IssueJoinTokenRequest) (*pb.IssueJoinTokenResponse, error) {
-	userInfo, ok := core.UserInfoFromContext(ctx)
-	if !ok {
-		return nil, connect.NewError(connect.CodeUnauthenticated, errors.New("user info not found in context"))
-	}
-	if !core.IsAdmin(userInfo.Groups) {
-		return nil, connect.NewError(connect.CodePermissionDenied, errors.New("caller is not a member of the admin group"))
+// Restricted to the admin group: the result embeds a join token, which claims
+// the cluster it names, and it binds the caller to cluster-admin on it.
+func (s *LinkService) IssueAgentValues(ctx context.Context, req *pb.IssueAgentValuesRequest) (*pb.IssueAgentValuesResponse, error) {
+	userInfo, err := requireAdmin(ctx)
+	if err != nil {
+		return nil, err
 	}
 
-	token, err := s.link.IssueJoinToken(ctx, req.GetCluster())
+	result, err := s.agentValues.Issue(ctx, &core.AgentValuesRequest{
+		Cluster:     req.GetCluster(),
+		Subject:     userInfo.Subject,
+		ExtraUsers:  req.GetExtraUsers(),
+		ClusterInfo: toCoreClusterInfo(req),
+	})
 	if err != nil {
 		return nil, domainErrorToConnectError(err)
 	}
 
-	resp := &pb.IssueJoinTokenResponse{}
-	resp.SetJoinToken(token)
+	resp := &pb.IssueAgentValuesResponse{}
+	resp.SetValues(result.YAML)
+	resp.SetUrl(result.URL)
+	resp.SetUrlExpiresAt(timestamppb.New(result.ExpiresAt))
 	return resp, nil
+}
+
+// requireAdmin is the gate on a procedure that hands out cluster-admin.
+func requireAdmin(ctx context.Context) (core.UserInfo, error) {
+	userInfo, ok := core.UserInfoFromContext(ctx)
+	if !ok {
+		return core.UserInfo{}, connect.NewError(connect.CodeUnauthenticated, errors.New("user info not found in context"))
+	}
+	if !core.IsAdmin(userInfo.Groups) {
+		return core.UserInfo{}, connect.NewError(connect.CodePermissionDenied, errors.New("caller is not a member of the admin group"))
+	}
+	return userInfo, nil
+}
+
+// toCoreClusterInfo returns nil when the caller sent no cluster_info, which
+// the use case rejects. Presence is why that field is a message: a flat
+// string could not tell "not supplied" from "supplied empty".
+func toCoreClusterInfo(req *pb.IssueAgentValuesRequest) *core.AgentClusterInfo {
+	if !req.HasClusterInfo() {
+		return nil
+	}
+	info := req.GetClusterInfo()
+	return &core.AgentClusterInfo{
+		ExternalAddress: info.GetExternalAddress(),
+		NodePortRange:   info.GetNodePortRange(),
+		InferenceURL:    info.GetInferenceUrl(),
+	}
 }
 
 // toProtoLinks sorts by cluster name, for deterministic ordering.

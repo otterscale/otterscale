@@ -113,7 +113,7 @@ func ProvideJoinToken(conf *config.Config) (core.JoinToken, error) {
 		return "", errors.New(
 			"join token is required but not configured; " +
 				"set --join-token, --join-token-file or OTTERSCALE_AGENT_JOIN_TOKEN " +
-				"to the value of `otterscale join token --cluster <name>`",
+				"to the one the control plane issued for this cluster",
 		)
 	}
 	return core.JoinToken(token), nil
