@@ -55,7 +55,11 @@ $ otterscale server \
 
 $ otterscale agent \
     --cluster=dev \
-    --join-token="$(otterscale join token --cluster dev --join-secret=dev-only-secret)"
+    --join-token="$(printf 'otterscale-join:dev' \
+        | openssl dgst -sha256 -hmac 'dev-only-secret' -binary \
+        | basenc --base64url | tr -d '=')"
 ```
+
+That one-liner is the token derivation spelled out: the server has no subcommand for it, and `IssueAgentValues` wants an admin OIDC token and a configured Harbor, neither of which a local run has. `TestJoinAuthority_TokenMatchesDocumentedDerivation` pins the command's output, so a change to the derivation fails a test instead of quietly making this page wrong.
 
 The defaults already point the agent at `127.0.0.1:8299` and `127.0.0.1:8300`.
