@@ -4,43 +4,52 @@
 
 Registration is the one endpoint agents reach before they have any credentials, so it is authorised by a **join token** instead. The server holds a single root secret (`--join-secret`, `--join-secret-file`, or `OTTERSCALE_SERVER_JOIN_SECRET`) and refuses to start without one; each cluster's token is derived from that secret and the cluster's name.
 
-Issue a token wherever the root secret is available — most conveniently inside the server itself, so the secret never leaves the pod:
+`LinkService.IssueAgentValues` renders everything a joining cluster needs in one call: the token, the URLs it registers against, the cluster-admin binding for the caller, and the Harbor robot its tenant operator authenticates as. It also returns a short URL serving the identical bytes, so the file can be piped straight into Helm.
+
+That procedure is **restricted to the admin group** (`oidc:admin` once the OIDC middleware has prefixed the token's group claims): what they return authorises claiming a cluster, and thereby cluster-admin on it.
+
+### The CA
+
+An agent verifies the server with its image's system roots, so a privately signed certificate has to be trusted out of band. Read it from the control plane's own Secret and create it on the joining cluster:
 
 ```console
-$ kubectl exec deploy/otterscale-server -- /otterscale join token --cluster prod
-xlbQpGep3w9ZJpaDyUzKpHXVTcw_5pO5mNgT3qnf3Ss
-```
-
-`LinkService.IssueJoinToken` returns the same token over the API, which is how the dashboard's import wizard gets one without shell access to this cluster. Both derive the token, so neither invalidates the other's.
-
-That procedure is **restricted to the admin group** (`oidc:admin` once the OIDC middleware has prefixed the token's group claims): what it returns authorises claiming a cluster, and thereby cluster-admin on it. The subcommand above needs no role because holding the root secret is itself the authorisation.
-
-An agent verifies the server with its image's system roots, so a privately signed certificate has to travel with the token. The same command prints it, and says so when nothing is needed:
-
-```console
-$ kubectl exec deploy/otterscale-server -- /otterscale join ca > ca.crt
+$ kubectl -n otterscale-system get secret otterscale-ca \
+    -o jsonpath='{.data.ca\.crt}' | base64 -d > ca.crt
 $ kubectl --context downstream -n otterscale-system \
     create secret generic otterscale-ca --from-file=ca.crt
 ```
 
-Then install the agent on the joining cluster:
+Nothing is needed when the certificate chains to a public CA, and the rendered values then carry no CA settings at all.
+
+### Installing
+
+Flux has to be installed on the joining cluster first: nothing reconciles a `HelmRelease` until its controllers and CRDs exist. Then fetch the values and install:
 
 ```console
-$ helm install otterscale-agent otterscale/otterscale-agent \
-    --set agent.cluster=prod \
-    --set agent.joinToken=xlbQpGep3w9ZJpaDyUzKpHXVTcw_5pO5mNgT3qnf3Ss \
-    --set agent.serverURL=https://otterscale.example.com/api/ \
-    --set agent.tunnelServerURL=https://node1:30300 \
-    --set trustedCA.secretName=otterscale-ca
+$ curl -fsSL "$URL" | helm install otterscale-agent-flux \
+    otterscale/otterscale-agent-flux -n otterscale-system -f -
 ```
+
+Against a bare IP the certificate is necessarily privately signed, so add `-k`:
+
+```console
+$ curl -fsSLk "$URL" | helm install otterscale-agent-flux \
+    otterscale/otterscale-agent-flux -n otterscale-system -f -
+```
+
+`helm install -f <url>` does not work here, and not for want of a flag: Helm fetches a `-f` URL with no TLS options at all, and `--ca-file` and `--insecure-skip-tls-verify` apply to pulling charts, not to reading values. Fetching with `curl` and piping into `-f -` covers both cases with one command.
 
 What this does and does not give you:
 
 - A token authorises **one cluster**. An agent holding `prod`'s token cannot register as `staging`, so a compromised agent cannot take over another cluster's traffic.
 - A rejected token changes nothing. The check runs before any state is touched, so a bad registration cannot displace the agent currently serving that cluster.
-- Tokens **do not expire** and cannot be revoked one by one. Rotating the root secret invalidates every token at once, after which each agent needs its new token.
-- The token is sent in the registration request, so `--server-url` should be `https://`. The agent warns at startup when it is plain HTTP to a remote host — legitimate only when something else (a service mesh, for instance) provides the transport security.
-- With `--set agent.joinToken`, the token is stored in the Helm release's values and is readable by anyone who can read Secrets in that namespace. To keep it out, create the Secret yourself and point `agent.existingSecret` at it. Either way the chart mounts it as a file rather than putting it in the agent's environment.
+- Join tokens **do not expire** and cannot be revoked one by one. Rotating the root secret invalidates every token at once, after which each agent needs its new token. It also changes the Harbor robot secret each cluster is issued.
+- The URL **does** expire, an hour after it was issued, and the unguessable id in its path is the only thing authorising the fetch. Treat the URL as the credential it is. Re-issuing costs nothing: the values are derived, so the same cluster always gets the same file.
+- The id carries no information. The cluster name, the cluster-admin identities and the cluster's addresses stay on the server, out of shell history, terminal scrollback and any proxy log the URL passes through.
+- Outstanding URLs are held in the server's memory, so a restart invalidates them. Issue a new one; nothing else is affected, and the procedure returns the file inline as well, so a dashboard never depends on the URL surviving.
+- Fetching the URL is free of side effects. It performs no writes and does not contact Harbor, so Helm retrying, Flux reconciling or an operator re-running the install cannot disturb a cluster that is already running.
+- The rendered file carries the join token and the Harbor robot secret inline, which puts them in the Helm release **and** in the `HelmRelease` object — readable by anyone who can `get helmrelease`, a wider group than can read Secrets. To keep them out, create the Secrets yourself and point `agent.existingSecret` and the chart's `valuesFrom` at them.
+- Registration sends the token, so the server URL should be `https://`. The agent warns at startup when it is plain HTTP to a remote host — legitimate only when something else (a service mesh, for instance) provides the transport security.
 
 ## Operating the server
 

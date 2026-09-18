@@ -66,9 +66,27 @@ func (e *JoinAuthority) Verify(cluster, token string) error {
 	return nil
 }
 
+// Derive returns a MAC over name under a namespaced context, for secrets that
+// must be reproducible from the root secret without being stored anywhere.
+//
+// A method rather than a field the caller reaches into: this type owns the
+// secret, and a caller that read it directly would silently change every
+// derived value if the representation ever did.
+func (e *JoinAuthority) Derive(context, name string) []byte {
+	mac := hmac.New(sha256.New, e.secret)
+	// hash.Hash.Write is documented never to return an error.
+	_, _ = mac.Write([]byte(context))
+	_, _ = mac.Write([]byte(name))
+	return mac.Sum(nil)
+}
+
 // expected computes the raw MAC for a cluster. The context ends in a
 // colon and ValidateClusterName rejects colons, so no cluster name can
 // be confused with another by shifting the boundary.
+//
+// Deliberately not routed through Derive: changing the bytes this produces
+// would invalidate every join token already deployed in an agent, with no
+// error that points at the cause.
 func (e *JoinAuthority) expected(cluster string) []byte {
 	mac := hmac.New(sha256.New, e.secret)
 	// hash.Hash.Write is documented never to return an error.

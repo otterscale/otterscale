@@ -36,9 +36,9 @@ const (
 	LinkServiceListLinksProcedure = "/otterscale.link.v1.LinkService/ListLinks"
 	// LinkServiceRegisterProcedure is the fully-qualified name of the LinkService's Register RPC.
 	LinkServiceRegisterProcedure = "/otterscale.link.v1.LinkService/Register"
-	// LinkServiceIssueJoinTokenProcedure is the fully-qualified name of the LinkService's
-	// IssueJoinToken RPC.
-	LinkServiceIssueJoinTokenProcedure = "/otterscale.link.v1.LinkService/IssueJoinToken"
+	// LinkServiceIssueAgentValuesProcedure is the fully-qualified name of the LinkService's
+	// IssueAgentValues RPC.
+	LinkServiceIssueAgentValuesProcedure = "/otterscale.link.v1.LinkService/IssueAgentValues"
 )
 
 // LinkServiceClient is a client for the otterscale.link.v1.LinkService service.
@@ -51,13 +51,19 @@ type LinkServiceClient interface {
 	// The agent sends its cluster identity and tunnel port; the server responds
 	// with its fingerprint so the agent can verify the tunnel connection.
 	Register(context.Context, *RegisterRequest) (*RegisterResponse, error)
-	// IssueJoinToken derives the join token an agent needs to register a
-	// cluster, so an import flow needs no `otterscale join token` in the pod.
+	// IssueAgentValues renders the Helm override values that install the agent
+	// on a joining cluster, together with a URL serving the same bytes as raw
+	// YAML so the file can be piped straight into `helm install -f -`.
 	//
-	// Restricted to the admin group: what this returns claims the cluster it
-	// names, and thereby cluster-admin on it. The subcommand needs no role
-	// because holding the root secret is itself the authorization.
-	IssueJoinToken(context.Context, *IssueJoinTokenRequest) (*IssueJoinTokenResponse, error)
+	// Restricted to the admin group: the result embeds a join token, which
+	// claims the cluster it names, and binds the caller to cluster-admin on it.
+	//
+	// Deliberately not marked idempotency_level = NO_SIDE_EFFECTS. Doing so
+	// would let the procedure answer HTTP GET, and therefore be cached, and this
+	// response is a credential bundle. Nothing needs GET here: the URL above
+	// exists for that, and being a plain HTTP handler it can set no-store, which
+	// a Connect handler generated with the "simple" option cannot.
+	IssueAgentValues(context.Context, *IssueAgentValuesRequest) (*IssueAgentValuesResponse, error)
 }
 
 // NewLinkServiceClient constructs a client for the otterscale.link.v1.LinkService service. By
@@ -83,10 +89,10 @@ func NewLinkServiceClient(httpClient connect.HTTPClient, baseURL string, opts ..
 			connect.WithSchema(linkServiceMethods.ByName("Register")),
 			connect.WithClientOptions(opts...),
 		),
-		issueJoinToken: connect.NewClient[IssueJoinTokenRequest, IssueJoinTokenResponse](
+		issueAgentValues: connect.NewClient[IssueAgentValuesRequest, IssueAgentValuesResponse](
 			httpClient,
-			baseURL+LinkServiceIssueJoinTokenProcedure,
-			connect.WithSchema(linkServiceMethods.ByName("IssueJoinToken")),
+			baseURL+LinkServiceIssueAgentValuesProcedure,
+			connect.WithSchema(linkServiceMethods.ByName("IssueAgentValues")),
 			connect.WithClientOptions(opts...),
 		),
 	}
@@ -94,9 +100,9 @@ func NewLinkServiceClient(httpClient connect.HTTPClient, baseURL string, opts ..
 
 // linkServiceClient implements LinkServiceClient.
 type linkServiceClient struct {
-	listLinks      *connect.Client[ListLinksRequest, ListLinksResponse]
-	register       *connect.Client[RegisterRequest, RegisterResponse]
-	issueJoinToken *connect.Client[IssueJoinTokenRequest, IssueJoinTokenResponse]
+	listLinks        *connect.Client[ListLinksRequest, ListLinksResponse]
+	register         *connect.Client[RegisterRequest, RegisterResponse]
+	issueAgentValues *connect.Client[IssueAgentValuesRequest, IssueAgentValuesResponse]
 }
 
 // ListLinks calls otterscale.link.v1.LinkService.ListLinks.
@@ -117,9 +123,9 @@ func (c *linkServiceClient) Register(ctx context.Context, req *RegisterRequest) 
 	return nil, err
 }
 
-// IssueJoinToken calls otterscale.link.v1.LinkService.IssueJoinToken.
-func (c *linkServiceClient) IssueJoinToken(ctx context.Context, req *IssueJoinTokenRequest) (*IssueJoinTokenResponse, error) {
-	response, err := c.issueJoinToken.CallUnary(ctx, connect.NewRequest(req))
+// IssueAgentValues calls otterscale.link.v1.LinkService.IssueAgentValues.
+func (c *linkServiceClient) IssueAgentValues(ctx context.Context, req *IssueAgentValuesRequest) (*IssueAgentValuesResponse, error) {
+	response, err := c.issueAgentValues.CallUnary(ctx, connect.NewRequest(req))
 	if response != nil {
 		return response.Msg, err
 	}
@@ -136,13 +142,19 @@ type LinkServiceHandler interface {
 	// The agent sends its cluster identity and tunnel port; the server responds
 	// with its fingerprint so the agent can verify the tunnel connection.
 	Register(context.Context, *RegisterRequest) (*RegisterResponse, error)
-	// IssueJoinToken derives the join token an agent needs to register a
-	// cluster, so an import flow needs no `otterscale join token` in the pod.
+	// IssueAgentValues renders the Helm override values that install the agent
+	// on a joining cluster, together with a URL serving the same bytes as raw
+	// YAML so the file can be piped straight into `helm install -f -`.
 	//
-	// Restricted to the admin group: what this returns claims the cluster it
-	// names, and thereby cluster-admin on it. The subcommand needs no role
-	// because holding the root secret is itself the authorization.
-	IssueJoinToken(context.Context, *IssueJoinTokenRequest) (*IssueJoinTokenResponse, error)
+	// Restricted to the admin group: the result embeds a join token, which
+	// claims the cluster it names, and binds the caller to cluster-admin on it.
+	//
+	// Deliberately not marked idempotency_level = NO_SIDE_EFFECTS. Doing so
+	// would let the procedure answer HTTP GET, and therefore be cached, and this
+	// response is a credential bundle. Nothing needs GET here: the URL above
+	// exists for that, and being a plain HTTP handler it can set no-store, which
+	// a Connect handler generated with the "simple" option cannot.
+	IssueAgentValues(context.Context, *IssueAgentValuesRequest) (*IssueAgentValuesResponse, error)
 }
 
 // NewLinkServiceHandler builds an HTTP handler from the service implementation. It returns the path
@@ -164,10 +176,10 @@ func NewLinkServiceHandler(svc LinkServiceHandler, opts ...connect.HandlerOption
 		connect.WithSchema(linkServiceMethods.ByName("Register")),
 		connect.WithHandlerOptions(opts...),
 	)
-	linkServiceIssueJoinTokenHandler := connect.NewUnaryHandlerSimple(
-		LinkServiceIssueJoinTokenProcedure,
-		svc.IssueJoinToken,
-		connect.WithSchema(linkServiceMethods.ByName("IssueJoinToken")),
+	linkServiceIssueAgentValuesHandler := connect.NewUnaryHandlerSimple(
+		LinkServiceIssueAgentValuesProcedure,
+		svc.IssueAgentValues,
+		connect.WithSchema(linkServiceMethods.ByName("IssueAgentValues")),
 		connect.WithHandlerOptions(opts...),
 	)
 	return "/otterscale.link.v1.LinkService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -176,8 +188,8 @@ func NewLinkServiceHandler(svc LinkServiceHandler, opts ...connect.HandlerOption
 			linkServiceListLinksHandler.ServeHTTP(w, r)
 		case LinkServiceRegisterProcedure:
 			linkServiceRegisterHandler.ServeHTTP(w, r)
-		case LinkServiceIssueJoinTokenProcedure:
-			linkServiceIssueJoinTokenHandler.ServeHTTP(w, r)
+		case LinkServiceIssueAgentValuesProcedure:
+			linkServiceIssueAgentValuesHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -195,6 +207,6 @@ func (UnimplementedLinkServiceHandler) Register(context.Context, *RegisterReques
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.link.v1.LinkService.Register is not implemented"))
 }
 
-func (UnimplementedLinkServiceHandler) IssueJoinToken(context.Context, *IssueJoinTokenRequest) (*IssueJoinTokenResponse, error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.link.v1.LinkService.IssueJoinToken is not implemented"))
+func (UnimplementedLinkServiceHandler) IssueAgentValues(context.Context, *IssueAgentValuesRequest) (*IssueAgentValuesResponse, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.link.v1.LinkService.IssueAgentValues is not implemented"))
 }

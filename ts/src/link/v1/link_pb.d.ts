@@ -4,6 +4,7 @@
 
 import type { GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv2";
 import type { Message } from "@bufbuild/protobuf";
+import type { Timestamp } from "@bufbuild/protobuf/wkt";
 
 /**
  * Describes the file link/v1/link.proto.
@@ -70,48 +71,126 @@ export declare type ListLinksResponse = Message<"otterscale.link.v1.ListLinksRes
 export declare const ListLinksResponseSchema: GenMessage<ListLinksResponse>;
 
 /**
- * IssueJoinTokenRequest names the cluster whose token is being issued.
+ * AgentClusterInfo describes how users reach workloads on the joining cluster.
+ * The control plane cannot discover any of it, so it is supplied here and
+ * written into a ConfigMap the dashboard reads.
  *
- * @generated from message otterscale.link.v1.IssueJoinTokenRequest
+ * It is a message rather than three fields on the request so that "not
+ * supplied" is distinguishable from "supplied empty": singular scalars have
+ * implicit presence, a message field does not.
+ *
+ * @generated from message otterscale.link.v1.AgentClusterInfo
  */
-export declare type IssueJoinTokenRequest = Message<"otterscale.link.v1.IssueJoinTokenRequest"> & {
+export declare type AgentClusterInfo = Message<"otterscale.link.v1.AgentClusterInfo"> & {
   /**
-   * The cluster the token will authorize.
+   * The address users reach this cluster's NodePort services at. Bare: no
+   * scheme, no port. The scheme is the dashboard's to choose and the port
+   * comes from node_port_range.
+   *
+   * @generated from field: string external_address = 1;
+   */
+  externalAddress: string;
+
+  /**
+   * The cluster's NodePort range, as "<low>-<high>". Empty means the
+   * Kubernetes default, 30000-32767.
+   *
+   * @generated from field: string node_port_range = 2;
+   */
+  nodePortRange: string;
+
+  /**
+   * Where this cluster serves inference, as an absolute http or https URL.
+   * May be empty, which is rendered explicitly rather than omitted: the chart
+   * default is an example address, and omitting the key would publish it.
+   *
+   * @generated from field: string inference_url = 3;
+   */
+  inferenceUrl: string;
+};
+
+/**
+ * Describes the message otterscale.link.v1.AgentClusterInfo.
+ * Use `create(AgentClusterInfoSchema)` to create a new message.
+ */
+export declare const AgentClusterInfoSchema: GenMessage<AgentClusterInfo>;
+
+/**
+ * IssueAgentValuesRequest names the cluster being joined and carries the facts
+ * only the operator knows.
+ *
+ * @generated from message otterscale.link.v1.IssueAgentValuesRequest
+ */
+export declare type IssueAgentValuesRequest = Message<"otterscale.link.v1.IssueAgentValuesRequest"> & {
+  /**
+   * The cluster the rendered values will register as.
    *
    * @generated from field: string cluster = 1;
    */
   cluster: string;
-};
 
-/**
- * Describes the message otterscale.link.v1.IssueJoinTokenRequest.
- * Use `create(IssueJoinTokenRequestSchema)` to create a new message.
- */
-export declare const IssueJoinTokenRequestSchema: GenMessage<IssueJoinTokenRequest>;
-
-/**
- * IssueJoinTokenResponse carries the derived join token.
- *
- * @generated from message otterscale.link.v1.IssueJoinTokenResponse
- */
-export declare type IssueJoinTokenResponse = Message<"otterscale.link.v1.IssueJoinTokenResponse"> & {
   /**
-   * The join token for the requested cluster.
+   * Identities bound to cluster-admin on the joining cluster alongside the
+   * caller, who is always included. These are Keycloak subjects, the same
+   * value this server impersonates Kubernetes requests as.
    *
-   * Derived from the server's join secret rather than stored, so the same
-   * cluster name always yields the same token: re-importing a cluster needs
-   * no revocation, and two callers asking for one cluster get one token.
-   *
-   * @generated from field: string join_token = 1;
+   * @generated from field: repeated string extra_users = 2;
    */
-  joinToken: string;
+  extraUsers: string[];
+
+  /**
+   * Required. Absent is an error rather than a default, because the chart's
+   * own defaults for these are example values that would otherwise be
+   * published as if they were real.
+   *
+   * @generated from field: otterscale.link.v1.AgentClusterInfo cluster_info = 3;
+   */
+  clusterInfo?: AgentClusterInfo | undefined;
 };
 
 /**
- * Describes the message otterscale.link.v1.IssueJoinTokenResponse.
- * Use `create(IssueJoinTokenResponseSchema)` to create a new message.
+ * Describes the message otterscale.link.v1.IssueAgentValuesRequest.
+ * Use `create(IssueAgentValuesRequestSchema)` to create a new message.
  */
-export declare const IssueJoinTokenResponseSchema: GenMessage<IssueJoinTokenResponse>;
+export declare const IssueAgentValuesRequestSchema: GenMessage<IssueAgentValuesRequest>;
+
+/**
+ * IssueAgentValuesResponse carries the rendered values twice: inline, and
+ * behind a URL that serves the identical bytes.
+ *
+ * @generated from message otterscale.link.v1.IssueAgentValuesResponse
+ */
+export declare type IssueAgentValuesResponse = Message<"otterscale.link.v1.IssueAgentValuesResponse"> & {
+  /**
+   * The values file, for a download in the dashboard or `helm install -f -`.
+   *
+   * @generated from field: string values = 1;
+   */
+  values: string;
+
+  /**
+   * The same bytes behind a URL. The path carries an unguessable id naming
+   * what the server holds, not the parameters themselves, which keeps the URL
+   * short and keeps the cluster and its addresses out of shell history. The id
+   * is the only thing authorizing the fetch, so the URL is itself a credential.
+   *
+   * @generated from field: string url = 2;
+   */
+  url: string;
+
+  /**
+   * When url stops being served. The values above do not expire.
+   *
+   * @generated from field: google.protobuf.Timestamp url_expires_at = 3;
+   */
+  urlExpiresAt?: Timestamp | undefined;
+};
+
+/**
+ * Describes the message otterscale.link.v1.IssueAgentValuesResponse.
+ * Use `create(IssueAgentValuesResponseSchema)` to create a new message.
+ */
+export declare const IssueAgentValuesResponseSchema: GenMessage<IssueAgentValuesResponse>;
 
 /**
  * RegisterRequest contains the agent's cluster identity and a CSR for
@@ -150,9 +229,9 @@ export declare type RegisterRequest = Message<"otterscale.link.v1.RegisterReques
   agentVersion: string;
 
   /**
-   * The join token for this cluster, issued by the operator with
-   * `otterscale join token --cluster <name>`. Registration is
-   * rejected without a token that matches the cluster being claimed.
+   * The join token for this cluster, issued by the control plane through
+   * IssueAgentValues. Registration is rejected without a token that matches
+   * the cluster being claimed.
    *
    * @generated from field: string join_token = 5;
    */
@@ -264,19 +343,25 @@ export declare const LinkService: GenService<{
     output: typeof RegisterResponseSchema;
   },
   /**
-   * IssueJoinToken derives the join token an agent needs to register a
-   * cluster, so an import flow needs no `otterscale join token` in the pod.
+   * IssueAgentValues renders the Helm override values that install the agent
+   * on a joining cluster, together with a URL serving the same bytes as raw
+   * YAML so the file can be piped straight into `helm install -f -`.
    *
-   * Restricted to the admin group: what this returns claims the cluster it
-   * names, and thereby cluster-admin on it. The subcommand needs no role
-   * because holding the root secret is itself the authorization.
+   * Restricted to the admin group: the result embeds a join token, which
+   * claims the cluster it names, and binds the caller to cluster-admin on it.
    *
-   * @generated from rpc otterscale.link.v1.LinkService.IssueJoinToken
+   * Deliberately not marked idempotency_level = NO_SIDE_EFFECTS. Doing so
+   * would let the procedure answer HTTP GET, and therefore be cached, and this
+   * response is a credential bundle. Nothing needs GET here: the URL above
+   * exists for that, and being a plain HTTP handler it can set no-store, which
+   * a Connect handler generated with the "simple" option cannot.
+   *
+   * @generated from rpc otterscale.link.v1.LinkService.IssueAgentValues
    */
-  issueJoinToken: {
+  issueAgentValues: {
     methodKind: "unary";
-    input: typeof IssueJoinTokenRequestSchema;
-    output: typeof IssueJoinTokenResponseSchema;
+    input: typeof IssueAgentValuesRequestSchema;
+    output: typeof IssueAgentValuesResponseSchema;
   },
 }>;
 

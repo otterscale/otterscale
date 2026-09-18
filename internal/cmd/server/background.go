@@ -58,15 +58,26 @@ func (l *cacheEvictorListener) Stop(_ context.Context) error {
 // endpoint is reachable without authentication, so a server without one would
 // let any caller claim — and take over — any cluster.
 func ProvideJoinAuthority(conf *config.Config) (*core.JoinAuthority, error) {
-	secret, err := conf.ServerJoinSecret()
+	secret, err := joinSecret(conf)
 	if err != nil {
 		return nil, err
 	}
+	return core.NewJoinAuthority(secret)
+}
+
+// joinSecret resolves the root secret, with one message for the unconfigured
+// case. Shared, so whichever of the providers that need it Wire happens to
+// call first reports the same remedy.
+func joinSecret(conf *config.Config) (string, error) {
+	secret, err := conf.ServerJoinSecret()
+	if err != nil {
+		return "", err
+	}
 	if secret == "" {
-		return nil, errors.New(
+		return "", errors.New(
 			"join secret is required but not configured; " +
 				"set --join-secret, --join-secret-file or OTTERSCALE_SERVER_JOIN_SECRET",
 		)
 	}
-	return core.NewJoinAuthority(secret)
+	return secret, nil
 }

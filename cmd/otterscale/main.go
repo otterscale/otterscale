@@ -76,12 +76,7 @@ func newCmd(conf *config.Config) (*cobra.Command, error) {
 		return nil, err
 	}
 
-	joinCmd, err := cmd.NewJoinCommand(conf)
-	if err != nil {
-		return nil, err
-	}
-
-	c.AddCommand(serverCmd, agentCmd, joinCmd)
+	c.AddCommand(serverCmd, agentCmd)
 
 	return c, nil
 }

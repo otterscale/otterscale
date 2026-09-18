@@ -6,6 +6,7 @@ import (
 
 var ProviderSet = wire.NewSet(
 	NewLinkUseCase,
+	NewAgentValuesUseCase,
 	NewResourceUseCase,
 	NewRuntimeUseCase,
 	NewSessionStore,

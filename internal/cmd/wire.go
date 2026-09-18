@@ -19,4 +19,5 @@ var ProviderSet = wire.NewSet(
 	server.NewHandler,
 	server.ProvideBackgroundListeners,
 	server.ProvideJoinAuthority,
+	server.ProvideAgentValuesConfig,
 )

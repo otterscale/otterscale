@@ -15,15 +15,18 @@ const (
 	keyServerTunnelAddress     = "server.tunnel.address"
 	keyServerKeycloakRealmURL  = "server.keycloak.realm_url"
 	keyServerKeycloakClientID  = "server.keycloak.client_id"
+	keyServerExternalURL       = "server.external_url"
 	keyServerExternalTunnelURL = "server.external_tunnel_url"
+	keyServerHarborURL         = "server.harbor_url"
 )
 
-// Server-mode keys for the join secret, grouped separately because the
-// "join token" subcommand binds them without the rest of the server flags.
+// Server-mode keys naming a credential, or the file holding one.
 const (
-	keyServerJoinSecret     = "server.join_secret"      //nolint:gosec // configuration key name, not a credential
-	keyServerJoinSecretFile = "server.join_secret_file" //nolint:gosec // configuration key name, not a credential
-	keyServerTrustedCAFile  = "server.trusted_ca_file"  //nolint:gosec // configuration key name, not a credential
+	keyServerJoinSecret              = "server.join_secret"      //nolint:gosec // configuration key name, not a credential
+	keyServerJoinSecretFile          = "server.join_secret_file" //nolint:gosec // configuration key name, not a credential
+	keyServerTrustedCAFile           = "server.trusted_ca_file"  //nolint:gosec // configuration key name, not a credential
+	keyServerHarborAdminPassword     = "server.harbor_admin_password"
+	keyServerHarborAdminPasswordFile = "server.harbor_admin_password_file"
 )
 
 // Viper keys for agent-mode configuration.

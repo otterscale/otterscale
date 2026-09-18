@@ -114,6 +114,29 @@ func TestJoinAuthority_Verify(t *testing.T) {
 	}
 }
 
+// TestJoinAuthority_TokenMatchesDocumentedDerivation pins the derivation
+// against a value computed outside this package.
+func TestJoinAuthority_TokenMatchesDocumentedDerivation(t *testing.T) {
+	t.Parallel()
+
+	const (
+		secret = "dev-only-secret"
+		want   = "nEvkpbc9igC6YQZiyTMKp2icj_kCxi1n4yJGdYr7TZE"
+	)
+
+	authority, err := NewJoinAuthority(secret)
+	if err != nil {
+		t.Fatalf("NewJoinAuthority() error = %v", err)
+	}
+
+	if got := authority.Token("dev"); got != want {
+		t.Errorf("Token() = %q, want %q\n"+
+			"the derivation changed: every deployed join token is now invalid, "+
+			"and the one-liner in docs/development.md no longer produces a working token",
+			got, want)
+	}
+}
+
 // flipFirstChar returns s with its first character changed.
 func flipFirstChar(s string) string {
 	if s == "" {

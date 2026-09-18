@@ -56,12 +56,9 @@ $ otterscale server \
     --join-secret-file=/etc/otterscale/join/secret
 ```
 
-Mint a token for a cluster, then start its agent with it:
+Render a joining cluster's installation over the API with `LinkService.IssueAgentValues`, or start an agent directly with the token from it:
 
 ```console
-$ kubectl exec deploy/otterscale-server -- /otterscale join token --cluster prod
-xlbQpGep3w9ZJpaDyUzKpHXVTcw_5pO5mNgT3qnf3Ss
-
 $ otterscale agent \
     --cluster=prod \
     --server-url=https://api.example.com \
