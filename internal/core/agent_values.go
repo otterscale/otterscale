@@ -117,9 +117,6 @@ type AgentValues struct {
 	// carries no CA plumbing.
 	TrustedCASecret string
 	TrustedCAKey    string
-	// Version identifies the server that produced the file, recorded because
-	// nothing else in it does.
-	Version string
 }
 
 // AgentValuesResult is what a caller gets back: the file, and a URL serving
@@ -150,7 +147,6 @@ type HarborClient interface {
 // also own rendering and registry provisioning.
 type AgentValuesUseCase struct {
 	cfg      AgentValuesConfig
-	version  Version
 	join     *JoinAuthority
 	tickets  AgentValuesStore
 	renderer AgentValuesRenderer
@@ -159,7 +155,6 @@ type AgentValuesUseCase struct {
 
 func NewAgentValuesUseCase(
 	cfg *AgentValuesConfig,
-	version Version,
 	join *JoinAuthority,
 	tickets AgentValuesStore,
 	renderer AgentValuesRenderer,
@@ -167,7 +162,6 @@ func NewAgentValuesUseCase(
 ) *AgentValuesUseCase {
 	return &AgentValuesUseCase{
 		cfg:      *cfg,
-		version:  version,
 		join:     join,
 		tickets:  tickets,
 		renderer: renderer,
@@ -278,7 +272,6 @@ func (uc *AgentValuesUseCase) render(
 		Harbor:            harbor,
 		TrustedCASecret:   uc.cfg.TrustedCASecret,
 		TrustedCAKey:      uc.cfg.TrustedCAKey,
-		Version:           string(uc.version),
 	})
 }
 

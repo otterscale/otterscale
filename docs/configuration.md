@@ -31,7 +31,7 @@ The last four are what `IssueAgentValues` renders into a joining cluster's insta
 
 `--external-url` must include the path prefix the gateway strips — `https://otterscale.example.com/api/`, not `https://otterscale.example.com`. It is both what joining agents are told to register against and the base of the URLs that serve their values, and the two break differently when the prefix is missing: agents cannot reach the API at all, while the URL still resolves through a port-forward and 404s at the gateway. The chart appends it.
 
-`--trusted-ca-file` names the CA agents must trust to reach this server, for the case where the certificate served for the browser-facing URL is privately signed. Its presence is also the signal that agents need a CA at all: set, and the rendered values mount `otterscale-ca` into the agent and into Flux's source-controller, and reference it as the OCI repositories' `certSecretRef`; unset, and they carry no CA settings, which is correct for a certificate chaining to a public CA.
+`--trusted-ca-file` names the CA agents must trust to reach this server, for the case where the certificate served for the browser-facing URL is privately signed. Its presence is also the signal that agents need a CA at all: set, and the rendered values mount `otterscale-ca` into the agent and into Flux's source-controller, which trusts it for every pull through `SSL_CERT_DIR`; unset, and they carry no CA settings, which is correct for a certificate chaining to a public CA.
 
 `--harbor-admin-password-file` is read on each use rather than at startup, so the Secret the chart mounts it from may be created later, and rotating it does not need a restart.
 

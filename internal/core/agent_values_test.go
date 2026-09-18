@@ -112,7 +112,7 @@ func newAgentValuesFixture(t *testing.T, cfg *AgentValuesConfig) agentValuesFixt
 	tickets := newFakeTicketStore()
 
 	return agentValuesFixture{
-		useCase:  NewAgentValuesUseCase(cfg, Version("v1.5.0"), join, tickets, renderer, harbor),
+		useCase:  NewAgentValuesUseCase(cfg, join, tickets, renderer, harbor),
 		renderer: renderer,
 		harbor:   harbor,
 		tickets:  tickets,
@@ -151,9 +151,6 @@ func TestAgentValuesUseCase_Issue(t *testing.T) {
 	}
 	if got.Harbor.Robot.Name != "robot$prod" {
 		t.Errorf("robot name = %q, want robot$prod", got.Harbor.Robot.Name)
-	}
-	if got.Version != "v1.5.0" {
-		t.Errorf("version = %q, want v1.5.0", got.Version)
 	}
 	if f.harbor.calls != 1 {
 		t.Errorf("harbor calls = %d, want 1", f.harbor.calls)
@@ -571,7 +568,7 @@ func TestRobotSecret_DiffersByJoinSecret(t *testing.T) {
 			t.Fatalf("NewJoinAuthority() error = %v", err)
 		}
 		return NewAgentValuesUseCase(
-			fullAgentValuesConfig(), Version("v1.5.0"), join, newFakeTicketStore(), &recordingRenderer{}, &recordingHarbor{},
+			fullAgentValuesConfig(), join, newFakeTicketStore(), &recordingRenderer{}, &recordingHarbor{},
 		)
 	}
 

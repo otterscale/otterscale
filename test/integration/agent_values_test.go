@@ -76,7 +76,7 @@ func TestAgentValuesRPCAndSignedURLServeIdenticalBytes(t *testing.T) {
 			TrustedCASecret: core.TrustedCASecretName,
 			TrustedCAKey:    core.DefaultTrustedCAKey,
 		},
-		core.Version("test"), join, cache.NewAgentValuesStore(), values.NewRenderer(), harbor,
+		join, cache.NewAgentValuesStore(), values.NewRenderer(), harbor,
 	)
 
 	linkService := handler.NewLinkService(core.NewLinkUseCase(newTestTunnel(t), "test", join), useCase)

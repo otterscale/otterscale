@@ -100,7 +100,7 @@ func newTestLinkServiceWith(t *testing.T, cfg *core.AgentValuesConfig) *LinkServ
 	version := core.Version("v1.0.0")
 	return NewLinkService(
 		core.NewLinkUseCase(stubTunnelProvider{}, version, join),
-		core.NewAgentValuesUseCase(cfg, version, join, newStubTicketStore(), stubRenderer{}, stubHarbor{}),
+		core.NewAgentValuesUseCase(cfg, join, newStubTicketStore(), stubRenderer{}, stubHarbor{}),
 	)
 }
 

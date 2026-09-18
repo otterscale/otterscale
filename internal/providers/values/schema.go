@@ -21,20 +21,17 @@ type repositories struct {
 	Operators repository `yaml:"operators"`
 }
 
+// Only the two keys the chart already defines are ever emitted, so interval
+// and the rest come from its own values.yaml by deep merge.
 type repository struct {
-	URL string `yaml:"url"`
-	// Written out although the chart defaults it, because its validate.yaml
-	// requires the key.
-	Interval string `yaml:"interval"`
-	// A CA bundle, not registry credentials — those are the chart's secretRef.
-	CertSecretRef string            `yaml:"certSecretRef,omitempty"`
-	Labels        map[string]string `yaml:"labels,omitempty"`
+	URL    string            `yaml:"url"`
+	Labels map[string]string `yaml:"labels,omitempty"`
 }
 
 // release is one HelmRelease's overrides, passed through untouched, so the
 // shape is the target chart's.
 type release struct {
-	Values     any          `yaml:"values"`
+	Values     any          `yaml:"values,omitempty"`
 	ValuesFrom []valuesFrom `yaml:"valuesFrom"`
 }
 
@@ -73,9 +70,7 @@ type clusterInfo struct {
 	Enabled         bool   `yaml:"enabled"`
 	ExternalAddress string `yaml:"externalAddress"`
 	NodePortRange   string `yaml:"nodePortRange"`
-	// No omitempty: the chart's default is an example address, so omitting the
-	// key would publish it. The agent chart drops an empty one itself.
-	InferenceURL string `yaml:"inferenceURL"`
+	InferenceURL    string `yaml:"inferenceURL"`
 }
 
 type tenantOperator struct {

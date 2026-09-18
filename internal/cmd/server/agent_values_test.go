@@ -46,7 +46,7 @@ func newAgentValuesMux(t *testing.T) (*http.ServeMux, *core.AgentValuesUseCase) 
 			TunnelServerURL: "https://192.0.2.1:30300",
 			HarborURL:       "https://harbor.example.com:8443",
 		},
-		core.Version("v1.5.0"), join, cache.NewAgentValuesStore(), stubRenderer{}, stubHarbor{},
+		join, cache.NewAgentValuesStore(), stubRenderer{}, stubHarbor{},
 	)
 
 	h := &Handler{agentValues: handler.NewAgentValuesHandler(useCase)}
