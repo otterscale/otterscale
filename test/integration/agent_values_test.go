@@ -67,6 +67,8 @@ func TestAgentValuesRPCAndSignedURLServeIdenticalBytes(t *testing.T) {
 	t.Cleanup(func() { ln.Close() })
 	baseURL := "http://" + ln.Addr().String()
 
+	charts := values.ProvideChartVersions()
+
 	harbor := &stubHarbor{}
 	useCase := core.NewAgentValuesUseCase(
 		&core.AgentValuesConfig{
@@ -76,7 +78,7 @@ func TestAgentValuesRPCAndSignedURLServeIdenticalBytes(t *testing.T) {
 			TrustedCASecret: core.TrustedCASecretName,
 			TrustedCAKey:    core.DefaultTrustedCAKey,
 		},
-		join, cache.NewAgentValuesStore(), values.NewRenderer(), harbor,
+		charts, join, cache.NewAgentValuesStore(), values.NewRenderer(charts), harbor,
 	)
 
 	linkService := handler.NewLinkService(core.NewLinkUseCase(newTestTunnel(t), "test", join), useCase)

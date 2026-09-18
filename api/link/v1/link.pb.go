@@ -528,9 +528,10 @@ func (b0 IssueAgentValuesRequest_builder) Build() *IssueAgentValuesRequest {
 // behind a URL that serves the identical bytes.
 type IssueAgentValuesResponse struct {
 	state                   protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Values       *string                `protobuf:"bytes,1,opt,name=values"`
-	xxx_hidden_Url          *string                `protobuf:"bytes,2,opt,name=url"`
-	xxx_hidden_UrlExpiresAt *timestamppb.Timestamp `protobuf:"bytes,3,opt,name=url_expires_at,json=urlExpiresAt"`
+	xxx_hidden_Version      *string                `protobuf:"bytes,1,opt,name=version"`
+	xxx_hidden_Values       *string                `protobuf:"bytes,2,opt,name=values"`
+	xxx_hidden_Url          *string                `protobuf:"bytes,3,opt,name=url"`
+	xxx_hidden_UrlExpiresAt *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=url_expires_at,json=urlExpiresAt"`
 	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
 	XXX_presence            [1]uint32
 	unknownFields           protoimpl.UnknownFields
@@ -562,6 +563,16 @@ func (x *IssueAgentValuesResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
+func (x *IssueAgentValuesResponse) GetVersion() string {
+	if x != nil {
+		if x.xxx_hidden_Version != nil {
+			return *x.xxx_hidden_Version
+		}
+		return ""
+	}
+	return ""
+}
+
 func (x *IssueAgentValuesResponse) GetValues() string {
 	if x != nil {
 		if x.xxx_hidden_Values != nil {
@@ -589,32 +600,44 @@ func (x *IssueAgentValuesResponse) GetUrlExpiresAt() *timestamppb.Timestamp {
 	return nil
 }
 
+func (x *IssueAgentValuesResponse) SetVersion(v string) {
+	x.xxx_hidden_Version = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
+}
+
 func (x *IssueAgentValuesResponse) SetValues(v string) {
 	x.xxx_hidden_Values = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
 }
 
 func (x *IssueAgentValuesResponse) SetUrl(v string) {
 	x.xxx_hidden_Url = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
 }
 
 func (x *IssueAgentValuesResponse) SetUrlExpiresAt(v *timestamppb.Timestamp) {
 	x.xxx_hidden_UrlExpiresAt = v
 }
 
-func (x *IssueAgentValuesResponse) HasValues() bool {
+func (x *IssueAgentValuesResponse) HasVersion() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *IssueAgentValuesResponse) HasUrl() bool {
+func (x *IssueAgentValuesResponse) HasValues() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *IssueAgentValuesResponse) HasUrl() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
 func (x *IssueAgentValuesResponse) HasUrlExpiresAt() bool {
@@ -624,13 +647,18 @@ func (x *IssueAgentValuesResponse) HasUrlExpiresAt() bool {
 	return x.xxx_hidden_UrlExpiresAt != nil
 }
 
-func (x *IssueAgentValuesResponse) ClearValues() {
+func (x *IssueAgentValuesResponse) ClearVersion() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_Version = nil
+}
+
+func (x *IssueAgentValuesResponse) ClearValues() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_Values = nil
 }
 
 func (x *IssueAgentValuesResponse) ClearUrl() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Url = nil
 }
 
@@ -641,6 +669,10 @@ func (x *IssueAgentValuesResponse) ClearUrlExpiresAt() {
 type IssueAgentValuesResponse_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
+	// The otterscale-agent-flux version the values were rendered for, for
+	// `helm install --version`. The chart consumes the file, so the file cannot
+	// pin it. May be a semver range.
+	Version *string
 	// The values file, for a download in the dashboard or `helm install -f -`.
 	Values *string
 	// The same bytes behind a URL. The path carries an unguessable id naming
@@ -656,12 +688,16 @@ func (b0 IssueAgentValuesResponse_builder) Build() *IssueAgentValuesResponse {
 	m0 := &IssueAgentValuesResponse{}
 	b, x := &b0, m0
 	_, _ = b, x
+	if b.Version != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
+		x.xxx_hidden_Version = b.Version
+	}
 	if b.Values != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
 		x.xxx_hidden_Values = b.Values
 	}
 	if b.Url != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
 		x.xxx_hidden_Url = b.Url
 	}
 	x.xxx_hidden_UrlExpiresAt = b.UrlExpiresAt
@@ -1169,11 +1205,12 @@ const file_link_v1_link_proto_rawDesc = "" +
 	"\acluster\x18\x01 \x01(\tR\acluster\x12\x1f\n" +
 	"\vextra_users\x18\x02 \x03(\tR\n" +
 	"extraUsers\x12G\n" +
-	"\fcluster_info\x18\x03 \x01(\v2$.otterscale.link.v1.AgentClusterInfoR\vclusterInfo\"\x86\x01\n" +
-	"\x18IssueAgentValuesResponse\x12\x16\n" +
-	"\x06values\x18\x01 \x01(\tR\x06values\x12\x10\n" +
-	"\x03url\x18\x02 \x01(\tR\x03url\x12@\n" +
-	"\x0eurl_expires_at\x18\x03 \x01(\v2\x1a.google.protobuf.TimestampR\furlExpiresAt\"\x9c\x01\n" +
+	"\fcluster_info\x18\x03 \x01(\v2$.otterscale.link.v1.AgentClusterInfoR\vclusterInfo\"\xa0\x01\n" +
+	"\x18IssueAgentValuesResponse\x12\x18\n" +
+	"\aversion\x18\x01 \x01(\tR\aversion\x12\x16\n" +
+	"\x06values\x18\x02 \x01(\tR\x06values\x12\x10\n" +
+	"\x03url\x18\x03 \x01(\tR\x03url\x12@\n" +
+	"\x0eurl_expires_at\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampR\furlExpiresAt\"\x9c\x01\n" +
 	"\x0fRegisterRequest\x12\x18\n" +
 	"\acluster\x18\x01 \x01(\tR\acluster\x12\x10\n" +
 	"\x03csr\x18\x02 \x01(\fR\x03csr\x12\x19\n" +

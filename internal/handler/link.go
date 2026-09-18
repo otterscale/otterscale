@@ -91,6 +91,7 @@ func (s *LinkService) IssueAgentValues(ctx context.Context, req *pb.IssueAgentVa
 	}
 
 	resp := &pb.IssueAgentValuesResponse{}
+	resp.SetVersion(result.ChartVersion)
 	resp.SetValues(result.YAML)
 	resp.SetUrl(result.URL)
 	resp.SetUrlExpiresAt(timestamppb.New(result.ExpiresAt))

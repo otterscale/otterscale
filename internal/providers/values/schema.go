@@ -28,9 +28,10 @@ type repository struct {
 	Labels map[string]string `yaml:"labels,omitempty"`
 }
 
-// release is one HelmRelease's overrides, passed through untouched, so the
-// shape is the target chart's.
+// release is one HelmRelease's overrides: the chart version to install, and
+// values passed through untouched, so their shape is the target chart's.
 type release struct {
+	Version    string       `yaml:"version,omitempty"`
 	Values     any          `yaml:"values,omitempty"`
 	ValuesFrom []valuesFrom `yaml:"valuesFrom"`
 }

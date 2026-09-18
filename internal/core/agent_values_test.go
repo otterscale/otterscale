@@ -71,6 +71,14 @@ func (s *fakeTicketStore) Get(_ context.Context, id string) (*AgentValuesRequest
 	return req, nil
 }
 
+func testAgentChartVersions() ChartVersions {
+	return ChartVersions{
+		AgentFlux: "0.1.2",
+		Agent:     "1.2.3",
+		Flux:      "2.3.4",
+	}
+}
+
 func fullAgentValuesConfig() *AgentValuesConfig {
 	return &AgentValuesConfig{
 		ExternalURL:     "https://otterscale.example.com/api/",
@@ -112,7 +120,7 @@ func newAgentValuesFixture(t *testing.T, cfg *AgentValuesConfig) agentValuesFixt
 	tickets := newFakeTicketStore()
 
 	return agentValuesFixture{
-		useCase:  NewAgentValuesUseCase(cfg, join, tickets, renderer, harbor),
+		useCase:  NewAgentValuesUseCase(cfg, testAgentChartVersions(), join, tickets, renderer, harbor),
 		renderer: renderer,
 		harbor:   harbor,
 		tickets:  tickets,
@@ -131,6 +139,9 @@ func TestAgentValuesUseCase_Issue(t *testing.T) {
 	}
 	if want := "https://otterscale.example.com/api/link/values/"; !strings.HasPrefix(result.URL, want) {
 		t.Errorf("URL = %q, want the prefix %q", result.URL, want)
+	}
+	if want := testAgentChartVersions().AgentFlux; result.ChartVersion != want {
+		t.Errorf("ChartVersion = %q, want %q", result.ChartVersion, want)
 	}
 
 	got := f.renderer.last
@@ -568,7 +579,8 @@ func TestRobotSecret_DiffersByJoinSecret(t *testing.T) {
 			t.Fatalf("NewJoinAuthority() error = %v", err)
 		}
 		return NewAgentValuesUseCase(
-			fullAgentValuesConfig(), join, newFakeTicketStore(), &recordingRenderer{}, &recordingHarbor{},
+			fullAgentValuesConfig(), testAgentChartVersions(), join,
+			newFakeTicketStore(), &recordingRenderer{}, &recordingHarbor{},
 		)
 	}
 

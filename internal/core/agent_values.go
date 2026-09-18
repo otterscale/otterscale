@@ -122,9 +122,10 @@ type AgentValues struct {
 // AgentValuesResult is what a caller gets back: the file, and a URL serving
 // the identical bytes until ExpiresAt.
 type AgentValuesResult struct {
-	YAML      string
-	URL       string
-	ExpiresAt time.Time
+	ChartVersion string
+	YAML         string
+	URL          string
+	ExpiresAt    time.Time
 }
 
 // AgentValuesRenderer turns resolved values into the YAML a Helm install
@@ -147,6 +148,7 @@ type HarborClient interface {
 // also own rendering and registry provisioning.
 type AgentValuesUseCase struct {
 	cfg      AgentValuesConfig
+	charts   ChartVersions
 	join     *JoinAuthority
 	tickets  AgentValuesStore
 	renderer AgentValuesRenderer
@@ -155,6 +157,7 @@ type AgentValuesUseCase struct {
 
 func NewAgentValuesUseCase(
 	cfg *AgentValuesConfig,
+	charts ChartVersions,
 	join *JoinAuthority,
 	tickets AgentValuesStore,
 	renderer AgentValuesRenderer,
@@ -162,6 +165,7 @@ func NewAgentValuesUseCase(
 ) *AgentValuesUseCase {
 	return &AgentValuesUseCase{
 		cfg:      *cfg,
+		charts:   charts,
 		join:     join,
 		tickets:  tickets,
 		renderer: renderer,
@@ -196,9 +200,10 @@ func (uc *AgentValuesUseCase) Issue(ctx context.Context, req *AgentValuesRequest
 	}
 
 	return AgentValuesResult{
-		YAML:      yaml,
-		URL:       strings.TrimRight(uc.cfg.ExternalURL, "/") + "/link/values/" + id,
-		ExpiresAt: expiresAt,
+		ChartVersion: uc.charts.AgentFlux,
+		YAML:         yaml,
+		URL:          strings.TrimRight(uc.cfg.ExternalURL, "/") + "/link/values/" + id,
+		ExpiresAt:    expiresAt,
 	}, nil
 }
 

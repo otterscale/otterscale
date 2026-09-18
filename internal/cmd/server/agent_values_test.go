@@ -46,6 +46,7 @@ func newAgentValuesMux(t *testing.T) (*http.ServeMux, *core.AgentValuesUseCase) 
 			TunnelServerURL: "https://192.0.2.1:30300",
 			HarborURL:       "https://harbor.example.com:8443",
 		},
+		core.ChartVersions{AgentFlux: "0.1.2", Agent: "1.2.3", Flux: "2.3.4"},
 		join, cache.NewAgentValuesStore(), stubRenderer{}, stubHarbor{},
 	)
 

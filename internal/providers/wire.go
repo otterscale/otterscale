@@ -32,6 +32,7 @@ var ProviderSet = wire.NewSet(
 	kubernetes.NewRuntimeRepo,
 	otterscale.NewLinkRegistrar,
 	helm.NewRepo,
+	values.ProvideChartVersions,
 	values.NewRenderer,
 	wire.Bind(new(core.AgentValuesRenderer), new(*values.Renderer)),
 	cache.NewAgentValuesStore,

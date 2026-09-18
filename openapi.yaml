@@ -1659,6 +1659,13 @@ components:
     otterscale.link.v1.IssueAgentValuesResponse:
       type: object
       properties:
+        version:
+          type: string
+          title: version
+          description: |-
+            The otterscale-agent-flux version the values were rendered for, for
+             `helm install --version`. The chart consumes the file, so the file cannot
+             pin it. May be a semver range.
         values:
           type: string
           title: values

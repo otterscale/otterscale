@@ -18,6 +18,16 @@ const (
 	placeholderRobot        = "robot$devel"
 )
 
+// Fixture versions, so a chart bump leaves the goldens alone. All three differ
+// and all three reach the output, so a mixed-up wiring fails here.
+func testCharts() core.ChartVersions {
+	return core.ChartVersions{
+		AgentFlux: "0.1.2",
+		Agent:     "1.2.3",
+		Flux:      "2.3.4",
+	}
+}
+
 // fullValues is a fully configured render. The token and secret in it are
 // fixtures, not credentials.
 func fullValues() *core.AgentValues {
@@ -46,7 +56,8 @@ func fullValues() *core.AgentValues {
 	}
 }
 
-const wantFull = `repositories:
+const wantFull = `# otterscale-agent-flux chart version: 0.1.2
+repositories:
   modules:
     url: oci://192.168.196.222:8443/modules
     labels:
@@ -54,6 +65,7 @@ const wantFull = `repositories:
   operators:
     url: oci://192.168.196.222:8443/operators
 agent:
+  version: 1.2.3
   values:
     agent:
       serverURL: https://192.168.196.222/api/
@@ -85,6 +97,7 @@ agent:
       valuesKey: values.yaml
       optional: true
 flux:
+  version: 2.3.4
   values:
     flux2:
       sourceController:
@@ -108,7 +121,8 @@ flux:
 
 // A publicly signed server hands an agent nothing to trust, so the whole CA
 // plumbing drops out. The override ConfigMaps stay either way.
-const wantWithoutTrustedCA = `repositories:
+const wantWithoutTrustedCA = `# otterscale-agent-flux chart version: 0.1.2
+repositories:
   modules:
     url: oci://192.168.196.222:8443/modules
     labels:
@@ -116,6 +130,7 @@ const wantWithoutTrustedCA = `repositories:
   operators:
     url: oci://192.168.196.222:8443/operators
 agent:
+  version: 1.2.3
   values:
     agent:
       serverURL: https://192.168.196.222/api/
@@ -144,6 +159,7 @@ agent:
       valuesKey: values.yaml
       optional: true
 flux:
+  version: 2.3.4
   valuesFrom:
     - kind: ConfigMap
       name: flux-values
@@ -176,7 +192,7 @@ func TestRenderer_Render(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := NewRenderer().Render(tt.values())
+			got, err := NewRenderer(testCharts()).Render(tt.values())
 			if err != nil {
 				t.Fatalf("Render() error = %v", err)
 			}
@@ -193,7 +209,7 @@ func TestRenderer_RenderWritesEmptyInferenceURL(t *testing.T) {
 	v := fullValues()
 	v.ClusterInfo.InferenceURL = ""
 
-	got, err := NewRenderer().Render(v)
+	got, err := NewRenderer(testCharts()).Render(v)
 	if err != nil {
 		t.Fatalf("Render() error = %v", err)
 	}
@@ -208,7 +224,7 @@ func TestRenderer_RenderWritesEmptyInferenceURL(t *testing.T) {
 
 // The whole set at once, as the install-time grep does.
 func TestRenderer_RenderOverridesEveryPlaceholder(t *testing.T) {
-	got, err := NewRenderer().Render(fullValues())
+	got, err := NewRenderer(testCharts()).Render(fullValues())
 	if err != nil {
 		t.Fatalf("Render() error = %v", err)
 	}
@@ -239,7 +255,7 @@ func TestRenderer_RenderQuotesHostileValues(t *testing.T) {
 	v.ClusterAdminUsers = hostile
 	v.Harbor.Robot.Secret = "secret: with #both\nand a newline"
 
-	got, err := NewRenderer().Render(v)
+	got, err := NewRenderer(testCharts()).Render(v)
 	if err != nil {
 		t.Fatalf("Render() error = %v", err)
 	}
@@ -281,7 +297,7 @@ func TestRenderer_RenderQuotesHostileValues(t *testing.T) {
 // The RPC and the URL must return identical bytes, so nothing in the output
 // may vary between calls — no timestamp, no map iteration order.
 func TestRenderer_RenderIsDeterministic(t *testing.T) {
-	renderer := NewRenderer()
+	renderer := NewRenderer(testCharts())
 
 	first, err := renderer.Render(fullValues())
 	if err != nil {
@@ -295,6 +311,63 @@ func TestRenderer_RenderIsDeterministic(t *testing.T) {
 		if again != first {
 			t.Fatalf("successive renders differ:\n%s", diffLines(first, again))
 		}
+	}
+}
+
+// The pins, checked through a parse rather than the goldens: omitempty means a
+// zero-value Renderer drops both keys silently.
+func TestRenderer_RenderPinsChartVersions(t *testing.T) {
+	charts := testCharts()
+
+	got, err := NewRenderer(charts).Render(fullValues())
+	if err != nil {
+		t.Fatalf("Render() error = %v", err)
+	}
+
+	var parsed struct {
+		Agent struct {
+			Version string `yaml:"version"`
+		} `yaml:"agent"`
+		Flux struct {
+			Version string `yaml:"version"`
+		} `yaml:"flux"`
+	}
+	if err := yaml.Unmarshal([]byte(got), &parsed); err != nil {
+		t.Fatalf("the rendered output is not valid YAML: %v\n%s", err, got)
+	}
+
+	if parsed.Agent.Version != charts.Agent {
+		t.Errorf("agent.version = %q, want %q", parsed.Agent.Version, charts.Agent)
+	}
+	if parsed.Flux.Version != charts.Flux {
+		t.Errorf("flux.version = %q, want %q", parsed.Flux.Version, charts.Flux)
+	}
+}
+
+// The umbrella version cannot be pinned inside the file, so it heads it.
+func TestRenderer_RenderHeaderNamesChartVersion(t *testing.T) {
+	charts := testCharts()
+
+	got, err := NewRenderer(charts).Render(fullValues())
+	if err != nil {
+		t.Fatalf("Render() error = %v", err)
+	}
+
+	wantHeader := chartVersionComment + charts.AgentFlux
+	header, _, _ := strings.Cut(got, "\n")
+	if header != wantHeader {
+		t.Errorf("first line = %q, want %q", header, wantHeader)
+	}
+
+	// A comment, so the body must survive it.
+	var parsed struct {
+		Repositories map[string]any `yaml:"repositories"`
+	}
+	if err := yaml.Unmarshal([]byte(got), &parsed); err != nil {
+		t.Fatalf("the header made the output invalid YAML: %v\n%s", err, got)
+	}
+	if len(parsed.Repositories) == 0 {
+		t.Error("the header displaced the document body")
 	}
 }
 
