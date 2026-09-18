@@ -9,6 +9,7 @@ package linkv1
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 	reflect "reflect"
 	unsafe "unsafe"
 )
@@ -238,30 +239,38 @@ func (b0 ListLinksResponse_builder) Build() *ListLinksResponse {
 	return m0
 }
 
-// IssueJoinTokenRequest names the cluster whose token is being issued.
-type IssueJoinTokenRequest struct {
-	state                  protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Cluster     *string                `protobuf:"bytes,1,opt,name=cluster"`
-	XXX_raceDetectHookData protoimpl.RaceDetectHookData
-	XXX_presence           [1]uint32
-	unknownFields          protoimpl.UnknownFields
-	sizeCache              protoimpl.SizeCache
+// AgentClusterInfo describes how users reach workloads on the joining cluster.
+// The control plane cannot discover any of it, so it is supplied here and
+// written into a ConfigMap the dashboard reads.
+//
+// It is a message rather than three fields on the request so that "not
+// supplied" is distinguishable from "supplied empty": singular scalars have
+// implicit presence, a message field does not.
+type AgentClusterInfo struct {
+	state                      protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_ExternalAddress *string                `protobuf:"bytes,1,opt,name=external_address,json=externalAddress"`
+	xxx_hidden_NodePortRange   *string                `protobuf:"bytes,2,opt,name=node_port_range,json=nodePortRange"`
+	xxx_hidden_InferenceUrl    *string                `protobuf:"bytes,3,opt,name=inference_url,json=inferenceUrl"`
+	XXX_raceDetectHookData     protoimpl.RaceDetectHookData
+	XXX_presence               [1]uint32
+	unknownFields              protoimpl.UnknownFields
+	sizeCache                  protoimpl.SizeCache
 }
 
-func (x *IssueJoinTokenRequest) Reset() {
-	*x = IssueJoinTokenRequest{}
+func (x *AgentClusterInfo) Reset() {
+	*x = AgentClusterInfo{}
 	mi := &file_link_v1_link_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *IssueJoinTokenRequest) String() string {
+func (x *AgentClusterInfo) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*IssueJoinTokenRequest) ProtoMessage() {}
+func (*AgentClusterInfo) ProtoMessage() {}
 
-func (x *IssueJoinTokenRequest) ProtoReflect() protoreflect.Message {
+func (x *AgentClusterInfo) ProtoReflect() protoreflect.Message {
 	mi := &file_link_v1_link_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -273,7 +282,161 @@ func (x *IssueJoinTokenRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *IssueJoinTokenRequest) GetCluster() string {
+func (x *AgentClusterInfo) GetExternalAddress() string {
+	if x != nil {
+		if x.xxx_hidden_ExternalAddress != nil {
+			return *x.xxx_hidden_ExternalAddress
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *AgentClusterInfo) GetNodePortRange() string {
+	if x != nil {
+		if x.xxx_hidden_NodePortRange != nil {
+			return *x.xxx_hidden_NodePortRange
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *AgentClusterInfo) GetInferenceUrl() string {
+	if x != nil {
+		if x.xxx_hidden_InferenceUrl != nil {
+			return *x.xxx_hidden_InferenceUrl
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *AgentClusterInfo) SetExternalAddress(v string) {
+	x.xxx_hidden_ExternalAddress = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
+}
+
+func (x *AgentClusterInfo) SetNodePortRange(v string) {
+	x.xxx_hidden_NodePortRange = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
+}
+
+func (x *AgentClusterInfo) SetInferenceUrl(v string) {
+	x.xxx_hidden_InferenceUrl = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
+}
+
+func (x *AgentClusterInfo) HasExternalAddress() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *AgentClusterInfo) HasNodePortRange() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *AgentClusterInfo) HasInferenceUrl() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+}
+
+func (x *AgentClusterInfo) ClearExternalAddress() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_ExternalAddress = nil
+}
+
+func (x *AgentClusterInfo) ClearNodePortRange() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_NodePortRange = nil
+}
+
+func (x *AgentClusterInfo) ClearInferenceUrl() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	x.xxx_hidden_InferenceUrl = nil
+}
+
+type AgentClusterInfo_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	// The address users reach this cluster's NodePort services at. Bare: no
+	// scheme, no port. The scheme is the dashboard's to choose and the port
+	// comes from node_port_range.
+	ExternalAddress *string
+	// The cluster's NodePort range, as "<low>-<high>". Empty means the
+	// Kubernetes default, 30000-32767.
+	NodePortRange *string
+	// Where this cluster serves inference, as an absolute http or https URL.
+	// May be empty, which is rendered explicitly rather than omitted: the chart
+	// default is an example address, and omitting the key would publish it.
+	InferenceUrl *string
+}
+
+func (b0 AgentClusterInfo_builder) Build() *AgentClusterInfo {
+	m0 := &AgentClusterInfo{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.ExternalAddress != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
+		x.xxx_hidden_ExternalAddress = b.ExternalAddress
+	}
+	if b.NodePortRange != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
+		x.xxx_hidden_NodePortRange = b.NodePortRange
+	}
+	if b.InferenceUrl != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
+		x.xxx_hidden_InferenceUrl = b.InferenceUrl
+	}
+	return m0
+}
+
+// IssueAgentValuesRequest names the cluster being joined and carries the facts
+// only the operator knows.
+type IssueAgentValuesRequest struct {
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Cluster     *string                `protobuf:"bytes,1,opt,name=cluster"`
+	xxx_hidden_ExtraUsers  []string               `protobuf:"bytes,2,rep,name=extra_users,json=extraUsers"`
+	xxx_hidden_ClusterInfo *AgentClusterInfo      `protobuf:"bytes,3,opt,name=cluster_info,json=clusterInfo"`
+	XXX_raceDetectHookData protoimpl.RaceDetectHookData
+	XXX_presence           [1]uint32
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
+}
+
+func (x *IssueAgentValuesRequest) Reset() {
+	*x = IssueAgentValuesRequest{}
+	mi := &file_link_v1_link_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *IssueAgentValuesRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*IssueAgentValuesRequest) ProtoMessage() {}
+
+func (x *IssueAgentValuesRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_link_v1_link_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *IssueAgentValuesRequest) GetCluster() string {
 	if x != nil {
 		if x.xxx_hidden_Cluster != nil {
 			return *x.xxx_hidden_Cluster
@@ -283,66 +446,112 @@ func (x *IssueJoinTokenRequest) GetCluster() string {
 	return ""
 }
 
-func (x *IssueJoinTokenRequest) SetCluster(v string) {
-	x.xxx_hidden_Cluster = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 1)
+func (x *IssueAgentValuesRequest) GetExtraUsers() []string {
+	if x != nil {
+		return x.xxx_hidden_ExtraUsers
+	}
+	return nil
 }
 
-func (x *IssueJoinTokenRequest) HasCluster() bool {
+func (x *IssueAgentValuesRequest) GetClusterInfo() *AgentClusterInfo {
+	if x != nil {
+		return x.xxx_hidden_ClusterInfo
+	}
+	return nil
+}
+
+func (x *IssueAgentValuesRequest) SetCluster(v string) {
+	x.xxx_hidden_Cluster = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
+}
+
+func (x *IssueAgentValuesRequest) SetExtraUsers(v []string) {
+	x.xxx_hidden_ExtraUsers = v
+}
+
+func (x *IssueAgentValuesRequest) SetClusterInfo(v *AgentClusterInfo) {
+	x.xxx_hidden_ClusterInfo = v
+}
+
+func (x *IssueAgentValuesRequest) HasCluster() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *IssueJoinTokenRequest) ClearCluster() {
+func (x *IssueAgentValuesRequest) HasClusterInfo() bool {
+	if x == nil {
+		return false
+	}
+	return x.xxx_hidden_ClusterInfo != nil
+}
+
+func (x *IssueAgentValuesRequest) ClearCluster() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_Cluster = nil
 }
 
-type IssueJoinTokenRequest_builder struct {
-	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
-
-	// The cluster the token will authorize.
-	Cluster *string
+func (x *IssueAgentValuesRequest) ClearClusterInfo() {
+	x.xxx_hidden_ClusterInfo = nil
 }
 
-func (b0 IssueJoinTokenRequest_builder) Build() *IssueJoinTokenRequest {
-	m0 := &IssueJoinTokenRequest{}
+type IssueAgentValuesRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	// The cluster the rendered values will register as.
+	Cluster *string
+	// Identities bound to cluster-admin on the joining cluster alongside the
+	// caller, who is always included. These are Keycloak subjects, the same
+	// value this server impersonates Kubernetes requests as.
+	ExtraUsers []string
+	// Required. Absent is an error rather than a default, because the chart's
+	// own defaults for these are example values that would otherwise be
+	// published as if they were real.
+	ClusterInfo *AgentClusterInfo
+}
+
+func (b0 IssueAgentValuesRequest_builder) Build() *IssueAgentValuesRequest {
+	m0 := &IssueAgentValuesRequest{}
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Cluster != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 1)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
 		x.xxx_hidden_Cluster = b.Cluster
 	}
+	x.xxx_hidden_ExtraUsers = b.ExtraUsers
+	x.xxx_hidden_ClusterInfo = b.ClusterInfo
 	return m0
 }
 
-// IssueJoinTokenResponse carries the derived join token.
-type IssueJoinTokenResponse struct {
-	state                  protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_JoinToken   *string                `protobuf:"bytes,1,opt,name=join_token,json=joinToken"`
-	XXX_raceDetectHookData protoimpl.RaceDetectHookData
-	XXX_presence           [1]uint32
-	unknownFields          protoimpl.UnknownFields
-	sizeCache              protoimpl.SizeCache
+// IssueAgentValuesResponse carries the rendered values twice: inline, and
+// behind a URL that serves the identical bytes.
+type IssueAgentValuesResponse struct {
+	state                   protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Values       *string                `protobuf:"bytes,1,opt,name=values"`
+	xxx_hidden_Url          *string                `protobuf:"bytes,2,opt,name=url"`
+	xxx_hidden_UrlExpiresAt *timestamppb.Timestamp `protobuf:"bytes,3,opt,name=url_expires_at,json=urlExpiresAt"`
+	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
+	XXX_presence            [1]uint32
+	unknownFields           protoimpl.UnknownFields
+	sizeCache               protoimpl.SizeCache
 }
 
-func (x *IssueJoinTokenResponse) Reset() {
-	*x = IssueJoinTokenResponse{}
-	mi := &file_link_v1_link_proto_msgTypes[4]
+func (x *IssueAgentValuesResponse) Reset() {
+	*x = IssueAgentValuesResponse{}
+	mi := &file_link_v1_link_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *IssueJoinTokenResponse) String() string {
+func (x *IssueAgentValuesResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*IssueJoinTokenResponse) ProtoMessage() {}
+func (*IssueAgentValuesResponse) ProtoMessage() {}
 
-func (x *IssueJoinTokenResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_link_v1_link_proto_msgTypes[4]
+func (x *IssueAgentValuesResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_link_v1_link_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -353,52 +562,109 @@ func (x *IssueJoinTokenResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *IssueJoinTokenResponse) GetJoinToken() string {
+func (x *IssueAgentValuesResponse) GetValues() string {
 	if x != nil {
-		if x.xxx_hidden_JoinToken != nil {
-			return *x.xxx_hidden_JoinToken
+		if x.xxx_hidden_Values != nil {
+			return *x.xxx_hidden_Values
 		}
 		return ""
 	}
 	return ""
 }
 
-func (x *IssueJoinTokenResponse) SetJoinToken(v string) {
-	x.xxx_hidden_JoinToken = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 1)
+func (x *IssueAgentValuesResponse) GetUrl() string {
+	if x != nil {
+		if x.xxx_hidden_Url != nil {
+			return *x.xxx_hidden_Url
+		}
+		return ""
+	}
+	return ""
 }
 
-func (x *IssueJoinTokenResponse) HasJoinToken() bool {
+func (x *IssueAgentValuesResponse) GetUrlExpiresAt() *timestamppb.Timestamp {
+	if x != nil {
+		return x.xxx_hidden_UrlExpiresAt
+	}
+	return nil
+}
+
+func (x *IssueAgentValuesResponse) SetValues(v string) {
+	x.xxx_hidden_Values = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
+}
+
+func (x *IssueAgentValuesResponse) SetUrl(v string) {
+	x.xxx_hidden_Url = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
+}
+
+func (x *IssueAgentValuesResponse) SetUrlExpiresAt(v *timestamppb.Timestamp) {
+	x.xxx_hidden_UrlExpiresAt = v
+}
+
+func (x *IssueAgentValuesResponse) HasValues() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *IssueJoinTokenResponse) ClearJoinToken() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_JoinToken = nil
+func (x *IssueAgentValuesResponse) HasUrl() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-type IssueJoinTokenResponse_builder struct {
+func (x *IssueAgentValuesResponse) HasUrlExpiresAt() bool {
+	if x == nil {
+		return false
+	}
+	return x.xxx_hidden_UrlExpiresAt != nil
+}
+
+func (x *IssueAgentValuesResponse) ClearValues() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_Values = nil
+}
+
+func (x *IssueAgentValuesResponse) ClearUrl() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_Url = nil
+}
+
+func (x *IssueAgentValuesResponse) ClearUrlExpiresAt() {
+	x.xxx_hidden_UrlExpiresAt = nil
+}
+
+type IssueAgentValuesResponse_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	// The join token for the requested cluster.
-	//
-	// Derived from the server's join secret rather than stored, so the same
-	// cluster name always yields the same token: re-importing a cluster needs
-	// no revocation, and two callers asking for one cluster get one token.
-	JoinToken *string
+	// The values file, for a download in the dashboard or `helm install -f -`.
+	Values *string
+	// The same bytes behind a URL. The path carries an unguessable id naming
+	// what the server holds, not the parameters themselves, which keeps the URL
+	// short and keeps the cluster and its addresses out of shell history. The id
+	// is the only thing authorizing the fetch, so the URL is itself a credential.
+	Url *string
+	// When url stops being served. The values above do not expire.
+	UrlExpiresAt *timestamppb.Timestamp
 }
 
-func (b0 IssueJoinTokenResponse_builder) Build() *IssueJoinTokenResponse {
-	m0 := &IssueJoinTokenResponse{}
+func (b0 IssueAgentValuesResponse_builder) Build() *IssueAgentValuesResponse {
+	m0 := &IssueAgentValuesResponse{}
 	b, x := &b0, m0
 	_, _ = b, x
-	if b.JoinToken != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 1)
-		x.xxx_hidden_JoinToken = b.JoinToken
+	if b.Values != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
+		x.xxx_hidden_Values = b.Values
 	}
+	if b.Url != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
+		x.xxx_hidden_Url = b.Url
+	}
+	x.xxx_hidden_UrlExpiresAt = b.UrlExpiresAt
 	return m0
 }
 
@@ -419,7 +685,7 @@ type RegisterRequest struct {
 
 func (x *RegisterRequest) Reset() {
 	*x = RegisterRequest{}
-	mi := &file_link_v1_link_proto_msgTypes[5]
+	mi := &file_link_v1_link_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -431,7 +697,7 @@ func (x *RegisterRequest) String() string {
 func (*RegisterRequest) ProtoMessage() {}
 
 func (x *RegisterRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_link_v1_link_proto_msgTypes[5]
+	mi := &file_link_v1_link_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -589,9 +855,9 @@ type RegisterRequest_builder struct {
 	AgentId *string
 	// The version of the agent binary (e.g. "v1.2.3"), set at build time.
 	AgentVersion *string
-	// The join token for this cluster, issued by the operator with
-	// `otterscale join token --cluster <name>`. Registration is
-	// rejected without a token that matches the cluster being claimed.
+	// The join token for this cluster, issued by the control plane through
+	// IssueAgentValues. Registration is rejected without a token that matches
+	// the cluster being claimed.
 	JoinToken *string
 }
 
@@ -640,7 +906,7 @@ type RegisterResponse struct {
 
 func (x *RegisterResponse) Reset() {
 	*x = RegisterResponse{}
-	mi := &file_link_v1_link_proto_msgTypes[6]
+	mi := &file_link_v1_link_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -652,7 +918,7 @@ func (x *RegisterResponse) String() string {
 func (*RegisterResponse) ProtoMessage() {}
 
 func (x *RegisterResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_link_v1_link_proto_msgTypes[6]
+	mi := &file_link_v1_link_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -888,18 +1154,26 @@ var File_link_v1_link_proto protoreflect.FileDescriptor
 
 const file_link_v1_link_proto_rawDesc = "" +
 	"\n" +
-	"\x12link/v1/link.proto\x12\x12otterscale.link.v1\"E\n" +
+	"\x12link/v1/link.proto\x12\x12otterscale.link.v1\x1a\x1fgoogle/protobuf/timestamp.proto\"E\n" +
 	"\x04Link\x12\x18\n" +
 	"\acluster\x18\x01 \x01(\tR\acluster\x12#\n" +
 	"\ragent_version\x18\x02 \x01(\tR\fagentVersion\"\x12\n" +
 	"\x10ListLinksRequest\"C\n" +
 	"\x11ListLinksResponse\x12.\n" +
-	"\x05links\x18\x01 \x03(\v2\x18.otterscale.link.v1.LinkR\x05links\"1\n" +
-	"\x15IssueJoinTokenRequest\x12\x18\n" +
-	"\acluster\x18\x01 \x01(\tR\acluster\"7\n" +
-	"\x16IssueJoinTokenResponse\x12\x1d\n" +
-	"\n" +
-	"join_token\x18\x01 \x01(\tR\tjoinToken\"\x9c\x01\n" +
+	"\x05links\x18\x01 \x03(\v2\x18.otterscale.link.v1.LinkR\x05links\"\x8a\x01\n" +
+	"\x10AgentClusterInfo\x12)\n" +
+	"\x10external_address\x18\x01 \x01(\tR\x0fexternalAddress\x12&\n" +
+	"\x0fnode_port_range\x18\x02 \x01(\tR\rnodePortRange\x12#\n" +
+	"\rinference_url\x18\x03 \x01(\tR\finferenceUrl\"\x9d\x01\n" +
+	"\x17IssueAgentValuesRequest\x12\x18\n" +
+	"\acluster\x18\x01 \x01(\tR\acluster\x12\x1f\n" +
+	"\vextra_users\x18\x02 \x03(\tR\n" +
+	"extraUsers\x12G\n" +
+	"\fcluster_info\x18\x03 \x01(\v2$.otterscale.link.v1.AgentClusterInfoR\vclusterInfo\"\x86\x01\n" +
+	"\x18IssueAgentValuesResponse\x12\x16\n" +
+	"\x06values\x18\x01 \x01(\tR\x06values\x12\x10\n" +
+	"\x03url\x18\x02 \x01(\tR\x03url\x12@\n" +
+	"\x0eurl_expires_at\x18\x03 \x01(\v2\x1a.google.protobuf.TimestampR\furlExpiresAt\"\x9c\x01\n" +
 	"\x0fRegisterRequest\x12\x18\n" +
 	"\acluster\x18\x01 \x01(\tR\acluster\x12\x10\n" +
 	"\x03csr\x18\x02 \x01(\fR\x03csr\x12\x19\n" +
@@ -914,35 +1188,39 @@ const file_link_v1_link_proto_rawDesc = "" +
 	"\x0eserver_version\x18\x04 \x01(\tR\rserverVersion\x12\x1f\n" +
 	"\vtunnel_user\x18\x05 \x01(\tR\n" +
 	"tunnelUser\x12'\n" +
-	"\x0ftunnel_password\x18\x06 \x01(\tR\x0etunnelPassword2\xad\x02\n" +
+	"\x0ftunnel_password\x18\x06 \x01(\tR\x0etunnelPassword2\xb3\x02\n" +
 	"\vLinkService\x12Z\n" +
 	"\tListLinks\x12$.otterscale.link.v1.ListLinksRequest\x1a%.otterscale.link.v1.ListLinksResponse\"\x00\x12W\n" +
-	"\bRegister\x12#.otterscale.link.v1.RegisterRequest\x1a$.otterscale.link.v1.RegisterResponse\"\x00\x12i\n" +
-	"\x0eIssueJoinToken\x12).otterscale.link.v1.IssueJoinTokenRequest\x1a*.otterscale.link.v1.IssueJoinTokenResponse\"\x00B5Z3github.com/otterscale/otterscale/api/link/v1;linkv1b\beditionsp\xe8\a"
+	"\bRegister\x12#.otterscale.link.v1.RegisterRequest\x1a$.otterscale.link.v1.RegisterResponse\"\x00\x12o\n" +
+	"\x10IssueAgentValues\x12+.otterscale.link.v1.IssueAgentValuesRequest\x1a,.otterscale.link.v1.IssueAgentValuesResponse\"\x00B5Z3github.com/otterscale/otterscale/api/link/v1;linkv1b\beditionsp\xe8\a"
 
-var file_link_v1_link_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
+var file_link_v1_link_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
 var file_link_v1_link_proto_goTypes = []any{
-	(*Link)(nil),                   // 0: otterscale.link.v1.Link
-	(*ListLinksRequest)(nil),       // 1: otterscale.link.v1.ListLinksRequest
-	(*ListLinksResponse)(nil),      // 2: otterscale.link.v1.ListLinksResponse
-	(*IssueJoinTokenRequest)(nil),  // 3: otterscale.link.v1.IssueJoinTokenRequest
-	(*IssueJoinTokenResponse)(nil), // 4: otterscale.link.v1.IssueJoinTokenResponse
-	(*RegisterRequest)(nil),        // 5: otterscale.link.v1.RegisterRequest
-	(*RegisterResponse)(nil),       // 6: otterscale.link.v1.RegisterResponse
+	(*Link)(nil),                     // 0: otterscale.link.v1.Link
+	(*ListLinksRequest)(nil),         // 1: otterscale.link.v1.ListLinksRequest
+	(*ListLinksResponse)(nil),        // 2: otterscale.link.v1.ListLinksResponse
+	(*AgentClusterInfo)(nil),         // 3: otterscale.link.v1.AgentClusterInfo
+	(*IssueAgentValuesRequest)(nil),  // 4: otterscale.link.v1.IssueAgentValuesRequest
+	(*IssueAgentValuesResponse)(nil), // 5: otterscale.link.v1.IssueAgentValuesResponse
+	(*RegisterRequest)(nil),          // 6: otterscale.link.v1.RegisterRequest
+	(*RegisterResponse)(nil),         // 7: otterscale.link.v1.RegisterResponse
+	(*timestamppb.Timestamp)(nil),    // 8: google.protobuf.Timestamp
 }
 var file_link_v1_link_proto_depIdxs = []int32{
 	0, // 0: otterscale.link.v1.ListLinksResponse.links:type_name -> otterscale.link.v1.Link
-	1, // 1: otterscale.link.v1.LinkService.ListLinks:input_type -> otterscale.link.v1.ListLinksRequest
-	5, // 2: otterscale.link.v1.LinkService.Register:input_type -> otterscale.link.v1.RegisterRequest
-	3, // 3: otterscale.link.v1.LinkService.IssueJoinToken:input_type -> otterscale.link.v1.IssueJoinTokenRequest
-	2, // 4: otterscale.link.v1.LinkService.ListLinks:output_type -> otterscale.link.v1.ListLinksResponse
-	6, // 5: otterscale.link.v1.LinkService.Register:output_type -> otterscale.link.v1.RegisterResponse
-	4, // 6: otterscale.link.v1.LinkService.IssueJoinToken:output_type -> otterscale.link.v1.IssueJoinTokenResponse
-	4, // [4:7] is the sub-list for method output_type
-	1, // [1:4] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	3, // 1: otterscale.link.v1.IssueAgentValuesRequest.cluster_info:type_name -> otterscale.link.v1.AgentClusterInfo
+	8, // 2: otterscale.link.v1.IssueAgentValuesResponse.url_expires_at:type_name -> google.protobuf.Timestamp
+	1, // 3: otterscale.link.v1.LinkService.ListLinks:input_type -> otterscale.link.v1.ListLinksRequest
+	6, // 4: otterscale.link.v1.LinkService.Register:input_type -> otterscale.link.v1.RegisterRequest
+	4, // 5: otterscale.link.v1.LinkService.IssueAgentValues:input_type -> otterscale.link.v1.IssueAgentValuesRequest
+	2, // 6: otterscale.link.v1.LinkService.ListLinks:output_type -> otterscale.link.v1.ListLinksResponse
+	7, // 7: otterscale.link.v1.LinkService.Register:output_type -> otterscale.link.v1.RegisterResponse
+	5, // 8: otterscale.link.v1.LinkService.IssueAgentValues:output_type -> otterscale.link.v1.IssueAgentValuesResponse
+	6, // [6:9] is the sub-list for method output_type
+	3, // [3:6] is the sub-list for method input_type
+	3, // [3:3] is the sub-list for extension type_name
+	3, // [3:3] is the sub-list for extension extendee
+	0, // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_link_v1_link_proto_init() }
@@ -956,7 +1234,7 @@ func file_link_v1_link_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_link_v1_link_proto_rawDesc), len(file_link_v1_link_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   7,
+			NumMessages:   8,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
