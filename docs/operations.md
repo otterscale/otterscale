@@ -27,17 +27,25 @@ Flux has to be installed on the joining cluster first: nothing reconciles a `Hel
 
 ```console
 $ curl -fsSL "$URL" | helm install otterscale-agent-flux \
-    otterscale/otterscale-agent-flux -n otterscale-system -f -
+    otterscale/otterscale-agent-flux -n otterscale-system \
+    --version "$VERSION" -f -
 ```
 
 Against a bare IP the certificate is necessarily privately signed, so add `-k`:
 
 ```console
 $ curl -fsSLk "$URL" | helm install otterscale-agent-flux \
-    otterscale/otterscale-agent-flux -n otterscale-system -f -
+    otterscale/otterscale-agent-flux -n otterscale-system \
+    --version "$VERSION" -f -
 ```
 
 `helm install -f <url>` does not work here, and not for want of a flag: Helm fetches a `-f` URL with no TLS options at all, and `--ca-file` and `--insecure-skip-tls-verify` apply to pulling charts, not to reading values. Fetching with `curl` and piping into `-f -` covers both cases with one command.
+
+### Chart versions
+
+`$VERSION` is the `version` field `IssueAgentValues` returns alongside the values, and the same version heads the file as a comment, so it can be read off a saved copy without going back to the response. It matters because the values are written against one version of this chart's schema: install a different one and Helm's deep merge accepts the file while quietly dropping whatever moved.
+
+The two nested releases need no flag. The rendered file pins `otterscale-agent` and `flux` itself, which is why an install reproduces instead of following whatever the chart repository released most recently. To override a pin, pass `--set agent.version=` or `--set flux.version=` on the command above: `--set` beats `-f`. That is the only way in: the `otterscale-agent-values` and `flux-values` ConfigMaps the file references merge into the target chart's own values, not into the umbrella chart's `version` keys.
 
 What this does and does not give you:
 

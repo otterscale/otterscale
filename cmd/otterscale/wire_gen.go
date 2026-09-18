@@ -53,10 +53,11 @@ func wireServer(v core.Version, conf *config.Config) (*server.Server, func(), er
 	}
 	linkUseCase := core.NewLinkUseCase(service, v, joinAuthority)
 	agentValuesConfig := server.ProvideAgentValuesConfig(conf)
+	chartVersions := values.ProvideChartVersions()
 	agentValuesStore := cache.NewAgentValuesStore()
-	renderer := values.NewRenderer()
+	renderer := values.NewRenderer(chartVersions)
 	client := harbor.ProvideHarborClient(conf)
-	agentValuesUseCase := core.NewAgentValuesUseCase(agentValuesConfig, joinAuthority, agentValuesStore, renderer, client)
+	agentValuesUseCase := core.NewAgentValuesUseCase(agentValuesConfig, chartVersions, joinAuthority, agentValuesStore, renderer, client)
 	linkService := handler.NewLinkService(linkUseCase, agentValuesUseCase)
 	kubernetesKubernetes := kubernetes.New(service)
 	discoveryClient := kubernetes.NewDiscoveryClient(kubernetesKubernetes)

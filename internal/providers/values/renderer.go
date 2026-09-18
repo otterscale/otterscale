@@ -39,32 +39,41 @@ const (
 // diff cleanly.
 const yamlIndent = 2
 
+// chartVersionComment heads the file with the umbrella version, which cannot
+// be pinned inside it. Without it a copy fetched from the URL is untraceable.
+const chartVersionComment = "# otterscale-agent-flux chart version: "
+
 // Renderer turns resolved values into YAML.
-type Renderer struct{}
+type Renderer struct {
+	charts core.ChartVersions
+}
 
 var _ core.AgentValuesRenderer = (*Renderer)(nil)
 
-func NewRenderer() *Renderer {
-	return &Renderer{}
+func NewRenderer(charts core.ChartVersions) *Renderer {
+	return &Renderer{charts: charts}
 }
 
 // Render writes the override values for one joining cluster. Nothing in the
-// output varies between calls, which is what lets the RPC and the URL return
-// byte-identical files.
+// output varies between calls, header and pins included, which is what lets
+// the RPC and the URL return byte-identical files.
 func (r *Renderer) Render(v *core.AgentValues) (string, error) {
 	file := values{
 		Repositories: buildRepositories(v),
 		Agent: release{
+			Version:    r.charts.Agent,
 			Values:     buildAgentValues(v),
 			ValuesFrom: overrideFrom(agentOverrideConfigMap),
 		},
 		Flux: release{
+			Version:    r.charts.Flux,
 			Values:     buildFluxValues(v),
 			ValuesFrom: overrideFrom(fluxOverrideConfigMap),
 		},
 	}
 
 	var out strings.Builder
+	out.WriteString(chartVersionComment + r.charts.AgentFlux + "\n")
 
 	enc := yaml.NewEncoder(&out)
 	enc.SetIndent(yamlIndent)

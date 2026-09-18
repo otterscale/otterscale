@@ -162,9 +162,18 @@ export declare const IssueAgentValuesRequestSchema: GenMessage<IssueAgentValuesR
  */
 export declare type IssueAgentValuesResponse = Message<"otterscale.link.v1.IssueAgentValuesResponse"> & {
   /**
+   * The otterscale-agent-flux version the values were rendered for, for
+   * `helm install --version`. The chart consumes the file, so the file cannot
+   * pin it. May be a semver range.
+   *
+   * @generated from field: string version = 1;
+   */
+  version: string;
+
+  /**
    * The values file, for a download in the dashboard or `helm install -f -`.
    *
-   * @generated from field: string values = 1;
+   * @generated from field: string values = 2;
    */
   values: string;
 
@@ -174,14 +183,14 @@ export declare type IssueAgentValuesResponse = Message<"otterscale.link.v1.Issue
    * short and keeps the cluster and its addresses out of shell history. The id
    * is the only thing authorizing the fetch, so the URL is itself a credential.
    *
-   * @generated from field: string url = 2;
+   * @generated from field: string url = 3;
    */
   url: string;
 
   /**
    * When url stops being served. The values above do not expire.
    *
-   * @generated from field: google.protobuf.Timestamp url_expires_at = 3;
+   * @generated from field: google.protobuf.Timestamp url_expires_at = 4;
    */
   urlExpiresAt?: Timestamp | undefined;
 };

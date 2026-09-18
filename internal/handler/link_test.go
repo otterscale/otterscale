@@ -85,6 +85,16 @@ func testAgentValuesConfig() *core.AgentValuesConfig {
 	}
 }
 
+const testAgentFluxChartVersion = "0.1.2"
+
+func testChartVersions() core.ChartVersions {
+	return core.ChartVersions{
+		AgentFlux: testAgentFluxChartVersion,
+		Agent:     "1.2.3",
+		Flux:      "2.3.4",
+	}
+}
+
 func newTestLinkService(t *testing.T) *LinkService {
 	t.Helper()
 	return newTestLinkServiceWith(t, testAgentValuesConfig())
@@ -100,7 +110,7 @@ func newTestLinkServiceWith(t *testing.T, cfg *core.AgentValuesConfig) *LinkServ
 	version := core.Version("v1.0.0")
 	return NewLinkService(
 		core.NewLinkUseCase(stubTunnelProvider{}, version, join),
-		core.NewAgentValuesUseCase(cfg, join, newStubTicketStore(), stubRenderer{}, stubHarbor{}),
+		core.NewAgentValuesUseCase(cfg, testChartVersions(), join, newStubTicketStore(), stubRenderer{}, stubHarbor{}),
 	)
 }
 
@@ -206,6 +216,9 @@ func TestLinkService_IssueAgentValues_AllowsAdmin(t *testing.T) {
 	}
 	if got := resp.GetUrlExpiresAt().AsTime(); !got.After(time.Now()) {
 		t.Errorf("url_expires_at = %v, want a time in the future", got)
+	}
+	if got := resp.GetVersion(); got != testAgentFluxChartVersion {
+		t.Errorf("version = %q, want %q", got, testAgentFluxChartVersion)
 	}
 }
 

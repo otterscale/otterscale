@@ -94,17 +94,22 @@ message IssueAgentValuesRequest {
 // IssueAgentValuesResponse carries the rendered values twice: inline, and
 // behind a URL that serves the identical bytes.
 message IssueAgentValuesResponse {
+  // The otterscale-agent-flux version the values were rendered for, for
+  // `helm install --version`. The chart consumes the file, so the file cannot
+  // pin it. May be a semver range.
+  string version = 1;
+
   // The values file, for a download in the dashboard or `helm install -f -`.
-  string values = 1;
+  string values = 2;
 
   // The same bytes behind a URL. The path carries an unguessable id naming
   // what the server holds, not the parameters themselves, which keeps the URL
   // short and keeps the cluster and its addresses out of shell history. The id
   // is the only thing authorizing the fetch, so the URL is itself a credential.
-  string url = 2;
+  string url = 3;
 
   // When url stops being served. The values above do not expire.
-  google.protobuf.Timestamp url_expires_at = 3;
+  google.protobuf.Timestamp url_expires_at = 4;
 }
 
 // RegisterRequest contains the agent's cluster identity and a CSR for
