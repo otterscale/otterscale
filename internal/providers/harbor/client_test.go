@@ -333,6 +333,68 @@ func TestClient_EnsureRobotAccount_RejectedCredential(t *testing.T) {
 	}
 }
 
+// The adopt path is what every re-issue for an already-joined cluster takes,
+// so its failures matter as much as its happy case.
+func TestClient_EnsureRobotAccount_AdoptFailures(t *testing.T) {
+	conflict := func(w http.ResponseWriter, _ *http.Request) { w.WriteHeader(http.StatusConflict) }
+	found := func(w http.ResponseWriter, _ *http.Request) {
+		writeJSON(t, w, http.StatusOK, []robotListItem{{ID: 9, Name: "robot$" + testCluster}})
+	}
+
+	tests := []struct {
+		name     string
+		handlers map[string]http.HandlerFunc
+		wantIn   string
+	}{
+		{
+			name: "the list fails",
+			handlers: map[string]http.HandlerFunc{
+				"POST " + robotsPath: conflict,
+				"GET " + robotsPath: func(w http.ResponseWriter, _ *http.Request) {
+					http.Error(w, "the database is unavailable", http.StatusInternalServerError)
+				},
+			},
+			wantIn: "the database is unavailable",
+		},
+		{
+			name: "the list is not JSON",
+			handlers: map[string]http.HandlerFunc{
+				"POST " + robotsPath: conflict,
+				"GET " + robotsPath: func(w http.ResponseWriter, _ *http.Request) {
+					w.WriteHeader(http.StatusOK)
+					_, _ = w.Write([]byte("<html>not json</html>"))
+				},
+			},
+			wantIn: "decode robots list",
+		},
+		{
+			name: "the secret refresh is rejected",
+			handlers: map[string]http.HandlerFunc{
+				"POST " + robotsPath: conflict,
+				"GET " + robotsPath:  found,
+				"PATCH " + robotsPath + "/9": func(w http.ResponseWriter, _ *http.Request) {
+					http.Error(w, "secret does not meet the complexity policy", http.StatusBadRequest)
+				},
+			},
+			wantIn: "secret does not meet the complexity policy",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			client, _ := newTestClient(t, tt.handlers)
+
+			_, err := client.EnsureRobotAccount(t.Context(), testCluster, testSecret)
+			if err == nil {
+				t.Fatal("expected an error, got nil")
+			}
+			if !strings.Contains(err.Error(), tt.wantIn) {
+				t.Errorf("error = %v, want it to carry %q", err, tt.wantIn)
+			}
+		})
+	}
+}
+
 func TestClient_EnsureRobotAccount_SurfacesServerError(t *testing.T) {
 	client, _ := newTestClient(t, map[string]http.HandlerFunc{
 		"POST " + robotsPath: func(w http.ResponseWriter, _ *http.Request) {

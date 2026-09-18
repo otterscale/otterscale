@@ -322,6 +322,15 @@ func TestAgentValuesUseCase_ValidatesBeforeSideEffects(t *testing.T) {
 			field:  fieldNodePortRange,
 		},
 		{
+			// The shape check passes: it is all digits either side of the
+			// hyphen. Only the conversion catches it.
+			name: "node port range overflows an int",
+			mutate: func(req *AgentValuesRequest) {
+				req.ClusterInfo.NodePortRange = "99999999999999999999-99999999999999999999"
+			},
+			field: fieldNodePortRange,
+		},
+		{
 			name:   "inference url is not absolute",
 			mutate: func(req *AgentValuesRequest) { req.ClusterInfo.InferenceURL = "inference.example.com" },
 			field:  fieldInferenceURL,
@@ -620,6 +629,11 @@ func TestOCIRepoURL(t *testing.T) {
 		{
 			name:      "empty",
 			harborURL: "",
+			wantErr:   true,
+		},
+		{
+			name:      "not a URL at all",
+			harborURL: "http://[::1",
 			wantErr:   true,
 		},
 	}
