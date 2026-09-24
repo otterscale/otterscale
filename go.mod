@@ -34,7 +34,7 @@ require (
 	k8s.io/apiserver v0.37.0
 	k8s.io/client-go v0.37.0
 	k8s.io/kube-openapi v0.0.0-20260821135717-be32def86098
-	k8s.io/streaming v0.37.0
+	k8s.io/streaming v0.37.1
 )
 
 require (
