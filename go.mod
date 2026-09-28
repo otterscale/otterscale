@@ -30,11 +30,11 @@ require (
 	google.golang.org/protobuf v1.36.12
 	helm.sh/helm/v4 v4.3.0
 	k8s.io/api v0.37.0
-	k8s.io/apimachinery v0.37.0
+	k8s.io/apimachinery v0.37.1
 	k8s.io/apiserver v0.37.0
 	k8s.io/client-go v0.37.0
 	k8s.io/kube-openapi v0.0.0-20260821135717-be32def86098
-	k8s.io/streaming v0.37.0
+	k8s.io/streaming v0.37.1
 )
 
 require (
