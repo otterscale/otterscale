@@ -10,7 +10,7 @@ require (
 	connectrpc.com/cors v0.1.0
 	connectrpc.com/grpchealth v1.5.0
 	connectrpc.com/grpcreflect v1.3.0
-	connectrpc.com/otelconnect v0.9.0
+	connectrpc.com/otelconnect v0.10.0
 	github.com/Masterminds/semver/v3 v3.5.0
 	github.com/coreos/go-oidc/v3 v3.21.0
 	github.com/google/uuid v1.6.0
