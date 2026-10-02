@@ -54,15 +54,8 @@ type LinkServiceClient interface {
 	// IssueAgentValues renders the Helm override values that install the agent
 	// on a joining cluster, together with a URL serving the same bytes as raw
 	// YAML so the file can be piped straight into `helm install -f -`.
-	//
 	// Restricted to the admin group: the result embeds a join token, which
 	// claims the cluster it names, and binds the caller to cluster-admin on it.
-	//
-	// Deliberately not marked idempotency_level = NO_SIDE_EFFECTS. Doing so
-	// would let the procedure answer HTTP GET, and therefore be cached, and this
-	// response is a credential bundle. Nothing needs GET here: the URL above
-	// exists for that, and being a plain HTTP handler it can set no-store, which
-	// a Connect handler generated with the "simple" option cannot.
 	IssueAgentValues(context.Context, *IssueAgentValuesRequest) (*IssueAgentValuesResponse, error)
 }
 
@@ -145,15 +138,8 @@ type LinkServiceHandler interface {
 	// IssueAgentValues renders the Helm override values that install the agent
 	// on a joining cluster, together with a URL serving the same bytes as raw
 	// YAML so the file can be piped straight into `helm install -f -`.
-	//
 	// Restricted to the admin group: the result embeds a join token, which
 	// claims the cluster it names, and binds the caller to cluster-admin on it.
-	//
-	// Deliberately not marked idempotency_level = NO_SIDE_EFFECTS. Doing so
-	// would let the procedure answer HTTP GET, and therefore be cached, and this
-	// response is a credential bundle. Nothing needs GET here: the URL above
-	// exists for that, and being a plain HTTP handler it can set no-store, which
-	// a Connect handler generated with the "simple" option cannot.
 	IssueAgentValues(context.Context, *IssueAgentValuesRequest) (*IssueAgentValuesResponse, error)
 }
 
