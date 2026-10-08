@@ -78,6 +78,15 @@ A background reaper detects disconnected tunnel clients and removes stale regist
 
 prometheus-stack 1.2.0 puts kube-rbac-proxy in front of Prometheus and closes port 9090; an agent from this release queries the proxy on 9091. Neither works with the other's older version, so upgrade both, prometheus-stack first; charts are empty in between. To keep an older prometheus-stack serving a new agent for a while, set `--proxy-prometheus-url=http://prometheus-stack-kube-prom-prometheus.monitoring.svc:9090`, which sends no token.
 
+### Clusters managed externally
+
+A cluster joined before this release runs the otterscale-agent chart version the hub pinned at the time (1.1.x), which does not grant the agent access to the proxy or set its environment. The hub now pins 1.2.x for newly joined clusters only. To move an existing cluster, either:
+
+- re-issue its agent values (the dashboard's import flow, or `LinkService.IssueAgentValues`) and re-apply them; or
+- upgrade its `otterscale-agent-flux` release with `agent.version` set to `1.2.x` (the `agent` block in that chart's values, e.g. `agent: {version: "1.2.x"}`; the agent's own settings stay under `agent.values`).
+
+Upgrade prometheus-stack on that cluster in the same window, and use an agent image from an otterscale release that carries this change.
+
 ## Troubleshooting
 
 | Symptom                                                                                    | Likely cause                                                                                                                                                       |
