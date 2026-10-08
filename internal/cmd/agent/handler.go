@@ -59,6 +59,11 @@ func (h *Handler) mountPrometheusProxy(mux *http.ServeMux) error {
 
 	var loadCA caLoader
 	if target.Scheme == "https" {
+		if h.cfg.BearerToken == "" && h.cfg.BearerTokenFile == "" {
+			slog.Warn("prometheus proxy disabled: kube-rbac-proxy needs the agent's ServiceAccount token, and this kube config carries none",
+				"target", h.proxyPrometheusURL)
+			return nil
+		}
 		client, err := kubernetes.NewForConfig(h.cfg)
 		if err != nil {
 			return fmt.Errorf("failed to create kubernetes client: %w", err)

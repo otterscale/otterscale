@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"log/slog"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
@@ -38,7 +39,13 @@ func newPrometheusProxy(target *url.URL, rt http.RoundTripper, errorLog *log.Log
 			r.Out.Header.Del("Authorization")
 		},
 		Transport: rt,
-		ErrorLog:  errorLog,
+		ModifyResponse: func(resp *http.Response) error {
+			if resp.StatusCode == http.StatusUnauthorized || resp.StatusCode == http.StatusForbidden {
+				slog.Warn("prometheus proxy rejected the agent", "status", resp.StatusCode, "path", resp.Request.URL.Path)
+			}
+			return nil
+		},
+		ErrorLog: errorLog,
 	}
 }
 

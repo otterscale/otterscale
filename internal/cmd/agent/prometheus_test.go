@@ -151,6 +151,38 @@ func TestPrometheusProxyRetriesCA(t *testing.T) {
 	}
 }
 
+func TestPrometheusProxyPassesRejectionThrough(t *testing.T) {
+	srv := httptest.NewTLSServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		w.WriteHeader(http.StatusForbidden)
+	}))
+	defer srv.Close()
+
+	cfg := &rest.Config{BearerTokenFile: tokenFile(t)}
+	if code := query(newTestProxy(t, srv.URL, cfg, staticCA(certPEM(srv.Certificate().Raw)))); code != http.StatusForbidden {
+		t.Fatalf("status = %d, want the upstream 403", code)
+	}
+}
+
+func TestMountSkipsPrometheusWithoutToken(t *testing.T) {
+	kube := httptest.NewServer(http.NotFoundHandler())
+	defer kube.Close()
+
+	h := &Handler{
+		cfg:                     &rest.Config{Host: kube.URL},
+		proxyPrometheusURL:      "https://prometheus.example:9091",
+		proxyPrometheusCASecret: "monitoring/prom-tls",
+	}
+	mux := http.NewServeMux()
+	if err := h.Mount(mux); err != nil {
+		t.Fatalf("Mount() = %v, want nil: a token-less kube config must not stop the agent", err)
+	}
+
+	req := httptest.NewRequestWithContext(context.Background(), http.MethodGet, proxyPathPrefix+"api/v1/query", http.NoBody)
+	if _, pattern := mux.Handler(req); pattern == proxyPathPrefix {
+		t.Error("the prometheus proxy was mounted without a ServiceAccount token")
+	}
+}
+
 func TestPrometheusProxyHTTPWithholdsToken(t *testing.T) {
 	gotAuth, reached := "unset", false
 	srv := httptest.NewServer(http.HandlerFunc(func(_ http.ResponseWriter, r *http.Request) {
