@@ -17,7 +17,9 @@ import (
 
 // proxyPathPrefix is reserved for agent-managed service proxies (Prometheus,
 // for one). Requests under it skip kube-apiserver's proxy: they go straight to
-// the service, which authorizes the agent's own token itself.
+// the service. An https target (kube-rbac-proxy) authorizes the agent's own
+// ServiceAccount token itself; an http target gets no token and is trusted as
+// reachable only from inside the cluster.
 const proxyPathPrefix = "/__otterscale/proxy/"
 
 // Handler is the spoke-side reverse proxy: it forwards requests to the local
