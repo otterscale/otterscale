@@ -74,12 +74,18 @@ The server keeps its tunnel state in memory, which shapes how it is deployed:
 
 A background reaper detects disconnected tunnel clients and removes stale registrations, so `ListLinks` reflects the clusters that are actually reachable rather than every cluster that ever registered.
 
+## Upgrading the metrics path
+
+prometheus-stack 1.2.0 puts kube-rbac-proxy in front of Prometheus and closes port 9090; an agent from this release queries the proxy on 9091. Neither works with the other's older version, so upgrade both, prometheus-stack first; charts are empty in between. To keep an older prometheus-stack serving a new agent for a while, set `--proxy-prometheus-url=http://prometheus-stack-kube-prom-prometheus.monitoring.svc:9090`, which sends no token.
+
 ## Troubleshooting
 
-| Symptom                                               | Likely cause                                                                                                                              |
-| ----------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| Agent logs a TLS handshake failure against the tunnel | `--external-tunnel-url` does not match the name the agent dials. The certificate is issued for that name and the agent verifies it.       |
-| Registration rejected                                 | The token does not match the cluster name, or the server's join secret has been rotated.                                                  |
-| `cluster not registered`                              | The agent has not (re)connected yet, or requests are reaching a second server replica. Run one replica.                                   |
-| Agent warns about plaintext HTTP at startup           | `--server-url` is `http://` to a remote host, which exposes the join token in transit. Legitimate only behind a mesh that terminates TLS. |
-| Every cluster goes unreachable at once, then recovers | The server restarted; its CA is regenerated at startup and agents must re-register.                                                       |
+| Symptom                                                               | Likely cause                                                                                                                              |
+| --------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| Agent logs a TLS handshake failure against the tunnel                 | `--external-tunnel-url` does not match the name the agent dials. The certificate is issued for that name and the agent verifies it.       |
+| Registration rejected                                                 | The token does not match the cluster name, or the server's join secret has been rotated.                                                  |
+| `cluster not registered`                                              | The agent has not (re)connected yet, or requests are reaching a second server replica. Run one replica.                                   |
+| Agent warns about plaintext HTTP at startup                           | `--server-url` is `http://` to a remote host, which exposes the join token in transit. Legitimate only behind a mesh that terminates TLS. |
+| Every cluster goes unreachable at once, then recovers                 | The server restarted; its CA is regenerated at startup and agents must re-register.                                                       |
+| Dashboard charts empty; agent logs `failed to read the prometheus CA` | prometheus-stack is older than 1.2.0 or not installed, or the agent lacks `get` on the CA Secret.                                         |
+| Dashboard charts empty; agent logs `403 Forbidden` from the proxy     | The agent's ServiceAccount is not bound to `prometheuses/api` for that Prometheus (otterscale-agent chart older than 1.2.0).              |

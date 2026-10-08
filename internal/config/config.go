@@ -149,9 +149,16 @@ func (c *Config) AgentTunnelServerURL() string {
 }
 
 // AgentProxyPrometheusURL is the in-cluster Prometheus the metrics proxy
-// targets. Empty disables the proxy.
+// targets: kube-rbac-proxy over https, or a bare Prometheus over http. Empty
+// disables the proxy.
 func (c *Config) AgentProxyPrometheusURL() string {
 	return c.v.GetString(keyAgentProxyPrometheusURL)
+}
+
+// AgentProxyPrometheusCASecret names the Secret, as namespace/name, whose
+// ca.crt an https Prometheus URL must chain to.
+func (c *Config) AgentProxyPrometheusCASecret() string {
+	return c.v.GetString(keyAgentProxyPrometheusCASecret)
 }
 
 // AgentJoinToken is what this agent presents when it registers, read from

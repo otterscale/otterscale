@@ -38,7 +38,8 @@ var AgentOptions = []Option{
 	{Key: keyAgentCluster, Flag: toFlag(keyAgentCluster), Default: "default", Description: "Agent cluster"},
 	{Key: keyAgentServerURL, Flag: toFlag(keyAgentServerURL), Default: "http://127.0.0.1:8299", Description: "Agent control-plane server url"},
 	{Key: keyAgentTunnelServerURL, Flag: toFlag(keyAgentTunnelServerURL), Default: "https://127.0.0.1:8300", Description: "Agent tunnel server url"},
-	{Key: keyAgentProxyPrometheusURL, Flag: toFlag(keyAgentProxyPrometheusURL), Default: "http://prometheus-stack-kube-prom-prometheus.monitoring.svc:9090", Description: "In-cluster Prometheus URL for the metrics proxy"},
+	{Key: keyAgentProxyPrometheusURL, Flag: toFlag(keyAgentProxyPrometheusURL), Default: "https://prometheus-stack-kube-prom-prometheus.monitoring.svc:9091", Description: "In-cluster Prometheus URL for the metrics proxy; https is kube-rbac-proxy and gets the agent's token, http gets none"},
+	{Key: keyAgentProxyPrometheusCASecret, Flag: toFlag(keyAgentProxyPrometheusCASecret), Default: "monitoring/prometheus-stack-kube-prom-prometheus-tls", Description: "Secret (namespace/name) whose ca.crt verifies an https Prometheus URL"},
 	{Key: keyAgentJoinToken, Flag: toFlag(keyAgentJoinToken), Default: "", Description: "Join token for this cluster, issued by the control plane (required)"},
 	{Key: keyAgentJoinTokenFile, Flag: toFlag(keyAgentJoinTokenFile), Default: "", Description: "Path to a file holding the join token; takes precedence over --join-token"},
 }
