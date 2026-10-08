@@ -96,10 +96,15 @@ func (h *Handler) Mount(mux *http.ServeMux) error {
 	// public.
 	mux.HandleFunc("GET "+agentValuesPath+"{id}", h.handleAgentValues)
 
-	// Requests arrive as /proxy/{cluster}/prometheus/api/v1/query?... and are
+	// Cluster scope: requests arrive as /proxy/{cluster}/prometheus/api/v1/query?... and are
 	// forwarded through the tunnel to the agent's /__otterscale/proxy/. The
 	// path is absent from the public paths list, so OIDC protects it.
 	mux.Handle("/proxy/{cluster}/prometheus/{path...}", h.proxy)
+
+	// Namespace scope: /proxy/{cluster}/prometheus-tenancy/api/v1/query?namespace=<ns>&...
+	// ProxyHandler forces namespace="<ns>" into the PromQL. OIDC protects it
+	// like the cluster-scope route.
+	mux.HandleFunc("/proxy/{cluster}/prometheus-tenancy/{path...}", h.proxy.ServeTenancy)
 
 	return nil
 }

@@ -1,6 +1,9 @@
 package handler
 
 import (
+	"encoding/json"
+	"errors"
+	"log/slog"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
@@ -14,25 +17,20 @@ import (
 const impersonationHeaderPrefix = "Impersonate-"
 
 // ProxyHandler relays Prometheus queries from the dashboard through the chisel
-// tunnel to the in-cluster Prometheus beside the agent, validating paths
-// against a read-only allowlist first.
+// tunnel to the agent, which queries the cluster's Prometheus with its own
+// credentials. Who may see what is therefore decided here, per cluster, by
+// asking that cluster's RBAC as the caller (core.AccessReviewer).
 //
-// Authorization is deliberately cluster-agnostic: any authenticated user may
-// query any registered cluster's Prometheus. Metrics are treated as shared
-// operational data, unlike the Kubernetes API paths, which enforce per-cluster
-// RBAC by impersonation. This is a decision, not an oversight — do not "fix" it
-// without changing the product rule first.
-//
-// Namespace-level isolation is not provided and cannot be added here: the
-// allowlist gates endpoints, not PromQL, so a caller past the gate can select
-// any series. Restricting tenants to their own namespaces takes an enforced
-// label matcher (prom-label-proxy or equivalent) in front of Prometheus.
+// ServeHTTP is cluster scope, /proxy/{cluster}/prometheus/...; ServeTenancy is
+// namespace scope, /proxy/{cluster}/prometheus-tenancy/...?namespace=<ns>
+// (proxy_tenancy.go).
 type ProxyHandler struct {
 	tunnel core.TunnelProvider
+	access core.AccessReviewer
 }
 
-func NewProxyHandler(tunnel core.TunnelProvider) *ProxyHandler {
-	return &ProxyHandler{tunnel: tunnel}
+func NewProxyHandler(tunnel core.TunnelProvider, access core.AccessReviewer) *ProxyHandler {
+	return &ProxyHandler{tunnel: tunnel, access: access}
 }
 
 // ServeHTTP forwards /proxy/{cluster}/prometheus/{path...} through the tunnel
@@ -52,19 +50,60 @@ func (h *ProxyHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	target, ok := h.resolve(w, r, cluster)
+	if !ok {
+		return
+	}
+
+	h.forward(w, r, target, promPath, r.URL.RawQuery)
+}
+
+// resolve writes the error itself and reports whether to go on.
+func (h *ProxyHandler) resolve(w http.ResponseWriter, r *http.Request, cluster string) (*url.URL, bool) {
 	address, err := h.tunnel.ResolveAddress(r.Context(), cluster)
 	if err != nil {
 		http.Error(w, "cluster not found", http.StatusNotFound)
-		return
+		return nil, false
 	}
 
 	target, err := url.Parse(address)
 	if err != nil {
 		http.Error(w, "internal error", http.StatusInternalServerError)
-		return
+		return nil, false
 	}
+	return target, true
+}
 
-	originalQuery := r.URL.RawQuery
+// authorize asks the questions in order and lets the request through on the
+// first yes. It writes the refusal itself. A review that fails is 503 — never
+// a pass, and never a "no" either: the caller may well be allowed.
+func (h *ProxyHandler) authorize(w http.ResponseWriter, r *http.Request, cluster string, attrs ...core.AccessAttributes) bool {
+	for _, a := range attrs {
+		allowed, err := h.access.Allowed(r.Context(), cluster, a)
+		if err != nil {
+			var notFound *core.ErrClusterNotFound
+			switch code, _ := core.DomainErrorCode(err); {
+			case errors.As(err, &notFound):
+				writePrometheusError(w, http.StatusNotFound, "not_found", "cluster not found")
+			case code == core.ErrorCodeUnauthenticated:
+				writePrometheusError(w, http.StatusUnauthorized, "unauthorized", "no authenticated user")
+			default:
+				slog.Warn("metrics access review failed", "cluster", cluster, "resource", a.Resource, "namespace", a.Namespace, "error", err)
+				writePrometheusError(w, http.StatusServiceUnavailable, "unavailable", "cannot check metrics access on this cluster; retry shortly")
+			}
+			return false
+		}
+		if allowed {
+			return true
+		}
+	}
+	writePrometheusError(w, http.StatusForbidden, "forbidden", "not allowed to read these metrics")
+	return false
+}
+
+// forward relays to the agent with the path and query given, which are the
+// ones the checks approved — never the request's own, unchecked ones.
+func (h *ProxyHandler) forward(w http.ResponseWriter, r *http.Request, target *url.URL, promPath, rawQuery string) {
 	proxy := &httputil.ReverseProxy{
 		Rewrite: func(pr *httputil.ProxyRequest) {
 			out := pr.Out
@@ -74,7 +113,8 @@ func (h *ProxyHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			}
 			out.URL.Host = target.Host
 			out.URL.Path = "/__otterscale/proxy" + promPath
-			out.URL.RawQuery = originalQuery
+			out.URL.RawPath = ""
+			out.URL.RawQuery = rawQuery
 			out.Host = target.Host
 
 			// Rewrite, unlike the deprecated Director, does not forward the
@@ -102,4 +142,17 @@ func (h *ProxyHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		},
 	}
 	proxy.ServeHTTP(w, r) // #nosec G704
+}
+
+// writePrometheusError answers in Prometheus' own error shape, which
+// prometheus-query surfaces with its message instead of "unexpected client
+// error".
+func writePrometheusError(w http.ResponseWriter, status int, errorType, message string) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(status)
+	_ = json.NewEncoder(w).Encode(struct {
+		Status    string `json:"status"`
+		ErrorType string `json:"errorType"`
+		Error     string `json:"error"`
+	}{"error", errorType, message})
 }
