@@ -31,10 +31,11 @@ const (
 
 // Viper keys for agent-mode configuration.
 const (
-	keyAgentCluster            = "agent.cluster"
-	keyAgentServerURL          = "agent.server_url"
-	keyAgentTunnelServerURL    = "agent.tunnel.server_url"
-	keyAgentProxyPrometheusURL = "agent.proxy.prometheus_url"
-	keyAgentJoinToken          = "agent.join_token"
-	keyAgentJoinTokenFile      = "agent.join_token_file"
+	keyAgentCluster                 = "agent.cluster"
+	keyAgentServerURL               = "agent.server_url"
+	keyAgentTunnelServerURL         = "agent.tunnel.server_url"
+	keyAgentProxyPrometheusURL      = "agent.proxy.prometheus_url"
+	keyAgentProxyPrometheusCASecret = "agent.proxy.prometheus_ca_secret"
+	keyAgentJoinToken               = "agent.join_token"
+	keyAgentJoinTokenFile           = "agent.join_token_file"
 )
