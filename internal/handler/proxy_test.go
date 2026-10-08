@@ -30,7 +30,7 @@ func (m *mockTunnelForProxy) ResolveAddress(_ context.Context, _ string) (string
 }
 
 func TestProxyHandler_ForbiddenPath(t *testing.T) {
-	handler := NewProxyHandler(&mockTunnelForProxy{address: "http://127.0.0.1:8080"})
+	handler := NewProxyHandler(&mockTunnelForProxy{address: "http://127.0.0.1:8080"}, clusterViewer())
 
 	tests := []struct {
 		name string
@@ -74,7 +74,7 @@ func TestProxyHandler_ForbiddenPath(t *testing.T) {
 func TestProxyHandler_ClusterNotFound(t *testing.T) {
 	handler := NewProxyHandler(&mockTunnelForProxy{
 		addressErr: &core.ErrClusterNotFound{Cluster: "missing"},
-	})
+	}, clusterViewer())
 
 	mux := http.NewServeMux()
 	mux.Handle("/proxy/{cluster}/prometheus/{path...}", handler)
@@ -104,7 +104,7 @@ func TestProxyHandler_AllowedPath_ForwardsToBackend(t *testing.T) {
 	}))
 	defer backend.Close()
 
-	handler := NewProxyHandler(&mockTunnelForProxy{address: backend.URL})
+	handler := NewProxyHandler(&mockTunnelForProxy{address: backend.URL}, clusterViewer())
 
 	mux := http.NewServeMux()
 	mux.Handle("/proxy/{cluster}/prometheus/{path...}", handler)
@@ -142,7 +142,7 @@ func TestProxyHandler_StripsCallerIdentityHeaders(t *testing.T) {
 	}))
 	defer backend.Close()
 
-	handler := NewProxyHandler(&mockTunnelForProxy{address: backend.URL})
+	handler := NewProxyHandler(&mockTunnelForProxy{address: backend.URL}, clusterViewer())
 
 	mux := http.NewServeMux()
 	mux.Handle("/proxy/{cluster}/prometheus/{path...}", handler)
@@ -177,7 +177,7 @@ func TestProxyHandler_ForwardsNormalizedPath(t *testing.T) {
 	}))
 	defer backend.Close()
 
-	handler := NewProxyHandler(&mockTunnelForProxy{address: backend.URL})
+	handler := NewProxyHandler(&mockTunnelForProxy{address: backend.URL}, clusterViewer())
 
 	mux := http.NewServeMux()
 	mux.Handle("/proxy/{cluster}/prometheus/{path...}", handler)
