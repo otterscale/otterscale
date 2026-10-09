@@ -28,7 +28,7 @@
     "@bufbuild/protobuf": "^2.15.0"
   },
   "devDependencies": {
-    "@bufbuild/buf": "^1.72.0",
+    "@bufbuild/buf": "^1.73.0",
     "@bufbuild/protoc-gen-es": "^2.15.0"
   }
 }
