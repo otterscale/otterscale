@@ -74,6 +74,16 @@ The server keeps its tunnel state in memory, which shapes how it is deployed:
 
 A background reaper detects disconnected tunnel clients and removes stale registrations, so `ListLinks` reflects the clusters that are actually reachable rather than every cluster that ever registered.
 
+## Who sees which metrics
+
+Metrics are no longer shared by every signed-in user (see [api.md](api.md#additional-endpoints)). A Workspace member sees their own namespaces through `/prometheus-tenancy`; the cluster-wide pages need cluster metrics access on that cluster. To give it to someone who is not cluster-admin, bind the ClusterRole the otterscale-agent chart ships, on each cluster they should see:
+
+    kubectl create clusterrolebinding metrics-view-<name> --clusterrole=otterscale:metrics-cluster-view --user=<their OIDC subject>
+
+`--group=oidc:<Keycloak group>` works too: the server prefixes token groups with `oidc:`. A change takes effect within 30 seconds, the server's cache of these answers.
+
+The server and the dashboard must be upgraded together. A new server with an old dashboard gives regular users 403 on every chart (the old dashboard asks for cluster scope everywhere); an old server with a new dashboard answers `/prometheus-tenancy` with 404. Agents need no change beyond the kube-rbac-proxy release.
+
 ## Upgrading the metrics path
 
 prometheus-stack 1.2.0 puts kube-rbac-proxy in front of Prometheus and closes port 9090; an agent from this release queries the proxy on 9091. Neither works with the other's older version, so upgrade both, prometheus-stack first; charts are empty in between. To keep an older prometheus-stack serving a new agent for a while, set `--proxy-prometheus-url=http://prometheus-stack-kube-prom-prometheus.monitoring.svc:9090`, which sends no token.
@@ -100,3 +110,5 @@ Upgrade prometheus-stack on that cluster in the same window, and use an agent im
 | Dashboard charts empty; agent logs `prometheus proxy rejected the agent` with `status=403` | kube-rbac-proxy refused the agent: its ServiceAccount is not bound to `prometheuses/api` for that Prometheus (otterscale-agent chart older than 1.2.0).            |
 | Dashboard charts empty; agent logs `prometheus proxy rejected the agent` with `status=401` | kube-rbac-proxy rejected the token (TokenReview failed), e.g. the token's audience does not match or the proxy cannot reach kube-apiserver.                        |
 | Agent warns `prometheus proxy disabled` at startup                                         | The agent's kube config carries no ServiceAccount token (a local kubeconfig); kube-rbac-proxy needs one, so metrics are off. The kube-apiserver proxy still works. |
+| Regular users see empty charts, browser shows `403` on `/prometheus/`                      | The dashboard is older than the server; upgrade both together.                                                                                                     |
+| Charts fail with `503` "cannot check metrics access"                                       | The server could not create a SelfSubjectAccessReview through the agent: the tunnel or kube-apiserver is down.                                                     |
