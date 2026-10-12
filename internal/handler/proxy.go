@@ -19,11 +19,22 @@ const impersonationHeaderPrefix = "Impersonate-"
 // ProxyHandler relays Prometheus queries from the dashboard through the chisel
 // tunnel to the agent, which queries the cluster's Prometheus with its own
 // credentials. Who may see what is therefore decided here, per cluster, by
-// asking that cluster's RBAC as the caller (core.AccessReviewer).
+// asking that cluster's RBAC as the caller (core.AccessReviewer, a cached
+// SelfSubjectAccessReview):
 //
-// ServeHTTP is cluster scope, /proxy/{cluster}/prometheus/...; ServeTenancy is
-// namespace scope, /proxy/{cluster}/prometheus-tenancy/...?namespace=<ns>
-// (proxy_tenancy.go).
+//   - Cluster scope, /proxy/{cluster}/prometheus/... (ServeHTTP): any PromQL,
+//     for callers with core.ClusterMetricsAccess (cluster-admin, or a binding
+//     to otterscale:metrics-cluster-view). Everyone else gets 403 whatever the
+//     query: aggregates leak other namespaces as surely as series do.
+//   - Namespace scope, /proxy/{cluster}/prometheus-tenancy/...?namespace=<ns>
+//     (ServeTenancy, proxy_tenancy.go): any PromQL, for callers who may get
+//     pods in <ns> or have cluster metrics access, with namespace="<ns>"
+//     forced into every selector.
+//
+// This replaces the earlier rule that metrics were shared operational data any
+// authenticated user could read. It mirrors OpenShift's monitoring tenancy
+// (Thanos Querier :9091 and :9092), with the check in the hub rather than in
+// each cluster, so agents and managed clusters need no change.
 type ProxyHandler struct {
 	tunnel core.TunnelProvider
 	access core.AccessReviewer
@@ -52,6 +63,13 @@ func (h *ProxyHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	target, ok := h.resolve(w, r, cluster)
 	if !ok {
+		return
+	}
+
+	// Cluster scope is all or nothing: the hub does not read the PromQL here,
+	// because an aggregate over other namespaces (count, or a difference of
+	// sums) leaks them as surely as their series do.
+	if !h.authorize(w, r, cluster, core.ClusterMetricsAccess) {
 		return
 	}
 

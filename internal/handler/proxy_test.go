@@ -2,8 +2,10 @@ package handler
 
 import (
 	"context"
+	"errors"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"strings"
 	"testing"
 
@@ -197,4 +199,83 @@ func TestProxyHandler_ForwardsNormalizedPath(t *testing.T) {
 	if got, want := <-forwarded, "/__otterscale/proxy/api/v1/query"; got != want {
 		t.Errorf("backend received path %q, want %q", got, want)
 	}
+}
+
+func serveCluster(t *testing.T, access core.AccessReviewer, backend, rawPathAndQuery string) *httptest.ResponseRecorder {
+	t.Helper()
+	h := NewProxyHandler(&mockTunnelForProxy{address: backend}, access)
+	mux := http.NewServeMux()
+	mux.Handle("/proxy/{cluster}/prometheus/{path...}", h)
+	req := httptest.NewRequestWithContext(t.Context(), http.MethodGet, "/proxy/prod/prometheus"+rawPathAndQuery, http.NoBody)
+	rec := httptest.NewRecorder()
+	mux.ServeHTTP(rec, req)
+	return rec
+}
+
+// TestProxyHandler_ClusterScopeRefusesRegularUsers: without cluster metrics
+// access every cluster-scope request is 403, whatever the PromQL — aggregates
+// leak other namespaces as surely as series do (spec §1).
+func TestProxyHandler_ClusterScopeRefusesRegularUsers(t *testing.T) {
+	requests := []string{
+		"/api/v1/query?" + url.Values{"query": {`sum(ceph_cluster_total_bytes)`}}.Encode(),
+		"/api/v1/query?" + url.Values{"query": {`count(kube_pod_info{namespace="victim"})`}}.Encode(),
+		"/api/v1/query?" + url.Values{"query": {`sum(kube_pod_info) - sum(kube_pod_info{namespace!="victim"})`}}.Encode(),
+		"/api/v1/query?" + url.Values{"query": {`count(kube_deployment_created{deployment="secret-app"})`}}.Encode(),
+		"/api/v1/query?" + url.Values{"query": {`kube_pod_info`}}.Encode(),
+		"/api/v1/query?" + url.Values{"query": {`kube_pod_info{namespace="ws-a"}`}}.Encode(), // even their own
+		"/api/v1/query_range?" + url.Values{"query": {`up`}, "start": {"0"}, "end": {"60"}, "step": {"15"}}.Encode(),
+		"/api/v1/series?" + url.Values{"match[]": {`up`}}.Encode(),
+		"/api/v1/labels",
+		"/api/v1/targets",
+	}
+	for _, rq := range requests {
+		t.Run(rq, func(t *testing.T) {
+			up, srv := newUpstream(t)
+			access := tenantOf("ws-a")
+			rec := serveCluster(t, access, srv.URL, rq)
+			if rec.Code != http.StatusForbidden {
+				t.Errorf("status = %d, want 403", rec.Code)
+			}
+			if n := len(up.all()); n != 0 {
+				t.Errorf("upstream called %d times", n)
+			}
+			if got := access.questions(); len(got) != 1 || got[0] != core.ClusterMetricsAccess {
+				t.Errorf("asked %v, want only the cluster question", got)
+			}
+		})
+	}
+}
+
+// TestProxyHandler_ClusterScopeUnchangedForViewers: with cluster metrics access
+// the request goes through exactly as sent.
+func TestProxyHandler_ClusterScopeUnchangedForViewers(t *testing.T) {
+	up, srv := newUpstream(t)
+	raw := "query=sum%28ceph_cluster_total_bytes%29+or+vector%280%29&time=1700000000"
+	if rec := serveCluster(t, clusterViewer(), srv.URL, "/api/v1/query?"+raw); rec.Code != http.StatusOK {
+		t.Fatalf("status = %d", rec.Code)
+	}
+	got := up.all()
+	if len(got) != 1 || got[0].query.Encode() != mustParse(t, raw).Encode() {
+		t.Errorf("upstream got %+v, want the query unchanged", got)
+	}
+}
+
+func TestProxyHandler_ClusterScopeReviewFailure(t *testing.T) {
+	up, srv := newUpstream(t)
+	rec := serveCluster(t, &fakeAccess{err: errors.New("apiserver down")}, srv.URL, "/api/v1/query?query=up")
+	if rec.Code != http.StatusServiceUnavailable {
+		t.Errorf("status = %d, want 503", rec.Code)
+	}
+	if n := len(up.all()); n != 0 {
+		t.Errorf("upstream called %d times: a failed review must not pass", n)
+	}
+}
+
+func mustParse(t *testing.T, raw string) url.Values {
+	t.Helper()
+	v, err := url.ParseQuery(raw)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return v
 }
