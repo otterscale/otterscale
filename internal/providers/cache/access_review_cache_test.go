@@ -1,9 +1,12 @@
 package cache
 
 import (
+	"bytes"
 	"context"
 	"errors"
 	"fmt"
+	"log/slog"
+	"strings"
 	"sync"
 	"sync/atomic"
 	"testing"
@@ -145,6 +148,138 @@ func TestAccessReviewCache_CollapsesConcurrentMisses(t *testing.T) {
 
 	if n := inner.calls.Load(); n != 1 {
 		t.Errorf("reviewer asked %d times for %d concurrent callers, want 1", n, callers)
+	}
+}
+
+// TestAccessReviewCache_NoSecondReviewAfterAFlightLands: a caller that missed
+// just before a flight stored its answer, and reaches singleflight only after
+// that flight is gone, must take the stored answer rather than start a second
+// review inside the TTL (spec §8.6: at most one per user per attribute per 30 s).
+func TestAccessReviewCache_NoSecondReviewAfterAFlightLands(t *testing.T) {
+	start := time.Date(2026, time.October, 8, 12, 0, 0, 0, time.UTC)
+	inner := &countingReviewer{allowed: true}
+	clock := &steppingClock{now: start}
+	c := NewAccessReviewCache(inner, AccessReviewTTL, WithAccessReviewClock(clock.Now))
+	ctx := userContext(t, "alice")
+
+	// An answer that has lapsed: the next lookups find an entry but miss.
+	if _, err := c.Allowed(ctx, "prod", core.ClusterMetricsAccess); err != nil {
+		t.Fatal(err)
+	}
+	clock.set(start.Add(AccessReviewTTL + time.Second))
+
+	// Caller B reads the lapsed entry, then stalls in the clock before it
+	// decides; meanwhile caller A misses, reviews, stores and finishes.
+	clock.pauseNext()
+	bDone := make(chan error, 1)
+	go func() {
+		_, err := c.Allowed(ctx, "prod", core.ClusterMetricsAccess)
+		bDone <- err
+	}()
+	clock.waitPaused()
+	if _, err := c.Allowed(ctx, "prod", core.ClusterMetricsAccess); err != nil {
+		t.Fatal(err)
+	}
+	clock.resume()
+	if err := <-bDone; err != nil {
+		t.Fatal(err)
+	}
+
+	if n := inner.calls.Load(); n != 2 {
+		t.Errorf("reviewer asked %d times, want 2: one before expiry, one after — B must reuse A's answer", n)
+	}
+}
+
+// steppingClock is a settable clock that can hold the next caller of Now until
+// resumed, to stop a goroutine between reading the cache and deciding.
+type steppingClock struct {
+	mu      sync.Mutex
+	now     time.Time
+	pause   bool
+	paused  chan struct{}
+	release chan struct{}
+}
+
+func (c *steppingClock) Now() time.Time {
+	c.mu.Lock()
+	if !c.pause {
+		defer c.mu.Unlock()
+		return c.now
+	}
+	c.pause = false
+	paused, release, now := c.paused, c.release, c.now
+	c.mu.Unlock()
+	close(paused)
+	<-release
+	return now
+}
+
+func (c *steppingClock) set(t time.Time) {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	c.now = t
+}
+
+func (c *steppingClock) pauseNext() {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	c.pause, c.paused, c.release = true, make(chan struct{}), make(chan struct{})
+}
+
+func (c *steppingClock) waitPaused() {
+	c.mu.Lock()
+	paused := c.paused
+	c.mu.Unlock()
+	<-paused
+}
+
+func (c *steppingClock) resume() {
+	c.mu.Lock()
+	release := c.release
+	c.mu.Unlock()
+	close(release)
+}
+
+// TestAccessReviewCache_LogsAFailureOncePerReview: while a cluster's apiserver
+// is down, a page load is dozens of queries; the log gets one line per review
+// that failed, not one per query.
+func TestAccessReviewCache_LogsAFailureOncePerReview(t *testing.T) {
+	var logs bytes.Buffer
+	previous := slog.Default()
+	slog.SetDefault(slog.New(slog.NewTextHandler(&logs, nil)))
+	t.Cleanup(func() { slog.SetDefault(previous) })
+
+	now := time.Date(2026, time.October, 8, 12, 0, 0, 0, time.UTC)
+	inner := &countingReviewer{err: errors.New("apiserver down"), gate: make(chan struct{})}
+	c := newTestAccessCache(inner, &now)
+	ctx := userContext(t, "alice")
+
+	const callers = 16
+	var wg sync.WaitGroup
+	wg.Add(callers)
+	for range callers {
+		go func() {
+			defer wg.Done()
+			if _, err := c.Allowed(ctx, "prod", core.NamespaceMetricsAccess("ws-a")); err == nil {
+				t.Error("Allowed returned no error")
+			}
+		}()
+	}
+	for inner.calls.Load() == 0 {
+		time.Sleep(time.Millisecond)
+	}
+	time.Sleep(20 * time.Millisecond) // let the rest pile up on the flight
+	close(inner.gate)
+	wg.Wait()
+
+	lines := strings.FieldsFunc(logs.String(), func(r rune) bool { return r == '\n' })
+	if n := int(inner.calls.Load()); len(lines) != n || n >= callers {
+		t.Fatalf("%d log lines for %d reviews and %d callers, want one per review:\n%s", len(lines), n, callers, logs.String())
+	}
+	for _, want := range []string{"level=WARN", "cluster=prod", "resource=pods", "namespace=ws-a", `error="apiserver down"`} {
+		if !strings.Contains(lines[0], want) {
+			t.Errorf("log line %q lacks %s", lines[0], want)
+		}
 	}
 }
 
