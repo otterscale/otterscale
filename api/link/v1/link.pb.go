@@ -366,14 +366,15 @@ func (x *AgentClusterInfo) ClearInferenceUrl() {
 type AgentClusterInfo_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	// The address users reach this cluster's NodePort services at. Bare: no
-	// scheme, no port. The scheme is the dashboard's to choose and the port
-	// comes from node_port_range.
+	// The address users reach this cluster's NodePort services at (e.g.,
+	// "203.0.113.10"). Bare: no scheme, no port. The scheme is the dashboard's
+	// to choose and the port comes from node_port_range.
 	ExternalAddress *string
 	// The cluster's NodePort range, as "<low>-<high>". Empty means the
 	// Kubernetes default, 30000-32767.
 	NodePortRange *string
-	// Where this cluster serves inference, as an absolute http or https URL.
+	// Where this cluster serves inference, as an absolute http or https URL
+	// (e.g., "https://inference.example.com").
 	// May be empty, which is rendered explicitly rather than omitted: the chart
 	// default is an example address, and omitting the key would publish it.
 	InferenceUrl *string
@@ -499,7 +500,7 @@ func (x *IssueAgentValuesRequest) ClearClusterInfo() {
 type IssueAgentValuesRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	// The cluster the rendered values will register as.
+	// The cluster the rendered values will register as (e.g., "production").
 	Cluster *string
 	// Identities bound to cluster-admin on the joining cluster alongside the
 	// caller, who is always included. These are Keycloak subjects, the same
@@ -882,7 +883,7 @@ func (x *RegisterRequest) ClearJoinToken() {
 type RegisterRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	// The cluster identifier this agent belongs to.
+	// The cluster identifier this agent belongs to (e.g., "production").
 	Cluster *string
 	// PEM-encoded PKCS#10 certificate signing request. The server signs
 	// this with its internal CA and returns the issued certificate.

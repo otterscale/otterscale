@@ -9,7 +9,32 @@ option (gnostic.openapi.v3.document) = {
   info: {
     title: "OtterScale API"
     version: "v1"
-    description: "OtterScale: A unified platform for simplified compute, storage, and networking."
+    description:
+      "OtterScale: A unified platform for simplified compute, storage, and networking.\n"
+      "\n"
+      "## Calling the API\n"
+      "\n"
+      "Every procedure is an HTTP POST to `https://<server>/<package>.<Service>/<Method>` with a JSON\n"
+      "body, following the [Connect protocol](https://connectrpc.com/docs/protocol/). Send three headers:\n"
+      "\n"
+      "- `Authorization: Bearer <token>`: an OIDC ID token from the platform's identity provider, issued\n"
+      "  for the client the server is configured with. Without a valid token the call fails with\n"
+      "  `unauthenticated`. `LinkService/Register` is the exception: the agent calls it during\n"
+      "  installation with the join token inside the request instead.\n"
+      "- `Content-Type: application/json`\n"
+      "- `Connect-Protocol-Version: 1`\n"
+      "\n"
+      "Kubernetes calls run as you: the server impersonates your identity on the target cluster, so\n"
+      "that cluster's RBAC decides what you may read or change.\n"
+      "\n"
+      "Errors are JSON with a `code` and a `message`, for example\n"
+      "`{\"code\": \"not_found\", \"message\": \"deployments.apps nginx not found\"}`. The codes are listed\n"
+      "under each procedure's `default` response.\n"
+      "\n"
+      "Procedures that return a stream (`Watch`, `PodLog`, `ExecuteTTY`, `PortForward`, `VNC`) use the\n"
+      "Connect streaming envelope rather than a single JSON body; call them with a Connect client such as\n"
+      "[connect-go](https://connectrpc.com/docs/go/getting-started/) or\n"
+      "[connect-es](https://connectrpc.com/docs/web/getting-started/).\n"
     contact: {
       name: "Chung-Hsuan Tsai"
       url: "https://iasthc.github.io"
@@ -24,11 +49,12 @@ option (gnostic.openapi.v3.document) = {
     security_schemes: {
       additional_properties: [
         {
-          name: "BasicAuth"
+          name: "BearerAuth"
           value: {
             security_scheme: {
               type: "http"
-              scheme: "basic"
+              scheme: "bearer"
+              bearer_format: "JWT"
             }
           }
         }

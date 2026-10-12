@@ -1,7 +1,32 @@
 openapi: 3.1.0
 info:
   title: OtterScale API
-  description: 'OtterScale: A unified platform for simplified compute, storage, and networking.'
+  description: |
+    OtterScale: A unified platform for simplified compute, storage, and networking.
+
+    ## Calling the API
+
+    Every procedure is an HTTP POST to `https://<server>/<package>.<Service>/<Method>` with a JSON
+    body, following the [Connect protocol](https://connectrpc.com/docs/protocol/). Send three headers:
+
+    - `Authorization: Bearer <token>`: an OIDC ID token from the platform's identity provider, issued
+      for the client the server is configured with. Without a valid token the call fails with
+      `unauthenticated`. `LinkService/Register` is the exception: the agent calls it during
+      installation with the join token inside the request instead.
+    - `Content-Type: application/json`
+    - `Connect-Protocol-Version: 1`
+
+    Kubernetes calls run as you: the server impersonates your identity on the target cluster, so
+    that cluster's RBAC decides what you may read or change.
+
+    Errors are JSON with a `code` and a `message`, for example
+    `{"code": "not_found", "message": "deployments.apps nginx not found"}`. The codes are listed
+    under each procedure's `default` response.
+
+    Procedures that return a stream (`Watch`, `PodLog`, `ExecuteTTY`, `PortForward`, `VNC`) use the
+    Connect streaming envelope rather than a single JSON body; call them with a Connect client such as
+    [connect-go](https://connectrpc.com/docs/go/getting-started/) or
+    [connect-es](https://connectrpc.com/docs/web/getting-started/).
   contact:
     name: Chung-Hsuan Tsai
     url: https://iasthc.github.io
@@ -1596,9 +1621,9 @@ components:
           type: string
           title: external_address
           description: |-
-            The address users reach this cluster's NodePort services at. Bare: no
-             scheme, no port. The scheme is the dashboard's to choose and the port
-             comes from node_port_range.
+            The address users reach this cluster's NodePort services at (e.g.,
+             "203.0.113.10"). Bare: no scheme, no port. The scheme is the dashboard's
+             to choose and the port comes from node_port_range.
         nodePortRange:
           type: string
           title: node_port_range
@@ -1609,7 +1634,8 @@ components:
           type: string
           title: inference_url
           description: |-
-            Where this cluster serves inference, as an absolute http or https URL.
+            Where this cluster serves inference, as an absolute http or https URL
+             (e.g., "https://inference.example.com").
              May be empty, which is rendered explicitly rather than omitted: the chart
              default is an example address, and omitting the key would publish it.
       title: AgentClusterInfo
@@ -1628,7 +1654,7 @@ components:
         cluster:
           type: string
           title: cluster
-          description: The cluster the rendered values will register as.
+          description: The cluster the rendered values will register as (e.g., "production").
         extraUsers:
           type: array
           items:
@@ -1717,7 +1743,7 @@ components:
         cluster:
           type: string
           title: cluster
-          description: The cluster identifier this agent belongs to.
+          description: The cluster identifier this agent belongs to (e.g., "production").
         csr:
           type: string
           title: csr
@@ -1837,7 +1863,7 @@ components:
         cluster:
           type: string
           title: cluster
-          description: The target Kubernetes cluster identifier.
+          description: The target Kubernetes cluster identifier (e.g., "production").
         group:
           type: string
           title: group
@@ -1853,11 +1879,11 @@ components:
         namespace:
           type: string
           title: namespace
-          description: The namespace of the resource.
+          description: The namespace of the resource (e.g., "default").
         name:
           type: string
           title: name
-          description: The name of the resource.
+          description: The name of the resource (e.g., "nginx").
         manifest:
           type: string
           title: manifest
@@ -1882,7 +1908,7 @@ components:
         cluster:
           type: string
           title: cluster
-          description: The target Kubernetes cluster identifier.
+          description: The target Kubernetes cluster identifier (e.g., "production").
         group:
           type: string
           title: group
@@ -1898,7 +1924,7 @@ components:
         namespace:
           type: string
           title: namespace
-          description: The namespace of the resource.
+          description: The namespace of the resource (e.g., "default").
         manifest:
           type: string
           title: manifest
@@ -1913,7 +1939,7 @@ components:
         cluster:
           type: string
           title: cluster
-          description: The target Kubernetes cluster identifier.
+          description: The target Kubernetes cluster identifier (e.g., "production").
         group:
           type: string
           title: group
@@ -1929,11 +1955,11 @@ components:
         namespace:
           type: string
           title: namespace
-          description: The namespace of the resource.
+          description: The namespace of the resource (e.g., "default").
         name:
           type: string
           title: name
-          description: The name of the resource.
+          description: The name of the resource (e.g., "nginx").
         gracePeriodSeconds:
           type:
             - integer
@@ -1953,7 +1979,7 @@ components:
         cluster:
           type: string
           title: cluster
-          description: The target Kubernetes cluster identifier.
+          description: The target Kubernetes cluster identifier (e.g., "production").
         group:
           type: string
           title: group
@@ -1969,11 +1995,11 @@ components:
         namespace:
           type: string
           title: namespace
-          description: The namespace of the resource.
+          description: The namespace of the resource (e.g., "default").
         name:
           type: string
           title: name
-          description: The name of the resource.
+          description: The name of the resource (e.g., "nginx").
       title: DescribeRequest
       additionalProperties: false
       description: |-
@@ -2001,7 +2027,7 @@ components:
         cluster:
           type: string
           title: cluster
-          description: The target Kubernetes cluster identifier.
+          description: The target Kubernetes cluster identifier (e.g., "production").
       title: DiscoveryRequest
       additionalProperties: false
       description: DiscoveryRequest defines the parameters for discovering API resources.
@@ -2023,7 +2049,7 @@ components:
         cluster:
           type: string
           title: cluster
-          description: The target Kubernetes cluster identifier.
+          description: The target Kubernetes cluster identifier (e.g., "production").
         group:
           type: string
           title: group
@@ -2039,11 +2065,11 @@ components:
         namespace:
           type: string
           title: namespace
-          description: The namespace of the resource.
+          description: The namespace of the resource (e.g., "default").
         name:
           type: string
           title: name
-          description: The name of the resource.
+          description: The name of the resource (e.g., "nginx").
       title: GetRequest
       additionalProperties: false
       description: GetRequest defines the parameters to fetch a single object.
@@ -2053,7 +2079,7 @@ components:
         cluster:
           type: string
           title: cluster
-          description: The target Kubernetes cluster identifier.
+          description: The target Kubernetes cluster identifier (e.g., "production").
         group:
           type: string
           title: group
@@ -2069,11 +2095,11 @@ components:
         namespace:
           type: string
           title: namespace
-          description: The namespace to query. If empty, the request may target all namespaces depending on cluster permissions.
+          description: The namespace to query (e.g., "default"). If empty, the request may target all namespaces depending on cluster permissions.
         labelSelector:
           type: string
           title: label_selector
-          description: A selector to restrict the list of returned objects by their labels.
+          description: A selector to restrict the list of returned objects by their labels (e.g., "app=nginx").
         fieldSelector:
           type: string
           title: field_selector
@@ -2084,7 +2110,7 @@ components:
             - string
           title: limit
           format: int64
-          description: The maximum number of items to return in a single page.
+          description: The maximum number of items to return in a single page (e.g., 100).
         continue:
           type: string
           title: continue
@@ -2137,7 +2163,7 @@ components:
         cluster:
           type: string
           title: cluster
-          description: The target Kubernetes cluster identifier.
+          description: The target Kubernetes cluster identifier (e.g., "production").
         group:
           type: string
           title: group
@@ -2169,7 +2195,7 @@ components:
         cluster:
           type: string
           title: cluster
-          description: The target Kubernetes cluster identifier.
+          description: The target Kubernetes cluster identifier (e.g., "production").
         group:
           type: string
           title: group
@@ -2185,11 +2211,11 @@ components:
         namespace:
           type: string
           title: namespace
-          description: The namespace of the resource.
+          description: The namespace of the resource (e.g., "default").
         name:
           type: string
           title: name
-          description: The name of the resource.
+          description: The name of the resource (e.g., "nginx").
         manifest:
           type: string
           title: manifest
@@ -2239,7 +2265,7 @@ components:
         cluster:
           type: string
           title: cluster
-          description: The target Kubernetes cluster identifier.
+          description: The target Kubernetes cluster identifier (e.g., "production").
         group:
           type: string
           title: group
@@ -2255,15 +2281,15 @@ components:
         namespace:
           type: string
           title: namespace
-          description: The namespace to watch.
+          description: The namespace to watch (e.g., "default").
         labelSelector:
           type: string
           title: label_selector
-          description: A selector to restrict watched objects by their labels.
+          description: A selector to restrict watched objects by their labels (e.g., "app=nginx").
         fieldSelector:
           type: string
           title: field_selector
-          description: A selector to restrict watched objects by their fields.
+          description: A selector to restrict watched objects by their fields (e.g., "status.phase=Running").
         resourceVersion:
           type: string
           title: resource_version
@@ -2277,19 +2303,19 @@ components:
         cluster:
           type: string
           title: cluster
-          description: The target Kubernetes cluster identifier.
+          description: The target Kubernetes cluster identifier (e.g., "production").
         namespace:
           type: string
           title: namespace
-          description: The namespace of the pod.
+          description: The namespace of the pod (e.g., "default").
         name:
           type: string
           title: name
-          description: The name of the pod.
+          description: The name of the pod (e.g., "nginx-7c5ddbdf54-x8k2p").
         container:
           type: string
           title: container
-          description: The container to exec into. If omitted, the first container is used.
+          description: The container to exec into (e.g., "nginx"). If omitted, the first container is used.
         command:
           type: array
           items:
@@ -2303,11 +2329,11 @@ components:
         rows:
           type: integer
           title: rows
-          description: Initial terminal height in rows.
+          description: Initial terminal height in rows (e.g., 24).
         cols:
           type: integer
           title: cols
-          description: Initial terminal width in columns.
+          description: Initial terminal width in columns (e.g., 80).
       title: ExecuteTTYRequest
       additionalProperties: false
       description: |-
@@ -2341,19 +2367,19 @@ components:
         cluster:
           type: string
           title: cluster
-          description: The target Kubernetes cluster identifier.
+          description: The target Kubernetes cluster identifier (e.g., "production").
         namespace:
           type: string
           title: namespace
-          description: The namespace of the pod.
+          description: The namespace of the pod (e.g., "default").
         name:
           type: string
           title: name
-          description: The name of the pod.
+          description: The name of the pod (e.g., "nginx-7c5ddbdf54-x8k2p").
         container:
           type: string
           title: container
-          description: The container name. If omitted, the first container in the pod is used.
+          description: The container name (e.g., "nginx"). If omitted, the first container in the pod is used.
         follow:
           type: boolean
           title: follow
@@ -2364,14 +2390,14 @@ components:
             - string
           title: tail_lines
           format: int64
-          description: Number of lines from the end of the logs to show. If not set, all logs are shown.
+          description: Number of lines from the end of the logs to show (e.g., 100). If not set, all logs are shown.
         sinceSeconds:
           type:
             - integer
             - string
           title: since_seconds
           format: int64
-          description: A relative time in seconds before the current time from which to show logs.
+          description: A relative time in seconds before the current time from which to show logs (e.g., 3600).
         sinceTime:
           title: since_time
           description: An absolute time from which to show logs. Mutually exclusive with since_seconds.
@@ -2390,7 +2416,7 @@ components:
             - string
           title: limit_bytes
           format: int64
-          description: Limit the number of bytes returned from the server.
+          description: Limit the number of bytes returned from the server (e.g., 1048576).
       title: PodLogRequest
       additionalProperties: false
       description: |-
@@ -2413,20 +2439,20 @@ components:
         cluster:
           type: string
           title: cluster
-          description: The target Kubernetes cluster identifier.
+          description: The target Kubernetes cluster identifier (e.g., "production").
         namespace:
           type: string
           title: namespace
-          description: The namespace of the pod.
+          description: The namespace of the pod (e.g., "default").
         name:
           type: string
           title: name
-          description: The name of the pod.
+          description: The name of the pod (e.g., "nginx-7c5ddbdf54-x8k2p").
         port:
           type: integer
           title: port
           format: int32
-          description: The container port to forward to.
+          description: The container port to forward to (e.g., 8080).
       title: PortForwardRequest
       additionalProperties: false
       description: PortForwardRequest defines the parameters for starting a port-forward session.
@@ -2453,15 +2479,15 @@ components:
         sessionId:
           type: string
           title: session_id
-          description: The session identifier returned in the first ExecuteTTYResponse.
+          description: The session identifier returned in the first ExecuteTTYResponse (e.g., "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d").
         rows:
           type: integer
           title: rows
-          description: New terminal height in rows.
+          description: New terminal height in rows (e.g., 40).
         cols:
           type: integer
           title: cols
-          description: New terminal width in columns.
+          description: New terminal width in columns (e.g., 120).
       title: ResizeTTYRequest
       additionalProperties: false
       description: ResizeTTYRequest updates the terminal dimensions of an exec session.
@@ -2471,7 +2497,7 @@ components:
         cluster:
           type: string
           title: cluster
-          description: The target Kubernetes cluster identifier.
+          description: The target Kubernetes cluster identifier (e.g., "production").
         group:
           type: string
           title: group
@@ -2487,11 +2513,11 @@ components:
         namespace:
           type: string
           title: namespace
-          description: The namespace of the workload.
+          description: The namespace of the workload (e.g., "default").
         name:
           type: string
           title: name
-          description: The name of the workload.
+          description: The name of the workload (e.g., "nginx").
       title: RestartRequest
       additionalProperties: false
       description: |-
@@ -2504,7 +2530,7 @@ components:
         cluster:
           type: string
           title: cluster
-          description: The target Kubernetes cluster identifier.
+          description: The target Kubernetes cluster identifier (e.g., "production").
         group:
           type: string
           title: group
@@ -2520,16 +2546,16 @@ components:
         namespace:
           type: string
           title: namespace
-          description: The namespace of the workload.
+          description: The namespace of the workload (e.g., "default").
         name:
           type: string
           title: name
-          description: The name of the workload.
+          description: The name of the workload (e.g., "nginx").
         replicas:
           type: integer
           title: replicas
           format: int32
-          description: The desired number of replicas.
+          description: The desired number of replicas (e.g., 3).
       title: ScaleRequest
       additionalProperties: false
       description: |-
@@ -2552,15 +2578,15 @@ components:
         repoUrl:
           type: string
           title: repo_url
-          description: The URL of the Helm chart repository (HTTP/HTTPS or OCI).
+          description: The URL of the Helm chart repository, HTTP/HTTPS or OCI (e.g., "https://charts.example.com").
         chartName:
           type: string
           title: chart_name
-          description: The name of the chart within the repository.
+          description: The name of the chart within the repository (e.g., "nginx").
         version:
           type: string
           title: version
-          description: The chart version to query. If empty, the latest version is used.
+          description: The chart version to query (e.g., "1.2.3"). If empty, the latest version is used.
       title: ShowChartRequest
       additionalProperties: false
       description: |-
@@ -2590,11 +2616,11 @@ components:
         cluster:
           type: string
           title: cluster
-          description: The target Kubernetes cluster identifier.
+          description: The target Kubernetes cluster identifier (e.g., "production").
         group:
           type: string
           title: group
-          description: Kubernetes API Group (e.g., "kubevirt.io").
+          description: Kubernetes API Group (e.g., "subresources.kubevirt.io").
         version:
           type: string
           title: version
@@ -2614,7 +2640,7 @@ components:
         subresource:
           type: string
           title: subresource
-          description: The subresource to invoke (e.g., "start", "stop", "restart").
+          description: The subresource to invoke (e.g., "restart"; also "start", "stop").
         method:
           type: string
           title: method
@@ -2651,15 +2677,15 @@ components:
         cluster:
           type: string
           title: cluster
-          description: The target Kubernetes cluster identifier.
+          description: The target Kubernetes cluster identifier (e.g., "production").
         namespace:
           type: string
           title: namespace
-          description: The namespace of the VirtualMachineInstance.
+          description: The namespace of the VirtualMachineInstance (e.g., "default").
         name:
           type: string
           title: name
-          description: The name of the VirtualMachineInstance.
+          description: The name of the VirtualMachineInstance (e.g., "ubuntu-vm").
       title: VNCRequest
       additionalProperties: false
       description: |-
@@ -2688,7 +2714,7 @@ components:
         sessionId:
           type: string
           title: session_id
-          description: The session identifier returned in the first PortForwardResponse.
+          description: The session identifier returned in the first PortForwardResponse (e.g., "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d").
         data:
           type: string
           title: data
@@ -2703,7 +2729,7 @@ components:
         sessionId:
           type: string
           title: session_id
-          description: The session identifier returned in the first ExecuteTTYResponse.
+          description: The session identifier returned in the first ExecuteTTYResponse (e.g., "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d").
         stdin:
           type: string
           title: stdin
@@ -2718,7 +2744,7 @@ components:
         sessionId:
           type: string
           title: session_id
-          description: The session identifier returned in the first VNCResponse.
+          description: The session identifier returned in the first VNCResponse (e.g., "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d").
         data:
           type: string
           title: data
@@ -2728,9 +2754,10 @@ components:
       additionalProperties: false
       description: WriteVNCRequest sends data to an active VNC session.
   securitySchemes:
-    BasicAuth:
+    BearerAuth:
       type: http
-      scheme: basic
+      scheme: bearer
+      bearerFormat: JWT
 security: []
 tags:
   - name: LinkService

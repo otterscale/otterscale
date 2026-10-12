@@ -79,7 +79,7 @@ message APIResource {
 
 // DiscoveryRequest defines the parameters for discovering API resources.
 message DiscoveryRequest {
-  // The target Kubernetes cluster identifier.
+  // The target Kubernetes cluster identifier (e.g., "production").
   string cluster = 1;
 }
 
@@ -91,7 +91,7 @@ message DiscoveryResponse {
 
 // SchemaRequest defines the parameters to retrieve the schema of a specific GVK.
 message SchemaRequest {
-  // The target Kubernetes cluster identifier.
+  // The target Kubernetes cluster identifier (e.g., "production").
   string cluster = 1;
 
   // Kubernetes API Group (e.g., "apps" for Deployments, "" for core resources like Pods).
@@ -127,7 +127,7 @@ message Resource {
 
 // ListRequest defines the parameters for querying multiple resources.
 message ListRequest {
-  // The target Kubernetes cluster identifier.
+  // The target Kubernetes cluster identifier (e.g., "production").
   string cluster = 1;
 
   // Kubernetes API Group (e.g., "apps" for Deployments, "" for core resources like Pods).
@@ -139,16 +139,16 @@ message ListRequest {
   // Kubernetes API Resource name in plural (e.g., "pods", "deployments").
   string resource = 4;
 
-  // The namespace to query. If empty, the request may target all namespaces depending on cluster permissions.
+  // The namespace to query (e.g., "default"). If empty, the request may target all namespaces depending on cluster permissions.
   string namespace = 5;
 
-  // A selector to restrict the list of returned objects by their labels.
+  // A selector to restrict the list of returned objects by their labels (e.g., "app=nginx").
   string label_selector = 6;
 
   // A selector to restrict the list of returned objects by their fields (e.g., "status.phase=Running").
   string field_selector = 7;
 
-  // The maximum number of items to return in a single page.
+  // The maximum number of items to return in a single page (e.g., 100).
   int64 limit = 8;
 
   // The continue token for pagination, retrieved from a previous ListResponse.
@@ -176,7 +176,7 @@ message ListResponse {
 
 // GetRequest defines the parameters to fetch a single object.
 message GetRequest {
-  // The target Kubernetes cluster identifier.
+  // The target Kubernetes cluster identifier (e.g., "production").
   string cluster = 1;
 
   // Kubernetes API Group (e.g., "apps" for Deployments, "" for core resources like Pods).
@@ -188,10 +188,10 @@ message GetRequest {
   // Kubernetes API Resource name in plural (e.g., "pods", "deployments").
   string resource = 4;
 
-  // The namespace of the resource.
+  // The namespace of the resource (e.g., "default").
   string namespace = 5;
 
-  // The name of the resource.
+  // The name of the resource (e.g., "nginx").
   string name = 6;
 }
 
@@ -202,7 +202,7 @@ message GetRequest {
 // DescribeRequest defines the parameters to describe a resource, retrieving
 // it along with its related Kubernetes events. Equivalent to `kubectl describe`.
 message DescribeRequest {
-  // The target Kubernetes cluster identifier.
+  // The target Kubernetes cluster identifier (e.g., "production").
   string cluster = 1;
 
   // Kubernetes API Group (e.g., "apps" for Deployments, "" for core resources like Pods).
@@ -214,10 +214,10 @@ message DescribeRequest {
   // Kubernetes API Resource name in plural (e.g., "pods", "deployments").
   string resource = 4;
 
-  // The namespace of the resource.
+  // The namespace of the resource (e.g., "default").
   string namespace = 5;
 
-  // The name of the resource.
+  // The name of the resource (e.g., "nginx").
   string name = 6;
 }
 
@@ -236,7 +236,7 @@ message DescribeResponse {
 
 // CreateRequest defines the parameters for creating a new object.
 message CreateRequest {
-  // The target Kubernetes cluster identifier.
+  // The target Kubernetes cluster identifier (e.g., "production").
   string cluster = 1;
 
   // Kubernetes API Group (e.g., "apps" for Deployments, "" for core resources like Pods).
@@ -248,7 +248,7 @@ message CreateRequest {
   // Kubernetes API Resource name in plural (e.g., "pods", "deployments").
   string resource = 4;
 
-  // The namespace of the resource.
+  // The namespace of the resource (e.g., "default").
   string namespace = 5;
 
   // The manifest (YAML or JSON) describing the object to be created.
@@ -261,7 +261,7 @@ message CreateRequest {
 
 // ApplyRequest defines the parameters for Server-Side Apply (SSA).
 message ApplyRequest {
-  // The target Kubernetes cluster identifier.
+  // The target Kubernetes cluster identifier (e.g., "production").
   string cluster = 1;
 
   // Kubernetes API Group (e.g., "apps" for Deployments, "" for core resources like Pods).
@@ -273,10 +273,10 @@ message ApplyRequest {
   // Kubernetes API Resource name in plural (e.g., "pods", "deployments").
   string resource = 4;
 
-  // The namespace of the resource.
+  // The namespace of the resource (e.g., "default").
   string namespace = 5;
 
-  // The name of the resource.
+  // The name of the resource (e.g., "nginx").
   string name = 6;
 
   // A partial or complete manifest (YAML or JSON) to be merged by the
@@ -296,7 +296,7 @@ message ApplyRequest {
 
 // UpdateRequest defines the parameters for a full-replacement update (PUT).
 message UpdateRequest {
-  // The target Kubernetes cluster identifier.
+  // The target Kubernetes cluster identifier (e.g., "production").
   string cluster = 1;
 
   // Kubernetes API Group (e.g., "apps" for Deployments, "" for core resources like Pods).
@@ -308,10 +308,10 @@ message UpdateRequest {
   // Kubernetes API Resource name in plural (e.g., "pods", "deployments").
   string resource = 4;
 
-  // The namespace of the resource.
+  // The namespace of the resource (e.g., "default").
   string namespace = 5;
 
-  // The name of the resource.
+  // The name of the resource (e.g., "nginx").
   string name = 6;
 
   // The complete manifest (YAML or JSON) that will replace the stored object.
@@ -328,7 +328,7 @@ message UpdateRequest {
 
 // DeleteRequest defines the parameters to remove an object.
 message DeleteRequest {
-  // The target Kubernetes cluster identifier.
+  // The target Kubernetes cluster identifier (e.g., "production").
   string cluster = 1;
 
   // Kubernetes API Group (e.g., "apps" for Deployments, "" for core resources like Pods).
@@ -340,10 +340,10 @@ message DeleteRequest {
   // Kubernetes API Resource name in plural (e.g., "pods", "deployments").
   string resource = 4;
 
-  // The namespace of the resource.
+  // The namespace of the resource (e.g., "default").
   string namespace = 5;
 
-  // The name of the resource.
+  // The name of the resource (e.g., "nginx").
   string name = 6;
 
   // The duration in seconds before the object should be deleted. Overrides the default grace period.
@@ -358,7 +358,7 @@ message DeleteRequest {
 
 // WatchRequest defines the parameters to start a streaming watch.
 message WatchRequest {
-  // The target Kubernetes cluster identifier.
+  // The target Kubernetes cluster identifier (e.g., "production").
   string cluster = 1;
 
   // Kubernetes API Group (e.g., "apps" for Deployments, "" for core resources like Pods).
@@ -370,13 +370,13 @@ message WatchRequest {
   // Kubernetes API Resource name in plural (e.g., "pods", "deployments").
   string resource = 4;
 
-  // The namespace to watch.
+  // The namespace to watch (e.g., "default").
   string namespace = 5;
 
-  // A selector to restrict watched objects by their labels.
+  // A selector to restrict watched objects by their labels (e.g., "app=nginx").
   string label_selector = 6;
 
-  // A selector to restrict watched objects by their fields.
+  // A selector to restrict watched objects by their fields (e.g., "status.phase=Running").
   string field_selector = 7;
 
   // Start the watch from this specific resource version.
