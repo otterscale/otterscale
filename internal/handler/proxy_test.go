@@ -2,6 +2,7 @@ package handler
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"net/http"
 	"net/http/httptest"
@@ -29,6 +30,47 @@ func (m *mockTunnelForProxy) RegisterLink(context.Context, string, string, strin
 
 func (m *mockTunnelForProxy) ResolveAddress(_ context.Context, _ string) (string, error) {
 	return m.address, m.addressErr
+}
+
+// signedIn is a request context as the OIDC middleware leaves it.
+func signedIn(t *testing.T) context.Context {
+	t.Helper()
+	return core.WithUserInfo(t.Context(), core.UserInfo{Subject: "alice", Groups: []string{"oidc:ws-a"}})
+}
+
+// newProxyMux routes both scopes the way internal/cmd/server does.
+func newProxyMux(h *ProxyHandler) *http.ServeMux {
+	mux := http.NewServeMux()
+	mux.Handle("/proxy/{cluster}/prometheus/{path...}", h)
+	mux.HandleFunc("/proxy/{cluster}/prometheus-tenancy/{path...}", h.ServeTenancy)
+	return mux
+}
+
+// scopeQueries is one valid query per scope, for tests that hold for both.
+var scopeQueries = map[string]string{
+	"cluster scope":   "/proxy/prod/prometheus/api/v1/query?query=up",
+	"namespace scope": "/proxy/prod/prometheus-tenancy/api/v1/query?namespace=ws-a&query=up",
+}
+
+// assertPrometheusError requires Prometheus' JSON error shape, which api.md
+// promises for every error at either scope.
+func assertPrometheusError(t *testing.T, rec *httptest.ResponseRecorder, status int, errorType string) {
+	t.Helper()
+	if rec.Code != status {
+		t.Errorf("status = %d, want %d", rec.Code, status)
+	}
+	if ct := rec.Header().Get("Content-Type"); ct != "application/json" {
+		t.Errorf("Content-Type = %q, want application/json", ct)
+	}
+	var body struct {
+		Status    string `json:"status"`
+		ErrorType string `json:"errorType"`
+		Error     string `json:"error"`
+	}
+	if err := json.Unmarshal(rec.Body.Bytes(), &body); err != nil ||
+		body.Status != "error" || body.ErrorType != errorType || body.Error == "" {
+		t.Errorf("body = %q, want Prometheus' error shape with errorType %q", rec.Body, errorType)
+	}
 }
 
 func TestProxyHandler_ForbiddenPath(t *testing.T) {
@@ -62,13 +104,11 @@ func TestProxyHandler_ForbiddenPath(t *testing.T) {
 			mux := http.NewServeMux()
 			mux.Handle("/proxy/{cluster}/prometheus/{path...}", handler)
 
-			req := httptest.NewRequestWithContext(t.Context(), "GET", "/proxy/prod/prometheus"+tt.path, http.NoBody)
+			req := httptest.NewRequestWithContext(signedIn(t), "GET", "/proxy/prod/prometheus"+tt.path, http.NoBody)
 			rec := httptest.NewRecorder()
 			mux.ServeHTTP(rec, req)
 
-			if rec.Code != http.StatusForbidden {
-				t.Errorf("status = %d, want %d", rec.Code, http.StatusForbidden)
-			}
+			assertPrometheusError(t, rec, http.StatusForbidden, "forbidden")
 		})
 	}
 }
@@ -81,12 +121,76 @@ func TestProxyHandler_ClusterNotFound(t *testing.T) {
 	mux := http.NewServeMux()
 	mux.Handle("/proxy/{cluster}/prometheus/{path...}", handler)
 
-	req := httptest.NewRequestWithContext(t.Context(), "GET", "/proxy/missing/prometheus/api/v1/query?query=up", http.NoBody)
+	req := httptest.NewRequestWithContext(signedIn(t), "GET", "/proxy/missing/prometheus/api/v1/query?query=up", http.NoBody)
 	rec := httptest.NewRecorder()
 	mux.ServeHTTP(rec, req)
 
-	if rec.Code != http.StatusNotFound {
-		t.Errorf("status = %d, want %d", rec.Code, http.StatusNotFound)
+	assertPrometheusError(t, rec, http.StatusNotFound, "not_found")
+}
+
+// TestProxyHandler_BadClusterAddress: an address the tunnel hands back that
+// does not parse is the server's fault, and still answered as Prometheus would.
+func TestProxyHandler_BadClusterAddress(t *testing.T) {
+	for scope, target := range scopeQueries {
+		t.Run(scope, func(t *testing.T) {
+			h := NewProxyHandler(&mockTunnelForProxy{address: "http://[::1"}, clusterViewer())
+			rec := httptest.NewRecorder()
+			newProxyMux(h).ServeHTTP(rec, httptest.NewRequestWithContext(signedIn(t), http.MethodGet, target, http.NoBody))
+			assertPrometheusError(t, rec, http.StatusInternalServerError, "internal")
+		})
+	}
+}
+
+// TestProxyHandler_NoAuthenticatedUser: 401 is for a request the hub itself
+// has no user for, decided before any cluster is asked — whatever a reviewer
+// would have answered.
+func TestProxyHandler_NoAuthenticatedUser(t *testing.T) {
+	contexts := map[string]func(*testing.T) context.Context{
+		"no user": func(t *testing.T) context.Context { return t.Context() },
+		"no subject": func(t *testing.T) context.Context {
+			return core.WithUserInfo(t.Context(), core.UserInfo{Groups: []string{"oidc:admin"}})
+		},
+	}
+	for scope, target := range scopeQueries {
+		for name, ctx := range contexts {
+			t.Run(scope+"/"+name, func(t *testing.T) {
+				up, srv := newUpstream(t)
+				access := &fakeAccess{allow: map[core.AccessAttributes]bool{
+					core.ClusterMetricsAccess: true, core.NamespaceMetricsAccess("ws-a"): true,
+				}}
+				h := NewProxyHandler(&mockTunnelForProxy{address: srv.URL}, access)
+				rec := httptest.NewRecorder()
+				newProxyMux(h).ServeHTTP(rec, httptest.NewRequestWithContext(ctx(t), http.MethodGet, target, http.NoBody))
+
+				assertPrometheusError(t, rec, http.StatusUnauthorized, "unauthorized")
+				if n := len(up.all()); n != 0 {
+					t.Errorf("upstream called %d times", n)
+				}
+				if got := access.questions(); len(got) != 0 {
+					t.Errorf("asked %v, want no review without a user", got)
+				}
+			})
+		}
+	}
+}
+
+// TestProxyHandler_ClusterSideUnauthenticated: a cluster that answers the
+// review with 401 has rejected the agent's credentials, not the caller — the
+// caller is signed in. That is a failed review like any other: 503.
+func TestProxyHandler_ClusterSideUnauthenticated(t *testing.T) {
+	for scope, target := range scopeQueries {
+		t.Run(scope, func(t *testing.T) {
+			up, srv := newUpstream(t)
+			access := &fakeAccess{err: &core.DomainError{Code: core.ErrorCodeUnauthenticated, Message: "Unauthorized"}}
+			h := NewProxyHandler(&mockTunnelForProxy{address: srv.URL}, access)
+			rec := httptest.NewRecorder()
+			newProxyMux(h).ServeHTTP(rec, httptest.NewRequestWithContext(signedIn(t), http.MethodGet, target, http.NoBody))
+
+			assertPrometheusError(t, rec, http.StatusServiceUnavailable, "unavailable")
+			if n := len(up.all()); n != 0 {
+				t.Errorf("upstream called %d times", n)
+			}
+		})
 	}
 }
 
@@ -111,7 +215,7 @@ func TestProxyHandler_AllowedPath_ForwardsToBackend(t *testing.T) {
 	mux := http.NewServeMux()
 	mux.Handle("/proxy/{cluster}/prometheus/{path...}", handler)
 
-	req := httptest.NewRequestWithContext(t.Context(), "GET", "/proxy/prod/prometheus/api/v1/query?query=up", http.NoBody)
+	req := httptest.NewRequestWithContext(signedIn(t), "GET", "/proxy/prod/prometheus/api/v1/query?query=up", http.NoBody)
 	req.Header.Set("Authorization", "Bearer some-oidc-token")
 	rec := httptest.NewRecorder()
 	mux.ServeHTTP(rec, req)
@@ -149,7 +253,7 @@ func TestProxyHandler_StripsCallerIdentityHeaders(t *testing.T) {
 	mux := http.NewServeMux()
 	mux.Handle("/proxy/{cluster}/prometheus/{path...}", handler)
 
-	req := httptest.NewRequestWithContext(t.Context(), "GET", "/proxy/prod/prometheus/api/v1/query?query=up", http.NoBody)
+	req := httptest.NewRequestWithContext(signedIn(t), "GET", "/proxy/prod/prometheus/api/v1/query?query=up", http.NoBody)
 	req.Header.Set("Authorization", "Bearer some-oidc-token")
 	req.Header.Set("Impersonate-User", "system:admin")
 	req.Header.Add("Impersonate-Group", "system:masters")
@@ -188,7 +292,7 @@ func TestProxyHandler_ForwardsNormalizedPath(t *testing.T) {
 	// be forwarded in its resolved form, not as written. Encoded so
 	// that ServeMux passes it through rather than redirecting; see
 	// TestProxyHandler_ForbiddenPath.
-	req := httptest.NewRequestWithContext(t.Context(), "GET",
+	req := httptest.NewRequestWithContext(signedIn(t), "GET",
 		"/proxy/prod/prometheus/api/v1/status/%2e%2e/query?query=up", http.NoBody)
 	rec := httptest.NewRecorder()
 	mux.ServeHTTP(rec, req)
@@ -206,7 +310,7 @@ func serveCluster(t *testing.T, access core.AccessReviewer, backend, rawPathAndQ
 	h := NewProxyHandler(&mockTunnelForProxy{address: backend}, access)
 	mux := http.NewServeMux()
 	mux.Handle("/proxy/{cluster}/prometheus/{path...}", h)
-	req := httptest.NewRequestWithContext(t.Context(), http.MethodGet, "/proxy/prod/prometheus"+rawPathAndQuery, http.NoBody)
+	req := httptest.NewRequestWithContext(signedIn(t), http.MethodGet, "/proxy/prod/prometheus"+rawPathAndQuery, http.NoBody)
 	rec := httptest.NewRecorder()
 	mux.ServeHTTP(rec, req)
 	return rec

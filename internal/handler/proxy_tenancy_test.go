@@ -101,13 +101,13 @@ func serveTenancy(t *testing.T, access core.AccessReviewer, backend string, req 
 
 func tenancyGet(t *testing.T, path string, params url.Values) *http.Request {
 	t.Helper()
-	return httptest.NewRequestWithContext(t.Context(), http.MethodGet,
+	return httptest.NewRequestWithContext(signedIn(t), http.MethodGet,
 		"/proxy/prod/prometheus-tenancy"+path+"?"+params.Encode(), http.NoBody)
 }
 
 func tenancyPost(t *testing.T, path string, params, form url.Values) *http.Request {
 	t.Helper()
-	req := httptest.NewRequestWithContext(t.Context(), http.MethodPost,
+	req := httptest.NewRequestWithContext(signedIn(t), http.MethodPost,
 		"/proxy/prod/prometheus-tenancy"+path+"?"+params.Encode(), strings.NewReader(form.Encode()))
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	return req
@@ -475,7 +475,7 @@ func TestTenancy_RequestShape(t *testing.T) {
 	for _, ct := range []string{"multipart/form-data; boundary=x", "text/plain", "application/json", ""} {
 		t.Run("POST as "+ct, func(t *testing.T) {
 			up, srv := newUpstream(t)
-			req := httptest.NewRequestWithContext(t.Context(), http.MethodPost,
+			req := httptest.NewRequestWithContext(signedIn(t), http.MethodPost,
 				"/proxy/prod/prometheus-tenancy/api/v1/query?namespace=ws-a",
 				strings.NewReader("--x\r\nContent-Disposition: form-data; name=\"query\"\r\n\r\nkube_pod_info\r\n--x--\r\n"))
 			if ct != "" {
@@ -492,7 +492,7 @@ func TestTenancy_RequestShape(t *testing.T) {
 
 	t.Run("malformed query string", func(t *testing.T) {
 		_, srv := newUpstream(t)
-		req := httptest.NewRequestWithContext(t.Context(), http.MethodGet,
+		req := httptest.NewRequestWithContext(signedIn(t), http.MethodGet,
 			"/proxy/prod/prometheus-tenancy/api/v1/query?namespace=ws-a&query=up;x=1", http.NoBody)
 		if rec := serveTenancy(t, tenantOf("ws-a"), srv.URL, req); rec.Code != http.StatusBadRequest {
 			t.Errorf("status = %d, want 400", rec.Code)
@@ -502,7 +502,7 @@ func TestTenancy_RequestShape(t *testing.T) {
 	for _, method := range []string{http.MethodPut, http.MethodDelete, http.MethodPatch} {
 		t.Run(method, func(t *testing.T) {
 			_, srv := newUpstream(t)
-			req := httptest.NewRequestWithContext(t.Context(), method,
+			req := httptest.NewRequestWithContext(signedIn(t), method,
 				"/proxy/prod/prometheus-tenancy/api/v1/query?namespace=ws-a&query=up", http.NoBody)
 			if rec := serveTenancy(t, tenantOf("ws-a"), srv.URL, req); rec.Code != http.StatusMethodNotAllowed {
 				t.Errorf("status = %d, want 405", rec.Code)
@@ -512,7 +512,7 @@ func TestTenancy_RequestShape(t *testing.T) {
 
 	t.Run("GET body is not forwarded", func(t *testing.T) {
 		up, srv := newUpstream(t)
-		req := httptest.NewRequestWithContext(t.Context(), http.MethodGet,
+		req := httptest.NewRequestWithContext(signedIn(t), http.MethodGet,
 			"/proxy/prod/prometheus-tenancy/api/v1/query?namespace=ws-a&query=up",
 			strings.NewReader("query=kube_pod_info"))
 		req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
@@ -529,11 +529,9 @@ func TestTenancy_ClusterNotFound(t *testing.T) {
 	h := NewProxyHandler(&mockTunnelForProxy{addressErr: &core.ErrClusterNotFound{Cluster: "missing"}}, tenantOf("ws-a"))
 	mux := http.NewServeMux()
 	mux.HandleFunc("/proxy/{cluster}/prometheus-tenancy/{path...}", h.ServeTenancy)
-	req := httptest.NewRequestWithContext(t.Context(), http.MethodGet,
+	req := httptest.NewRequestWithContext(signedIn(t), http.MethodGet,
 		"/proxy/missing/prometheus-tenancy/api/v1/query?namespace=ws-a&query=up", http.NoBody)
 	rec := httptest.NewRecorder()
 	mux.ServeHTTP(rec, req)
-	if rec.Code != http.StatusNotFound {
-		t.Errorf("status = %d, want 404", rec.Code)
-	}
+	assertPrometheusError(t, rec, http.StatusNotFound, "not_found")
 }

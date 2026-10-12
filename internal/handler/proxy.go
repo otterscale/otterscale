@@ -57,7 +57,7 @@ func (h *ProxyHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// for forwarding.
 	promPath, allowed := core.AllowedPrometheusPath("/" + r.PathValue("path"))
 	if !allowed {
-		http.Error(w, "forbidden prometheus path", http.StatusForbidden)
+		writePrometheusError(w, http.StatusForbidden, "forbidden", "forbidden prometheus path")
 		return
 	}
 
@@ -80,32 +80,38 @@ func (h *ProxyHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 func (h *ProxyHandler) resolve(w http.ResponseWriter, r *http.Request, cluster string) (*url.URL, bool) {
 	address, err := h.tunnel.ResolveAddress(r.Context(), cluster)
 	if err != nil {
-		http.Error(w, "cluster not found", http.StatusNotFound)
+		writePrometheusError(w, http.StatusNotFound, "not_found", "cluster not found")
 		return nil, false
 	}
 
 	target, err := url.Parse(address)
 	if err != nil {
-		http.Error(w, "internal error", http.StatusInternalServerError)
+		writePrometheusError(w, http.StatusInternalServerError, "internal", "internal error")
 		return nil, false
 	}
 	return target, true
 }
 
 // authorize asks the questions in order and lets the request through on the
-// first yes. It writes the refusal itself. A review that fails is 503 — never
-// a pass, and never a "no" either: the caller may well be allowed.
+// first yes. It writes the refusal itself.
+//
+// 401 means the hub has no user for this request — read from the same
+// UserInfo the reviews impersonate, before any cluster is asked. Every review
+// error after that is 503, a cluster's own 401 included (the caller is signed
+// in; it is the agent's credentials that were refused): never a pass, and
+// never a "no" either, since the caller may well be allowed.
 func (h *ProxyHandler) authorize(w http.ResponseWriter, r *http.Request, cluster string, attrs ...core.AccessAttributes) bool {
+	if user, ok := core.UserInfoFromContext(r.Context()); !ok || user.Subject == "" {
+		writePrometheusError(w, http.StatusUnauthorized, "unauthorized", "no authenticated user")
+		return false
+	}
 	for _, a := range attrs {
 		allowed, err := h.access.Allowed(r.Context(), cluster, a)
 		if err != nil {
 			var notFound *core.ErrClusterNotFound
-			switch code, _ := core.DomainErrorCode(err); {
-			case errors.As(err, &notFound):
+			if errors.As(err, &notFound) {
 				writePrometheusError(w, http.StatusNotFound, "not_found", "cluster not found")
-			case code == core.ErrorCodeUnauthenticated:
-				writePrometheusError(w, http.StatusUnauthorized, "unauthorized", "no authenticated user")
-			default:
+			} else {
 				slog.Warn("metrics access review failed", "cluster", cluster, "resource", a.Resource, "namespace", a.Namespace, "error", err)
 				writePrometheusError(w, http.StatusServiceUnavailable, "unavailable", "cannot check metrics access on this cluster; retry shortly")
 			}
