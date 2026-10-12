@@ -34,10 +34,9 @@ const (
 type tenancyKind int
 
 const (
-	tenancyForbidden   tenancyKind = iota
-	tenancyQuery                   // PromQL in `query`
-	tenancyMatch                   // series selectors in `match[]`
-	tenancyPassthrough             // metadata: metric names and help text, no series
+	tenancyForbidden tenancyKind = iota
+	tenancyQuery                 // PromQL in `query`
+	tenancyMatch                 // series selectors in `match[]`
 )
 
 var errBadTenancyRequest = errors.New("bad request")
@@ -105,8 +104,6 @@ func tenancyEndpoint(promPath string) tenancyKind {
 		return tenancyQuery
 	case "/api/v1/series", "/api/v1/labels":
 		return tenancyMatch
-	case "/api/v1/metadata":
-		return tenancyPassthrough
 	}
 	if name, ok := strings.CutPrefix(promPath, "/api/v1/label/"); ok {
 		if name, ok = strings.CutSuffix(name, "/values"); ok && name != "" && !strings.Contains(name, "/") {
@@ -171,14 +168,10 @@ func enforceNamespace(kind tenancyKind, namespace string, query, form url.Values
 	matcher := labels.MustNewMatcher(labels.MatchEqual, namespaceLabel, namespace)
 	enforcer := injectproxy.NewPromQLEnforcer(true, matcher)
 
-	switch kind {
-	case tenancyQuery:
+	if kind == tenancyQuery {
 		return enforceQuery(enforcer, query, form)
-	case tenancyMatch:
-		return enforceMatchers(enforcer, matcher, query, form)
-	default:
-		return nil
 	}
+	return enforceMatchers(enforcer, matcher, query, form)
 }
 
 // enforceQuery wants exactly one query between the URL and the body: Prometheus
