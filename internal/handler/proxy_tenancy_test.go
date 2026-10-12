@@ -376,20 +376,9 @@ func TestTenancy_MatchSelectors(t *testing.T) {
 	})
 }
 
-func TestTenancy_Metadata(t *testing.T) {
-	up, srv := newUpstream(t)
-	params := url.Values{"metric": {"kube_resourcequota"}, "namespace": {"ws-a"}}
-	if rec := serveTenancy(t, tenantOf("ws-a"), srv.URL, tenancyGet(t, "/api/v1/metadata", params)); rec.Code != http.StatusOK {
-		t.Fatalf("status = %d", rec.Code)
-	}
-	got := up.all()[0]
-	if got.path != "/__otterscale/proxy/api/v1/metadata" || got.query.Get("metric") != "kube_resourcequota" {
-		t.Errorf("upstream got %s %v", got.path, got.query)
-	}
-}
-
 func TestTenancy_ForbiddenEndpoints(t *testing.T) {
 	paths := []string{
+		"/api/v1/metadata",
 		"/api/v1/targets",
 		"/api/v1/status/config",
 		"/api/v1/status/tsdb",
