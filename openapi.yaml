@@ -6,13 +6,16 @@ info:
 
     ## Calling the API
 
-    Every procedure is an HTTP POST to `https://<server>/<package>.<Service>/<Method>` with a JSON
-    body, following the [Connect protocol](https://connectrpc.com/docs/protocol/). Send three headers:
+    Every procedure is an HTTP POST to `<API URL>/<package>.<Service>/<Method>` with a JSON body,
+    following the [Connect protocol](https://connectrpc.com/docs/protocol/). The API URL is the
+    server's external URL: the platform address followed by the gateway's path prefix, for example
+    `https://otterscale.example.com/api`. A platform reached by IP address and port keeps the port in
+    it. Send three headers:
 
-    - `Authorization: Bearer <token>`: an OIDC ID token from the platform's identity provider, issued
-      for the client the server is configured with. Without a valid token the call fails with
-      `unauthenticated`. `LinkService/Register` is the exception: the agent calls it during
-      installation with the join token inside the request instead.
+    - `Authorization: Bearer <token>`: a token from the platform's identity provider whose audience
+      is the server's client ID; the dashboard sends the signed-in user's access token. Without a
+      valid token the call fails with `unauthenticated`. `LinkService/Register` is the exception: the
+      agent calls it during installation with the join token inside the request instead.
     - `Content-Type: application/json`
     - `Connect-Protocol-Version: 1`
 
