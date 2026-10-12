@@ -3,7 +3,6 @@ package handler
 import (
 	"encoding/json"
 	"errors"
-	"log/slog"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
@@ -99,7 +98,8 @@ func (h *ProxyHandler) resolve(w http.ResponseWriter, r *http.Request, cluster s
 // UserInfo the reviews impersonate, before any cluster is asked. Every review
 // error after that is 503, a cluster's own 401 included (the caller is signed
 // in; it is the agent's credentials that were refused): never a pass, and
-// never a "no" either, since the caller may well be allowed.
+// never a "no" either, since the caller may well be allowed. The reviewer
+// logs the failure, once per review rather than once per query.
 func (h *ProxyHandler) authorize(w http.ResponseWriter, r *http.Request, cluster string, attrs ...core.AccessAttributes) bool {
 	if user, ok := core.UserInfoFromContext(r.Context()); !ok || user.Subject == "" {
 		writePrometheusError(w, http.StatusUnauthorized, "unauthorized", "no authenticated user")
@@ -112,7 +112,6 @@ func (h *ProxyHandler) authorize(w http.ResponseWriter, r *http.Request, cluster
 			if errors.As(err, &notFound) {
 				writePrometheusError(w, http.StatusNotFound, "not_found", "cluster not found")
 			} else {
-				slog.Warn("metrics access review failed", "cluster", cluster, "resource", a.Resource, "namespace", a.Namespace, "error", err)
 				writePrometheusError(w, http.StatusServiceUnavailable, "unavailable", "cannot check metrics access on this cluster; retry shortly")
 			}
 			return false

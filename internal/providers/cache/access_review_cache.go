@@ -3,6 +3,7 @@ package cache
 import (
 	"context"
 	"fmt"
+	"log/slog"
 	"slices"
 	"sync"
 	"time"
@@ -29,7 +30,9 @@ const accessReviewTimeout = 10 * time.Second
 
 // AccessReviewCache remembers SelfSubjectAccessReview answers, allowed and
 // denied alike, for a TTL, and collapses concurrent identical questions into
-// one. Failures are not remembered: no answer is not a "no" to keep.
+// one. Failures are not remembered: no answer is not a "no" to keep. They are
+// logged here, once per review, so an outage costs a line per review rather
+// than one per query that waited on it.
 //
 // Expiry needs no background sweeper: a lookup ignores lapsed entries and an
 // insert at the ceiling clears them first (the AgentValuesStore pattern).
@@ -88,19 +91,24 @@ func (c *AccessReviewCache) Allowed(ctx context.Context, cluster string, attrs c
 	}
 	key := accessReviewKey(cluster, user, attrs)
 
-	c.mu.Lock()
-	entry, hit := c.entries[key]
-	c.mu.Unlock()
-	if hit && c.now().Before(entry.expiresAt) {
-		return entry.allowed, nil
+	if allowed, ok := c.lookup(key); ok {
+		return allowed, nil
 	}
 
 	v, err, _ := c.flights.Do(key, func() (any, error) {
+		// A flight that landed between the lookup above and this one being
+		// started has already stored the answer; asking again would be a
+		// second review of the same question inside the TTL.
+		if allowed, ok := c.lookup(key); ok {
+			return allowed, nil
+		}
+
 		reviewCtx, cancel := context.WithTimeout(context.WithoutCancel(ctx), accessReviewTimeout)
 		defer cancel()
 
 		allowed, err := c.reviewer.Allowed(reviewCtx, cluster, attrs)
 		if err != nil {
+			slog.Warn("access review failed", "cluster", cluster, "resource", attrs.Resource, "namespace", attrs.Namespace, "error", err)
 			return false, err
 		}
 		c.store(key, allowed)
@@ -111,6 +119,14 @@ func (c *AccessReviewCache) Allowed(ctx context.Context, cluster string, attrs c
 	}
 	allowed, _ := v.(bool)
 	return allowed, nil
+}
+
+// lookup reports a stored answer that has not lapsed.
+func (c *AccessReviewCache) lookup(key string) (allowed, ok bool) {
+	c.mu.Lock()
+	entry, hit := c.entries[key]
+	c.mu.Unlock()
+	return entry.allowed, hit && c.now().Before(entry.expiresAt)
 }
 
 func (c *AccessReviewCache) store(key string, allowed bool) {
