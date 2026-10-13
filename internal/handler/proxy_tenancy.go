@@ -26,7 +26,9 @@ const (
 	matchParam     = "match[]"
 
 	formContentType = "application/x-www-form-urlencoded"
-	// maxFormBytes is net/http's own ceiling for a parsed form body.
+	// maxFormBytes is net/http's own ceiling for a parsed form body, which
+	// Prometheus' form parsing has too. It applies to both the caller's body
+	// and the body the hub forwards.
 	maxFormBytes = 10 << 20
 )
 
@@ -76,6 +78,10 @@ func (h *ProxyHandler) ServeTenancy(w http.ResponseWriter, r *http.Request) {
 	if err == nil {
 		err = enforceNamespace(kind, namespace, query, form)
 	}
+	var body string
+	if err == nil && r.Method == http.MethodPost {
+		body, err = forwardedForm(form)
+	}
 	if err != nil {
 		status := http.StatusBadRequest
 		switch {
@@ -97,7 +103,6 @@ func (h *ProxyHandler) ServeTenancy(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if r.Method == http.MethodPost {
-		body := form.Encode()
 		r.Body = io.NopCloser(strings.NewReader(body))
 		r.ContentLength = int64(len(body))
 		r.Header.Set("Content-Type", formContentType)
@@ -179,6 +184,18 @@ func readForm(w http.ResponseWriter, r *http.Request) (url.Values, error) {
 		return nil, fmt.Errorf("%w: body: %w", errBadTenancyRequest, err)
 	}
 	return form, nil
+}
+
+// forwardedForm is the body the agent receives: the hub's own encoding of the
+// rewritten form, which can be longer than what the caller sent. Prometheus
+// parses at most maxFormBytes of form and otherwise reads the URL alone, so a
+// longer body is refused here instead of reaching it without its matchers.
+func forwardedForm(form url.Values) (string, error) {
+	body := form.Encode()
+	if len(body) > maxFormBytes {
+		return "", fmt.Errorf("%w: more than %d bytes once rewritten", errBodyTooLarge, maxFormBytes)
+	}
+	return body, nil
 }
 
 func enforceNamespace(kind tenancyKind, namespace string, query, form url.Values) error {
