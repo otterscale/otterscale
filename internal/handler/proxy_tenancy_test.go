@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"bytes"
 	"context"
 	"errors"
 	"io"
@@ -61,8 +62,15 @@ type upstreamRequest struct {
 	method string
 	path   string
 	query  url.Values
-	form   url.Values
+	form   url.Values // the body on its own, whatever the method
 	header http.Header
+
+	// bodyLen, parsed and formErr are what Prometheus makes of the request: it
+	// reads its parameters with ParseForm, which refuses a urlencoded body
+	// over 10 MiB and then leaves only the URL's in r.Form.
+	bodyLen int
+	parsed  url.Values
+	formErr error
 }
 
 func newUpstream(t *testing.T) (*upstream, *httptest.Server) {
@@ -71,9 +79,13 @@ func newUpstream(t *testing.T) (*upstream, *httptest.Server) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		body, _ := io.ReadAll(r.Body)
 		form, _ := url.ParseQuery(string(body))
+		prom := r.Clone(r.Context())
+		prom.Body = io.NopCloser(bytes.NewReader(body))
+		formErr := prom.ParseForm()
 		u.mu.Lock()
 		u.requests = append(u.requests, upstreamRequest{
 			method: r.Method, path: r.URL.Path, query: r.URL.Query(), form: form, header: r.Header.Clone(),
+			bodyLen: len(body), parsed: prom.Form, formErr: formErr,
 		})
 		u.mu.Unlock()
 		w.Header().Set("Content-Type", "application/json")
@@ -113,6 +125,21 @@ func tenancyPost(t *testing.T, path string, params, form url.Values) *http.Reque
 	return req
 }
 
+// tenancyPostBody posts body exactly as given, for tests that need its length.
+func tenancyPostBody(t *testing.T, path, body string) *http.Request {
+	t.Helper()
+	req := httptest.NewRequestWithContext(signedIn(t), http.MethodPost,
+		"/proxy/prod/prometheus-tenancy"+path+"?namespace=ws-a", strings.NewReader(body))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	return req
+}
+
+// paddedForm is a urlencoded body of exactly size bytes: params, then a pad.
+func paddedForm(params string, size int) string {
+	head := params + "&pad="
+	return head + strings.Repeat("a", size-len(head))
+}
+
 // assertPinned parses what reached upstream and requires every selector in it
 // to carry exactly one namespace matcher, namespace="ns".
 func assertPinned(t *testing.T, query, ns string) {
@@ -149,7 +176,7 @@ func assertMatchersPinned(t *testing.T, what string, matchers []*labels.Matcher,
 	}
 }
 
-func assertSelectorPinned(t *testing.T, selector, ns string) {
+func assertSelectorPinned(t *testing.T, selector, ns string) { //nolint:unparam // every case pins ws-a; ns names what is checked
 	t.Helper()
 	ms, err := parser.NewParser(parser.Options{}).ParseMetricSelector(selector)
 	if err != nil {
@@ -495,9 +522,7 @@ func TestTenancy_RequestShape(t *testing.T) {
 			req := httptest.NewRequestWithContext(signedIn(t), method,
 				"/proxy/prod/prometheus-tenancy/api/v1/query?namespace=ws-a&query=up", http.NoBody)
 			rec := serveTenancy(t, tenantOf("ws-a"), srv.URL, req)
-			if rec.Code != http.StatusMethodNotAllowed {
-				t.Errorf("status = %d, want 405", rec.Code)
-			}
+			assertPrometheusError(t, rec, http.StatusMethodNotAllowed, "bad_data")
 			if got := rec.Header().Get("Allow"); got != "GET, POST" {
 				t.Errorf("Allow = %q, want %q", got, "GET, POST")
 			}
@@ -530,33 +555,85 @@ func TestTenancy_ClusterNotFound(t *testing.T) {
 	assertPrometheusError(t, rec, http.StatusNotFound, "not_found")
 }
 
-// TestTenancy_BodySize: a body at the limit is read; one byte over is 413,
-// and nothing reaches the agent.
+// TestTenancy_BodySize: both the caller's body and the body the hub forwards
+// are held to maxFormBytes. The rewrite makes a body longer, so a caller body
+// within the limit can still be forwarded past it; that is 413 as well, and
+// nothing reaches the agent.
 func TestTenancy_BodySize(t *testing.T) {
-	form := func(size int) string {
-		const head = "query=up&pad="
-		return head + strings.Repeat("a", size-len(head))
-	}
-	post := func(body string) *http.Request {
-		req := httptest.NewRequestWithContext(signedIn(t), http.MethodPost,
-			"/proxy/prod/prometheus-tenancy/api/v1/query?namespace=ws-a", strings.NewReader(body))
-		req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-		return req
-	}
-
-	t.Run("at the limit", func(t *testing.T) {
-		_, srv := newUpstream(t)
-		if rec := serveTenancy(t, tenantOf("ws-a"), srv.URL, post(form(maxFormBytes))); rec.Code != http.StatusOK {
-			t.Fatalf("status = %d, want 200 (%s)", rec.Code, rec.Body)
-		}
-	})
-	t.Run("one byte over", func(t *testing.T) {
+	t.Run("caller body over the limit", func(t *testing.T) {
 		up, srv := newUpstream(t)
-		rec := serveTenancy(t, tenantOf("ws-a"), srv.URL, post(form(maxFormBytes+1)))
+		req := tenancyPostBody(t, "/api/v1/query", paddedForm("query=up", maxFormBytes+1))
+		rec := serveTenancy(t, tenantOf("ws-a"), srv.URL, req)
 		assertPrometheusError(t, rec, http.StatusRequestEntityTooLarge, "bad_data")
 		if n := len(up.all()); n != 0 {
 			t.Errorf("upstream called %d times", n)
 		}
+	})
+
+	t.Run("rewritten body over the limit", func(t *testing.T) {
+		// The caller's body is exactly at the limit; its rewrite is longer.
+		up, srv := newUpstream(t)
+		req := tenancyPostBody(t, "/api/v1/query", paddedForm("query=up", maxFormBytes))
+		rec := serveTenancy(t, tenantOf("ws-a"), srv.URL, req)
+		assertPrometheusError(t, rec, http.StatusRequestEntityTooLarge, "bad_data")
+		for _, got := range up.all() {
+			t.Errorf("upstream called with a %d-byte body (Prometheus' form error: %v)", got.bodyLen, got.formErr)
+		}
+	})
+
+	t.Run("rewritten body at the limit", func(t *testing.T) {
+		// The forwarded body without its pad; the pad fills it to the limit.
+		rest := url.Values{"pad": {""}, "query": {`up{namespace="ws-a"}`}}.Encode()
+		body := url.Values{"query": {"up"}, "pad": {strings.Repeat("a", maxFormBytes-len(rest))}}.Encode()
+		up, srv := newUpstream(t)
+		rec := serveTenancy(t, tenantOf("ws-a"), srv.URL, tenancyPostBody(t, "/api/v1/query", body))
+		if rec.Code != http.StatusOK {
+			t.Fatalf("status = %d, want 200 (%s)", rec.Code, rec.Body)
+		}
+		got := up.all()
+		if len(got) != 1 {
+			t.Fatalf("upstream called %d times, want 1", len(got))
+		}
+		if got[0].bodyLen != maxFormBytes || got[0].formErr != nil {
+			t.Fatalf("upstream body = %d bytes, form error %v; want %d bytes, parsed", got[0].bodyLen, got[0].formErr, maxFormBytes)
+		}
+		assertPinned(t, got[0].parsed.Get("query"), "ws-a")
+	})
+}
+
+// TestTenancy_LabelsBodyNeverDropsMatchers: Prometheus' labels endpoint
+// carries on without a form it could not parse and then has no match[], which
+// means every label name in the TSDB. A body whose rewrite would be dropped
+// that way is refused instead of forwarded.
+func TestTenancy_LabelsBodyNeverDropsMatchers(t *testing.T) {
+	t.Run("caller body at the limit", func(t *testing.T) {
+		up, srv := newUpstream(t)
+		req := tenancyPostBody(t, "/api/v1/labels", paddedForm("match[]=up", maxFormBytes))
+		rec := serveTenancy(t, tenantOf("ws-a"), srv.URL, req)
+		assertPrometheusError(t, rec, http.StatusRequestEntityTooLarge, "bad_data")
+		for _, got := range up.all() {
+			t.Errorf("upstream called; Prometheus would read match[] = %v (form error: %v)", got.parsed["match[]"], got.formErr)
+		}
+	})
+
+	t.Run("small body", func(t *testing.T) {
+		up, srv := newUpstream(t)
+		req := tenancyPost(t, "/api/v1/labels", url.Values{"namespace": {"ws-a"}}, url.Values{"match[]": {"up"}})
+		if rec := serveTenancy(t, tenantOf("ws-a"), srv.URL, req); rec.Code != http.StatusOK {
+			t.Fatalf("status = %d, want 200 (%s)", rec.Code, rec.Body)
+		}
+		got := up.all()
+		if len(got) != 1 {
+			t.Fatalf("upstream called %d times, want 1", len(got))
+		}
+		if got[0].formErr != nil {
+			t.Fatalf("Prometheus' form error: %v", got[0].formErr)
+		}
+		matches := got[0].parsed["match[]"]
+		if len(matches) != 1 {
+			t.Fatalf("Prometheus would read match[] = %v, want the enforced one", matches)
+		}
+		assertSelectorPinned(t, matches[0], "ws-a")
 	})
 }
 
