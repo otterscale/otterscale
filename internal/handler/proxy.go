@@ -27,8 +27,8 @@ const impersonationHeaderPrefix = "Impersonate-"
 //     query: aggregates leak other namespaces as surely as series do.
 //   - Namespace scope, /proxy/{cluster}/prometheus-tenancy/...?namespace=<ns>
 //     (ServeTenancy, proxy_tenancy.go): any PromQL, for callers who may get
-//     pods in <ns> or have cluster metrics access, with namespace="<ns>"
-//     forced into every selector.
+//     pods in <ns> or have cluster metrics access, rewritten to
+//     namespace="<ns>" by prom-label-proxy's enforcer.
 //
 // This replaces the earlier rule that metrics were shared operational data any
 // authenticated user could read. It mirrors OpenShift's monitoring tenancy
