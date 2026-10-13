@@ -39,7 +39,13 @@ const (
 	tenancyMatch                 // series selectors in `match[]`
 )
 
-var errBadTenancyRequest = errors.New("bad request")
+var (
+	errBadTenancyRequest = errors.New("bad request")
+	errBodyTooLarge      = errors.New("request body too large")
+	// errNoNamespaceRule is a hub bug: an endpoint kind reached the rewrite
+	// without a rule for it.
+	errNoNamespaceRule = errors.New("no namespace rule for this endpoint")
+)
 
 // ServeTenancy forwards /proxy/{cluster}/prometheus-tenancy/{path...}?namespace=<ns>
 // for callers who may get pods in <ns>, or who have cluster metrics access,
@@ -61,6 +67,7 @@ func (h *ProxyHandler) ServeTenancy(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if r.Method != http.MethodGet && r.Method != http.MethodPost {
+		w.Header().Set("Allow", "GET, POST")
 		writePrometheusError(w, http.StatusMethodNotAllowed, "bad_data", "only GET and POST")
 		return
 	}
@@ -71,7 +78,10 @@ func (h *ProxyHandler) ServeTenancy(w http.ResponseWriter, r *http.Request) {
 	}
 	if err != nil {
 		status := http.StatusBadRequest
-		if errors.Is(err, injectproxy.ErrEnforceLabel) {
+		switch {
+		case errors.Is(err, errBodyTooLarge):
+			status = http.StatusRequestEntityTooLarge
+		case errors.Is(err, injectproxy.ErrEnforceLabel), errors.Is(err, errNoNamespaceRule):
 			status = http.StatusInternalServerError
 		}
 		writePrometheusError(w, status, "bad_data", err.Error())
@@ -95,6 +105,9 @@ func (h *ProxyHandler) ServeTenancy(w http.ResponseWriter, r *http.Request) {
 		r.Body = http.NoBody
 		r.ContentLength = 0
 	}
+	// The body above is the hub's own plain re-encoding; the caller's
+	// Content-Encoding described a body that is not being forwarded.
+	r.Header.Del("Content-Encoding")
 	h.forward(w, r, target, promPath, query.Encode())
 }
 
@@ -155,6 +168,10 @@ func readForm(w http.ResponseWriter, r *http.Request) (url.Values, error) {
 	}
 	body, err := io.ReadAll(http.MaxBytesReader(w, r.Body, maxFormBytes))
 	if err != nil {
+		var tooLarge *http.MaxBytesError
+		if errors.As(err, &tooLarge) {
+			return nil, fmt.Errorf("%w: more than %d bytes", errBodyTooLarge, maxFormBytes)
+		}
 		return nil, fmt.Errorf("%w: body: %w", errBadTenancyRequest, err)
 	}
 	form, err := url.ParseQuery(string(body))
@@ -168,10 +185,15 @@ func enforceNamespace(kind tenancyKind, namespace string, query, form url.Values
 	matcher := labels.MustNewMatcher(labels.MatchEqual, namespaceLabel, namespace)
 	enforcer := injectproxy.NewPromQLEnforcer(true, matcher)
 
-	if kind == tenancyQuery {
+	switch kind {
+	case tenancyQuery:
 		return enforceQuery(enforcer, query, form)
+	case tenancyMatch:
+		return enforceMatchers(enforcer, matcher, query, form)
+	default:
+		// ServeTenancy refuses tenancyForbidden before it gets here.
+		return fmt.Errorf("%w: kind %d", errNoNamespaceRule, kind)
 	}
-	return enforceMatchers(enforcer, matcher, query, form)
 }
 
 // enforceQuery wants exactly one query between the URL and the body: Prometheus
