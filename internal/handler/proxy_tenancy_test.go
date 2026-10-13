@@ -494,8 +494,12 @@ func TestTenancy_RequestShape(t *testing.T) {
 			_, srv := newUpstream(t)
 			req := httptest.NewRequestWithContext(signedIn(t), method,
 				"/proxy/prod/prometheus-tenancy/api/v1/query?namespace=ws-a&query=up", http.NoBody)
-			if rec := serveTenancy(t, tenantOf("ws-a"), srv.URL, req); rec.Code != http.StatusMethodNotAllowed {
+			rec := serveTenancy(t, tenantOf("ws-a"), srv.URL, req)
+			if rec.Code != http.StatusMethodNotAllowed {
 				t.Errorf("status = %d, want 405", rec.Code)
+			}
+			if got := rec.Header().Get("Allow"); got != "GET, POST" {
+				t.Errorf("Allow = %q, want %q", got, "GET, POST")
 			}
 		})
 	}
@@ -524,4 +528,69 @@ func TestTenancy_ClusterNotFound(t *testing.T) {
 	rec := httptest.NewRecorder()
 	mux.ServeHTTP(rec, req)
 	assertPrometheusError(t, rec, http.StatusNotFound, "not_found")
+}
+
+// TestTenancy_BodySize: a body at the limit is read; one byte over is 413,
+// and nothing reaches the agent.
+func TestTenancy_BodySize(t *testing.T) {
+	form := func(size int) string {
+		const head = "query=up&pad="
+		return head + strings.Repeat("a", size-len(head))
+	}
+	post := func(body string) *http.Request {
+		req := httptest.NewRequestWithContext(signedIn(t), http.MethodPost,
+			"/proxy/prod/prometheus-tenancy/api/v1/query?namespace=ws-a", strings.NewReader(body))
+		req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+		return req
+	}
+
+	t.Run("at the limit", func(t *testing.T) {
+		_, srv := newUpstream(t)
+		if rec := serveTenancy(t, tenantOf("ws-a"), srv.URL, post(form(maxFormBytes))); rec.Code != http.StatusOK {
+			t.Fatalf("status = %d, want 200 (%s)", rec.Code, rec.Body)
+		}
+	})
+	t.Run("one byte over", func(t *testing.T) {
+		up, srv := newUpstream(t)
+		rec := serveTenancy(t, tenantOf("ws-a"), srv.URL, post(form(maxFormBytes+1)))
+		assertPrometheusError(t, rec, http.StatusRequestEntityTooLarge, "bad_data")
+		if n := len(up.all()); n != 0 {
+			t.Errorf("upstream called %d times", n)
+		}
+	})
+}
+
+// TestTenancy_NoContentEncodingUpstream: what reaches the agent is the hub's
+// own plain re-encoding, so a Content-Encoding the caller sent would describe
+// a body that is no longer there.
+func TestTenancy_NoContentEncodingUpstream(t *testing.T) {
+	for _, method := range []string{http.MethodGet, http.MethodPost} {
+		t.Run(method, func(t *testing.T) {
+			up, srv := newUpstream(t)
+			var req *http.Request
+			if method == http.MethodPost {
+				req = tenancyPost(t, "/api/v1/query", url.Values{"namespace": {"ws-a"}}, url.Values{"query": {"up"}})
+			} else {
+				req = tenancyGet(t, "/api/v1/query", url.Values{"namespace": {"ws-a"}, "query": {"up"}})
+			}
+			req.Header.Set("Content-Encoding", "gzip")
+			if rec := serveTenancy(t, tenantOf("ws-a"), srv.URL, req); rec.Code != http.StatusOK {
+				t.Fatalf("status = %d (%s)", rec.Code, rec.Body)
+			}
+			if got := up.all()[0].header.Get("Content-Encoding"); got != "" {
+				t.Errorf("upstream Content-Encoding = %q, want none", got)
+			}
+		})
+	}
+}
+
+// TestEnforceNamespace_UnknownKind: a kind without a rule is an error, never
+// a silent pass through one of the other rules.
+func TestEnforceNamespace_UnknownKind(t *testing.T) {
+	for _, kind := range []tenancyKind{tenancyForbidden, tenancyKind(99)} {
+		err := enforceNamespace(kind, "ws-a", url.Values{"query": {"up"}}, url.Values{})
+		if !errors.Is(err, errNoNamespaceRule) {
+			t.Errorf("kind %d: err = %v, want errNoNamespaceRule", kind, err)
+		}
+	}
 }
