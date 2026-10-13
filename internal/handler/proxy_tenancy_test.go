@@ -256,7 +256,7 @@ func TestTenancy_RejectsConflictingNamespace(t *testing.T) {
 	}
 	for _, q := range queries {
 		t.Run(q, func(t *testing.T) {
-			for _, endpoint := range []string{"/api/v1/query", "/api/v1/query_range", "/api/v1/query_exemplars"} {
+			for _, endpoint := range []string{"/api/v1/query", "/api/v1/query_range"} {
 				up, srv := newUpstream(t)
 				params := url.Values{"query": {q}, "namespace": {"ws-a"}}
 				if rec := serveTenancy(t, tenantOf("ws-a"), srv.URL, tenancyGet(t, endpoint, params)); rec.Code != http.StatusBadRequest {
@@ -297,7 +297,7 @@ func TestTenancy_PinsNamespace(t *testing.T) {
 	}
 	for _, q := range queries {
 		t.Run(q, func(t *testing.T) {
-			for _, endpoint := range []string{"/api/v1/query", "/api/v1/query_range", "/api/v1/query_exemplars"} {
+			for _, endpoint := range []string{"/api/v1/query", "/api/v1/query_range"} {
 				up, srv := newUpstream(t)
 				params := url.Values{"query": {q}, "namespace": {"ws-a"}, "time": {"1700000000"}}
 				if rec := serveTenancy(t, tenantOf("ws-a"), srv.URL, tenancyGet(t, endpoint, params)); rec.Code != http.StatusOK {
@@ -379,6 +379,7 @@ func TestTenancy_MatchSelectors(t *testing.T) {
 func TestTenancy_ForbiddenEndpoints(t *testing.T) {
 	paths := []string{
 		"/api/v1/metadata",
+		"/api/v1/query_exemplars",
 		"/api/v1/targets",
 		"/api/v1/status/config",
 		"/api/v1/status/tsdb",

@@ -43,10 +43,10 @@ var errBadTenancyRequest = errors.New("bad request")
 
 // ServeTenancy forwards /proxy/{cluster}/prometheus-tenancy/{path...}?namespace=<ns>
 // for callers who may get pods in <ns>, or who have cluster metrics access,
-// with namespace="<ns>" forced into every selector — the rewrite OpenShift's
-// prom-label-proxy sidecar does, from the same package, with its
-// --error-on-replace: a selector that cannot match <ns> is refused, one that
-// can is narrowed to it.
+// rewritten to namespace="<ns>" by prom-label-proxy's enforcer — the package
+// OpenShift's prom-label-proxy sidecar runs, with its --error-on-replace: a
+// selector that cannot match <ns> is refused, one that can is narrowed to it.
+// The rewrite is the enforcer's, unchanged; the hub adds no rules of its own.
 //
 // What is forwarded is always the hub's own re-encoding of what it checked,
 // never the request's raw query string or body, so Prometheus cannot read a
@@ -100,7 +100,7 @@ func (h *ProxyHandler) ServeTenancy(w http.ResponseWriter, r *http.Request) {
 
 func tenancyEndpoint(promPath string) tenancyKind {
 	switch promPath {
-	case "/api/v1/query", "/api/v1/query_range", "/api/v1/query_exemplars":
+	case "/api/v1/query", "/api/v1/query_range":
 		return tenancyQuery
 	case "/api/v1/series", "/api/v1/labels":
 		return tenancyMatch
