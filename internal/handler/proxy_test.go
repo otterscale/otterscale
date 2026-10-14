@@ -38,18 +38,20 @@ func signedIn(t *testing.T) context.Context {
 	return core.WithUserInfo(t.Context(), core.UserInfo{Subject: "alice", Groups: []string{"oidc:ws-a"}})
 }
 
-// newProxyMux routes both scopes the way internal/cmd/server does.
+// newProxyMux routes the three scopes the way internal/cmd/server does.
 func newProxyMux(h *ProxyHandler) *http.ServeMux {
 	mux := http.NewServeMux()
 	mux.Handle("/proxy/{cluster}/prometheus/{path...}", h)
 	mux.HandleFunc("/proxy/{cluster}/prometheus-tenancy/{path...}", h.ServeTenancy)
+	mux.HandleFunc("/proxy/{cluster}/prometheus-shared/{name...}", h.ServeShared)
 	return mux
 }
 
-// scopeQueries is one valid query per scope, for tests that hold for both.
+// scopeQueries is one valid query per scope, for tests that hold for all of them.
 var scopeQueries = map[string]string{
 	"cluster scope":   "/proxy/prod/prometheus/api/v1/query?query=up",
 	"namespace scope": "/proxy/prod/prometheus-tenancy/api/v1/query?namespace=ws-a&query=up",
+	"shared scope":    "/proxy/prod/prometheus-shared/kubevirt-handlers?namespace=ws-a",
 }
 
 // assertPrometheusError requires Prometheus' JSON error shape, which api.md

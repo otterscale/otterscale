@@ -106,6 +106,11 @@ func (h *Handler) Mount(mux *http.ServeMux) error {
 	// like the cluster-scope route.
 	mux.HandleFunc("/proxy/{cluster}/prometheus-tenancy/{path...}", h.proxy.ServeTenancy)
 
+	// Shared scope: /proxy/{cluster}/prometheus-shared/{name}?<parameters>
+	// The hub's own named queries (internal/handler/proxy_shared_catalog.go);
+	// callers send no PromQL. OIDC protects it like the other two.
+	mux.HandleFunc("/proxy/{cluster}/prometheus-shared/{name...}", h.proxy.ServeShared)
+
 	return nil
 }
 
