@@ -70,7 +70,12 @@ func newPrometheusProxy(target *url.URL, rt http.RoundTripper, errorLog *log.Log
 // 502 and a reason the dashboard can show. The error itself, which can name
 // Secrets and addresses, goes to the log only.
 func prometheusProxyError(w http.ResponseWriter, r *http.Request, err error) {
-	slog.Warn("prometheus proxy error", "path", r.URL.Path, "error", err)
+	// A caller that went away cancels the request: nothing is wrong upstream.
+	if r.Context().Err() != nil {
+		slog.Debug("prometheus proxy request canceled by the caller", "path", r.URL.Path, "error", err)
+	} else {
+		slog.Warn("prometheus proxy error", "path", r.URL.Path, "error", err)
+	}
 
 	reason := "the agent cannot reach Prometheus"
 	var verifyErr *tls.CertificateVerificationError

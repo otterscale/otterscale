@@ -1,9 +1,11 @@
 package handler
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"errors"
+	"log/slog"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -238,6 +240,45 @@ func TestProxyHandler_AgentUnreachable(t *testing.T) {
 				t.Errorf("body %q carries the tunnel address", rec.Body)
 			}
 		})
+	}
+}
+
+// TestProxyHandler_CallerCancelNotLoggedAsUnreachable: a caller that goes
+// away mid-request is not reported as an unreachable agent; a real failure
+// still is.
+func TestProxyHandler_CallerCancelNotLoggedAsUnreachable(t *testing.T) {
+	var logs bytes.Buffer
+	prev := slog.Default()
+	slog.SetDefault(slog.New(slog.NewTextHandler(&logs, &slog.HandlerOptions{Level: slog.LevelWarn})))
+	t.Cleanup(func() { slog.SetDefault(prev) })
+
+	release := make(chan struct{})
+	backend := httptest.NewServer(http.HandlerFunc(func(http.ResponseWriter, *http.Request) { <-release }))
+	defer backend.Close()
+	defer close(release)
+
+	ctx, cancel := context.WithCancel(signedIn(t))
+	h := NewProxyHandler(&mockTunnelForProxy{address: backend.URL}, clusterViewer())
+	done := make(chan struct{})
+	go func() {
+		defer close(done)
+		newProxyMux(h).ServeHTTP(httptest.NewRecorder(),
+			httptest.NewRequestWithContext(ctx, http.MethodGet, scopeQueries["cluster scope"], http.NoBody))
+	}()
+	time.Sleep(50 * time.Millisecond)
+	cancel()
+	<-done
+	if strings.Contains(logs.String(), "cannot reach the agent") {
+		t.Errorf("a canceled caller was logged as an unreachable agent: %s", logs.String())
+	}
+
+	closed := httptest.NewServer(http.HandlerFunc(func(http.ResponseWriter, *http.Request) {}))
+	closed.Close()
+	h = NewProxyHandler(&mockTunnelForProxy{address: closed.URL}, clusterViewer())
+	newProxyMux(h).ServeHTTP(httptest.NewRecorder(),
+		httptest.NewRequestWithContext(signedIn(t), http.MethodGet, scopeQueries["cluster scope"], http.NoBody))
+	if !strings.Contains(logs.String(), "cannot reach the agent") {
+		t.Errorf("an unreachable agent was not logged: %q", logs.String())
 	}
 }
 

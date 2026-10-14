@@ -185,7 +185,13 @@ func (h *ProxyHandler) forward(w http.ResponseWriter, r *http.Request, target *u
 		// The default answers an empty 502. The error, which names the
 		// tunnel address, goes to the log only.
 		ErrorHandler: func(w http.ResponseWriter, r *http.Request, err error) {
-			slog.Warn("metrics proxy cannot reach the agent", "cluster", r.PathValue("cluster"), "error", err)
+			// A caller that went away, a page navigating off say, cancels the
+			// request: nothing is wrong with the agent.
+			if r.Context().Err() != nil {
+				slog.Debug("metrics proxy request canceled by the caller", "cluster", r.PathValue("cluster"), "error", err)
+			} else {
+				slog.Warn("metrics proxy cannot reach the agent", "cluster", r.PathValue("cluster"), "error", err)
+			}
 			writePrometheusError(w, http.StatusBadGateway, "unavailable", "cannot reach this cluster's agent")
 		},
 	}
