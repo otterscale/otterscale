@@ -55,7 +55,7 @@ var scopeQueries = map[string]string{
 }
 
 // assertPrometheusError requires Prometheus' JSON error shape, which api.md
-// promises for every error at either scope.
+// promises for every error at all three scopes.
 func assertPrometheusError(t *testing.T, rec *httptest.ResponseRecorder, status int, errorType string) {
 	t.Helper()
 	if rec.Code != status {
