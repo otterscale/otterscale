@@ -442,6 +442,7 @@ func TestTenancy_ForwardHygiene(t *testing.T) {
 	req.Header.Set("Impersonate-User", "system:admin")
 	req.Header.Add("Impersonate-Group", "system:masters")
 	req.Header.Set("Impersonate-Extra-Scopes", "everything")
+	req.Header.Set("Cookie", "session=some-session")
 
 	if rec := serveTenancy(t, tenantOf("ws-a"), srv.URL, req); rec.Code != http.StatusOK {
 		t.Fatalf("status = %d", rec.Code)
@@ -454,7 +455,7 @@ func TestTenancy_ForwardHygiene(t *testing.T) {
 		t.Errorf("namespace parameter forwarded: %v", got.query)
 	}
 	for name := range got.header {
-		if name == "Authorization" || strings.HasPrefix(name, "Impersonate-") {
+		if name == "Authorization" || name == "Cookie" || strings.HasPrefix(name, "Impersonate-") {
 			t.Errorf("caller header %s reached upstream", name)
 		}
 	}

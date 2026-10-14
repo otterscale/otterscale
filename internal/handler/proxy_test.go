@@ -264,7 +264,7 @@ func TestProxyHandler_StripsCallerIdentityHeaders(t *testing.T) {
 	backend := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		var got []string
 		for name := range r.Header {
-			if name == "Authorization" || strings.HasPrefix(name, "Impersonate-") {
+			if name == "Authorization" || name == "Cookie" || strings.HasPrefix(name, "Impersonate-") {
 				got = append(got, name)
 			}
 		}
@@ -284,6 +284,7 @@ func TestProxyHandler_StripsCallerIdentityHeaders(t *testing.T) {
 	req.Header.Add("Impersonate-Group", "system:masters")
 	req.Header.Set("Impersonate-Uid", "0")
 	req.Header.Set("Impersonate-Extra-Scopes", "everything")
+	req.Header.Set("Cookie", "session=some-session")
 
 	rec := httptest.NewRecorder()
 	mux.ServeHTTP(rec, req)

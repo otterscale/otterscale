@@ -350,11 +350,12 @@ func TestShared_ForwardHygiene(t *testing.T) {
 	req.Header.Set("Authorization", "Bearer some-oidc-token")
 	req.Header.Set("Impersonate-User", "system:admin")
 	req.Header.Add("Impersonate-Group", "system:masters")
+	req.Header.Set("Cookie", "session=some-session")
 	if rec := serveShared(t, tenantOf("ws-a"), srv.URL, req); rec.Code != http.StatusOK {
 		t.Fatalf("status = %d (%s)", rec.Code, rec.Body)
 	}
 	for name := range up.all()[0].header {
-		if name == "Authorization" || strings.HasPrefix(name, "Impersonate-") {
+		if name == "Authorization" || name == "Cookie" || strings.HasPrefix(name, "Impersonate-") {
 			t.Errorf("caller header %s reached upstream", name)
 		}
 	}
