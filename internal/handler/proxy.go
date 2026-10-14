@@ -42,7 +42,8 @@ const agentProxyPrefix = "/__otterscale/proxy"
 // This replaces the earlier rule that metrics were shared operational data any
 // authenticated user could read. It mirrors OpenShift's monitoring tenancy
 // (Thanos Querier :9091 and :9092), with the check in the hub rather than in
-// each cluster, so agents and managed clusters need no change.
+// each cluster, so the namespace and shared scope checks need no change to
+// agents or managed clusters.
 type ProxyHandler struct {
 	tunnel core.TunnelProvider
 	access core.AccessReviewer

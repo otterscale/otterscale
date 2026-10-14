@@ -154,9 +154,13 @@ func TestSharedQueryProblems_CatchesLeaks(t *testing.T) {
 	}
 }
 
-// TestSharedCatalog_Golden: the exact PromQL each name sends. The first
-// fifteen are the queries the dashboard sent at cluster scope before; a change
-// here changes what admins see too.
+// TestSharedCatalog_Golden: the exact PromQL each name sends; a change here
+// changes what admins see too. Against what the dashboard sent at cluster
+// scope before, the first fifteen are: eight verbatim; the three kubevirt-*
+// with only an empty {} dropped; gpu-inventory and the three host-gpu-*
+// changed on purpose, since a shared query must aggregate and may not match
+// with on(): gpu-inventory now sums by its card labels, and the host-gpu-*
+// select hosts with a hostname matcher instead of "and on(hostname)".
 func TestSharedCatalog_Golden(t *testing.T) {
 	const (
 		u = `{UUID=~"GPU-3fd1\\.a|GPU-b"}`
