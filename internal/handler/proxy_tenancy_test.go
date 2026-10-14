@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"net/url"
+	"reflect"
 	"strings"
 	"sync"
 	"testing"
@@ -34,6 +35,13 @@ func (f *fakeAccess) Allowed(_ context.Context, _ string, attrs core.AccessAttri
 		return false, f.err
 	}
 	return f.allow[attrs], nil
+}
+
+// grant makes attrs allowed from now on.
+func (f *fakeAccess) grant(attrs core.AccessAttributes) { //nolint:gocritic // hugeParam: as core.AccessReviewer passes it
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	f.allow[attrs] = true
 }
 
 func (f *fakeAccess) questions() []core.AccessAttributes {
@@ -227,26 +235,26 @@ func TestTenancy_NamespaceParameter(t *testing.T) {
 func TestTenancy_Access(t *testing.T) {
 	params := url.Values{"query": {"kube_pod_info"}, "namespace": {"ws-a"}}
 
-	t.Run("tenant of that namespace", func(t *testing.T) {
+	t.Run("tenant of that namespace is never asked about the cluster", func(t *testing.T) {
 		_, srv := newUpstream(t)
 		access := tenantOf("ws-a")
 		if rec := serveTenancy(t, access, srv.URL, tenancyGet(t, "/api/v1/query", params)); rec.Code != http.StatusOK {
 			t.Fatalf("status = %d, want 200", rec.Code)
 		}
-		want := []core.AccessAttributes{core.ClusterMetricsAccess, core.NamespaceMetricsAccess("ws-a")}
-		if got := access.questions(); len(got) != 2 || got[0] != want[0] || got[1] != want[1] {
-			t.Errorf("asked %v, want %v", got, want)
+		if got := access.questions(); len(got) != 1 || got[0] != core.NamespaceMetricsAccess("ws-a") {
+			t.Errorf("asked %v, want only the namespace question", got)
 		}
 	})
 
-	t.Run("cluster viewer skips the namespace question", func(t *testing.T) {
+	t.Run("cluster viewer outside the namespace", func(t *testing.T) {
 		_, srv := newUpstream(t)
 		access := clusterViewer()
 		if rec := serveTenancy(t, access, srv.URL, tenancyGet(t, "/api/v1/query", params)); rec.Code != http.StatusOK {
 			t.Fatalf("status = %d, want 200", rec.Code)
 		}
-		if got := access.questions(); len(got) != 1 || got[0] != core.ClusterMetricsAccess {
-			t.Errorf("asked %v, want only the cluster question", got)
+		want := []core.AccessAttributes{core.NamespaceMetricsAccess("ws-a"), core.ClusterMetricsAccess}
+		if got := access.questions(); !reflect.DeepEqual(got, want) {
+			t.Errorf("asked %v, want %v", got, want)
 		}
 	})
 

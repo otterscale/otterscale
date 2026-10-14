@@ -256,12 +256,12 @@ func TestShared_Access(t *testing.T) {
 		asked     []core.AccessAttributes
 	}{
 		{
-			"member of the namespace", tenantOf("ws-a"), "ws-a", http.StatusOK, "",
-			[]core.AccessAttributes{core.ClusterMetricsAccess, core.NamespaceMetricsAccess("ws-a")},
+			"member of the namespace, never asked about the cluster", tenantOf("ws-a"), "ws-a", http.StatusOK, "",
+			[]core.AccessAttributes{core.NamespaceMetricsAccess("ws-a")},
 		},
 		{
 			"another namespace", tenantOf("ws-a"), "ws-b", http.StatusForbidden, "forbidden",
-			[]core.AccessAttributes{core.ClusterMetricsAccess, core.NamespaceMetricsAccess("ws-b")},
+			[]core.AccessAttributes{core.NamespaceMetricsAccess("ws-b"), core.ClusterMetricsAccess},
 		},
 		{
 			"no namespace, not a cluster viewer", tenantOf("ws-a"), "", http.StatusForbidden, "forbidden",
@@ -273,11 +273,11 @@ func TestShared_Access(t *testing.T) {
 		},
 		{
 			"cluster viewer naming any namespace", clusterViewer(), "ws-b", http.StatusOK, "",
-			[]core.AccessAttributes{core.ClusterMetricsAccess},
+			[]core.AccessAttributes{core.NamespaceMetricsAccess("ws-b"), core.ClusterMetricsAccess},
 		},
 		{
 			"review failure", &fakeAccess{err: errors.New("tunnel down")}, "ws-a", http.StatusServiceUnavailable, "unavailable",
-			[]core.AccessAttributes{core.ClusterMetricsAccess},
+			[]core.AccessAttributes{core.NamespaceMetricsAccess("ws-a")},
 		},
 	}
 	for _, c := range cases {

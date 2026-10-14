@@ -85,9 +85,10 @@ func (h *ProxyHandler) ServeShared(w http.ResponseWriter, r *http.Request) {
 	if !ok {
 		return
 	}
+	// The namespace first, as at namespace scope (ServeTenancy says why).
 	attrs := []core.AccessAttributes{core.ClusterMetricsAccess}
 	if namespace != "" {
-		attrs = append(attrs, core.NamespaceMetricsAccess(namespace))
+		attrs = []core.AccessAttributes{core.NamespaceMetricsAccess(namespace), core.ClusterMetricsAccess}
 	}
 	if !h.authorize(w, r, cluster, attrs...) {
 		return
