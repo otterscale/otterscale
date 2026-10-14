@@ -16,6 +16,10 @@ import (
 // Impersonate-Uid and the open-ended Impersonate-Extra-* family.
 const impersonationHeaderPrefix = "Impersonate-"
 
+// agentProxyPrefix is where the agent serves its Prometheus proxy; forward
+// puts the approved Prometheus path under it.
+const agentProxyPrefix = "/__otterscale/proxy"
+
 // ProxyHandler relays Prometheus queries from the dashboard through the chisel
 // tunnel to the agent, which queries the cluster's Prometheus with its own
 // credentials. Who may see what is therefore decided here, per cluster, by
@@ -143,7 +147,7 @@ func (h *ProxyHandler) forward(w http.ResponseWriter, r *http.Request, target *u
 				out.URL.Scheme = "http"
 			}
 			out.URL.Host = target.Host
-			out.URL.Path = "/__otterscale/proxy" + promPath
+			out.URL.Path = agentProxyPrefix + promPath
 			out.URL.RawPath = ""
 			out.URL.RawQuery = rawQuery
 			out.Host = target.Host
