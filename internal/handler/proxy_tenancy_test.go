@@ -599,6 +599,18 @@ func TestTenancy_BodySize(t *testing.T) {
 		}
 		assertPinned(t, got[0].parsed.Get("query"), "ws-a")
 	})
+
+	t.Run("rewritten body one byte over the limit", func(t *testing.T) {
+		// The caller's body is well within the limit; only its rewrite is over, by one.
+		rest := url.Values{"pad": {""}, "query": {`up{namespace="ws-a"}`}}.Encode()
+		body := url.Values{"query": {"up"}, "pad": {strings.Repeat("a", maxFormBytes-len(rest)+1)}}.Encode()
+		up, srv := newUpstream(t)
+		rec := serveTenancy(t, tenantOf("ws-a"), srv.URL, tenancyPostBody(t, "/api/v1/query", body))
+		assertPrometheusError(t, rec, http.StatusRequestEntityTooLarge, "bad_data")
+		for _, got := range up.all() {
+			t.Errorf("upstream called with a %d-byte body", got.bodyLen)
+		}
+	})
 }
 
 // TestTenancy_LabelsBodyNeverDropsMatchers: Prometheus' labels endpoint
@@ -669,5 +681,18 @@ func TestEnforceNamespace_UnknownKind(t *testing.T) {
 		if !errors.Is(err, errNoNamespaceRule) {
 			t.Errorf("kind %d: err = %v, want errNoNamespaceRule", kind, err)
 		}
+	}
+}
+
+// TestTenancy_TooManyFormParameters: Go's form parser drops a body with more
+// than 10000 parameters as a whole, which on the labels endpoint would again
+// leave Prometheus without match[]. The hub's own parse refuses it first.
+func TestTenancy_TooManyFormParameters(t *testing.T) {
+	up, srv := newUpstream(t)
+	body := "match[]=up" + strings.Repeat("&a=", 10000)
+	rec := serveTenancy(t, tenantOf("ws-a"), srv.URL, tenancyPostBody(t, "/api/v1/labels", body))
+	assertPrometheusError(t, rec, http.StatusBadRequest, "bad_data")
+	if n := len(up.all()); n != 0 {
+		t.Errorf("upstream called %d times", n)
 	}
 }
