@@ -29,6 +29,10 @@ const impersonationHeaderPrefix = "Impersonate-"
 //     (ServeTenancy, proxy_tenancy.go): any PromQL, for callers who may get
 //     pods in <ns> or have cluster metrics access, rewritten to
 //     namespace="<ns>" by prom-label-proxy's enforcer.
+//   - Shared scope, /proxy/{cluster}/prometheus-shared/{name} (ServeShared,
+//     proxy_shared.go): the hub's own named queries for cluster-wide numbers
+//     that name no workload — per GPU card, per host, or a total — for the
+//     namespace scope's callers too. Callers send no PromQL.
 //
 // This replaces the earlier rule that metrics were shared operational data any
 // authenticated user could read. It mirrors OpenShift's monitoring tenancy
