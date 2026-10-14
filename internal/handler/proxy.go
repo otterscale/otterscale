@@ -161,17 +161,20 @@ func (h *ProxyHandler) forward(w http.ResponseWriter, r *http.Request, target *u
 			// chain — the same reasoning as the header stripping below.
 			pr.SetXForwarded()
 
-			// Drop anything downstream could read as a credential or an
-			// identity assertion. Authorization belongs to the OIDC
-			// middleware, not to Prometheus, and the Impersonate-* family
+			// Drop the caller's credentials and the impersonation headers.
+			// Authorization and Cookie belong to the OIDC middleware and the
+			// dashboard, not to Prometheus, and the Impersonate-* family
 			// must never be caller-controlled: whatever trusted those headers
 			// would be trusting whoever made this request. Nothing on this
 			// path reads them today — which is exactly why they are cheap to
-			// remove now rather than after something does.
+			// remove now rather than after something does. Other headers go
+			// through; kube-rbac-proxy takes identity from the agent's token
+			// alone.
 			//
 			// net/http canonicalizes header names as it parses them, so the
 			// canonical prefix also catches Impersonate-Extra-*.
 			out.Header.Del("Authorization")
+			out.Header.Del("Cookie")
 			for name := range out.Header {
 				if strings.HasPrefix(name, impersonationHeaderPrefix) {
 					out.Header.Del(name)

@@ -39,12 +39,20 @@ type caLoader func(ctx context.Context) ([]byte, error)
 // newPrometheusProxy forwards to target through rt. The caller's
 // Authorization header is always dropped: the hub strips it already, and over
 // https it would otherwise displace the agent's own token, which client-go's
-// bearer round tripper leaves alone when a header is present.
+// bearer round tripper leaves alone when a header is present. So are the
+// Impersonate-* headers, which the hub strips too: the agent's ServiceAccount
+// may impersonate, so nothing it sends may carry a caller's.
 func newPrometheusProxy(target *url.URL, rt http.RoundTripper, errorLog *log.Logger) *httputil.ReverseProxy {
 	return &httputil.ReverseProxy{
 		Rewrite: func(r *httputil.ProxyRequest) {
 			r.SetURL(target)
 			r.Out.Header.Del("Authorization")
+			// Header names arrive canonical, Impersonate-Extra-* included.
+			for name := range r.Out.Header {
+				if strings.HasPrefix(name, "Impersonate-") {
+					r.Out.Header.Del(name)
+				}
+			}
 		},
 		Transport: rt,
 		ModifyResponse: func(resp *http.Response) error {

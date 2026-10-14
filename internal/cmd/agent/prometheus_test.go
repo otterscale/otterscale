@@ -113,6 +113,37 @@ func TestPrometheusProxyPresentsAgentToken(t *testing.T) {
 	}
 }
 
+// TestPrometheusProxyDropsImpersonation: the agent's token may impersonate,
+// so no caller's Impersonate-* header goes out with it.
+func TestPrometheusProxyDropsImpersonation(t *testing.T) {
+	var got []string
+	srv := httptest.NewTLSServer(http.HandlerFunc(func(_ http.ResponseWriter, r *http.Request) {
+		for name := range r.Header {
+			if strings.HasPrefix(name, "Impersonate-") {
+				got = append(got, name)
+			}
+		}
+	}))
+	defer srv.Close()
+
+	cfg := &rest.Config{BearerTokenFile: tokenFile(t)}
+	proxy := newTestProxy(t, srv.URL, cfg, staticCA(certPEM(srv.Certificate().Raw)))
+	req := httptest.NewRequestWithContext(context.Background(), http.MethodGet, "/api/v1/query?query=up", http.NoBody)
+	req.Header.Set("Impersonate-User", "system:admin")
+	req.Header.Add("Impersonate-Group", "system:masters")
+	req.Header.Set("Impersonate-Uid", "0")
+	req.Header.Set("Impersonate-Extra-Scopes", "everything")
+	rec := httptest.NewRecorder()
+	proxy.ServeHTTP(rec, req)
+
+	if rec.Code != http.StatusOK {
+		t.Fatalf("status = %d, want 200", rec.Code)
+	}
+	if len(got) > 0 {
+		t.Errorf("upstream received %v, want no Impersonate-* header", got)
+	}
+}
+
 func TestPrometheusProxyRefusesUnverifiedServer(t *testing.T) {
 	reached := false
 	srv := httptest.NewTLSServer(http.HandlerFunc(func(http.ResponseWriter, *http.Request) { reached = true }))
