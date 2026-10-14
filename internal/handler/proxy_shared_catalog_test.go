@@ -5,6 +5,7 @@ import (
 	"slices"
 	"testing"
 
+	"github.com/prometheus/prometheus/model/labels"
 	"github.com/prometheus/prometheus/promql/parser"
 )
 
@@ -21,6 +22,8 @@ var (
 		"UUID": true, "modelName": true, "hostname": true, "device": true,
 		"GPU_I_ID": true, "gpu": true, "device_uuid": true,
 	}
+	// sharedSafeMatchers: the labels the hub fills in from uuid/hostname.
+	sharedSafeMatchers = map[string]bool{"UUID": true, "hostname": true}
 	// sharedSafeMetrics: the metrics the catalog reads.
 	sharedSafeMetrics = map[string]bool{
 		"DCGM_FI_DEV_GPU_UTIL": true, "DCGM_FI_DEV_FB_USED": true, "DCGM_FI_DEV_FB_FREE": true,
@@ -41,8 +44,8 @@ var (
 	sharedForbiddenFunctions = map[string]bool{"label_replace": true, "label_join": true, "info": true}
 )
 
-// sharedQueryProblems lists every way promql could answer with more than
-// per-card, per-host or total numbers.
+// sharedQueryProblems lists every way promql could answer, or fail, with more
+// than per-card, per-host or total numbers.
 func sharedQueryProblems(promql string) []string {
 	expr, err := parser.NewParser(parser.Options{}).ParseExpr(promql)
 	if err != nil {
@@ -63,6 +66,11 @@ func sharedQueryProblems(promql string) []string {
 					problems = append(problems, fmt.Sprintf("groups by %q", label))
 				}
 			}
+		case *parser.BinaryExpr:
+			if vm := n.VectorMatching; vm != nil && (vm.On || len(vm.MatchingLabels) > 0 || len(vm.Include) > 0) {
+				problems = append(problems,
+					"explicit vector matching (on, ignoring, group_left/right) can name series in Prometheus' error")
+			}
 		case *parser.Call:
 			if sharedForbiddenFunctions[n.Func.Name] {
 				problems = append(problems, "calls "+n.Func.Name)
@@ -71,6 +79,7 @@ func sharedQueryProblems(promql string) []string {
 			if !sharedSafeMetrics[n.Name] {
 				problems = append(problems, fmt.Sprintf("reads %s", n))
 			}
+			problems = append(problems, sharedMatcherProblems(n)...)
 			inAggregation := slices.ContainsFunc(path, func(p parser.Node) bool {
 				_, ok := p.(*parser.AggregateExpr)
 				return ok
@@ -81,6 +90,19 @@ func sharedQueryProblems(promql string) []string {
 		}
 		return nil
 	})
+	return problems
+}
+
+// sharedMatcherProblems, part of sharedQueryProblems: a selector may match on
+// its own metric name and on the labels the hub fills in, nothing else.
+func sharedMatcherProblems(n *parser.VectorSelector) []string {
+	var problems []string
+	for _, m := range n.LabelMatchers {
+		ownName := m.Name == "__name__" && m.Type == labels.MatchEqual && m.Value == n.Name
+		if !ownName && !sharedSafeMatchers[m.Name] {
+			problems = append(problems, fmt.Sprintf("%s filters on %s", n, m.Name))
+		}
+	}
 	return problems
 }
 
@@ -113,6 +135,8 @@ func TestSharedQueryProblems_CatchesLeaks(t *testing.T) {
 		`sum by (UUID) (kube_pod_info)`,
 		`sum by (UUID) ({__name__="DCGM_FI_DEV_FB_USED"})`,
 		`sum(DCGM_FI_DEV_FB_USED) + DCGM_FI_DEV_FB_FREE`,
+		`sum by (UUID) (DCGM_FI_DEV_FB_USED{exported_namespace="team-a"})`,
+		`sum by (device_uuid) (hami_vgpu_memory_used_bytes * on (device_uuid) hami_vgpu_memory_limit_bytes)`,
 	} {
 		if _, err := parser.NewParser(parser.Options{}).ParseExpr(promql); err != nil {
 			t.Errorf("%s does not parse: %v", promql, err)
