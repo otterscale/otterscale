@@ -363,7 +363,7 @@ func serveCluster(t *testing.T, access core.AccessReviewer, backend, rawPathAndQ
 
 // TestProxyHandler_ClusterScopeRefusesRegularUsers: without cluster metrics
 // access every cluster-scope request is 403, whatever the PromQL — aggregates
-// leak other namespaces as surely as series do (spec §1).
+// leak other namespaces as surely as series do.
 func TestProxyHandler_ClusterScopeRefusesRegularUsers(t *testing.T) {
 	requests := []string{
 		"/api/v1/query?" + url.Values{"query": {`sum(ceph_cluster_total_bytes)`}}.Encode(),

@@ -11,11 +11,13 @@ import (
 
 // What the shared scope may hand to any Workspace member. Changing these
 // lists, or the checks in sharedQueryProblems, needs a security review: they
-// are what keeps a shared query from naming a namespace or a pod
-// (OTTERSCALE-288, 2026-10-13-shared-metrics-design.md §5).
+// are what keeps a shared query from naming a namespace or a pod. The rule:
+// every selector reads a listed metric, filters on nothing but its name and
+// the UUID or hostname the hub fills in, and sits inside a sum, max, min, avg
+// or count by card, host or GPU labels only; no label_replace, label_join or
+// info, and no on, ignoring or group modifier.
 //
-// Checked against HAMi v2.10.0 (phison-ai/release SXMR0105/0003) and the DCGM
-// exporter on the HCI lab cluster, 2026-10-13.
+// Checked against HAMi v2.10.0 and the DCGM exporter, 2026-10-13.
 var (
 	// sharedSafeGrouping: per card, per host, per GPU index.
 	sharedSafeGrouping = map[string]bool{

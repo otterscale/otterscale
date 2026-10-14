@@ -154,7 +154,7 @@ func TestAccessReviewCache_CollapsesConcurrentMisses(t *testing.T) {
 // TestAccessReviewCache_NoSecondReviewAfterAFlightLands: a caller that missed
 // just before a flight stored its answer, and reaches singleflight only after
 // that flight is gone, must take the stored answer rather than start a second
-// review inside the TTL (spec §8.6: at most one per user per attribute per 30 s).
+// review inside the TTL: at most one review per user per attribute per 30 s.
 func TestAccessReviewCache_NoSecondReviewAfterAFlightLands(t *testing.T) {
 	start := time.Date(2026, time.October, 8, 12, 0, 0, 0, time.UTC)
 	inner := &countingReviewer{allowed: true}
