@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/tls"
 	"crypto/x509"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"log"
@@ -23,6 +24,10 @@ import (
 // prometheusCAKey is where cert-manager writes the issuing CA in a
 // Certificate's Secret.
 const prometheusCAKey = "ca.crt"
+
+// errPrometheusCA marks a CA that could not be loaded, so the error handler
+// can say so without passing on the underlying error.
+var errPrometheusCA = errors.New("cannot load the prometheus CA")
 
 // caLoader returns the PEM bundle the Prometheus proxy's certificate must
 // chain to.
@@ -45,8 +50,38 @@ func newPrometheusProxy(target *url.URL, rt http.RoundTripper, errorLog *log.Log
 			}
 			return nil
 		},
-		ErrorLog: errorLog,
+		ErrorHandler: prometheusProxyError,
+		ErrorLog:     errorLog,
 	}
+}
+
+// prometheusProxyError answers a request that never reached Prometheus with
+// 502 and a reason the dashboard can show. The error itself, which can name
+// Secrets and addresses, goes to the log only.
+func prometheusProxyError(w http.ResponseWriter, r *http.Request, err error) {
+	slog.Warn("prometheus proxy error", "path", r.URL.Path, "error", err)
+
+	reason := "the agent cannot reach Prometheus"
+	var verifyErr *tls.CertificateVerificationError
+	switch {
+	case errors.Is(err, errPrometheusCA):
+		reason = "the agent cannot load the Prometheus proxy's CA"
+	case errors.As(err, &verifyErr):
+		reason = "the agent cannot verify the Prometheus proxy's certificate"
+	}
+	writePrometheusError(w, http.StatusBadGateway, reason)
+}
+
+// writePrometheusError answers in Prometheus' own error shape, as the hub
+// does, so the dashboard shows the message rather than a generic error.
+func writePrometheusError(w http.ResponseWriter, status int, message string) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(status)
+	_ = json.NewEncoder(w).Encode(struct {
+		Status    string `json:"status"`
+		ErrorType string `json:"errorType"`
+		Error     string `json:"error"`
+	}{"error", "unavailable", message})
 }
 
 // newPrometheusTransport picks how the agent talks to Prometheus by the
@@ -109,11 +144,11 @@ func (t *caTransport) current(ctx context.Context) (*http.Transport, error) {
 
 	bundle, err := t.loadCA(ctx)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("%w: %w", errPrometheusCA, err)
 	}
 	pool := x509.NewCertPool()
 	if !pool.AppendCertsFromPEM(bundle) {
-		return nil, errors.New("the prometheus CA bundle holds no PEM certificate")
+		return nil, fmt.Errorf("%w: the bundle holds no PEM certificate", errPrometheusCA)
 	}
 
 	base, ok := http.DefaultTransport.(*http.Transport)

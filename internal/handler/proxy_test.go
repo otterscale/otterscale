@@ -196,6 +196,29 @@ func TestProxyHandler_ClusterSideUnauthenticated(t *testing.T) {
 	}
 }
 
+// TestProxyHandler_AgentUnreachable: a request that never reached the agent
+// is 502 in Prometheus' error shape, with nothing of the underlying error —
+// the tunnel address — in it.
+func TestProxyHandler_AgentUnreachable(t *testing.T) {
+	closed := httptest.NewServer(http.HandlerFunc(func(http.ResponseWriter, *http.Request) {}))
+	closed.Close()
+	for scope, target := range scopeQueries {
+		t.Run(scope, func(t *testing.T) {
+			access := &fakeAccess{allow: map[core.AccessAttributes]bool{
+				core.ClusterMetricsAccess: true, core.NamespaceMetricsAccess("ws-a"): true,
+			}}
+			h := NewProxyHandler(&mockTunnelForProxy{address: closed.URL}, access)
+			rec := httptest.NewRecorder()
+			newProxyMux(h).ServeHTTP(rec, httptest.NewRequestWithContext(signedIn(t), http.MethodGet, target, http.NoBody))
+
+			assertPrometheusError(t, rec, http.StatusBadGateway, "unavailable")
+			if strings.Contains(rec.Body.String(), "127.0.0.1") {
+				t.Errorf("body %q carries the tunnel address", rec.Body)
+			}
+		})
+	}
+}
+
 func TestProxyHandler_AllowedPath_ForwardsToBackend(t *testing.T) {
 	backend := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path != "/__otterscale/proxy/api/v1/query" {
