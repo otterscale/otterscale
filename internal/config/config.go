@@ -149,8 +149,10 @@ func (c *Config) AgentTunnelServerURL() string {
 }
 
 // AgentProxyPrometheusURL is the in-cluster Prometheus the metrics proxy
-// targets: kube-rbac-proxy over https, or a bare Prometheus over http. Empty
-// disables the proxy.
+// targets: kube-rbac-proxy over https, or a bare Prometheus over http. An
+// empty --proxy-prometheus-url flag or config file value disables the proxy.
+// An empty OTTERSCALE_AGENT_PROXY_PROMETHEUS_URL does not: viper reads an
+// empty environment variable as unset, so the default applies.
 func (c *Config) AgentProxyPrometheusURL() string {
 	return c.v.GetString(keyAgentProxyPrometheusURL)
 }
