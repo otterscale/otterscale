@@ -76,7 +76,7 @@ func (h *ProxyHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	h.forward(w, r, target, promPath, r.URL.RawQuery)
+	h.forward(w, r, target, promPath, r.URL.RawQuery, "")
 }
 
 // resolve writes the error itself and reports whether to go on.
@@ -130,7 +130,10 @@ func (h *ProxyHandler) authorize(w http.ResponseWriter, r *http.Request, cluster
 
 // forward relays to the agent with the path and query given, which are the
 // ones the checks approved — never the request's own, unchecked ones.
-func (h *ProxyHandler) forward(w http.ResponseWriter, r *http.Request, target *url.URL, promPath, rawQuery string) {
+// contentType, when not empty, is the Content-Type of the body the hub wrote
+// itself. It is set on the outgoing request, after the reverse proxy has
+// removed the hop-by-hop headers, so the body is always read as what it is.
+func (h *ProxyHandler) forward(w http.ResponseWriter, r *http.Request, target *url.URL, promPath, rawQuery, contentType string) {
 	proxy := &httputil.ReverseProxy{
 		Rewrite: func(pr *httputil.ProxyRequest) {
 			out := pr.Out
@@ -143,6 +146,9 @@ func (h *ProxyHandler) forward(w http.ResponseWriter, r *http.Request, target *u
 			out.URL.RawPath = ""
 			out.URL.RawQuery = rawQuery
 			out.Host = target.Host
+			if contentType != "" {
+				out.Header.Set("Content-Type", contentType)
+			}
 
 			// Rewrite, unlike the deprecated Director, does not forward the
 			// client address on its own. SetXForwarded overwrites rather than

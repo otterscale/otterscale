@@ -649,6 +649,38 @@ func TestTenancy_LabelsBodyNeverDropsMatchers(t *testing.T) {
 	})
 }
 
+// TestTenancy_ForwardedContentTypeSurvivesHopByHopRemoval: the reverse proxy
+// removes every header the Connection header names before the request is
+// rewritten, so the form Content-Type is set on the outgoing request itself.
+// Without it Prometheus would not read the body, and its match[] with it.
+func TestTenancy_ForwardedContentTypeSurvivesHopByHopRemoval(t *testing.T) {
+	for _, path := range []string{"/api/v1/labels", "/api/v1/label/x/values"} {
+		t.Run(path, func(t *testing.T) {
+			up, srv := newUpstream(t)
+			req := tenancyPost(t, path, url.Values{"namespace": {"ws-a"}}, url.Values{"match[]": {"up"}})
+			req.Header.Set("Connection", "Content-Type")
+			if rec := serveTenancy(t, tenantOf("ws-a"), srv.URL, req); rec.Code != http.StatusOK {
+				t.Fatalf("status = %d, want 200 (%s)", rec.Code, rec.Body)
+			}
+			got := up.all()
+			if len(got) != 1 {
+				t.Fatalf("upstream called %d times, want 1", len(got))
+			}
+			if ct := got[0].header.Get("Content-Type"); ct != formContentType {
+				t.Errorf("upstream Content-Type = %q, want %q", ct, formContentType)
+			}
+			if got[0].formErr != nil {
+				t.Fatalf("Prometheus' form error: %v", got[0].formErr)
+			}
+			matches := got[0].parsed["match[]"]
+			if len(matches) != 1 {
+				t.Fatalf("Prometheus would read match[] = %v, want the enforced one", matches)
+			}
+			assertSelectorPinned(t, matches[0], "ws-a")
+		})
+	}
+}
+
 // TestTenancy_NoContentEncodingUpstream: what reaches the agent is the hub's
 // own plain re-encoding, so a Content-Encoding the caller sent would describe
 // a body that is no longer there.

@@ -102,10 +102,11 @@ func (h *ProxyHandler) ServeTenancy(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	contentType := ""
 	if r.Method == http.MethodPost {
 		r.Body = io.NopCloser(strings.NewReader(body))
 		r.ContentLength = int64(len(body))
-		r.Header.Set("Content-Type", formContentType)
+		contentType = formContentType
 	} else {
 		r.Body = http.NoBody
 		r.ContentLength = 0
@@ -113,7 +114,7 @@ func (h *ProxyHandler) ServeTenancy(w http.ResponseWriter, r *http.Request) {
 	// The body above is the hub's own plain re-encoding; the caller's
 	// Content-Encoding described a body that is not being forwarded.
 	r.Header.Del("Content-Encoding")
-	h.forward(w, r, target, promPath, query.Encode())
+	h.forward(w, r, target, promPath, query.Encode(), contentType)
 }
 
 func tenancyEndpoint(promPath string) tenancyKind {

@@ -80,7 +80,7 @@ func (h *ProxyHandler) ServeShared(w http.ResponseWriter, r *http.Request) {
 
 	r.Body = http.NoBody
 	r.ContentLength = 0
-	h.forward(w, r, target, q.endpoint(), params.Encode())
+	h.forward(w, r, target, q.endpoint(), params.Encode(), "")
 }
 
 // parseSharedRequest checks every parameter against what q declares and
