@@ -7,10 +7,13 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"net/url"
+	"slices"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/otterscale/otterscale/internal/core"
+	"github.com/otterscale/otterscale/internal/providers/cache"
 )
 
 // mockTunnelForProxy implements core.TunnelProvider for these tests.
@@ -417,6 +420,40 @@ func TestProxyHandler_ClusterScopeReviewFailure(t *testing.T) {
 	}
 	if n := len(up.all()); n != 0 {
 		t.Errorf("upstream called %d times: a failed review must not pass", n)
+	}
+}
+
+// TestProxyHandler_ClusterGrantNotHeldBackByCache: through the real cache, a
+// Workspace member who has used only the namespace and shared scopes has no
+// remembered "no" about the cluster, so cluster metrics access granted later
+// works on their very next cluster-scope request, not a TTL later.
+func TestProxyHandler_ClusterGrantNotHeldBackByCache(t *testing.T) {
+	up, srv := newUpstream(t)
+	inner := tenantOf("ws-a")
+	now := time.Date(2026, time.October, 14, 12, 0, 0, 0, time.UTC)
+	cached := cache.NewAccessReviewCache(inner, cache.AccessReviewTTL, cache.WithAccessReviewClock(func() time.Time { return now }))
+	mux := newProxyMux(NewProxyHandler(&mockTunnelForProxy{address: srv.URL}, cached))
+	get := func(target string) int {
+		rec := httptest.NewRecorder()
+		mux.ServeHTTP(rec, httptest.NewRequestWithContext(signedIn(t), http.MethodGet, target, http.NoBody))
+		return rec.Code
+	}
+
+	for _, scope := range []string{"namespace scope", "shared scope"} {
+		if code := get(scopeQueries[scope]); code != http.StatusOK {
+			t.Errorf("%s before the grant: status = %d, want 200", scope, code)
+		}
+	}
+	if asked := inner.questions(); slices.Contains(asked, core.ClusterMetricsAccess) {
+		t.Errorf("asked %v: a Workspace member was asked about the cluster", asked)
+	}
+
+	inner.grant(core.ClusterMetricsAccess)
+	if code := get(scopeQueries["cluster scope"]); code != http.StatusOK {
+		t.Errorf("cluster scope right after the grant: status = %d, want 200", code)
+	}
+	if n := len(up.all()); n != 3 {
+		t.Errorf("upstream called %d times, want 3", n)
 	}
 }
 

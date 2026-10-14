@@ -98,7 +98,11 @@ func (h *ProxyHandler) ServeTenancy(w http.ResponseWriter, r *http.Request) {
 	if !ok {
 		return
 	}
-	if !h.authorize(w, r, cluster, core.ClusterMetricsAccess, core.NamespaceMetricsAccess(namespace)) {
+	// The namespace first: most callers pass there, and are never asked, nor
+	// remembered as refused, about the cluster — so a cluster grant takes
+	// effect on their next cluster-scope request instead of after the cache's
+	// "no" lapses.
+	if !h.authorize(w, r, cluster, core.NamespaceMetricsAccess(namespace), core.ClusterMetricsAccess) {
 		return
 	}
 
