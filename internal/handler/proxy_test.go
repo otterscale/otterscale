@@ -176,6 +176,25 @@ func TestProxyHandler_NoAuthenticatedUser(t *testing.T) {
 	}
 }
 
+// TestProxyHandler_ReviewClusterNotFound: a cluster that is gone by the time
+// it is asked is 404, as when the tunnel cannot resolve it — not 503.
+func TestProxyHandler_ReviewClusterNotFound(t *testing.T) {
+	for scope, target := range scopeQueries {
+		t.Run(scope, func(t *testing.T) {
+			up, srv := newUpstream(t)
+			access := &fakeAccess{err: &core.ErrClusterNotFound{Cluster: "prod"}}
+			h := NewProxyHandler(&mockTunnelForProxy{address: srv.URL}, access)
+			rec := httptest.NewRecorder()
+			newProxyMux(h).ServeHTTP(rec, httptest.NewRequestWithContext(signedIn(t), http.MethodGet, target, http.NoBody))
+
+			assertPrometheusError(t, rec, http.StatusNotFound, "not_found")
+			if n := len(up.all()); n != 0 {
+				t.Errorf("upstream called %d times", n)
+			}
+		})
+	}
+}
+
 // TestProxyHandler_ClusterSideUnauthenticated: a cluster that answers the
 // review with 401 has rejected the agent's credentials, not the caller — the
 // caller is signed in. That is a failed review like any other: 503.
