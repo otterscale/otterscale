@@ -13,12 +13,15 @@ import (
 	"io"
 	"log"
 	"math/big"
+	"net"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
 	"os"
 	"path/filepath"
 	"strings"
+	"sync"
+	"sync/atomic"
 	"testing"
 	"time"
 
@@ -26,6 +29,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes/fake"
 	"k8s.io/client-go/rest"
+	"k8s.io/client-go/transport"
 )
 
 func certPEM(der []byte) []byte {
@@ -123,6 +127,50 @@ func TestPrometheusProxyRefusesUnverifiedServer(t *testing.T) {
 	}
 }
 
+// fakeClock is a caTransport's clock that moves only when told to.
+type fakeClock struct {
+	mu sync.Mutex
+	t  time.Time
+}
+
+func newFakeClock() *fakeClock { return &fakeClock{t: time.Unix(1_700_000_000, 0)} }
+
+func (c *fakeClock) now() time.Time {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	return c.t
+}
+
+func (c *fakeClock) advance(d time.Duration) {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	c.t = c.t.Add(d)
+}
+
+// newCAProxy is newTestProxy with the caTransport given, for tests that need
+// its clock or its state.
+func newCAProxy(t *testing.T, target string, ct *caTransport) http.Handler {
+	t.Helper()
+	u, err := url.Parse(target)
+	if err != nil {
+		t.Fatal(err)
+	}
+	rt, err := transport.NewBearerAuthWithRefreshRoundTripper("", tokenFile(t), ct)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return newPrometheusProxy(u, rt, log.New(io.Discard, "", 0))
+}
+
+// countLoads wraps answer and counts the calls.
+func countLoads(answer caLoader) (caLoader, *atomic.Int32) {
+	var n atomic.Int32
+	return func(ctx context.Context) ([]byte, error) {
+		n.Add(1)
+		return answer(ctx)
+	}, &n
+}
+
 // prometheus-stack may be installed after the agent, and its CA may be
 // re-issued: neither should need an agent restart.
 func TestPrometheusProxyRetriesCA(t *testing.T) {
@@ -141,15 +189,136 @@ func TestPrometheusProxyRetriesCA(t *testing.T) {
 		return answer()
 	}
 
-	cfg := &rest.Config{BearerTokenFile: tokenFile(t)}
-	proxy := newTestProxy(t, srv.URL, cfg, loadCA)
+	clock := newFakeClock()
+	proxy := newCAProxy(t, srv.URL, &caTransport{loadCA: loadCA, now: clock.now})
 	for i, want := range []int{http.StatusBadGateway, http.StatusBadGateway, http.StatusOK, http.StatusOK} {
 		if code := query(proxy); code != want {
 			t.Fatalf("request %d: status = %d, want %d", i+1, code, want)
 		}
+		clock.advance(caRetryInterval)
 	}
 	if loads != len(answers) {
 		t.Errorf("CA loaded %d times, want %d: once per failure, then cached", loads, len(answers))
+	}
+}
+
+// TestCATransportCoolsDownAfterFailedLoad: a CA that cannot be loaded is not
+// asked for again on every query, only once per caRetryInterval.
+func TestCATransportCoolsDownAfterFailedLoad(t *testing.T) {
+	srv := httptest.NewTLSServer(http.HandlerFunc(func(http.ResponseWriter, *http.Request) {}))
+	defer srv.Close()
+
+	loadCA, loads := countLoads(func(context.Context) ([]byte, error) { return nil, errors.New("secret not found") })
+	clock := newFakeClock()
+	proxy := newCAProxy(t, srv.URL, &caTransport{loadCA: loadCA, now: clock.now})
+
+	for i := range 3 {
+		if code := query(proxy); code != http.StatusBadGateway {
+			t.Fatalf("request %d: status = %d, want 502", i+1, code)
+		}
+	}
+	if n := loads.Load(); n != 1 {
+		t.Errorf("CA loaded %d times within caRetryInterval, want 1", n)
+	}
+
+	clock.advance(caRetryInterval)
+	if code := query(proxy); code != http.StatusBadGateway {
+		t.Fatalf("status = %d, want 502", code)
+	}
+	if n := loads.Load(); n != 2 {
+		t.Errorf("CA loaded %d times after caRetryInterval, want 2", n)
+	}
+}
+
+// TestCATransportKeepsUnchangedCA: a certificate that fails verification
+// with the right CA — here, a URL naming a host the certificate does not
+// carry — costs one load and one handshake per caRetryInterval, and a reload
+// that finds the same CA keeps the transport it has.
+func TestCATransportKeepsUnchangedCA(t *testing.T) {
+	var handshakes atomic.Int32
+	srv := httptest.NewUnstartedServer(http.HandlerFunc(func(http.ResponseWriter, *http.Request) {}))
+	srv.Config.ConnState = func(_ net.Conn, state http.ConnState) {
+		if state == http.StateNew {
+			handshakes.Add(1)
+		}
+	}
+	srv.StartTLS()
+	defer srv.Close()
+
+	u, err := url.Parse(srv.URL)
+	if err != nil {
+		t.Fatal(err)
+	}
+	misnamed := "https://localhost:" + u.Port() // the certificate names 127.0.0.1 and example.com
+
+	loadCA, loads := countLoads(staticCA(certPEM(srv.Certificate().Raw)))
+	clock := newFakeClock()
+	ct := &caTransport{loadCA: loadCA, now: clock.now}
+	proxy := newCAProxy(t, misnamed, ct)
+
+	for i := range 3 {
+		rec := serve(proxy, "/api/v1/query?query=up")
+		assertPrometheusError(t, rec, http.StatusBadGateway, "cannot verify the Prometheus proxy's certificate")
+		if t.Failed() {
+			t.Fatalf("request %d", i+1)
+		}
+	}
+	if n, h := loads.Load(), handshakes.Load(); n != 1 || h != 1 {
+		t.Errorf("within caRetryInterval: %d loads and %d handshakes, want 1 and 1", n, h)
+	}
+	first := ct.rt
+
+	clock.advance(caRetryInterval)
+	if code := query(proxy); code != http.StatusBadGateway {
+		t.Fatalf("status = %d, want 502", code)
+	}
+	if n, h := loads.Load(), handshakes.Load(); n != 2 || h != 2 {
+		t.Errorf("after caRetryInterval: %d loads and %d handshakes, want 2 and 2", n, h)
+	}
+	if ct.rt != first {
+		t.Error("the transport was rebuilt for the same CA")
+	}
+}
+
+// TestCATransportWaitersCanGiveUp: requests waiting on a CA load share it,
+// and each can stop waiting when its own context ends.
+func TestCATransportWaitersCanGiveUp(t *testing.T) {
+	srv := httptest.NewTLSServer(http.HandlerFunc(func(http.ResponseWriter, *http.Request) {}))
+	defer srv.Close()
+
+	started, release := make(chan struct{}), make(chan struct{})
+	loadCA, loads := countLoads(func(context.Context) ([]byte, error) {
+		close(started)
+		<-release
+		return certPEM(srv.Certificate().Raw), nil
+	})
+	proxy := newCAProxy(t, srv.URL, &caTransport{loadCA: loadCA})
+
+	first := make(chan int, 1)
+	go func() { first <- query(proxy) }()
+	<-started
+
+	ctx, cancel := context.WithCancel(context.Background())
+	waiter := make(chan int, 1)
+	go func() {
+		req := httptest.NewRequestWithContext(ctx, http.MethodGet, "/api/v1/query?query=up", http.NoBody)
+		rec := httptest.NewRecorder()
+		proxy.ServeHTTP(rec, req)
+		waiter <- rec.Code
+	}()
+	cancel()
+	select {
+	case <-waiter:
+	case <-time.After(5 * time.Second):
+		t.Fatal("a waiting request did not stop when its context ended")
+	}
+
+	close(release)
+	if code := <-first; code != http.StatusOK {
+		t.Errorf("first request: status = %d, want 200", code)
+	}
+	if n := loads.Load(); n != 1 {
+		t.Errorf("CA loaded %d times, want 1 shared load", n)
 	}
 }
 
