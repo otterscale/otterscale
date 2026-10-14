@@ -40,17 +40,28 @@ func NewHandler(cfg *rest.Config, conf *config.Config) *Handler {
 	}
 }
 
-// Mount always registers the catch-all proxy to kube-apiserver, plus, when a
-// Prometheus URL is configured, one under /__otterscale/proxy/ so the hub can
-// relay metrics queries without going through kube-apiserver.
+// Mount always registers the catch-all proxy to kube-apiserver, plus one
+// under /__otterscale/proxy/: the metrics proxy, so the hub can relay metrics
+// queries without going through kube-apiserver, or, when it is off, a 503
+// that says why.
 func (h *Handler) Mount(mux *http.ServeMux) error {
-	if h.proxyPrometheusURL != "" {
-		if err := h.mountPrometheusProxy(mux); err != nil {
-			return err
-		}
+	if h.proxyPrometheusURL == "" {
+		mountDisabledPrometheusProxy(mux, "no Prometheus URL is configured")
+	} else if err := h.mountPrometheusProxy(mux); err != nil {
+		return err
 	}
 
 	return h.mountKubeProxy(mux)
+}
+
+// mountDisabledPrometheusProxy answers the metrics proxy's prefix with 503
+// and why, which would otherwise fall through to the kube-apiserver proxy and
+// come back as its 404.
+func mountDisabledPrometheusProxy(mux *http.ServeMux, reason string) {
+	message := "the metrics proxy is disabled on this cluster's agent: " + reason
+	mux.Handle(proxyPathPrefix, http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		writePrometheusError(w, http.StatusServiceUnavailable, message)
+	}))
 }
 
 func (h *Handler) mountPrometheusProxy(mux *http.ServeMux) error {
@@ -64,6 +75,7 @@ func (h *Handler) mountPrometheusProxy(mux *http.ServeMux) error {
 		if h.cfg.BearerToken == "" && h.cfg.BearerTokenFile == "" {
 			slog.Warn("prometheus proxy disabled: kube-rbac-proxy needs the agent's ServiceAccount token, and this kube config carries none",
 				"target", h.proxyPrometheusURL)
+			mountDisabledPrometheusProxy(mux, "its kube config carries no ServiceAccount token")
 			return nil
 		}
 		client, err := kubernetes.NewForConfig(h.cfg)

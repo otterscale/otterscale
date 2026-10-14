@@ -7,6 +7,7 @@ import (
 	"crypto/rand"
 	"crypto/x509"
 	"crypto/x509/pkix"
+	"encoding/json"
 	"encoding/pem"
 	"errors"
 	"io"
@@ -17,6 +18,7 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 	"time"
 
@@ -163,23 +165,107 @@ func TestPrometheusProxyPassesRejectionThrough(t *testing.T) {
 	}
 }
 
-func TestMountSkipsPrometheusWithoutToken(t *testing.T) {
-	kube := httptest.NewServer(http.NotFoundHandler())
+// assertPrometheusError requires Prometheus' JSON error shape, whose message
+// the dashboard shows, and that message to contain want.
+func assertPrometheusError(t *testing.T, rec *httptest.ResponseRecorder, status int, want string) {
+	t.Helper()
+	if rec.Code != status {
+		t.Errorf("status = %d, want %d", rec.Code, status)
+	}
+	if ct := rec.Header().Get("Content-Type"); ct != "application/json" {
+		t.Errorf("Content-Type = %q, want application/json", ct)
+	}
+	var body struct {
+		Status    string `json:"status"`
+		ErrorType string `json:"errorType"`
+		Error     string `json:"error"`
+	}
+	if err := json.Unmarshal(rec.Body.Bytes(), &body); err != nil ||
+		body.Status != "error" || body.ErrorType != "unavailable" || !strings.Contains(body.Error, want) {
+		t.Errorf("body = %q, want Prometheus' error shape with %q in it", rec.Body, want)
+	}
+}
+
+func serve(h http.Handler, path string) *httptest.ResponseRecorder {
+	req := httptest.NewRequestWithContext(context.Background(), http.MethodGet, path, http.NoBody)
+	rec := httptest.NewRecorder()
+	h.ServeHTTP(rec, req)
+	return rec
+}
+
+// TestPrometheusProxyExplainsFailures: a request the agent cannot deliver is
+// 502 with a reason the dashboard can show, and nothing from the underlying
+// error — Secret names, addresses — in it.
+func TestPrometheusProxyExplainsFailures(t *testing.T) {
+	tlsSrv := httptest.NewTLSServer(http.HandlerFunc(func(http.ResponseWriter, *http.Request) {}))
+	defer tlsSrv.Close()
+	closed := httptest.NewServer(http.HandlerFunc(func(http.ResponseWriter, *http.Request) {}))
+	closed.Close()
+
+	cfg := &rest.Config{BearerTokenFile: tokenFile(t)}
+	cases := []struct {
+		desc   string
+		target string
+		loadCA caLoader
+		want   string
+	}{
+		{
+			"CA not loaded", tlsSrv.URL,
+			func(context.Context) ([]byte, error) { return nil, errors.New("secrets \"prom-tls\" not found") },
+			"cannot load the Prometheus proxy's CA",
+		},
+		{"CA holds no certificate", tlsSrv.URL, staticCA([]byte("not PEM")), "cannot load the Prometheus proxy's CA"},
+		{"certificate not verified", tlsSrv.URL, staticCA(unrelatedCA(t)), "cannot verify the Prometheus proxy's certificate"},
+		{"nothing listening", closed.URL, nil, "cannot reach Prometheus"},
+	}
+	for _, c := range cases {
+		t.Run(c.desc, func(t *testing.T) {
+			rec := serve(newTestProxy(t, c.target, cfg, c.loadCA), "/api/v1/query?query=up")
+			assertPrometheusError(t, rec, http.StatusBadGateway, c.want)
+			for _, secret := range []string{"prom-tls", "127.0.0.1"} {
+				if strings.Contains(rec.Body.String(), secret) {
+					t.Errorf("body %q carries %q", rec.Body, secret)
+				}
+			}
+		})
+	}
+}
+
+// TestMountDisabledPrometheus: with the metrics proxy off, its prefix answers
+// 503 with the reason instead of falling through to kube-apiserver's proxy.
+func TestMountDisabledPrometheus(t *testing.T) {
+	kubeCalled := false
+	kube := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		kubeCalled = true
+		w.WriteHeader(http.StatusNotFound)
+	}))
 	defer kube.Close()
 
-	h := &Handler{
-		cfg:                     &rest.Config{Host: kube.URL},
-		proxyPrometheusURL:      "https://prometheus.example:9091",
-		proxyPrometheusCASecret: "monitoring/prom-tls",
+	cases := []struct {
+		desc string
+		url  string
+		want string
+	}{
+		{"no ServiceAccount token", "https://prometheus.example:9091", "no ServiceAccount token"},
+		{"no Prometheus URL", "", "no Prometheus URL"},
 	}
-	mux := http.NewServeMux()
-	if err := h.Mount(mux); err != nil {
-		t.Fatalf("Mount() = %v, want nil: a token-less kube config must not stop the agent", err)
-	}
+	for _, c := range cases {
+		t.Run(c.desc, func(t *testing.T) {
+			h := &Handler{
+				cfg:                     &rest.Config{Host: kube.URL},
+				proxyPrometheusURL:      c.url,
+				proxyPrometheusCASecret: "monitoring/prom-tls",
+			}
+			mux := http.NewServeMux()
+			if err := h.Mount(mux); err != nil {
+				t.Fatalf("Mount() = %v, want nil: a disabled metrics proxy must not stop the agent", err)
+			}
 
-	req := httptest.NewRequestWithContext(context.Background(), http.MethodGet, proxyPathPrefix+"api/v1/query", http.NoBody)
-	if _, pattern := mux.Handler(req); pattern == proxyPathPrefix {
-		t.Error("the prometheus proxy was mounted without a ServiceAccount token")
+			assertPrometheusError(t, serve(mux, proxyPathPrefix+"api/v1/query?query=up"), http.StatusServiceUnavailable, c.want)
+			if kubeCalled {
+				t.Error("the request fell through to kube-apiserver's proxy")
+			}
+		})
 	}
 }
 

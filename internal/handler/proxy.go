@@ -3,6 +3,7 @@ package handler
 import (
 	"encoding/json"
 	"errors"
+	"log/slog"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
@@ -172,6 +173,12 @@ func (h *ProxyHandler) forward(w http.ResponseWriter, r *http.Request, target *u
 					out.Header.Del(name)
 				}
 			}
+		},
+		// The default answers an empty 502. The error, which names the
+		// tunnel address, goes to the log only.
+		ErrorHandler: func(w http.ResponseWriter, r *http.Request, err error) {
+			slog.Warn("metrics proxy cannot reach the agent", "cluster", r.PathValue("cluster"), "error", err)
+			writePrometheusError(w, http.StatusBadGateway, "unavailable", "cannot reach this cluster's agent")
 		},
 	}
 	proxy.ServeHTTP(w, r) // #nosec G704
