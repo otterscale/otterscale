@@ -76,7 +76,7 @@ A background reaper detects disconnected tunnel clients and removes stale regist
 
 ## Who sees which metrics
 
-Metrics are no longer shared by every signed-in user (see [api.md](api.md#additional-endpoints)). A Workspace member sees their own namespaces through `/prometheus-tenancy`; the cluster-wide pages need cluster metrics access on that cluster. To give it to someone who is not cluster-admin, bind the ClusterRole the otterscale-agent chart ships, on each cluster they should see:
+Metrics are no longer shared by every signed-in user (see [api.md](api.md#additional-endpoints)). A Workspace member sees their own namespaces through `/prometheus-tenancy`; the cluster-wide pages need cluster metrics access on that cluster. To give it to someone who is not cluster-admin, bind the ClusterRole the otterscale-agent chart ships from 1.2.0 on (`kubectl get clusterrole otterscale:metrics-cluster-view` shows whether a cluster has it), on each cluster they should see:
 
     kubectl create clusterrolebinding metrics-view-<name> --clusterrole=otterscale:metrics-cluster-view --user=<their OIDC subject>
 
