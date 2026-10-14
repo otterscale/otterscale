@@ -67,7 +67,11 @@ func sharedQueryProblems(promql string) []string {
 				}
 			}
 		case *parser.BinaryExpr:
-			if vm := n.VectorMatching; vm != nil && (vm.On || len(vm.MatchingLabels) > 0 || len(vm.Include) > 0) {
+			// "ignoring () group_left" names no label and is caught by its
+			// card alone. Set operators are many-to-many by definition.
+			vm := n.VectorMatching
+			grouped := vm != nil && !n.Op.IsSetOperator() && vm.Card != parser.CardOneToOne
+			if vm != nil && (vm.On || len(vm.MatchingLabels) > 0 || len(vm.Include) > 0 || grouped) {
 				problems = append(problems,
 					"explicit vector matching (on, ignoring, group_left/right) can name series in Prometheus' error")
 			}
@@ -137,6 +141,8 @@ func TestSharedQueryProblems_CatchesLeaks(t *testing.T) {
 		`sum(DCGM_FI_DEV_FB_USED) + DCGM_FI_DEV_FB_FREE`,
 		`sum by (UUID) (DCGM_FI_DEV_FB_USED{exported_namespace="team-a"})`,
 		`sum by (device_uuid) (hami_vgpu_memory_used_bytes * on (device_uuid) hami_vgpu_memory_limit_bytes)`,
+		`sum by (device_uuid) (hami_vgpu_memory_used_bytes * ignoring () group_left hami_vgpu_memory_limit_bytes)`,
+		`sum by (device_uuid) (hami_vgpu_memory_used_bytes > ignoring () group_right hami_vgpu_memory_limit_bytes)`,
 	} {
 		if _, err := parser.NewParser(parser.Options{}).ParseExpr(promql); err != nil {
 			t.Errorf("%s does not parse: %v", promql, err)
