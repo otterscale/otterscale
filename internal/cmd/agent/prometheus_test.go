@@ -5,6 +5,7 @@ import (
 	"crypto/ecdsa"
 	"crypto/elliptic"
 	"crypto/rand"
+	"crypto/tls"
 	"crypto/x509"
 	"crypto/x509/pkix"
 	"encoding/json"
@@ -19,10 +20,12 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+	"slices"
 	"strings"
 	"sync"
 	"sync/atomic"
 	"testing"
+	"testing/synctest"
 	"time"
 
 	corev1 "k8s.io/api/core/v1"
@@ -172,10 +175,11 @@ func (c *fakeClock) now() time.Time {
 	return c.t
 }
 
-func (c *fakeClock) advance(d time.Duration) {
+// passRetryInterval moves the clock to where a CA load is due again.
+func (c *fakeClock) passRetryInterval() {
 	c.mu.Lock()
 	defer c.mu.Unlock()
-	c.t = c.t.Add(d)
+	c.t = c.t.Add(caRetryInterval)
 }
 
 // newCAProxy is newTestProxy with the caTransport given, for tests that need
@@ -226,7 +230,7 @@ func TestPrometheusProxyRetriesCA(t *testing.T) {
 		if code := query(proxy); code != want {
 			t.Fatalf("request %d: status = %d, want %d", i+1, code, want)
 		}
-		clock.advance(caRetryInterval)
+		clock.passRetryInterval()
 	}
 	if loads != len(answers) {
 		t.Errorf("CA loaded %d times, want %d: once per failure, then cached", loads, len(answers))
@@ -252,7 +256,7 @@ func TestCATransportCoolsDownAfterFailedLoad(t *testing.T) {
 		t.Errorf("CA loaded %d times within caRetryInterval, want 1", n)
 	}
 
-	clock.advance(caRetryInterval)
+	clock.passRetryInterval()
 	if code := query(proxy); code != http.StatusBadGateway {
 		t.Fatalf("status = %d, want 502", code)
 	}
@@ -299,7 +303,7 @@ func TestCATransportKeepsUnchangedCA(t *testing.T) {
 	}
 	first := ct.rt
 
-	clock.advance(caRetryInterval)
+	clock.passRetryInterval()
 	if code := query(proxy); code != http.StatusBadGateway {
 		t.Fatalf("status = %d, want 502", code)
 	}
@@ -354,14 +358,18 @@ func TestCATransportWaitersCanGiveUp(t *testing.T) {
 }
 
 func TestPrometheusProxyPassesRejectionThrough(t *testing.T) {
-	srv := httptest.NewTLSServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
-		w.WriteHeader(http.StatusForbidden)
-	}))
-	defer srv.Close()
+	for _, status := range []int{http.StatusUnauthorized, http.StatusForbidden} {
+		t.Run(http.StatusText(status), func(t *testing.T) {
+			srv := httptest.NewTLSServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+				w.WriteHeader(status)
+			}))
+			defer srv.Close()
 
-	cfg := &rest.Config{BearerTokenFile: tokenFile(t)}
-	if code := query(newTestProxy(t, srv.URL, cfg, staticCA(certPEM(srv.Certificate().Raw)))); code != http.StatusForbidden {
-		t.Fatalf("status = %d, want the upstream 403", code)
+			cfg := &rest.Config{BearerTokenFile: tokenFile(t)}
+			if code := query(newTestProxy(t, srv.URL, cfg, staticCA(certPEM(srv.Certificate().Raw)))); code != status {
+				t.Fatalf("status = %d, want the upstream %d", code, status)
+			}
+		})
 	}
 }
 
@@ -466,6 +474,221 @@ func TestMountDisabledPrometheus(t *testing.T) {
 				t.Error("the request fell through to kube-apiserver's proxy")
 			}
 		})
+	}
+}
+
+// TestPrometheusProxyFollowsTokenRotation: the agent re-reads its token file
+// — client-go caches it for under a minute — so a rotated token is sent
+// without a restart. The minute passes on synctest's clock. In between, the
+// old token's 401 reaches the hub unchanged.
+func TestPrometheusProxyFollowsTokenRotation(t *testing.T) {
+	var mu sync.Mutex
+	accepted, seen := "Bearer old-token", []string{}
+	// Outside the bubble: a server's goroutines wait on the network, which
+	// would keep synctest's clock from moving.
+	srv := httptest.NewTLSServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		mu.Lock()
+		defer mu.Unlock()
+		seen = append(seen, r.Header.Get("Authorization"))
+		if r.Header.Get("Authorization") != accepted {
+			w.WriteHeader(http.StatusUnauthorized)
+		}
+	}))
+	defer srv.Close()
+	path := filepath.Join(t.TempDir(), "token")
+
+	synctest.Test(t, func(t *testing.T) {
+		if err := os.WriteFile(path, []byte("old-token"), 0o600); err != nil {
+			t.Fatal(err)
+		}
+		u, err := url.Parse(srv.URL)
+		if err != nil {
+			t.Fatal(err)
+		}
+		rt, err := newPrometheusTransport(u, &rest.Config{BearerTokenFile: path}, staticCA(certPEM(srv.Certificate().Raw)))
+		if err != nil {
+			t.Fatal(err)
+		}
+		proxy := newPrometheusProxy(u, rt, log.New(io.Discard, "", 0))
+		// Idle connections wait on the network too; drop them before the
+		// clock has to move, and before the bubble ends.
+		closeIdle := func() {
+			wrapped, ok := rt.(interface{ WrappedRoundTripper() http.RoundTripper })
+			if !ok {
+				t.Fatalf("%T does not expose the transport it wraps", rt)
+			}
+			ct, ok := wrapped.WrappedRoundTripper().(*caTransport)
+			if !ok {
+				t.Fatalf("wraps %T, want *caTransport", wrapped.WrappedRoundTripper())
+			}
+			ct.mu.Lock()
+			defer ct.mu.Unlock()
+			if ct.rt != nil {
+				ct.rt.CloseIdleConnections()
+			}
+		}
+		defer closeIdle()
+
+		if code := query(proxy); code != http.StatusOK {
+			t.Fatalf("before rotation: status = %d, want 200", code)
+		}
+
+		if err := os.WriteFile(path, []byte("new-token"), 0o600); err != nil {
+			t.Fatal(err)
+		}
+		mu.Lock()
+		accepted = "Bearer new-token"
+		mu.Unlock()
+		if code := query(proxy); code != http.StatusUnauthorized {
+			t.Fatalf("right after rotation: status = %d, want the upstream 401", code)
+		}
+
+		closeIdle()
+		time.Sleep(time.Minute)
+		if code := query(proxy); code != http.StatusOK {
+			t.Fatalf("a minute after rotation: status = %d, want 200 with the new token", code)
+		}
+	})
+
+	mu.Lock()
+	defer mu.Unlock()
+	want := []string{"Bearer old-token", "Bearer old-token", "Bearer new-token"}
+	if !slices.Equal(seen, want) {
+		t.Errorf("upstream saw %v, want %v", seen, want)
+	}
+}
+
+// TestPrometheusProxyDoesNotFollowRedirects: a redirect goes back to the hub
+// as it is; the agent never takes its token to the address it names.
+func TestPrometheusProxyDoesNotFollowRedirects(t *testing.T) {
+	elsewhereAuth := make(chan string, 1)
+	elsewhere := httptest.NewTLSServer(http.HandlerFunc(func(_ http.ResponseWriter, r *http.Request) {
+		elsewhereAuth <- r.Header.Get("Authorization")
+	}))
+	defer elsewhere.Close()
+	srv := httptest.NewTLSServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		http.Redirect(w, r, elsewhere.URL+"/api/v1/query", http.StatusFound)
+	}))
+	defer srv.Close()
+
+	cfg := &rest.Config{BearerTokenFile: tokenFile(t)}
+	rec := serve(newTestProxy(t, srv.URL, cfg, staticCA(certPEM(srv.Certificate().Raw))), "/api/v1/query?query=up")
+	if rec.Code != http.StatusFound {
+		t.Errorf("status = %d, want the upstream 302", rec.Code)
+	}
+	select {
+	case auth := <-elsewhereAuth:
+		t.Errorf("the redirect was followed, with Authorization %q", auth)
+	default:
+	}
+}
+
+// selfSignedChain is a CA and a certificate for 127.0.0.1 it signed.
+func selfSignedChain(t *testing.T, name string) (caPEM []byte, leaf tls.Certificate) {
+	t.Helper()
+	caKey, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
+	if err != nil {
+		t.Fatal(err)
+	}
+	caTmpl := &x509.Certificate{
+		SerialNumber:          big.NewInt(1),
+		Subject:               pkix.Name{CommonName: name + " CA"},
+		NotBefore:             time.Now().Add(-time.Hour),
+		NotAfter:              time.Now().Add(time.Hour),
+		IsCA:                  true,
+		BasicConstraintsValid: true,
+		KeyUsage:              x509.KeyUsageCertSign,
+	}
+	caDER, err := x509.CreateCertificate(rand.Reader, caTmpl, caTmpl, &caKey.PublicKey, caKey)
+	if err != nil {
+		t.Fatal(err)
+	}
+	ca, err := x509.ParseCertificate(caDER)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	key, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
+	if err != nil {
+		t.Fatal(err)
+	}
+	tmpl := &x509.Certificate{
+		SerialNumber: big.NewInt(2),
+		Subject:      pkix.Name{CommonName: name},
+		NotBefore:    time.Now().Add(-time.Hour),
+		NotAfter:     time.Now().Add(time.Hour),
+		IPAddresses:  []net.IP{net.IPv4(127, 0, 0, 1)},
+		KeyUsage:     x509.KeyUsageDigitalSignature,
+		ExtKeyUsage:  []x509.ExtKeyUsage{x509.ExtKeyUsageServerAuth},
+	}
+	der, err := x509.CreateCertificate(rand.Reader, tmpl, ca, &key.PublicKey, caKey)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return certPEM(caDER), tls.Certificate{Certificate: [][]byte{der}, PrivateKey: key}
+}
+
+// TestCATransportConcurrentRotation: when the proxy's CA is re-issued under
+// load, the requests that meet the new certificate share one reload, and
+// every request after it is verified against the new CA.
+func TestCATransportConcurrentRotation(t *testing.T) {
+	oldCA, oldLeaf := selfSignedChain(t, "old")
+	newCA, newLeaf := selfSignedChain(t, "new")
+
+	var mu sync.Mutex
+	serving, published := &oldLeaf, oldCA
+	srv := httptest.NewUnstartedServer(http.HandlerFunc(func(http.ResponseWriter, *http.Request) {}))
+	// The client sends no SNI for an IP, so GetCertificate would not be
+	// asked; a per-connection config is.
+	srv.TLS = &tls.Config{
+		MinVersion: tls.VersionTLS12,
+		GetConfigForClient: func(*tls.ClientHelloInfo) (*tls.Config, error) {
+			mu.Lock()
+			defer mu.Unlock()
+			return &tls.Config{MinVersion: tls.VersionTLS12, Certificates: []tls.Certificate{*serving}}, nil
+		},
+	}
+	srv.StartTLS()
+	defer srv.Close()
+
+	loadCA, loads := countLoads(func(context.Context) ([]byte, error) {
+		mu.Lock()
+		defer mu.Unlock()
+		return published, nil
+	})
+	clock := newFakeClock()
+	proxy := newCAProxy(t, srv.URL, &caTransport{loadCA: loadCA, now: clock.now})
+	if code := query(proxy); code != http.StatusOK {
+		t.Fatalf("before rotation: status = %d, want 200", code)
+	}
+
+	mu.Lock()
+	serving, published = &newLeaf, newCA
+	mu.Unlock()
+	srv.CloseClientConnections()
+	clock.passRetryInterval()
+
+	const n = 32
+	var wg sync.WaitGroup
+	codes := make(chan int, n)
+	for range n {
+		wg.Go(func() { codes <- query(proxy) })
+	}
+	wg.Wait()
+	close(codes)
+	for code := range codes {
+		if code != http.StatusOK && code != http.StatusBadGateway {
+			t.Errorf("during rotation: status = %d, want 200 or 502", code)
+		}
+	}
+
+	for i := range 3 {
+		if code := query(proxy); code != http.StatusOK {
+			t.Fatalf("after rotation, request %d: status = %d, want 200", i+1, code)
+		}
+	}
+	if got := loads.Load(); got != 2 {
+		t.Errorf("CA loaded %d times, want 2: once at first use, once shared by the rotation", got)
 	}
 }
 

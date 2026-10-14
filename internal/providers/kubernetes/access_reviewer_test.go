@@ -7,6 +7,7 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
+	"slices"
 	"sync"
 	"testing"
 
@@ -21,7 +22,8 @@ import (
 type ssarServer struct {
 	mu      sync.Mutex
 	allowed bool
-	status  int // non-zero: answer with this HTTP status instead
+	verdict *authorizationv1.SubjectAccessReviewStatus // non-nil: answer with this instead of allowed
+	status  int                                        // non-zero: answer with this HTTP status instead
 	got     []authorizationv1.ResourceAttributes
 	users   []string
 	groups  [][]string
@@ -50,7 +52,7 @@ func (s *ssarServer) handler(t *testing.T) http.Handler {
 		}
 		s.users = append(s.users, r.Header.Get("Impersonate-User"))
 		s.groups = append(s.groups, r.Header.Values("Impersonate-Group"))
-		status, allowed := s.status, s.allowed
+		status, allowed, verdict := s.status, s.allowed, s.verdict
 		s.mu.Unlock()
 
 		if status != 0 {
@@ -58,6 +60,9 @@ func (s *ssarServer) handler(t *testing.T) http.Handler {
 			return
 		}
 		review.Status = authorizationv1.SubjectAccessReviewStatus{Allowed: allowed}
+		if verdict != nil {
+			review.Status = *verdict
+		}
 		w.Header().Set("Content-Type", "application/json")
 		_ = json.NewEncoder(w).Encode(review)
 	})
@@ -101,8 +106,30 @@ func TestAccessReviewerAsksAsTheCaller(t *testing.T) {
 	if len(srv.users) != 1 || srv.users[0] != "alice" {
 		t.Errorf("Impersonate-User = %v, want [alice]", srv.users)
 	}
-	if len(srv.groups) != 1 || len(srv.groups[0]) != 2 {
-		t.Errorf("Impersonate-Group = %v, want both groups", srv.groups)
+	if want := []string{"system:authenticated", "oidc:team-a"}; len(srv.groups) != 1 || !slices.Equal(srv.groups[0], want) {
+		t.Errorf("Impersonate-Group = %v, want [%v]", srv.groups, want)
+	}
+}
+
+// TestAccessReviewerExplicitNo: an authorizer that denies outright, or that
+// erred while evaluating and did not allow, has answered "no" — not failed.
+func TestAccessReviewerExplicitNo(t *testing.T) {
+	verdicts := map[string]authorizationv1.SubjectAccessReviewStatus{
+		"denied":                     {Allowed: false, Denied: true, Reason: "denied by policy"},
+		"evaluation error, no allow": {Allowed: false, EvaluationError: "role \"gone\" not found"},
+	}
+	for name, verdict := range verdicts {
+		t.Run(name, func(t *testing.T) {
+			reviewer := newAccessReviewTest(t, &ssarServer{verdict: &verdict})
+
+			allowed, err := reviewer.Allowed(aliceContext(t), "prod", core.ClusterMetricsAccess)
+			if err != nil {
+				t.Fatalf("Allowed: %v, want a plain no", err)
+			}
+			if allowed {
+				t.Error("allowed = true, want false")
+			}
+		})
 	}
 }
 
