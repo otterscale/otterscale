@@ -105,7 +105,7 @@ func TestSharedCatalog_Safety(t *testing.T) {
 func TestSharedQueryProblems_CatchesLeaks(t *testing.T) {
 	for _, promql := range []string{
 		`hami_vgpu_memory_used_bytes`,
-		`sum without (exported_pod) (hami_vgpu_memory_used_bytes)`,
+		`sum without (device_uuid) (hami_vgpu_memory_used_bytes)`,
 		`sum by (exported_namespace) (hami_vgpu_memory_used_bytes)`,
 		`topk by (device_uuid) (1, hami_vgpu_memory_used_bytes)`,
 		`count_values by (device_uuid) ("v", hami_vgpu_memory_used_bytes)`,
@@ -114,6 +114,10 @@ func TestSharedQueryProblems_CatchesLeaks(t *testing.T) {
 		`sum by (UUID) ({__name__="DCGM_FI_DEV_FB_USED"})`,
 		`sum(DCGM_FI_DEV_FB_USED) + DCGM_FI_DEV_FB_FREE`,
 	} {
+		if _, err := parser.NewParser(parser.Options{}).ParseExpr(promql); err != nil {
+			t.Errorf("%s does not parse: %v", promql, err)
+			continue
+		}
 		if problems := sharedQueryProblems(promql); len(problems) == 0 {
 			t.Errorf("%s passed the safety check", promql)
 		}
