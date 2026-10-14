@@ -1,6 +1,7 @@
 package agent
 
 import (
+	"bytes"
 	"context"
 	"crypto/ecdsa"
 	"crypto/elliptic"
@@ -13,6 +14,7 @@ import (
 	"errors"
 	"io"
 	"log"
+	"log/slog"
 	"math/big"
 	"net"
 	"net/http"
@@ -759,5 +761,31 @@ func TestSecretCALoader(t *testing.T) {
 		if _, err := secretCALoader(client, ref); err == nil {
 			t.Errorf("%q: want an error for a ref that is not namespace/name", ref)
 		}
+	}
+}
+
+// TestPrometheusProxyError_CallerCancel: a request its caller canceled is not
+// reported as a Prometheus failure; a real failure still is, with the reason.
+func TestPrometheusProxyError_CallerCancel(t *testing.T) {
+	var logs bytes.Buffer
+	prev := slog.Default()
+	slog.SetDefault(slog.New(slog.NewTextHandler(&logs, &slog.HandlerOptions{Level: slog.LevelWarn})))
+	t.Cleanup(func() { slog.SetDefault(prev) })
+
+	ctx, cancel := context.WithCancel(context.Background())
+	cancel()
+	prometheusProxyError(httptest.NewRecorder(),
+		httptest.NewRequestWithContext(ctx, http.MethodGet, "/api/v1/query", http.NoBody), context.Canceled)
+	if logs.Len() != 0 {
+		t.Errorf("a canceled caller was logged as a proxy error: %s", logs.String())
+	}
+
+	rec := httptest.NewRecorder()
+	prometheusProxyError(rec, httptest.NewRequestWithContext(context.Background(), http.MethodGet, "/api/v1/query", http.NoBody), errors.New("dial tcp: refused"))
+	if !strings.Contains(logs.String(), "prometheus proxy error") {
+		t.Errorf("a real failure was not logged: %q", logs.String())
+	}
+	if rec.Code != http.StatusBadGateway {
+		t.Errorf("status %d, want 502", rec.Code)
 	}
 }
