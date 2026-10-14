@@ -9,6 +9,7 @@ import (
 	"net/url"
 	"reflect"
 	"strings"
+	"sync"
 	"testing"
 
 	"github.com/otterscale/otterscale/internal/core"
@@ -150,6 +151,95 @@ func TestShared_Parameters(t *testing.T) {
 		}
 		if n := len(up.all()); n != 1 {
 			t.Errorf("upstream called %d times, want 1", n)
+		}
+	})
+}
+
+// sharedURILen is the length of the request URI the hub forwards for name
+// and params: path, "?" and encoded query.
+func sharedURILen(t *testing.T, name string, params url.Values) int {
+	t.Helper()
+	q := sharedCatalog[name]
+	forwarded, _, err := parseSharedRequest(sharedGet(t, name, params), q)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return len(agentProxyPrefix+q.endpoint()) + len("?") + len(forwarded.Encode())
+}
+
+// TestShared_ForwardedURILimit: the PromQL travels in the URL, and the agent,
+// like the hub, refuses request headers over 8 KiB with 431. The hub refuses
+// a request whose forwarded URI would be over maxSharedRequestURIBytes with
+// its own 400 instead, and the largest it accepts still gets through.
+func TestShared_ForwardedURILimit(t *testing.T) {
+	var reached []int
+	var mu sync.Mutex
+	agent := httptest.NewUnstartedServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		mu.Lock()
+		reached = append(reached, len(r.RequestURI))
+		mu.Unlock()
+		w.Header().Set("Content-Type", "application/json")
+		_, _ = w.Write([]byte(`{"status":"success","data":{"resultType":"vector","result":[]}}`))
+	}))
+	agent.Config.MaxHeaderBytes = 8 << 10 // as the agent's server sets it
+	agent.Start()
+	t.Cleanup(agent.Close)
+
+	// The server is as strict as the agent's: well past its limit, 431.
+	long, err := http.NewRequestWithContext(t.Context(), http.MethodGet, agent.URL+"/?pad="+strings.Repeat("a", 16<<10), http.NoBody)
+	if err != nil {
+		t.Fatal(err)
+	}
+	resp, err := agent.Client().Do(long)
+	if err != nil {
+		t.Fatal(err)
+	}
+	_ = resp.Body.Close()
+	if resp.StatusCode != http.StatusRequestHeaderFieldsTooLarge {
+		t.Fatalf("a 16 KiB URI got %d, want 431: the server does not stand in for the agent's", resp.StatusCode)
+	}
+
+	// The most cards whose forwarded URI fits, then the last UUID padded to
+	// the limit exactly: one more byte is over it.
+	params := url.Values{"namespace": {"ws-a"}, "time": {"1700000000"}}
+	for i := 0; ; i++ {
+		params.Add("uuid", fmt.Sprintf("GPU-%08d-0000-0000-0000-000000000000", i)) // as long as a real one
+		if sharedURILen(t, "gpu-util", params) > maxSharedRequestURIBytes {
+			uuids := params["uuid"]
+			params["uuid"] = uuids[:len(uuids)-1]
+			break
+		}
+	}
+	uuids := params["uuid"]
+	uuids[len(uuids)-1] += strings.Repeat("a", maxSharedRequestURIBytes-sharedURILen(t, "gpu-util", params))
+	if n := sharedURILen(t, "gpu-util", params); n != maxSharedRequestURIBytes {
+		t.Fatalf("built a %d-byte URI, want %d", n, maxSharedRequestURIBytes)
+	}
+
+	t.Run("at the limit", func(t *testing.T) {
+		rec := serveShared(t, tenantOf("ws-a"), agent.URL, sharedGet(t, "gpu-util", params))
+		if rec.Code != http.StatusOK {
+			t.Fatalf("status = %d, want 200 (%s)", rec.Code, rec.Body)
+		}
+		mu.Lock()
+		defer mu.Unlock()
+		if len(reached) != 1 || reached[0] != maxSharedRequestURIBytes {
+			t.Errorf("agent got request URIs of %v bytes, want one of %d", reached, maxSharedRequestURIBytes)
+		}
+	})
+
+	t.Run("one byte over", func(t *testing.T) {
+		uuids[len(uuids)-1] += "a"
+		access := tenantOf("ws-a")
+		rec := serveShared(t, access, agent.URL, sharedGet(t, "gpu-util", params))
+		assertPrometheusError(t, rec, http.StatusBadRequest, "bad_data")
+		mu.Lock()
+		defer mu.Unlock()
+		if len(reached) != 1 {
+			t.Errorf("agent called again, with URIs of %v bytes", reached[1:])
+		}
+		if asked := access.questions(); len(asked) != 0 {
+			t.Errorf("asked %v before the request was checked", asked)
 		}
 	})
 }

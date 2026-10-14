@@ -19,6 +19,13 @@ const (
 	// sharedMaxValues caps each repeatable parameter: one request names at
 	// most this many cards or hosts.
 	sharedMaxValues = 256
+	// maxSharedRequestURIBytes caps the request URI the hub forwards to the
+	// agent — path, "?" and encoded query — since the PromQL travels in the
+	// URL. It stays well under the agent's 8 KiB header limit, which would
+	// otherwise refuse the request with 431, leaving room for the headers.
+	// A query that names each value several times reaches it long before
+	// sharedMaxValues.
+	maxSharedRequestURIBytes = 6144
 
 	timeParam  = "time"
 	startParam = "start"
@@ -66,6 +73,14 @@ func (h *ProxyHandler) ServeShared(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	rawQuery := params.Encode()
+	if n := len(agentProxyPrefix+q.endpoint()) + len("?") + len(rawQuery); n > maxSharedRequestURIBytes {
+		writePrometheusError(w, http.StatusBadRequest, "bad_data", fmt.Sprintf(
+			"%v: the forwarded request URI is %d bytes, over the %d-byte limit; ask for fewer values per request",
+			errBadSharedRequest, n, maxSharedRequestURIBytes))
+		return
+	}
+
 	target, ok := h.resolve(w, r, cluster)
 	if !ok {
 		return
@@ -80,7 +95,7 @@ func (h *ProxyHandler) ServeShared(w http.ResponseWriter, r *http.Request) {
 
 	r.Body = http.NoBody
 	r.ContentLength = 0
-	h.forward(w, r, target, q.endpoint(), params.Encode(), "")
+	h.forward(w, r, target, q.endpoint(), rawQuery, "")
 }
 
 // parseSharedRequest checks every parameter against what q declares and
