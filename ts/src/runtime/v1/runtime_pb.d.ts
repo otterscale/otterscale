@@ -19,28 +19,28 @@ export declare const file_runtime_v1_runtime: GenFile;
  */
 export declare type PodLogRequest = Message<"otterscale.runtime.v1.PodLogRequest"> & {
   /**
-   * The target Kubernetes cluster identifier.
+   * The target Kubernetes cluster identifier (e.g., "production").
    *
    * @generated from field: string cluster = 1;
    */
   cluster: string;
 
   /**
-   * The namespace of the pod.
+   * The namespace of the pod (e.g., "default").
    *
    * @generated from field: string namespace = 2;
    */
   namespace: string;
 
   /**
-   * The name of the pod.
+   * The name of the pod (e.g., "nginx-7c5ddbdf54-x8k2p").
    *
    * @generated from field: string name = 3;
    */
   name: string;
 
   /**
-   * The container name. If omitted, the first container in the pod is used.
+   * The container name (e.g., "nginx"). If omitted, the first container in the pod is used.
    *
    * @generated from field: string container = 4;
    */
@@ -54,14 +54,14 @@ export declare type PodLogRequest = Message<"otterscale.runtime.v1.PodLogRequest
   follow: boolean;
 
   /**
-   * Number of lines from the end of the logs to show. If not set, all logs are shown.
+   * Number of lines from the end of the logs to show (e.g., 100). If not set, all logs are shown.
    *
    * @generated from field: int64 tail_lines = 6 [features.field_presence = EXPLICIT];
    */
   tailLines: bigint;
 
   /**
-   * A relative time in seconds before the current time from which to show logs.
+   * A relative time in seconds before the current time from which to show logs (e.g., 3600).
    *
    * @generated from field: int64 since_seconds = 7 [features.field_presence = EXPLICIT];
    */
@@ -89,7 +89,7 @@ export declare type PodLogRequest = Message<"otterscale.runtime.v1.PodLogRequest
   timestamps: boolean;
 
   /**
-   * Limit the number of bytes returned from the server.
+   * Limit the number of bytes returned from the server (e.g., 1048576).
    *
    * @generated from field: int64 limit_bytes = 11 [features.field_presence = EXPLICIT];
    */
@@ -130,28 +130,28 @@ export declare const PodLogResponseSchema: GenMessage<PodLogResponse>;
  */
 export declare type ExecuteTTYRequest = Message<"otterscale.runtime.v1.ExecuteTTYRequest"> & {
   /**
-   * The target Kubernetes cluster identifier.
+   * The target Kubernetes cluster identifier (e.g., "production").
    *
    * @generated from field: string cluster = 1;
    */
   cluster: string;
 
   /**
-   * The namespace of the pod.
+   * The namespace of the pod (e.g., "default").
    *
    * @generated from field: string namespace = 2;
    */
   namespace: string;
 
   /**
-   * The name of the pod.
+   * The name of the pod (e.g., "nginx-7c5ddbdf54-x8k2p").
    *
    * @generated from field: string name = 3;
    */
   name: string;
 
   /**
-   * The container to exec into. If omitted, the first container is used.
+   * The container to exec into (e.g., "nginx"). If omitted, the first container is used.
    *
    * @generated from field: string container = 4;
    */
@@ -172,14 +172,14 @@ export declare type ExecuteTTYRequest = Message<"otterscale.runtime.v1.ExecuteTT
   tty: boolean;
 
   /**
-   * Initial terminal height in rows.
+   * Initial terminal height in rows (e.g., 24).
    *
    * @generated from field: uint32 rows = 7;
    */
   rows: number;
 
   /**
-   * Initial terminal width in columns.
+   * Initial terminal width in columns (e.g., 80).
    *
    * @generated from field: uint32 cols = 8;
    */
@@ -234,7 +234,7 @@ export declare const ExecuteTTYResponseSchema: GenMessage<ExecuteTTYResponse>;
  */
 export declare type WriteTTYRequest = Message<"otterscale.runtime.v1.WriteTTYRequest"> & {
   /**
-   * The session identifier returned in the first ExecuteTTYResponse.
+   * The session identifier returned in the first ExecuteTTYResponse (e.g., "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d").
    *
    * @generated from field: string session_id = 1;
    */
@@ -261,21 +261,21 @@ export declare const WriteTTYRequestSchema: GenMessage<WriteTTYRequest>;
  */
 export declare type ResizeTTYRequest = Message<"otterscale.runtime.v1.ResizeTTYRequest"> & {
   /**
-   * The session identifier returned in the first ExecuteTTYResponse.
+   * The session identifier returned in the first ExecuteTTYResponse (e.g., "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d").
    *
    * @generated from field: string session_id = 1;
    */
   sessionId: string;
 
   /**
-   * New terminal height in rows.
+   * New terminal height in rows (e.g., 40).
    *
    * @generated from field: uint32 rows = 2;
    */
   rows: number;
 
   /**
-   * New terminal width in columns.
+   * New terminal width in columns (e.g., 120).
    *
    * @generated from field: uint32 cols = 3;
    */
@@ -295,28 +295,28 @@ export declare const ResizeTTYRequestSchema: GenMessage<ResizeTTYRequest>;
  */
 export declare type PortForwardRequest = Message<"otterscale.runtime.v1.PortForwardRequest"> & {
   /**
-   * The target Kubernetes cluster identifier.
+   * The target Kubernetes cluster identifier (e.g., "production").
    *
    * @generated from field: string cluster = 1;
    */
   cluster: string;
 
   /**
-   * The namespace of the pod.
+   * The namespace of the pod (e.g., "default").
    *
    * @generated from field: string namespace = 2;
    */
   namespace: string;
 
   /**
-   * The name of the pod.
+   * The name of the pod (e.g., "nginx-7c5ddbdf54-x8k2p").
    *
    * @generated from field: string name = 3;
    */
   name: string;
 
   /**
-   * The container port to forward to.
+   * The container port to forward to (e.g., 8080).
    *
    * @generated from field: int32 port = 4;
    */
@@ -364,7 +364,7 @@ export declare const PortForwardResponseSchema: GenMessage<PortForwardResponse>;
  */
 export declare type WritePortForwardRequest = Message<"otterscale.runtime.v1.WritePortForwardRequest"> & {
   /**
-   * The session identifier returned in the first PortForwardResponse.
+   * The session identifier returned in the first PortForwardResponse (e.g., "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d").
    *
    * @generated from field: string session_id = 1;
    */
@@ -392,7 +392,7 @@ export declare const WritePortForwardRequestSchema: GenMessage<WritePortForwardR
  */
 export declare type ScaleRequest = Message<"otterscale.runtime.v1.ScaleRequest"> & {
   /**
-   * The target Kubernetes cluster identifier.
+   * The target Kubernetes cluster identifier (e.g., "production").
    *
    * @generated from field: string cluster = 1;
    */
@@ -420,21 +420,21 @@ export declare type ScaleRequest = Message<"otterscale.runtime.v1.ScaleRequest">
   resource: string;
 
   /**
-   * The namespace of the workload.
+   * The namespace of the workload (e.g., "default").
    *
    * @generated from field: string namespace = 5;
    */
   namespace: string;
 
   /**
-   * The name of the workload.
+   * The name of the workload (e.g., "nginx").
    *
    * @generated from field: string name = 6;
    */
   name: string;
 
   /**
-   * The desired number of replicas.
+   * The desired number of replicas (e.g., 3).
    *
    * @generated from field: int32 replicas = 7;
    */
@@ -476,7 +476,7 @@ export declare const ScaleResponseSchema: GenMessage<ScaleResponse>;
  */
 export declare type RestartRequest = Message<"otterscale.runtime.v1.RestartRequest"> & {
   /**
-   * The target Kubernetes cluster identifier.
+   * The target Kubernetes cluster identifier (e.g., "production").
    *
    * @generated from field: string cluster = 1;
    */
@@ -504,14 +504,14 @@ export declare type RestartRequest = Message<"otterscale.runtime.v1.RestartReque
   resource: string;
 
   /**
-   * The namespace of the workload.
+   * The namespace of the workload (e.g., "default").
    *
    * @generated from field: string namespace = 5;
    */
   namespace: string;
 
   /**
-   * The name of the workload.
+   * The name of the workload (e.g., "nginx").
    *
    * @generated from field: string name = 6;
    */
@@ -534,14 +534,14 @@ export declare const RestartRequestSchema: GenMessage<RestartRequest>;
  */
 export declare type SubResourceActionRequest = Message<"otterscale.runtime.v1.SubResourceActionRequest"> & {
   /**
-   * The target Kubernetes cluster identifier.
+   * The target Kubernetes cluster identifier (e.g., "production").
    *
    * @generated from field: string cluster = 1;
    */
   cluster: string;
 
   /**
-   * Kubernetes API Group (e.g., "kubevirt.io").
+   * Kubernetes API Group (e.g., "subresources.kubevirt.io").
    *
    * @generated from field: string group = 2;
    */
@@ -576,7 +576,7 @@ export declare type SubResourceActionRequest = Message<"otterscale.runtime.v1.Su
   name: string;
 
   /**
-   * The subresource to invoke (e.g., "start", "stop", "restart").
+   * The subresource to invoke (e.g., "restart"; also "start", "stop").
    *
    * @generated from field: string subresource = 7;
    */
@@ -633,21 +633,21 @@ export declare const SubResourceActionResponseSchema: GenMessage<SubResourceActi
  */
 export declare type VNCRequest = Message<"otterscale.runtime.v1.VNCRequest"> & {
   /**
-   * The target Kubernetes cluster identifier.
+   * The target Kubernetes cluster identifier (e.g., "production").
    *
    * @generated from field: string cluster = 1;
    */
   cluster: string;
 
   /**
-   * The namespace of the VirtualMachineInstance.
+   * The namespace of the VirtualMachineInstance (e.g., "default").
    *
    * @generated from field: string namespace = 2;
    */
   namespace: string;
 
   /**
-   * The name of the VirtualMachineInstance.
+   * The name of the VirtualMachineInstance (e.g., "ubuntu-vm").
    *
    * @generated from field: string name = 3;
    */
@@ -695,7 +695,7 @@ export declare const VNCResponseSchema: GenMessage<VNCResponse>;
  */
 export declare type WriteVNCRequest = Message<"otterscale.runtime.v1.WriteVNCRequest"> & {
   /**
-   * The session identifier returned in the first VNCResponse.
+   * The session identifier returned in the first VNCResponse (e.g., "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d").
    *
    * @generated from field: string session_id = 1;
    */
@@ -723,21 +723,21 @@ export declare const WriteVNCRequestSchema: GenMessage<WriteVNCRequest>;
  */
 export declare type ShowChartRequest = Message<"otterscale.runtime.v1.ShowChartRequest"> & {
   /**
-   * The URL of the Helm chart repository (HTTP/HTTPS or OCI).
+   * The URL of the Helm chart repository, HTTP/HTTPS or OCI (e.g., "https://charts.example.com").
    *
    * @generated from field: string repo_url = 1;
    */
   repoUrl: string;
 
   /**
-   * The name of the chart within the repository.
+   * The name of the chart within the repository (e.g., "nginx").
    *
    * @generated from field: string chart_name = 2;
    */
   chartName: string;
 
   /**
-   * The chart version to query. If empty, the latest version is used.
+   * The chart version to query (e.g., "1.2.3"). If empty, the latest version is used.
    *
    * @generated from field: string version = 3;
    */

@@ -80,7 +80,7 @@ export declare const APIResourceSchema: GenMessage<APIResource>;
  */
 export declare type DiscoveryRequest = Message<"otterscale.resource.v1.DiscoveryRequest"> & {
   /**
-   * The target Kubernetes cluster identifier.
+   * The target Kubernetes cluster identifier (e.g., "production").
    *
    * @generated from field: string cluster = 1;
    */
@@ -120,7 +120,7 @@ export declare const DiscoveryResponseSchema: GenMessage<DiscoveryResponse>;
  */
 export declare type SchemaRequest = Message<"otterscale.resource.v1.SchemaRequest"> & {
   /**
-   * The target Kubernetes cluster identifier.
+   * The target Kubernetes cluster identifier (e.g., "production").
    *
    * @generated from field: string cluster = 1;
    */
@@ -202,7 +202,7 @@ export declare const ResourceSchema: GenMessage<Resource>;
  */
 export declare type ListRequest = Message<"otterscale.resource.v1.ListRequest"> & {
   /**
-   * The target Kubernetes cluster identifier.
+   * The target Kubernetes cluster identifier (e.g., "production").
    *
    * @generated from field: string cluster = 1;
    */
@@ -230,14 +230,14 @@ export declare type ListRequest = Message<"otterscale.resource.v1.ListRequest"> 
   resource: string;
 
   /**
-   * The namespace to query. If empty, the request may target all namespaces depending on cluster permissions.
+   * The namespace to query (e.g., "default"). If empty, the request may target all namespaces depending on cluster permissions.
    *
    * @generated from field: string namespace = 5;
    */
   namespace: string;
 
   /**
-   * A selector to restrict the list of returned objects by their labels.
+   * A selector to restrict the list of returned objects by their labels (e.g., "app=nginx").
    *
    * @generated from field: string label_selector = 6;
    */
@@ -251,7 +251,7 @@ export declare type ListRequest = Message<"otterscale.resource.v1.ListRequest"> 
   fieldSelector: string;
 
   /**
-   * The maximum number of items to return in a single page.
+   * The maximum number of items to return in a single page (e.g., 100).
    *
    * @generated from field: int64 limit = 8;
    */
@@ -319,7 +319,7 @@ export declare const ListResponseSchema: GenMessage<ListResponse>;
  */
 export declare type GetRequest = Message<"otterscale.resource.v1.GetRequest"> & {
   /**
-   * The target Kubernetes cluster identifier.
+   * The target Kubernetes cluster identifier (e.g., "production").
    *
    * @generated from field: string cluster = 1;
    */
@@ -347,14 +347,14 @@ export declare type GetRequest = Message<"otterscale.resource.v1.GetRequest"> & 
   resource: string;
 
   /**
-   * The namespace of the resource.
+   * The namespace of the resource (e.g., "default").
    *
    * @generated from field: string namespace = 5;
    */
   namespace: string;
 
   /**
-   * The name of the resource.
+   * The name of the resource (e.g., "nginx").
    *
    * @generated from field: string name = 6;
    */
@@ -375,7 +375,7 @@ export declare const GetRequestSchema: GenMessage<GetRequest>;
  */
 export declare type DescribeRequest = Message<"otterscale.resource.v1.DescribeRequest"> & {
   /**
-   * The target Kubernetes cluster identifier.
+   * The target Kubernetes cluster identifier (e.g., "production").
    *
    * @generated from field: string cluster = 1;
    */
@@ -403,14 +403,14 @@ export declare type DescribeRequest = Message<"otterscale.resource.v1.DescribeRe
   resource: string;
 
   /**
-   * The namespace of the resource.
+   * The namespace of the resource (e.g., "default").
    *
    * @generated from field: string namespace = 5;
    */
   namespace: string;
 
   /**
-   * The name of the resource.
+   * The name of the resource (e.g., "nginx").
    *
    * @generated from field: string name = 6;
    */
@@ -457,7 +457,7 @@ export declare const DescribeResponseSchema: GenMessage<DescribeResponse>;
  */
 export declare type CreateRequest = Message<"otterscale.resource.v1.CreateRequest"> & {
   /**
-   * The target Kubernetes cluster identifier.
+   * The target Kubernetes cluster identifier (e.g., "production").
    *
    * @generated from field: string cluster = 1;
    */
@@ -485,7 +485,7 @@ export declare type CreateRequest = Message<"otterscale.resource.v1.CreateReques
   resource: string;
 
   /**
-   * The namespace of the resource.
+   * The namespace of the resource (e.g., "default").
    *
    * @generated from field: string namespace = 5;
    */
@@ -512,7 +512,7 @@ export declare const CreateRequestSchema: GenMessage<CreateRequest>;
  */
 export declare type ApplyRequest = Message<"otterscale.resource.v1.ApplyRequest"> & {
   /**
-   * The target Kubernetes cluster identifier.
+   * The target Kubernetes cluster identifier (e.g., "production").
    *
    * @generated from field: string cluster = 1;
    */
@@ -540,14 +540,14 @@ export declare type ApplyRequest = Message<"otterscale.resource.v1.ApplyRequest"
   resource: string;
 
   /**
-   * The namespace of the resource.
+   * The namespace of the resource (e.g., "default").
    *
    * @generated from field: string namespace = 5;
    */
   namespace: string;
 
   /**
-   * The name of the resource.
+   * The name of the resource (e.g., "nginx").
    *
    * @generated from field: string name = 6;
    */
@@ -589,7 +589,7 @@ export declare const ApplyRequestSchema: GenMessage<ApplyRequest>;
  */
 export declare type UpdateRequest = Message<"otterscale.resource.v1.UpdateRequest"> & {
   /**
-   * The target Kubernetes cluster identifier.
+   * The target Kubernetes cluster identifier (e.g., "production").
    *
    * @generated from field: string cluster = 1;
    */
@@ -617,14 +617,14 @@ export declare type UpdateRequest = Message<"otterscale.resource.v1.UpdateReques
   resource: string;
 
   /**
-   * The namespace of the resource.
+   * The namespace of the resource (e.g., "default").
    *
    * @generated from field: string namespace = 5;
    */
   namespace: string;
 
   /**
-   * The name of the resource.
+   * The name of the resource (e.g., "nginx").
    *
    * @generated from field: string name = 6;
    */
@@ -659,7 +659,7 @@ export declare const UpdateRequestSchema: GenMessage<UpdateRequest>;
  */
 export declare type DeleteRequest = Message<"otterscale.resource.v1.DeleteRequest"> & {
   /**
-   * The target Kubernetes cluster identifier.
+   * The target Kubernetes cluster identifier (e.g., "production").
    *
    * @generated from field: string cluster = 1;
    */
@@ -687,14 +687,14 @@ export declare type DeleteRequest = Message<"otterscale.resource.v1.DeleteReques
   resource: string;
 
   /**
-   * The namespace of the resource.
+   * The namespace of the resource (e.g., "default").
    *
    * @generated from field: string namespace = 5;
    */
   namespace: string;
 
   /**
-   * The name of the resource.
+   * The name of the resource (e.g., "nginx").
    *
    * @generated from field: string name = 6;
    */
@@ -723,7 +723,7 @@ export declare const DeleteRequestSchema: GenMessage<DeleteRequest>;
  */
 export declare type WatchRequest = Message<"otterscale.resource.v1.WatchRequest"> & {
   /**
-   * The target Kubernetes cluster identifier.
+   * The target Kubernetes cluster identifier (e.g., "production").
    *
    * @generated from field: string cluster = 1;
    */
@@ -751,21 +751,21 @@ export declare type WatchRequest = Message<"otterscale.resource.v1.WatchRequest"
   resource: string;
 
   /**
-   * The namespace to watch.
+   * The namespace to watch (e.g., "default").
    *
    * @generated from field: string namespace = 5;
    */
   namespace: string;
 
   /**
-   * A selector to restrict watched objects by their labels.
+   * A selector to restrict watched objects by their labels (e.g., "app=nginx").
    *
    * @generated from field: string label_selector = 6;
    */
   labelSelector: string;
 
   /**
-   * A selector to restrict watched objects by their fields.
+   * A selector to restrict watched objects by their fields (e.g., "status.phase=Running").
    *
    * @generated from field: string field_selector = 7;
    */

@@ -346,19 +346,19 @@ func (x *PodLogRequest) ClearLimitBytes() {
 type PodLogRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	// The target Kubernetes cluster identifier.
+	// The target Kubernetes cluster identifier (e.g., "production").
 	Cluster *string
-	// The namespace of the pod.
+	// The namespace of the pod (e.g., "default").
 	Namespace *string
-	// The name of the pod.
+	// The name of the pod (e.g., "nginx-7c5ddbdf54-x8k2p").
 	Name *string
-	// The container name. If omitted, the first container in the pod is used.
+	// The container name (e.g., "nginx"). If omitted, the first container in the pod is used.
 	Container *string
 	// If true, stream logs as they are produced (like `kubectl logs -f`).
 	Follow *bool
-	// Number of lines from the end of the logs to show. If not set, all logs are shown.
+	// Number of lines from the end of the logs to show (e.g., 100). If not set, all logs are shown.
 	TailLines *int64
-	// A relative time in seconds before the current time from which to show logs.
+	// A relative time in seconds before the current time from which to show logs (e.g., 3600).
 	SinceSeconds *int64
 	// An absolute time from which to show logs. Mutually exclusive with since_seconds.
 	SinceTime *timestamppb.Timestamp
@@ -366,7 +366,7 @@ type PodLogRequest_builder struct {
 	Previous *bool
 	// If true, add an RFC3339 timestamp at the beginning of every line of log output.
 	Timestamps *bool
-	// Limit the number of bytes returned from the server.
+	// Limit the number of bytes returned from the server (e.g., 1048576).
 	LimitBytes *int64
 }
 
@@ -735,21 +735,21 @@ func (x *ExecuteTTYRequest) ClearCols() {
 type ExecuteTTYRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	// The target Kubernetes cluster identifier.
+	// The target Kubernetes cluster identifier (e.g., "production").
 	Cluster *string
-	// The namespace of the pod.
+	// The namespace of the pod (e.g., "default").
 	Namespace *string
-	// The name of the pod.
+	// The name of the pod (e.g., "nginx-7c5ddbdf54-x8k2p").
 	Name *string
-	// The container to exec into. If omitted, the first container is used.
+	// The container to exec into (e.g., "nginx"). If omitted, the first container is used.
 	Container *string
 	// The command to execute (e.g. ["/bin/sh"]).
 	Command []string
 	// If true, allocate a TTY for the exec session.
 	Tty *bool
-	// Initial terminal height in rows.
+	// Initial terminal height in rows (e.g., 24).
 	Rows *uint32
-	// Initial terminal width in columns.
+	// Initial terminal width in columns (e.g., 80).
 	Cols *uint32
 }
 
@@ -1031,7 +1031,7 @@ func (x *WriteTTYRequest) ClearStdin() {
 type WriteTTYRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	// The session identifier returned in the first ExecuteTTYResponse.
+	// The session identifier returned in the first ExecuteTTYResponse (e.g., "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d").
 	SessionId *string
 	// Stdin data to write.
 	Stdin []byte
@@ -1167,11 +1167,11 @@ func (x *ResizeTTYRequest) ClearCols() {
 type ResizeTTYRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	// The session identifier returned in the first ExecuteTTYResponse.
+	// The session identifier returned in the first ExecuteTTYResponse (e.g., "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d").
 	SessionId *string
-	// New terminal height in rows.
+	// New terminal height in rows (e.g., 40).
 	Rows *uint32
-	// New terminal width in columns.
+	// New terminal width in columns (e.g., 120).
 	Cols *uint32
 }
 
@@ -1340,13 +1340,13 @@ func (x *PortForwardRequest) ClearPort() {
 type PortForwardRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	// The target Kubernetes cluster identifier.
+	// The target Kubernetes cluster identifier (e.g., "production").
 	Cluster *string
-	// The namespace of the pod.
+	// The namespace of the pod (e.g., "default").
 	Namespace *string
-	// The name of the pod.
+	// The name of the pod (e.g., "nginx-7c5ddbdf54-x8k2p").
 	Name *string
-	// The container port to forward to.
+	// The container port to forward to (e.g., 8080).
 	Port *int32
 }
 
@@ -1581,7 +1581,7 @@ func (x *WritePortForwardRequest) ClearData() {
 type WritePortForwardRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	// The session identifier returned in the first PortForwardResponse.
+	// The session identifier returned in the first PortForwardResponse (e.g., "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d").
 	SessionId *string
 	// Data to send to the forwarded port on the pod.
 	Data []byte
@@ -1833,7 +1833,7 @@ func (x *ScaleRequest) ClearReplicas() {
 type ScaleRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	// The target Kubernetes cluster identifier.
+	// The target Kubernetes cluster identifier (e.g., "production").
 	Cluster *string
 	// Kubernetes API Group (e.g., "apps").
 	Group *string
@@ -1841,11 +1841,11 @@ type ScaleRequest_builder struct {
 	Version *string
 	// Kubernetes API Resource name in plural (e.g., "deployments").
 	Resource *string
-	// The namespace of the workload.
+	// The namespace of the workload (e.g., "default").
 	Namespace *string
-	// The name of the workload.
+	// The name of the workload (e.g., "nginx").
 	Name *string
-	// The desired number of replicas.
+	// The desired number of replicas (e.g., 3).
 	Replicas *int32
 }
 
@@ -2168,7 +2168,7 @@ func (x *RestartRequest) ClearName() {
 type RestartRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	// The target Kubernetes cluster identifier.
+	// The target Kubernetes cluster identifier (e.g., "production").
 	Cluster *string
 	// Kubernetes API Group (e.g., "apps").
 	Group *string
@@ -2176,9 +2176,9 @@ type RestartRequest_builder struct {
 	Version *string
 	// Kubernetes API Resource name in plural (e.g., "deployments").
 	Resource *string
-	// The namespace of the workload.
+	// The namespace of the workload (e.g., "default").
 	Namespace *string
-	// The name of the workload.
+	// The name of the workload (e.g., "nginx").
 	Name *string
 }
 
@@ -2505,9 +2505,9 @@ func (x *SubResourceActionRequest) ClearBody() {
 type SubResourceActionRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	// The target Kubernetes cluster identifier.
+	// The target Kubernetes cluster identifier (e.g., "production").
 	Cluster *string
-	// Kubernetes API Group (e.g., "kubevirt.io").
+	// Kubernetes API Group (e.g., "subresources.kubevirt.io").
 	Group *string
 	// Kubernetes API Version (e.g., "v1").
 	Version *string
@@ -2517,7 +2517,7 @@ type SubResourceActionRequest_builder struct {
 	Namespace *string
 	// The name of the resource.
 	Name *string
-	// The subresource to invoke (e.g., "start", "stop", "restart").
+	// The subresource to invoke (e.g., "restart"; also "start", "stop").
 	Subresource *string
 	// The HTTP method for the subresource action. Only "PUT" and "POST"
 	// are allowed; DELETE and PATCH have dedicated RPCs.
@@ -2762,11 +2762,11 @@ func (x *VNCRequest) ClearName() {
 type VNCRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	// The target Kubernetes cluster identifier.
+	// The target Kubernetes cluster identifier (e.g., "production").
 	Cluster *string
-	// The namespace of the VirtualMachineInstance.
+	// The namespace of the VirtualMachineInstance (e.g., "default").
 	Namespace *string
-	// The name of the VirtualMachineInstance.
+	// The name of the VirtualMachineInstance (e.g., "ubuntu-vm").
 	Name *string
 }
 
@@ -2997,7 +2997,7 @@ func (x *WriteVNCRequest) ClearData() {
 type WriteVNCRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	// The session identifier returned in the first VNCResponse.
+	// The session identifier returned in the first VNCResponse (e.g., "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d").
 	SessionId *string
 	// Raw VNC protocol data to send to the VMI.
 	Data []byte
@@ -3140,11 +3140,11 @@ func (x *ShowChartRequest) ClearVersion() {
 type ShowChartRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	// The URL of the Helm chart repository (HTTP/HTTPS or OCI).
+	// The URL of the Helm chart repository, HTTP/HTTPS or OCI (e.g., "https://charts.example.com").
 	RepoUrl *string
-	// The name of the chart within the repository.
+	// The name of the chart within the repository (e.g., "nginx").
 	ChartName *string
-	// The chart version to query. If empty, the latest version is used.
+	// The chart version to query (e.g., "1.2.3"). If empty, the latest version is used.
 	Version *string
 }
 

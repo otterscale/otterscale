@@ -83,9 +83,9 @@ export declare const ListLinksResponseSchema: GenMessage<ListLinksResponse>;
  */
 export declare type AgentClusterInfo = Message<"otterscale.link.v1.AgentClusterInfo"> & {
   /**
-   * The address users reach this cluster's NodePort services at. Bare: no
-   * scheme, no port. The scheme is the dashboard's to choose and the port
-   * comes from node_port_range.
+   * The address users reach this cluster's NodePort services at (e.g.,
+   * "203.0.113.10"). Bare: no scheme, no port. The scheme is the dashboard's
+   * to choose and the port comes from node_port_range.
    *
    * @generated from field: string external_address = 1;
    */
@@ -100,7 +100,8 @@ export declare type AgentClusterInfo = Message<"otterscale.link.v1.AgentClusterI
   nodePortRange: string;
 
   /**
-   * Where this cluster serves inference, as an absolute http or https URL.
+   * Where this cluster serves inference, as an absolute http or https URL
+   * (e.g., "https://inference.example.com").
    * May be empty, which is rendered explicitly rather than omitted: the chart
    * default is an example address, and omitting the key would publish it.
    *
@@ -123,7 +124,7 @@ export declare const AgentClusterInfoSchema: GenMessage<AgentClusterInfo>;
  */
 export declare type IssueAgentValuesRequest = Message<"otterscale.link.v1.IssueAgentValuesRequest"> & {
   /**
-   * The cluster the rendered values will register as.
+   * The cluster the rendered values will register as (e.g., "production").
    *
    * @generated from field: string cluster = 1;
    */
@@ -209,7 +210,7 @@ export declare const IssueAgentValuesResponseSchema: GenMessage<IssueAgentValues
  */
 export declare type RegisterRequest = Message<"otterscale.link.v1.RegisterRequest"> & {
   /**
-   * The cluster identifier this agent belongs to.
+   * The cluster identifier this agent belongs to (e.g., "production").
    *
    * @generated from field: string cluster = 1;
    */

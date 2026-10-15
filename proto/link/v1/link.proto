@@ -64,16 +64,17 @@ message ListLinksResponse {
 // supplied" is distinguishable from "supplied empty": singular scalars have
 // implicit presence, a message field does not.
 message AgentClusterInfo {
-  // The address users reach this cluster's NodePort services at. Bare: no
-  // scheme, no port. The scheme is the dashboard's to choose and the port
-  // comes from node_port_range.
+  // The address users reach this cluster's NodePort services at (e.g.,
+  // "203.0.113.10"). Bare: no scheme, no port. The scheme is the dashboard's
+  // to choose and the port comes from node_port_range.
   string external_address = 1;
 
   // The cluster's NodePort range, as "<low>-<high>". Empty means the
   // Kubernetes default, 30000-32767.
   string node_port_range = 2;
 
-  // Where this cluster serves inference, as an absolute http or https URL.
+  // Where this cluster serves inference, as an absolute http or https URL
+  // (e.g., "https://inference.example.com").
   // May be empty, which is rendered explicitly rather than omitted: the chart
   // default is an example address, and omitting the key would publish it.
   string inference_url = 3;
@@ -82,7 +83,7 @@ message AgentClusterInfo {
 // IssueAgentValuesRequest names the cluster being joined and carries the facts
 // only the operator knows.
 message IssueAgentValuesRequest {
-  // The cluster the rendered values will register as.
+  // The cluster the rendered values will register as (e.g., "production").
   string cluster = 1;
 
   // Identities bound to cluster-admin on the joining cluster alongside the
@@ -120,7 +121,7 @@ message IssueAgentValuesResponse {
 // RegisterRequest contains the agent's cluster identity and a CSR for
 // mTLS certificate issuance.
 message RegisterRequest {
-  // The cluster identifier this agent belongs to.
+  // The cluster identifier this agent belongs to (e.g., "production").
   string cluster = 1;
 
   // PEM-encoded PKCS#10 certificate signing request. The server signs
