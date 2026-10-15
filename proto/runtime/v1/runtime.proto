@@ -72,25 +72,25 @@ service RuntimeService {
 // PodLogRequest defines the parameters for streaming container logs.
 // Fields align with corev1.PodLogOptions.
 message PodLogRequest {
-  // The target Kubernetes cluster identifier.
+  // The target Kubernetes cluster identifier (e.g., "production").
   string cluster = 1;
 
-  // The namespace of the pod.
+  // The namespace of the pod (e.g., "default").
   string namespace = 2;
 
-  // The name of the pod.
+  // The name of the pod (e.g., "nginx-7c5ddbdf54-x8k2p").
   string name = 3;
 
-  // The container name. If omitted, the first container in the pod is used.
+  // The container name (e.g., "nginx"). If omitted, the first container in the pod is used.
   string container = 4;
 
   // If true, stream logs as they are produced (like `kubectl logs -f`).
   bool follow = 5;
 
-  // Number of lines from the end of the logs to show. If not set, all logs are shown.
+  // Number of lines from the end of the logs to show (e.g., 100). If not set, all logs are shown.
   int64 tail_lines = 6 [features.field_presence = EXPLICIT];
 
-  // A relative time in seconds before the current time from which to show logs.
+  // A relative time in seconds before the current time from which to show logs (e.g., 3600).
   int64 since_seconds = 7 [features.field_presence = EXPLICIT];
 
   // An absolute time from which to show logs. Mutually exclusive with since_seconds.
@@ -102,7 +102,7 @@ message PodLogRequest {
   // If true, add an RFC3339 timestamp at the beginning of every line of log output.
   bool timestamps = 10;
 
-  // Limit the number of bytes returned from the server.
+  // Limit the number of bytes returned from the server (e.g., 1048576).
   int64 limit_bytes = 11 [features.field_presence = EXPLICIT];
 }
 
@@ -119,16 +119,16 @@ message PodLogResponse {
 // ExecuteTTYRequest defines the parameters for starting an interactive
 // exec session in a container. Fields align with corev1.PodExecOptions.
 message ExecuteTTYRequest {
-  // The target Kubernetes cluster identifier.
+  // The target Kubernetes cluster identifier (e.g., "production").
   string cluster = 1;
 
-  // The namespace of the pod.
+  // The namespace of the pod (e.g., "default").
   string namespace = 2;
 
-  // The name of the pod.
+  // The name of the pod (e.g., "nginx-7c5ddbdf54-x8k2p").
   string name = 3;
 
-  // The container to exec into. If omitted, the first container is used.
+  // The container to exec into (e.g., "nginx"). If omitted, the first container is used.
   string container = 4;
 
   // The command to execute (e.g. ["/bin/sh"]).
@@ -137,10 +137,10 @@ message ExecuteTTYRequest {
   // If true, allocate a TTY for the exec session.
   bool tty = 6;
 
-  // Initial terminal height in rows.
+  // Initial terminal height in rows (e.g., 24).
   uint32 rows = 7;
 
-  // Initial terminal width in columns.
+  // Initial terminal width in columns (e.g., 80).
   uint32 cols = 8;
 }
 
@@ -159,7 +159,7 @@ message ExecuteTTYResponse {
 
 // WriteTTYRequest sends stdin data to an active exec session.
 message WriteTTYRequest {
-  // The session identifier returned in the first ExecuteTTYResponse.
+  // The session identifier returned in the first ExecuteTTYResponse (e.g., "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d").
   string session_id = 1;
 
   // Stdin data to write.
@@ -168,13 +168,13 @@ message WriteTTYRequest {
 
 // ResizeTTYRequest updates the terminal dimensions of an exec session.
 message ResizeTTYRequest {
-  // The session identifier returned in the first ExecuteTTYResponse.
+  // The session identifier returned in the first ExecuteTTYResponse (e.g., "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d").
   string session_id = 1;
 
-  // New terminal height in rows.
+  // New terminal height in rows (e.g., 40).
   uint32 rows = 2;
 
-  // New terminal width in columns.
+  // New terminal width in columns (e.g., 120).
   uint32 cols = 3;
 }
 
@@ -184,16 +184,16 @@ message ResizeTTYRequest {
 
 // PortForwardRequest defines the parameters for starting a port-forward session.
 message PortForwardRequest {
-  // The target Kubernetes cluster identifier.
+  // The target Kubernetes cluster identifier (e.g., "production").
   string cluster = 1;
 
-  // The namespace of the pod.
+  // The namespace of the pod (e.g., "default").
   string namespace = 2;
 
-  // The name of the pod.
+  // The name of the pod (e.g., "nginx-7c5ddbdf54-x8k2p").
   string name = 3;
 
-  // The container port to forward to.
+  // The container port to forward to (e.g., 8080).
   int32 port = 4;
 }
 
@@ -209,7 +209,7 @@ message PortForwardResponse {
 
 // WritePortForwardRequest sends data to an active port-forward session.
 message WritePortForwardRequest {
-  // The session identifier returned in the first PortForwardResponse.
+  // The session identifier returned in the first PortForwardResponse (e.g., "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d").
   string session_id = 1;
 
   // Data to send to the forwarded port on the pod.
@@ -223,7 +223,7 @@ message WritePortForwardRequest {
 // ScaleRequest defines the parameters for scaling a workload.
 // Uses the Kubernetes /scale subresource for correctness.
 message ScaleRequest {
-  // The target Kubernetes cluster identifier.
+  // The target Kubernetes cluster identifier (e.g., "production").
   string cluster = 1;
 
   // Kubernetes API Group (e.g., "apps").
@@ -235,13 +235,13 @@ message ScaleRequest {
   // Kubernetes API Resource name in plural (e.g., "deployments").
   string resource = 4;
 
-  // The namespace of the workload.
+  // The namespace of the workload (e.g., "default").
   string namespace = 5;
 
-  // The name of the workload.
+  // The name of the workload (e.g., "nginx").
   string name = 6;
 
-  // The desired number of replicas.
+  // The desired number of replicas (e.g., 3).
   int32 replicas = 7;
 }
 
@@ -259,7 +259,7 @@ message ScaleResponse {
 // This patches the pod template annotation with kubectl.kubernetes.io/restartedAt,
 // equivalent to `kubectl rollout restart`.
 message RestartRequest {
-  // The target Kubernetes cluster identifier.
+  // The target Kubernetes cluster identifier (e.g., "production").
   string cluster = 1;
 
   // Kubernetes API Group (e.g., "apps").
@@ -271,10 +271,10 @@ message RestartRequest {
   // Kubernetes API Resource name in plural (e.g., "deployments").
   string resource = 4;
 
-  // The namespace of the workload.
+  // The namespace of the workload (e.g., "default").
   string namespace = 5;
 
-  // The name of the workload.
+  // The name of the workload (e.g., "nginx").
   string name = 6;
 }
 
@@ -287,10 +287,10 @@ message RestartRequest {
 // operations like KubeVirt VM start/stop/restart/migrate that use PUT
 // or POST on a named subresource path.
 message SubResourceActionRequest {
-  // The target Kubernetes cluster identifier.
+  // The target Kubernetes cluster identifier (e.g., "production").
   string cluster = 1;
 
-  // Kubernetes API Group (e.g., "kubevirt.io").
+  // Kubernetes API Group (e.g., "subresources.kubevirt.io").
   string group = 2;
 
   // Kubernetes API Version (e.g., "v1").
@@ -305,7 +305,7 @@ message SubResourceActionRequest {
   // The name of the resource.
   string name = 6;
 
-  // The subresource to invoke (e.g., "start", "stop", "restart").
+  // The subresource to invoke (e.g., "restart"; also "start", "stop").
   string subresource = 7;
 
   // The HTTP method for the subresource action. Only "PUT" and "POST"
@@ -330,13 +330,13 @@ message SubResourceActionResponse {
 // VNCRequest defines the parameters for starting a VNC session
 // to a KubeVirt VirtualMachineInstance.
 message VNCRequest {
-  // The target Kubernetes cluster identifier.
+  // The target Kubernetes cluster identifier (e.g., "production").
   string cluster = 1;
 
-  // The namespace of the VirtualMachineInstance.
+  // The namespace of the VirtualMachineInstance (e.g., "default").
   string namespace = 2;
 
-  // The name of the VirtualMachineInstance.
+  // The name of the VirtualMachineInstance (e.g., "ubuntu-vm").
   string name = 3;
 }
 
@@ -352,7 +352,7 @@ message VNCResponse {
 
 // WriteVNCRequest sends data to an active VNC session.
 message WriteVNCRequest {
-  // The session identifier returned in the first VNCResponse.
+  // The session identifier returned in the first VNCResponse (e.g., "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d").
   string session_id = 1;
 
   // Raw VNC protocol data to send to the VMI.
@@ -366,13 +366,13 @@ message WriteVNCRequest {
 // ShowChartRequest defines parameters for retrieving chart metadata
 // from a remote Helm repository.
 message ShowChartRequest {
-  // The URL of the Helm chart repository (HTTP/HTTPS or OCI).
+  // The URL of the Helm chart repository, HTTP/HTTPS or OCI (e.g., "https://charts.example.com").
   string repo_url = 1;
 
-  // The name of the chart within the repository.
+  // The name of the chart within the repository (e.g., "nginx").
   string chart_name = 2;
 
-  // The chart version to query. If empty, the latest version is used.
+  // The chart version to query (e.g., "1.2.3"). If empty, the latest version is used.
   string version = 3;
 }
 

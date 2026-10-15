@@ -390,7 +390,7 @@ func (x *DiscoveryRequest) ClearCluster() {
 type DiscoveryRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	// The target Kubernetes cluster identifier.
+	// The target Kubernetes cluster identifier (e.g., "production").
 	Cluster *string
 }
 
@@ -615,7 +615,7 @@ func (x *SchemaRequest) ClearKind() {
 type SchemaRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	// The target Kubernetes cluster identifier.
+	// The target Kubernetes cluster identifier (e.g., "production").
 	Cluster *string
 	// Kubernetes API Group (e.g., "apps" for Deployments, "" for core resources like Pods).
 	Group *string
@@ -1075,7 +1075,7 @@ func (x *ListRequest) ClearContinue() {
 type ListRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	// The target Kubernetes cluster identifier.
+	// The target Kubernetes cluster identifier (e.g., "production").
 	Cluster *string
 	// Kubernetes API Group (e.g., "apps" for Deployments, "" for core resources like Pods).
 	Group *string
@@ -1083,13 +1083,13 @@ type ListRequest_builder struct {
 	Version *string
 	// Kubernetes API Resource name in plural (e.g., "pods", "deployments").
 	Resource *string
-	// The namespace to query. If empty, the request may target all namespaces depending on cluster permissions.
+	// The namespace to query (e.g., "default"). If empty, the request may target all namespaces depending on cluster permissions.
 	Namespace *string
-	// A selector to restrict the list of returned objects by their labels.
+	// A selector to restrict the list of returned objects by their labels (e.g., "app=nginx").
 	LabelSelector *string
 	// A selector to restrict the list of returned objects by their fields (e.g., "status.phase=Running").
 	FieldSelector *string
-	// The maximum number of items to return in a single page.
+	// The maximum number of items to return in a single page (e.g., 100).
 	Limit *int64
 	// The continue token for pagination, retrieved from a previous ListResponse.
 	Continue *string
@@ -1505,7 +1505,7 @@ func (x *GetRequest) ClearName() {
 type GetRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	// The target Kubernetes cluster identifier.
+	// The target Kubernetes cluster identifier (e.g., "production").
 	Cluster *string
 	// Kubernetes API Group (e.g., "apps" for Deployments, "" for core resources like Pods).
 	Group *string
@@ -1513,9 +1513,9 @@ type GetRequest_builder struct {
 	Version *string
 	// Kubernetes API Resource name in plural (e.g., "pods", "deployments").
 	Resource *string
-	// The namespace of the resource.
+	// The namespace of the resource (e.g., "default").
 	Namespace *string
-	// The name of the resource.
+	// The name of the resource (e.g., "nginx").
 	Name *string
 }
 
@@ -1756,7 +1756,7 @@ func (x *DescribeRequest) ClearName() {
 type DescribeRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	// The target Kubernetes cluster identifier.
+	// The target Kubernetes cluster identifier (e.g., "production").
 	Cluster *string
 	// Kubernetes API Group (e.g., "apps" for Deployments, "" for core resources like Pods).
 	Group *string
@@ -1764,9 +1764,9 @@ type DescribeRequest_builder struct {
 	Version *string
 	// Kubernetes API Resource name in plural (e.g., "pods", "deployments").
 	Resource *string
-	// The namespace of the resource.
+	// The namespace of the resource (e.g., "default").
 	Namespace *string
-	// The name of the resource.
+	// The name of the resource (e.g., "nginx").
 	Name *string
 }
 
@@ -2093,7 +2093,7 @@ func (x *CreateRequest) ClearManifest() {
 type CreateRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	// The target Kubernetes cluster identifier.
+	// The target Kubernetes cluster identifier (e.g., "production").
 	Cluster *string
 	// Kubernetes API Group (e.g., "apps" for Deployments, "" for core resources like Pods).
 	Group *string
@@ -2101,7 +2101,7 @@ type CreateRequest_builder struct {
 	Version *string
 	// Kubernetes API Resource name in plural (e.g., "pods", "deployments").
 	Resource *string
-	// The namespace of the resource.
+	// The namespace of the resource (e.g., "default").
 	Namespace *string
 	// The manifest (YAML or JSON) describing the object to be created.
 	Manifest []byte
@@ -2424,7 +2424,7 @@ func (x *ApplyRequest) ClearFieldManager() {
 type ApplyRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	// The target Kubernetes cluster identifier.
+	// The target Kubernetes cluster identifier (e.g., "production").
 	Cluster *string
 	// Kubernetes API Group (e.g., "apps" for Deployments, "" for core resources like Pods).
 	Group *string
@@ -2432,9 +2432,9 @@ type ApplyRequest_builder struct {
 	Version *string
 	// Kubernetes API Resource name in plural (e.g., "pods", "deployments").
 	Resource *string
-	// The namespace of the resource.
+	// The namespace of the resource (e.g., "default").
 	Namespace *string
-	// The name of the resource.
+	// The name of the resource (e.g., "nginx").
 	Name *string
 	// A partial or complete manifest (YAML or JSON) to be merged by the
 	// API server via Server-Side Apply.
@@ -2749,7 +2749,7 @@ func (x *UpdateRequest) ClearFieldManager() {
 type UpdateRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	// The target Kubernetes cluster identifier.
+	// The target Kubernetes cluster identifier (e.g., "production").
 	Cluster *string
 	// Kubernetes API Group (e.g., "apps" for Deployments, "" for core resources like Pods).
 	Group *string
@@ -2757,9 +2757,9 @@ type UpdateRequest_builder struct {
 	Version *string
 	// Kubernetes API Resource name in plural (e.g., "pods", "deployments").
 	Resource *string
-	// The namespace of the resource.
+	// The namespace of the resource (e.g., "default").
 	Namespace *string
-	// The name of the resource.
+	// The name of the resource (e.g., "nginx").
 	Name *string
 	// The complete manifest (YAML or JSON) that will replace the stored object.
 	// Server-required fields such as metadata.resourceVersion must be included.
@@ -3037,7 +3037,7 @@ func (x *DeleteRequest) ClearGracePeriodSeconds() {
 type DeleteRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	// The target Kubernetes cluster identifier.
+	// The target Kubernetes cluster identifier (e.g., "production").
 	Cluster *string
 	// Kubernetes API Group (e.g., "apps" for Deployments, "" for core resources like Pods).
 	Group *string
@@ -3045,9 +3045,9 @@ type DeleteRequest_builder struct {
 	Version *string
 	// Kubernetes API Resource name in plural (e.g., "pods", "deployments").
 	Resource *string
-	// The namespace of the resource.
+	// The namespace of the resource (e.g., "default").
 	Namespace *string
-	// The name of the resource.
+	// The name of the resource (e.g., "nginx").
 	Name *string
 	// The duration in seconds before the object should be deleted. Overrides the default grace period.
 	// When absent, the API server uses the resource's default grace period.
@@ -3351,7 +3351,7 @@ func (x *WatchRequest) ClearResourceVersion() {
 type WatchRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	// The target Kubernetes cluster identifier.
+	// The target Kubernetes cluster identifier (e.g., "production").
 	Cluster *string
 	// Kubernetes API Group (e.g., "apps" for Deployments, "" for core resources like Pods).
 	Group *string
@@ -3359,11 +3359,11 @@ type WatchRequest_builder struct {
 	Version *string
 	// Kubernetes API Resource name in plural (e.g., "pods", "deployments").
 	Resource *string
-	// The namespace to watch.
+	// The namespace to watch (e.g., "default").
 	Namespace *string
-	// A selector to restrict watched objects by their labels.
+	// A selector to restrict watched objects by their labels (e.g., "app=nginx").
 	LabelSelector *string
-	// A selector to restrict watched objects by their fields.
+	// A selector to restrict watched objects by their fields (e.g., "status.phase=Running").
 	FieldSelector *string
 	// Start the watch from this specific resource version.
 	ResourceVersion *string

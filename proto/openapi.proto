@@ -9,7 +9,35 @@ option (gnostic.openapi.v3.document) = {
   info: {
     title: "OtterScale API"
     version: "v1"
-    description: "OtterScale: A unified platform for simplified compute, storage, and networking."
+    description:
+      "OtterScale: A unified platform for simplified compute, storage, and networking.\n"
+      "\n"
+      "## Calling the API\n"
+      "\n"
+      "Every procedure is an HTTP POST to `<API URL>/<package>.<Service>/<Method>` with a JSON body,\n"
+      "following the [Connect protocol](https://connectrpc.com/docs/protocol/). The API URL is the\n"
+      "server's external URL: the platform address followed by the gateway's path prefix, for example\n"
+      "`https://otterscale.example.com/api`. A platform reached by IP address and port keeps the port in\n"
+      "it. Send three headers:\n"
+      "\n"
+      "- `Authorization: Bearer <token>`: a token from the platform's identity provider whose audience\n"
+      "  is the server's client ID; the dashboard sends the signed-in user's access token. Without a\n"
+      "  valid token the call fails with `unauthenticated`. `LinkService/Register` is the exception: the\n"
+      "  agent calls it during installation with the join token inside the request instead.\n"
+      "- `Content-Type: application/json`\n"
+      "- `Connect-Protocol-Version: 1`\n"
+      "\n"
+      "Kubernetes calls run as you: the server impersonates your identity on the target cluster, so\n"
+      "that cluster's RBAC decides what you may read or change.\n"
+      "\n"
+      "Errors are JSON with a `code` and a `message`, for example\n"
+      "`{\"code\": \"not_found\", \"message\": \"deployments.apps nginx not found\"}`. The codes are listed\n"
+      "under each procedure's `default` response.\n"
+      "\n"
+      "Procedures that return a stream (`Watch`, `PodLog`, `ExecuteTTY`, `PortForward`, `VNC`) use the\n"
+      "Connect streaming envelope rather than a single JSON body; call them with a Connect client such as\n"
+      "[connect-go](https://connectrpc.com/docs/go/getting-started/) or\n"
+      "[connect-es](https://connectrpc.com/docs/web/getting-started/).\n"
     contact: {
       name: "Chung-Hsuan Tsai"
       url: "https://iasthc.github.io"
@@ -24,11 +52,12 @@ option (gnostic.openapi.v3.document) = {
     security_schemes: {
       additional_properties: [
         {
-          name: "BasicAuth"
+          name: "BearerAuth"
           value: {
             security_scheme: {
               type: "http"
-              scheme: "basic"
+              scheme: "bearer"
+              bearer_format: "JWT"
             }
           }
         }
