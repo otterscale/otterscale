@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"log/slog"
 	"net/http"
-	"net/http/httputil"
 	"net/url"
 	"strings"
 
 	utilproxy "k8s.io/apimachinery/pkg/util/proxy"
+	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/transport"
 
@@ -16,33 +16,52 @@ import (
 )
 
 // proxyPathPrefix is reserved for agent-managed service proxies (Prometheus,
-// for one). Requests under it bypass kube-apiserver.
+// for one). Requests under it skip kube-apiserver's proxy: they go straight to
+// the service. An https target (kube-rbac-proxy) authorizes the agent's own
+// ServiceAccount token itself; an http target gets no token and is trusted as
+// reachable only from inside the cluster.
 const proxyPathPrefix = "/__otterscale/proxy/"
 
 // Handler is the spoke-side reverse proxy: it forwards requests to the local
 // kube-apiserver and, optionally, to configured in-cluster services.
 type Handler struct {
-	cfg                *rest.Config
-	proxyPrometheusURL string
+	cfg                     *rest.Config
+	proxyPrometheusURL      string
+	proxyPrometheusCASecret string
 }
 
 // NewHandler enables the metrics proxy under /__otterscale/proxy/ when a
 // Prometheus URL is configured.
 func NewHandler(cfg *rest.Config, conf *config.Config) *Handler {
-	return &Handler{cfg: cfg, proxyPrometheusURL: conf.AgentProxyPrometheusURL()}
+	return &Handler{
+		cfg:                     cfg,
+		proxyPrometheusURL:      conf.AgentProxyPrometheusURL(),
+		proxyPrometheusCASecret: conf.AgentProxyPrometheusCASecret(),
+	}
 }
 
-// Mount always registers the catch-all proxy to kube-apiserver, plus, when a
-// Prometheus URL is configured, one under /__otterscale/proxy/ so the hub can
-// relay metrics queries without going through kube-apiserver.
+// Mount always registers the catch-all proxy to kube-apiserver, plus one
+// under /__otterscale/proxy/: the metrics proxy, so the hub can relay metrics
+// queries without going through kube-apiserver, or, when it is off, a 503
+// that says why.
 func (h *Handler) Mount(mux *http.ServeMux) error {
-	if h.proxyPrometheusURL != "" {
-		if err := h.mountPrometheusProxy(mux); err != nil {
-			return err
-		}
+	if h.proxyPrometheusURL == "" {
+		mountDisabledPrometheusProxy(mux, "no Prometheus URL is configured")
+	} else if err := h.mountPrometheusProxy(mux); err != nil {
+		return err
 	}
 
 	return h.mountKubeProxy(mux)
+}
+
+// mountDisabledPrometheusProxy answers the metrics proxy's prefix with 503
+// and why, which would otherwise fall through to the kube-apiserver proxy and
+// come back as its 404.
+func mountDisabledPrometheusProxy(mux *http.ServeMux, reason string) {
+	message := "the metrics proxy is disabled on this cluster's agent: " + reason
+	mux.Handle(proxyPathPrefix, http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		writePrometheusError(w, http.StatusServiceUnavailable, message)
+	}))
 }
 
 func (h *Handler) mountPrometheusProxy(mux *http.ServeMux) error {
@@ -51,9 +70,32 @@ func (h *Handler) mountPrometheusProxy(mux *http.ServeMux) error {
 		return fmt.Errorf("failed to parse proxy prometheus URL %q: %w", h.proxyPrometheusURL, err)
 	}
 
-	proxy := httputil.NewSingleHostReverseProxy(target)
-	proxy.ErrorLog = slog.NewLogLogger(slog.Default().Handler(), slog.LevelWarn)
+	var loadCA caLoader
+	if target.Scheme == "https" {
+		if h.cfg.BearerToken == "" && h.cfg.BearerTokenFile == "" {
+			slog.Warn("prometheus proxy disabled: kube-rbac-proxy needs the agent's ServiceAccount token, and this kube config carries none",
+				"target", h.proxyPrometheusURL)
+			mountDisabledPrometheusProxy(mux, "its kube config carries no ServiceAccount token")
+			return nil
+		}
+		client, err := kubernetes.NewForConfig(h.cfg)
+		if err != nil {
+			return fmt.Errorf("failed to create kubernetes client: %w", err)
+		}
+		if loadCA, err = secretCALoader(client, h.proxyPrometheusCASecret); err != nil {
+			return err
+		}
+	} else {
+		slog.Warn("prometheus proxy target is not https: queries go out unauthenticated and the agent's token is withheld",
+			"target", h.proxyPrometheusURL)
+	}
 
+	rt, err := newPrometheusTransport(target, h.cfg, loadCA)
+	if err != nil {
+		return err
+	}
+
+	proxy := newPrometheusProxy(target, rt, slog.NewLogLogger(slog.Default().Handler(), slog.LevelWarn))
 	mux.Handle(proxyPathPrefix, http.StripPrefix("/__otterscale/proxy", proxy))
 	slog.Info("prometheus proxy enabled", "target", h.proxyPrometheusURL)
 	return nil
