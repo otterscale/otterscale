@@ -22,6 +22,13 @@ func ProvideDiscoveryCache(discovery core.DiscoveryClient) *cache.DiscoveryCache
 	return cache.NewDiscoveryCache(discovery, cache.DefaultTTL)
 }
 
+// ProvideAccessReviewer puts the TTL cache in front of SelfSubjectAccessReview,
+// so a dashboard page's burst of metric queries costs one review per user and
+// attribute rather than one per query.
+func ProvideAccessReviewer(k *kubernetes.Kubernetes) core.AccessReviewer {
+	return cache.NewAccessReviewCache(kubernetes.NewAccessReviewer(k), cache.AccessReviewTTL)
+}
+
 var ProviderSet = wire.NewSet(
 	chisel.NewService,
 	wire.Bind(new(core.TunnelProvider), new(*chisel.Service)),
@@ -39,6 +46,7 @@ var ProviderSet = wire.NewSet(
 	wire.Bind(new(core.AgentValuesStore), new(*cache.AgentValuesStore)),
 	harbor.ProvideHarborClient,
 	wire.Bind(new(core.HarborClient), new(*harbor.Client)),
+	ProvideAccessReviewer,
 	ProvideDiscoveryCache,
 	wire.Bind(new(core.SchemaResolver), new(*cache.DiscoveryCache)),
 	wire.Bind(new(core.CacheEvictor), new(*cache.DiscoveryCache)),

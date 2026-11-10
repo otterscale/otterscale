@@ -39,16 +39,19 @@ The last four are what `IssueAgentValues` renders into a joining cluster's insta
 
 ## Agent
 
-| Flag                     | Environment variable                    | Default                                                            |
-| ------------------------ | --------------------------------------- | ------------------------------------------------------------------ |
-| `--cluster`              | `OTTERSCALE_AGENT_CLUSTER`              | `default`                                                          |
-| `--server-url`           | `OTTERSCALE_AGENT_SERVER_URL`           | `http://127.0.0.1:8299`                                            |
-| `--tunnel-server-url`    | `OTTERSCALE_AGENT_TUNNEL_SERVER_URL`    | `https://127.0.0.1:8300`                                           |
-| `--proxy-prometheus-url` | `OTTERSCALE_AGENT_PROXY_PROMETHEUS_URL` | `http://prometheus-stack-kube-prom-prometheus.monitoring.svc:9090` |
-| `--join-token`           | `OTTERSCALE_AGENT_JOIN_TOKEN`           | _(required)_                                                       |
-| `--join-token-file`      | `OTTERSCALE_AGENT_JOIN_TOKEN_FILE`      | _(takes precedence over the above)_                                |
+| Flag                           | Environment variable                          | Default                                                             |
+| ------------------------------ | --------------------------------------------- | ------------------------------------------------------------------- |
+| `--cluster`                    | `OTTERSCALE_AGENT_CLUSTER`                    | `default`                                                           |
+| `--server-url`                 | `OTTERSCALE_AGENT_SERVER_URL`                 | `http://127.0.0.1:8299`                                             |
+| `--tunnel-server-url`          | `OTTERSCALE_AGENT_TUNNEL_SERVER_URL`          | `https://127.0.0.1:8300`                                            |
+| `--proxy-prometheus-url`       | `OTTERSCALE_AGENT_PROXY_PROMETHEUS_URL`       | `https://prometheus-stack-kube-prom-prometheus.monitoring.svc:9091` |
+| `--proxy-prometheus-ca-secret` | `OTTERSCALE_AGENT_PROXY_PROMETHEUS_CA_SECRET` | `monitoring/prometheus-stack-kube-prom-prometheus-tls`              |
+| `--join-token`                 | `OTTERSCALE_AGENT_JOIN_TOKEN`                 | _(required)_                                                        |
+| `--join-token-file`            | `OTTERSCALE_AGENT_JOIN_TOKEN_FILE`            | _(takes precedence over the above)_                                 |
 
 `--cluster` is the name the cluster is addressed by in every RPC, and the name its join token is bound to.
+
+The metrics proxy follows the scheme of `--proxy-prometheus-url`. With `https`, the target is the kube-rbac-proxy in front of Prometheus: the agent sends its ServiceAccount token and verifies the server against `ca.crt` in the Secret `--proxy-prometheus-ca-secret` names (`namespace/name`), read through the API and re-read whenever verification fails. The ServiceAccount needs `get` on that Secret and `get`/`create` on `prometheuses/api` for the Prometheus; the otterscale-agent chart grants both. With `http`, the agent sends no token: that is only for a prometheus-stack older than 1.2.0, which has no kube-rbac-proxy.
 
 ## Secrets
 
