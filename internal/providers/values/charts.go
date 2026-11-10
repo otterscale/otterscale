@@ -7,7 +7,7 @@ import "github.com/otterscale/otterscale/internal/core"
 var chartVersions = core.ChartVersions{
 	AgentFlux: "1.1.x", // renovate: datasource=helm depName=otterscale-agent-flux registryUrl=https://otterscale.github.io/helm-charts
 	Agent:     "1.2.x", // renovate: datasource=helm depName=otterscale-agent registryUrl=https://otterscale.github.io/helm-charts
-	Flux:      "1.0.x", // renovate: datasource=helm depName=flux registryUrl=https://otterscale.github.io/helm-charts
+	Flux:      "1.1.x", // renovate: datasource=helm depName=flux registryUrl=https://otterscale.github.io/helm-charts
 }
 
 func ProvideChartVersions() core.ChartVersions {
