@@ -19,7 +19,7 @@ require (
 	github.com/jpillora/chisel v1.13.0
 	github.com/prometheus-community/prom-label-proxy v0.16.2
 	github.com/prometheus/client_golang v1.25.0
-	github.com/prometheus/prometheus v0.315.1
+	github.com/prometheus/prometheus v0.316.0
 	github.com/rs/cors v1.11.1
 	github.com/spf13/cobra v1.10.2
 	github.com/spf13/pflag v1.1.0
@@ -77,29 +77,29 @@ require (
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-openapi/analysis v1.0.0 // indirect
 	github.com/go-openapi/errors v0.22.9 // indirect
-	github.com/go-openapi/jsonpointer v1.0.1 // indirect
+	github.com/go-openapi/jsonpointer v1.0.2 // indirect
 	github.com/go-openapi/jsonreference v1.0.2 // indirect
 	github.com/go-openapi/loads v0.25.3 // indirect
 	github.com/go-openapi/runtime v0.33.3 // indirect
 	github.com/go-openapi/runtime/server-middleware v0.33.3 // indirect
 	github.com/go-openapi/spec v1.0.1 // indirect
 	github.com/go-openapi/strfmt v0.27.4 // indirect
-	github.com/go-openapi/swag v0.28.0 // indirect
-	github.com/go-openapi/swag/cmdutils v0.28.0 // indirect
+	github.com/go-openapi/swag v0.29.2 // indirect
+	github.com/go-openapi/swag/cmdutils v0.29.2 // indirect
 	github.com/go-openapi/swag/conv v0.29.2 // indirect
 	github.com/go-openapi/swag/fileutils v0.29.2 // indirect
 	github.com/go-openapi/swag/jsonutils v0.29.2 // indirect
-	github.com/go-openapi/swag/loading v0.29.1 // indirect
-	github.com/go-openapi/swag/mangling v0.29.1 // indirect
-	github.com/go-openapi/swag/netutils v0.28.0 // indirect
+	github.com/go-openapi/swag/loading v0.29.2 // indirect
+	github.com/go-openapi/swag/mangling v0.29.2 // indirect
+	github.com/go-openapi/swag/netutils v0.29.2 // indirect
 	github.com/go-openapi/swag/pools v0.29.2 // indirect
 	github.com/go-openapi/swag/stringutils v0.29.2 // indirect
 	github.com/go-openapi/swag/typeutils v0.29.2 // indirect
-	github.com/go-openapi/swag/yamlutils v0.29.1 // indirect
+	github.com/go-openapi/swag/yamlutils v0.29.2 // indirect
 	github.com/go-openapi/validate v1.0.0 // indirect
 	github.com/go-viper/mapstructure/v2 v2.5.0 // indirect
 	github.com/gobwas/glob v0.2.3 // indirect
-	github.com/gofrs/flock v0.13.0 // indirect
+	github.com/gofrs/flock v0.13.1 // indirect
 	github.com/google/btree v1.1.3 // indirect
 	github.com/google/gnostic-models v0.7.1 // indirect
 	github.com/google/subcommands v1.2.0 // indirect
@@ -118,8 +118,8 @@ require (
 	github.com/lann/ps v0.0.0-20150810152359-62de8c46ede0 // indirect
 	github.com/lib/pq v1.12.3 // indirect
 	github.com/liggitt/tabwriter v0.0.0-20181228230101-89fcab3d43de // indirect
-	github.com/mattn/go-colorable v0.1.15 // indirect
-	github.com/mattn/go-isatty v0.0.23 // indirect
+	github.com/mattn/go-colorable v0.1.16 // indirect
+	github.com/mattn/go-isatty v0.0.24 // indirect
 	github.com/mattn/go-runewidth v0.0.9 // indirect
 	github.com/metalmatze/signal v0.0.0-20210307161603-1c9aa721a97a // indirect
 	github.com/mitchellh/copystructure v1.2.0 // indirect
@@ -163,7 +163,7 @@ require (
 	go.opentelemetry.io/otel/sdk v1.47.0 // indirect
 	go.opentelemetry.io/otel/trace v1.47.0 // indirect
 	go.opentelemetry.io/proto/otlp v1.11.0 // indirect
-	go.uber.org/atomic v1.11.0 // indirect
+	go.uber.org/atomic v1.12.0 // indirect
 	go.yaml.in/yaml/v2 v2.4.4 // indirect
 	golang.org/x/crypto v0.58.0 // indirect
 	golang.org/x/mod v0.41.0 // indirect
@@ -172,7 +172,7 @@ require (
 	golang.org/x/sys v0.49.0 // indirect
 	golang.org/x/term v0.47.0 // indirect
 	golang.org/x/text v0.43.0 // indirect
-	golang.org/x/time v0.15.0 // indirect
+	golang.org/x/time v0.16.0 // indirect
 	golang.org/x/tools v0.51.0 // indirect
 	gopkg.in/evanphx/json-patch.v4 v4.13.0 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
