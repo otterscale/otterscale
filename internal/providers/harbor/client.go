@@ -62,32 +62,32 @@ func NewClient(baseURL string, password func() (string, error)) *Client {
 }
 
 // EnsureRobotAccount converges the robot on the given secret: it creates the
-// account when absent, and otherwise resets the existing secret to the same
-// value. It never deletes and re-creates, which is what obtaining a
-// Harbor-generated secret would require, and would revoke the credential the
-// cluster is already using.
+// account when absent, or adopts the existing one, and then sets the secret
+// on it. Harbor generates the secret of a new account and ignores one in the
+// create request, so a new account gets its secret the same way as an
+// existing one. It never deletes and re-creates, which would revoke the
+// credential the cluster is already using.
 func (c *Client) EnsureRobotAccount(ctx context.Context, cluster, secret string) (core.HarborRobotCredentials, error) {
 	password, err := c.adminPassword()
 	if err != nil {
 		return core.HarborRobotCredentials{}, err
 	}
 
-	creds, err := c.createRobot(ctx, cluster, secret, password)
-	if err == nil {
-		return creds, nil
-	}
-
+	id, err := c.createRobot(ctx, cluster, password)
 	var conflict *errConflict
-	if !errors.As(err, &conflict) {
+	switch {
+	case errors.As(err, &conflict):
+		// The account is already there, so adopt it.
+		if id, err = c.findRobotID(ctx, cluster, password); err != nil {
+			return core.HarborRobotCredentials{}, err
+		}
+	case err != nil:
 		return core.HarborRobotCredentials{}, err
 	}
 
-	// The account is already there, so adopt it: find it and write the secret
-	// we derived, which also repairs one that was changed out of band.
-	id, err := c.findRobotID(ctx, cluster, password)
-	if err != nil {
-		return core.HarborRobotCredentials{}, err
-	}
+	// Write the secret we derived. For an adopted account this also repairs
+	// one that was changed out of band; for a new one, a failure here leaves
+	// Harbor's secret, which the next call replaces after adopting it.
 	if err := c.refreshRobotSecret(ctx, id, secret, password); err != nil {
 		return core.HarborRobotCredentials{}, err
 	}
@@ -119,10 +119,10 @@ func (c *Client) adminPassword() (string, error) {
 	return password, nil
 }
 
-// robotRequest is the body of a robot create.
+// robotRequest is the body of a robot create. It has no secret: Harbor
+// generates one and ignores a secret in the request.
 type robotRequest struct {
 	Name        string            `json:"name"`
-	Secret      string            `json:"secret"`
 	Duration    int               `json:"duration"`
 	Level       string            `json:"level"`
 	Permissions []robotPermission `json:"permissions"`
@@ -206,43 +206,42 @@ func robotPermissions() []robotPermission {
 	}
 }
 
-// createRobot reports a 409 as errConflict, the signal to adopt the existing
+// createRobot creates the account and returns its ID, where the secret is
+// set next. It reports a 409 as errConflict, the signal to adopt the existing
 // account.
-func (c *Client) createRobot(ctx context.Context, cluster, secret, password string) (core.HarborRobotCredentials, error) {
-	// The secret travels in the body by design: a caller-chosen one is what
-	// makes issuing agent values idempotent.
-	body, err := json.Marshal(robotRequest{ //nolint:gosec // G117: sending the secret is the operation
+func (c *Client) createRobot(ctx context.Context, cluster, password string) (int, error) {
+	body, err := json.Marshal(robotRequest{
 		Name:        cluster,
-		Secret:      secret,
 		Duration:    robotNeverExpires,
 		Level:       robotLevel,
 		Permissions: robotPermissions(),
 	})
 	if err != nil {
-		return core.HarborRobotCredentials{}, fmt.Errorf("harbor: marshal robot request: %w", err)
+		return 0, fmt.Errorf("harbor: marshal robot request: %w", err)
 	}
 
 	resp, err := c.do(ctx, http.MethodPost, c.baseURL+robotsPath, password, bytes.NewReader(body))
 	if err != nil {
-		return core.HarborRobotCredentials{}, fmt.Errorf("harbor: create robot: %w", err)
+		return 0, fmt.Errorf("harbor: create robot: %w", err)
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode == http.StatusConflict {
-		return core.HarborRobotCredentials{}, &errConflict{cluster: cluster}
+		return 0, &errConflict{cluster: cluster}
 	}
 	if resp.StatusCode != http.StatusCreated {
-		return core.HarborRobotCredentials{}, statusError(resp, "create robot")
+		return 0, statusError(resp, "create robot")
 	}
 
 	var result robotResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return core.HarborRobotCredentials{}, fmt.Errorf("harbor: decode robot response: %w", err)
+		return 0, fmt.Errorf("harbor: decode robot response: %w", err)
+	}
+	if result.ID == 0 {
+		return 0, fmt.Errorf("harbor: create robot: the response carries no robot ID")
 	}
 
-	// The name comes from Harbor, which owns the prefixing; the secret does
-	// not, since some versions omit it from the response.
-	return core.HarborRobotCredentials{Name: result.Name, Secret: secret}, nil
+	return result.ID, nil
 }
 
 // findRobotID locates the robot for a cluster.
