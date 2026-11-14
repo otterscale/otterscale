@@ -137,9 +137,9 @@ type AgentValuesRenderer interface {
 
 // HarborClient provisions the per-cluster robot account.
 type HarborClient interface {
-	// EnsureRobotAccount creates the robot if absent and otherwise resets its
-	// secret to the one given, so repeated calls converge on the same
-	// credential instead of revoking the one in use.
+	// EnsureRobotAccount creates the robot if absent and, new or existing,
+	// sets its secret to the one given, so repeated calls converge on the
+	// same credential instead of revoking the one in use.
 	EnsureRobotAccount(ctx context.Context, cluster, secret string) (HarborRobotCredentials, error)
 }
 

@@ -7,6 +7,7 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
+	"slices"
 	"strings"
 	"testing"
 
@@ -91,12 +92,15 @@ func writeJSON(t *testing.T, w http.ResponseWriter, status int, body any) {
 	}
 }
 
+// Harbor generates the secret of a new account and ignores one in the create
+// request, so the derived secret is set on the new account afterwards.
 func TestClient_EnsureRobotAccount_Creates(t *testing.T) {
 	client, rec := newTestClient(t, map[string]http.HandlerFunc{
 		"POST " + robotsPath: func(w http.ResponseWriter, _ *http.Request) {
-			// Harbor echoes the prefixed name; it may not echo the secret, which
-			// is why the client trusts the one it sent.
-			writeJSON(t, w, http.StatusCreated, robotResponse{ID: 7, Name: "robot$" + testCluster})
+			writeJSON(t, w, http.StatusCreated, robotResponse{ID: 7, Name: "robot$" + testCluster, Secret: "HarborGenerated1"})
+		},
+		"PATCH " + robotsPath + "/7": func(w http.ResponseWriter, _ *http.Request) {
+			w.WriteHeader(http.StatusOK)
 		},
 	})
 
@@ -111,8 +115,17 @@ func TestClient_EnsureRobotAccount_Creates(t *testing.T) {
 		t.Errorf("secret = %q, want the one we supplied %q", creds.Secret, testSecret)
 	}
 
-	if len(rec.requests) != 1 {
-		t.Fatalf("calls = %v, want one create", rec.calls())
+	want := []string{"POST " + robotsPath, "PATCH " + robotsPath + "/7"}
+	if got := rec.calls(); !slices.Equal(got, want) {
+		t.Fatalf("calls = %v, want %v", got, want)
+	}
+
+	var patched robotSecretRequest
+	if err := json.Unmarshal(rec.requests[1].body, &patched); err != nil {
+		t.Fatalf("unmarshal patch body: %v", err)
+	}
+	if patched.Secret != testSecret {
+		t.Errorf("patched secret = %q, want %q", patched.Secret, testSecret)
 	}
 
 	var sent robotRequest
@@ -121,9 +134,6 @@ func TestClient_EnsureRobotAccount_Creates(t *testing.T) {
 	}
 	if sent.Name != testCluster {
 		t.Errorf("name = %q, want the bare cluster name %q", sent.Name, testCluster)
-	}
-	if sent.Secret != testSecret {
-		t.Errorf("secret = %q, want %q", sent.Secret, testSecret)
 	}
 	if sent.Duration != robotNeverExpires {
 		t.Errorf("duration = %d, want %d", sent.Duration, robotNeverExpires)
@@ -228,6 +238,9 @@ func TestClient_EnsureRobotAccount_SendsBasicAuth(t *testing.T) {
 		"POST " + robotsPath: func(w http.ResponseWriter, _ *http.Request) {
 			writeJSON(t, w, http.StatusCreated, robotResponse{ID: 1, Name: "robot$" + testCluster})
 		},
+		"PATCH " + robotsPath + "/1": func(w http.ResponseWriter, _ *http.Request) {
+			w.WriteHeader(http.StatusOK)
+		},
 	})
 
 	if _, err := client.EnsureRobotAccount(t.Context(), testCluster, testSecret); err != nil {
@@ -247,6 +260,9 @@ func TestClient_EnsureRobotAccount_ResolvesPasswordPerCall(t *testing.T) {
 	rec := &recorder{t: t, handlers: map[string]http.HandlerFunc{
 		"POST " + robotsPath: func(w http.ResponseWriter, _ *http.Request) {
 			writeJSON(t, w, http.StatusCreated, robotResponse{ID: 1, Name: "robot$" + testCluster})
+		},
+		"PATCH " + robotsPath + "/1": func(w http.ResponseWriter, _ *http.Request) {
+			w.WriteHeader(http.StatusOK)
 		},
 	}}
 	server := httptest.NewServer(rec)
@@ -269,7 +285,8 @@ func TestClient_EnsureRobotAccount_ResolvesPasswordPerCall(t *testing.T) {
 	if reads != 2 {
 		t.Errorf("password reads = %d, want one per call", reads)
 	}
-	if rec.requests[0].pass == rec.requests[1].pass {
+	// each call sends a create and a secret set
+	if rec.requests[0].pass == rec.requests[2].pass {
 		t.Error("the second call reused the first call's password")
 	}
 }
@@ -373,6 +390,52 @@ func TestClient_EnsureRobotAccount_AdoptFailures(t *testing.T) {
 				"POST " + robotsPath: conflict,
 				"GET " + robotsPath:  found,
 				"PATCH " + robotsPath + "/9": func(w http.ResponseWriter, _ *http.Request) {
+					http.Error(w, "secret does not meet the complexity policy", http.StatusBadRequest)
+				},
+			},
+			wantIn: "secret does not meet the complexity policy",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			client, _ := newTestClient(t, tt.handlers)
+
+			_, err := client.EnsureRobotAccount(t.Context(), testCluster, testSecret)
+			if err == nil {
+				t.Fatal("expected an error, got nil")
+			}
+			if !strings.Contains(err.Error(), tt.wantIn) {
+				t.Errorf("error = %v, want it to carry %q", err, tt.wantIn)
+			}
+		})
+	}
+}
+
+// A new account whose secret cannot be set must fail the call: it holds the
+// secret Harbor generated, not the one the agent values carry.
+func TestClient_EnsureRobotAccount_CreateFailures(t *testing.T) {
+	tests := []struct {
+		name     string
+		handlers map[string]http.HandlerFunc
+		wantIn   string
+	}{
+		{
+			name: "the answer carries no ID",
+			handlers: map[string]http.HandlerFunc{
+				"POST " + robotsPath: func(w http.ResponseWriter, _ *http.Request) {
+					writeJSON(t, w, http.StatusCreated, robotResponse{Name: "robot$" + testCluster})
+				},
+			},
+			wantIn: "no robot ID",
+		},
+		{
+			name: "the secret set is rejected",
+			handlers: map[string]http.HandlerFunc{
+				"POST " + robotsPath: func(w http.ResponseWriter, _ *http.Request) {
+					writeJSON(t, w, http.StatusCreated, robotResponse{ID: 7, Name: "robot$" + testCluster})
+				},
+				"PATCH " + robotsPath + "/7": func(w http.ResponseWriter, _ *http.Request) {
 					http.Error(w, "secret does not meet the complexity policy", http.StatusBadRequest)
 				},
 			},
